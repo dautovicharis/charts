@@ -24,7 +24,7 @@ Public API:
 
 
 # JS Demo
-https://dautovicharis.github.io/Charts/jsDemo/
+https://dautovicharis.github.io/charts/jsDemo/
 
 # Features
 - Animations
