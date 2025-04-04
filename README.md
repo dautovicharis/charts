@@ -19,8 +19,8 @@ Inspired by: https://github.com/AppPear/ChartView
 
 # Documentation
 Public API: 
-- https://dautovicharis.github.io/Charts/2.0.0-SNAPSHOT/
-- https://dautovicharis.github.io/Charts/2.0.0-SNAPSHOT-v6/
+- https://dautovicharis.github.io/charts/2.0.0-SNAPSHOT/
+- https://dautovicharis.github.io/charts/2.0.0-SNAPSHOT-v6/
 
 
 # JS Demo
@@ -31,7 +31,7 @@ https://dautovicharis.github.io/Charts/jsDemo/
 - M3 theme support
 - Customizable chart styles
 - Various data set support
-- Multiplatform: Android, iOS, Desktop, [Web](https://dautovicharis.github.io/Charts/jsDemo/).
+- Multiplatform: Android, iOS, Desktop, [Web](https://dautovicharis.github.io/charts/jsDemo/).
 
 # Dependency
 ```kotlin
