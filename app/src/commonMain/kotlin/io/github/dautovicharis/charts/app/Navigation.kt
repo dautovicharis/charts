@@ -176,7 +176,9 @@ fun Navigation(
     menuState: State<MenuState>,
     onThemeSelected: (Theme) -> Unit,
     onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
-    onMenuToggle: (index: Int) -> Unit
+    onMenuToggle: (index: Int) -> Unit,
+    onDarkModeToggle: () -> Unit,
+    onDynamicToggle: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -189,7 +191,9 @@ fun Navigation(
                 onThemeSelected = onThemeSelected,
                 menuState = menuState,
                 onSubmenuSelected = onSubmenuSelected,
-                onMenuToggle = onMenuToggle
+                onMenuToggle = onMenuToggle,
+                onDarkModeToggle = onDarkModeToggle,
+                onDynamicToggle = onDynamicToggle
             )
         }
         composable(ChartSubmenuItem.PieChartBasic.route) {

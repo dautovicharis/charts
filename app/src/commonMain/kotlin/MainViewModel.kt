@@ -15,8 +15,20 @@ data class MenuState(
     val expandedMenuIndex: Int? = null
 )
 
+enum class DarkModeSettings {
+    System,
+    On,
+    Off
+}
+
 data class SubmenuState(val subMenuItems: List<ChartSubmenuItem>)
-data class ThemesState(val themes: List<Theme>, val selectedTheme: Theme)
+
+data class ThemesState(
+    val themes: List<Theme>,
+    val selectedTheme: Theme,
+    val darkMode: DarkModeSettings,
+    val useDynamicColors: Boolean
+)
 
 class MainViewModel : ViewModel() {
     private val _menuState = MutableStateFlow(
@@ -40,7 +52,9 @@ class MainViewModel : ViewModel() {
                 Theme(blueViolet),
                 Theme(deepOceanBlue)
             ),
-            selectedTheme = Theme(deepRed)
+            selectedTheme = Theme(deepRed),
+            darkMode = DarkModeSettings.System,
+            useDynamicColors = false
         )
     )
     val themeState: StateFlow<ThemesState> = _themeState
@@ -49,6 +63,27 @@ class MainViewModel : ViewModel() {
         _themeState.update {
             it.copy(
                 selectedTheme = newTheme
+            )
+        }
+    }
+
+    fun toggleDarkMode() {
+        _themeState.update {
+            val newDarkMode = when (it.darkMode) {
+                DarkModeSettings.System -> DarkModeSettings.Off
+                DarkModeSettings.Off -> DarkModeSettings.On
+                DarkModeSettings.On -> DarkModeSettings.System
+            }
+            it.copy(
+                darkMode = newDarkMode
+            )
+        }
+    }
+
+    fun toggleDynamicColor() {
+        _themeState.update {
+            it.copy(
+                useDynamicColors = !it.useDynamicColors
             )
         }
     }
@@ -79,5 +114,13 @@ class MainViewModel : ViewModel() {
     fun setDefaultState() {
         onMenuToggle(0)
         onSubmenuSelected(ChartSubmenuItem.PieChartBasic)
+    }
+
+    fun resolveDarkTheme(isSystemInDark: Boolean): Boolean {
+        return when (themeState.value.darkMode) {
+            DarkModeSettings.System -> isSystemInDark
+            DarkModeSettings.On -> true
+            DarkModeSettings.Off -> false
+        }
     }
 }

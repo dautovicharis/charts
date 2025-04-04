@@ -2,6 +2,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -44,7 +45,10 @@ internal fun JsMainScreen(viewModel: MainViewModel = koinViewModel()) {
             viewModel.setDefaultState()
         }
 
-        AppTheme(theme = themeState.value.selectedTheme) {
+        AppTheme(
+            theme = themeState.value.selectedTheme,
+            darkTheme = viewModel.resolveDarkTheme(isSystemInDarkTheme())
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -57,7 +61,8 @@ internal fun JsMainScreen(viewModel: MainViewModel = koinViewModel()) {
                         .background(MaterialTheme.colorScheme.surface)
                 ) {
 
-                    JsMainScreenContent(themeState = themeState, menuState = menuState,
+                    JsMainScreenContent(
+                        themeState = themeState, menuState = menuState,
                         onThemeSelected = { theme ->
                             viewModel.onThemeSelected(theme)
                         },
@@ -66,6 +71,12 @@ internal fun JsMainScreen(viewModel: MainViewModel = koinViewModel()) {
                         },
                         onMenuToggle = { index ->
                             viewModel.onMenuToggle(index)
+                        },
+                        onDarkModeToggle = {
+                            viewModel.toggleDarkMode()
+                        },
+                        onDynamicToggle = {
+                            viewModel.toggleDynamicColor()
                         }
                     )
                 }
@@ -124,7 +135,9 @@ private fun JsMainScreenContent(
     menuState: State<MenuState>,
     onThemeSelected: (Theme) -> Unit,
     onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
-    onMenuToggle: (index: Int) -> Unit
+    onMenuToggle: (index: Int) -> Unit,
+    onDarkModeToggle: () -> Unit,
+    onDynamicToggle: () -> Unit
 ) {
     var isVisible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
@@ -141,10 +154,11 @@ private fun JsMainScreenContent(
             enter = fadeIn(animationSpec = tween(durationMillis = 700))
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                AddGithubIcon()
+                AddGithubIcon(themeState = themeState, onDarkModeToggle = onDarkModeToggle)
 
                 AddThemes(
-                    themeState = themeState
+                    themeState = themeState,
+                    onDynamicToggle = onDynamicToggle
                 ) {
                     onThemeSelected(it)
                 }

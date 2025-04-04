@@ -1,9 +1,13 @@
 package io.github.dautovicharis.charts.app.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 
 internal fun lightColors(colors: ThemeColors) = lightColorScheme(
     primary = colors.md_theme_light_primary,
@@ -69,11 +73,33 @@ internal fun darkColors(colors: ThemeColors) = darkColorScheme(
     scrim = colors.md_theme_dark_scrim
 )
 
+val LocalHasDynamicColorFeature = compositionLocalOf { false }
+
 @Composable
-expect fun AppTheme(
+fun AppTheme(
     theme: Theme,
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+    useDynamicColors: Boolean = false,
     content: @Composable () -> Unit
-)
+) {
+    val dynamicColors = dynamicColors()
+    val colorScheme = when {
+        useDynamicColors && dynamicColors != null -> dynamicColors
+        darkTheme -> darkColors(theme.colors)
+        else -> lightColors(theme.colors)
+    }
+
+    CompositionLocalProvider(
+        LocalHasDynamicColorFeature provides (dynamicColors != null)
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
+}
+
+@Composable
+expect fun dynamicColors(): ColorScheme?

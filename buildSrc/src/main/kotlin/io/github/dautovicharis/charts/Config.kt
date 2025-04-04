@@ -13,6 +13,6 @@ object Config {
     const val demoVersionCode = 4
 
     // Charts library
-    const val chartsVersion = "2.0.0"
+    const val chartsVersion = "2.0.1-SNAPSHOT"
     const val chartsNamespace = "$groupId.$artifactId"
 }
