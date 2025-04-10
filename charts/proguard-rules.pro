@@ -1,0 +1,11 @@
+# Dokka-related classes that can be safely ignored
+-dontwarn org.jetbrains.dokka.**
+-dontwarn com.fasterxml.jackson.**
+-dontwarn freemarker.**
+-dontwarn com.sun.org.apache.xml.**
+-dontwarn java.beans.**
+-dontwarn javax.swing.**
+-dontwarn org.apache.xml.**
+-dontwarn org.jaxen.**
+-dontwarn org.python.core.**
+-dontwarn org.zeroturnaround.**
