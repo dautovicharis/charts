@@ -69,6 +69,8 @@ android {
         compileSdk = Config.compileSdk
         minSdk = Config.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        consumerProguardFiles("proguard-rules.pro")
     }
 
     buildFeatures {
