@@ -196,9 +196,7 @@ fun AddMenuItems(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Version: ${BuildConfig.DEMO_VERSION_NAME}\n" +
-                                "Build: ${BuildConfig.DEMO_VERSION_CODE}\n" +
-                                "Charts: ${BuildConfig.CHARTS_VERSION}",
+                        text = "Charts: ${BuildConfig.CHARTS_VERSION}",
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }

@@ -18,20 +18,20 @@ Inspired by: https://github.com/AppPear/ChartView
 </p>
 
 # Documentation
-Public API: 
-- https://dautovicharis.github.io/charts/2.0.0-SNAPSHOT/
-- https://dautovicharis.github.io/charts/2.0.0-SNAPSHOT-v6/
+Documentation: https://dautovicharis.github.io/charts/
 
 
 # JS Demo
-https://dautovicharis.github.io/charts/jsDemo/
+https://dautovicharis.github.io/charts/2.0.0/jsdemo
+
+The JS demo is integrated with the documentation and uses the same versioning system, allowing you to access demos for different versions of the library.
 
 # Features
 - Animations
 - M3 theme support
 - Customizable chart styles
 - Various data set support
-- Multiplatform: Android, iOS, Desktop, [Web](https://dautovicharis.github.io/charts/jsDemo/).
+- Multiplatform: Android, iOS, Desktop, [Web](https://dautovicharis.github.io/charts/2.0.0/jsdemo).
 
 # Dependency
 ```kotlin
@@ -362,38 +362,3 @@ https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-setup.html
 # Contributions
 🌟 Thank you for your time! Before you start working on code, please create a [new issue](https://github.com/dautovicharis/Charts/issues).
 [Contributing guidelines](CONTRIBUTING.md)
-
-# Gradlew tasks
-#### Run tests
-```bash
-./gradlew chartsTest -x jsBrowserTest -x testDebugUnitTest -x testReleaseUnitTest --info
-```
-
-#### Build, tests, coverage report and sonar analysis
-```bash
-./gradlew chartsCheck -x jsBrowserTest -x testDebugUnitTest -x testReleaseUnitTest --info
-```
-
-#### Builds the JS app and copies necessary files to docs/jsDemo
-```bash
-./gradlew generateJsDemo
-```
-
-#### Generate the documentation
-```bash
-./gradlew dokkaHtml
-```
-
-# Demo app local test
-#### Build all platforms
-```bash
-./gradlew clean build
-```
-#### JS
-```bash
-./gradlew app:jsBrowserDevelopmentRun
-```
-#### Jvm
-```bash
-./gradlew app:run
-```

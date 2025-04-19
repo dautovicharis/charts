@@ -1,6 +1,4 @@
 import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.dokka.versioning.VersioningConfiguration
-import org.jetbrains.dokka.versioning.VersioningPlugin
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -87,35 +85,27 @@ android {
     }
 }
 
-// https://kotlin.github.io/dokka/1.6.0/user_guide/gradle/usage/
-tasks.register<Delete>("cleanOldDocs") {
-    group = "documentation"
-    description = "Deletes the old documentation directory for the current version."
-
-    val docVersionsDir = project.rootDir.resolve("docs")
-    val currentVersion = Config.chartsVersion
-    val currentDocsDir = docVersionsDir.resolve(currentVersion)
-    delete(currentDocsDir)
-}
-
-tasks.dokkaHtml.configure {
-    dependsOn("cleanOldDocs")
-    dokkaSourceSets {
-        configureEach {
-            includeNonPublic.set(false)
-            skipEmptyPackages.set(true)
-            skipDeprecated.set(false)
+dokka {
+    dokkaSourceSets.commonMain {
+        sourceLink {
+            sourceRoots.setFrom(emptyList<File>())
+            sourceRoots.from(file("src/commonMain/kotlin/io/github/dautovicharis/charts"))
+            remoteUrl("https://github.com/dautovicharis/charts/tree/${Config.chartsVersion}/charts")
+            remoteLineSuffix.set("#L")
         }
+
+        skipDeprecated.set(false)
+        skipEmptyPackages.set(true)
     }
 
-    val docVersionsDir = project.rootDir.resolve("docs")
-    val currentVersion = Config.chartsVersion
-    val currentDocsDir = docVersionsDir.resolve(currentVersion)
-    outputDirectory.set(currentDocsDir)
+    dokkaPublications.html {
+        outputDirectory.set(file(project.rootDir.resolve("docs/src/api")))
+    }
 
-    pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
-        olderVersionsDir = docVersionsDir
-        version = currentVersion
+    pluginsConfiguration {
+        versioning {
+            version.set(Config.chartsVersion)
+        }
     }
 }
 
