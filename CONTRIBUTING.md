@@ -4,7 +4,7 @@ Thank you for your time!
 
 # Contributions 
 New issue: https://github.com/dautovicharis/Charts/issues
-Feel free to create issue any suggestions, improvement ideas, feature requests, or bugs. 
+Feel free to create issue for any suggestions, improvement ideas, feature requests, or bugs. 
 
 ## Git setup
 #### Fork repo
