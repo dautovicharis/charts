@@ -27,4 +27,5 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":charts")
+include(":docs")
  
