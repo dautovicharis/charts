@@ -134,7 +134,5 @@ compose.desktop {
 buildConfig {
     packageName(Config.demoNamespace)
     buildConfigField("CHARTS_VERSION", Config.chartsVersion)
-    buildConfigField("DEMO_VERSION_NAME", Config.demoVersionName)
-    buildConfigField("DEMO_VERSION_CODE", Config.demoVersionCode)
     useKotlinOutput()
 }
