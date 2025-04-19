@@ -3,20 +3,12 @@
 Thank you for your time!
 
 # Contributions 
-Thank you for considering contributing to Charts! 
-The process includes the following steps before making any codebase changes:
- - New issue: https://github.com/dautovicharis/Charts/issues
- - Validate
- - Assign the issue to developer
- - Development time
-
-Feel free to create an issue for any suggestions, improvement ideas, feature requests, or bug fixes. 
-If you have any questions, please DM me: https://www.linkedin.com/in/dautovicharis/
-
+New issue: https://github.com/dautovicharis/Charts/issues
+Feel free to create issue any suggestions, improvement ideas, feature requests, or bugs. 
 
 ## Git setup
 #### Fork repo
- - Fork repository: https://github.com/dautovicharis/Charts
+ - Fork repository: https://github.com/dautovicharis/charts
  - Clone forked repository locally
  - Add upstream
    ```bash
