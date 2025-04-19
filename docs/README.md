@@ -36,7 +36,7 @@ If this should be the default version shown to users:
 mike set-default X.Y.Z
 ```
 
-### 4. Push to GitHub (Optional)
+### 4. Push to GitHub
 To deploy to GitHub Pages:
 ```bash
 mike deploy X.Y.Z latest --push
@@ -47,6 +47,7 @@ mike deploy X.Y.Z latest --push
 Preview documentation locally:
 ```bash
 # Preview current version
+mkdocs build
 mkdocs serve
 
 # Preview all versions
