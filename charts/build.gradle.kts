@@ -109,6 +109,11 @@ dokka {
     }
 }
 
+// https://github.com/Kotlin/dokka/issues/3988
+tasks.register("dokkaHtml") {
+    dependsOn("dokkaGenerate")
+}
+
 mavenPublishing {
     coordinates(
         groupId = Config.groupId,
