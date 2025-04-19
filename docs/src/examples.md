@@ -278,8 +278,8 @@ private fun AddCustomStackedBarChart() {
 
 ## Next Steps
 
-- Explore the [API Documentation](../api/index.html) for detailed information about all available options
-- Try the [Interactive Demo](../jsdemo/index.html) to see the charts in action
+- Explore the [API Documentation](api/index.html) for detailed information about all available options
+- Try the [Interactive Demo](jsdemo/index.html) to see the charts in action
 - Check out these examples for more advanced usage:
     - [Pie Chart](https://github.com/dautovicharis/Charts/blob/main/app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/pie/PieChartDemo.kt)
     - [Line Chart](https://github.com/dautovicharis/Charts/blob/main/app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/line/LineDemo.kt)
