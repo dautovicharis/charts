@@ -24,7 +24,7 @@ mavenPublish = "0.28.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
 buildConfig = "5.6.8"
 # https://sonarcloud.io
-sonarqube = "6.3.1.5724"
+sonarqube = "5.0.0.4638"
 # https://github.com/Kotlin/kotlinx-kover
 kover = "0.9.2"
 # https://insert-koin.io
