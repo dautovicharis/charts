@@ -8,6 +8,12 @@ on:
       - '.github/workflows/deploy-gh-pages.yml'
       - '.github/workflows/create-docs..yml'
       - '.github/workflows/create-js-demo..yml'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   snapshot-release:
     name: Publish Snapshot Release
