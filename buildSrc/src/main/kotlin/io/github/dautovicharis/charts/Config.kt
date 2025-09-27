@@ -1,9 +1,9 @@
 
 object Config {
     // Common
-    const val compileSdk = 34
+    const val compileSdk = 36
     const val minSdk = 24
-    const val targetSdk = 34
+    const val targetSdk = 36
     const val groupId = "io.github.dautovicharis"
     const val artifactId = "charts"
 
