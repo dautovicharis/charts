@@ -3,33 +3,33 @@
 java = "17"
 
 # Android gradle plugin version
-agp = "8.9.1"
+agp = "8.13.0"
 
-androidx-navigation = "2.7.0-alpha06"
-androidx-lifecycle = "2.8.0"
+androidx-navigation = "2.9.0"
+androidx-lifecycle = "2.9.4"
 
 # Kotlin compatibility
 # https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html#kotlin-compatibility
-compose = "1.7.6"
-compose-plugin = "1.7.3"
+compose = "1.9.2"
+compose-plugin = "1.9.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.multiplatform
-kotlin-multiplatform = "2.1.10"
+kotlin-multiplatform = "2.2.20"
 # Coroutines version
-kotlinx-coroutines = "1.10.1"
+kotlinx-coroutines = "1.10.2"
 
 # Documentation: https://kotlin.github.io/dokka/
 dokka = "2.0.0"
 # https://github.com/vanniktech/gradle-maven-publish-plugin
 mavenPublish = "0.28.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
-buildConfig = "5.3.5"
+buildConfig = "5.6.8"
 # https://sonarcloud.io
 sonarqube = "5.0.0.4638"
 # https://github.com/Kotlin/kotlinx-kover
-kover = "0.8.1"
+kover = "0.9.2"
 # https://insert-koin.io
 # https://mvnrepository.com/artifact/io.insert-koin/koin-bom
-koin-bom = "4.0.2"
+koin-bom = "4.1.1"
 
 [libraries]
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
