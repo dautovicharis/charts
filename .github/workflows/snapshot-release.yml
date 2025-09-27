@@ -1,0 +1,88 @@
+name: Snapshot Release
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/deploy-gh-pages.yml'
+      - '.github/workflows/create-docs..yml'
+      - '.github/workflows/create-js-demo..yml'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  snapshot-release:
+    name: Publish Snapshot Release
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-snapshot]')"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Generate snapshot version
+        id: version
+        run: |
+          # Read the current version from Config.kt
+          CURRENT_VERSION=$(grep 'const val chartsVersion' buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt | sed 's/.*"\(.*\)".*/\1/')
+          echo "Current version from Config.kt: $CURRENT_VERSION"
+          # Generate unique snapshot version by appending timestamp and commit SHA
+          TIMESTAMP=$(date -u +"%Y%m%d%H%M%S")
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          SNAPSHOT_VERSION="${CURRENT_VERSION}-${TIMESTAMP}-${SHORT_SHA}"
+          echo "snapshot_version=$SNAPSHOT_VERSION" >> $GITHUB_OUTPUT
+          echo "Generated snapshot version: $SNAPSHOT_VERSION"
+
+      - name: Update Config.kt with snapshot version
+        run: |
+          # Temporarily update the version in Config.kt for this build
+          sed -i.bak 's/const val chartsVersion = ".*"/const val chartsVersion = "${{ steps.version.outputs.snapshot_version }}"/' buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt
+          echo "Updated Config.kt with snapshot version: ${{ steps.version.outputs.snapshot_version }}"
+
+      - name: Decode GPG key
+        run: |
+          echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 -d > secring.gpg
+          echo "GPG key file decoded successfully"
+
+      - name: Publish snapshot to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signing.password: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signing.secretKeyRingFile: ./secring.gpg
+        run: |
+          echo "Publishing snapshot version: ${{ steps.version.outputs.snapshot_version }}"
+          ./gradlew :charts:publishAllPublicationsToMavenCentralRepository --no-daemon --stacktrace
+
+      - name: Comment on commit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: `🚀 **Snapshot Release Published**\n\nVersion: \`${{ steps.version.outputs.snapshot_version }}\`\n\nThe snapshot is now available on Maven Central Snapshots repository.\n\nTo use this snapshot:\n\`\`\`kotlin\nimplementation("io.github.dautovicharis:charts:${{ steps.version.outputs.snapshot_version }}")\n\`\`\``
+            })
