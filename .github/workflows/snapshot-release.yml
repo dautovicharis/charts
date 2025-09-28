@@ -41,24 +41,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Generate snapshot version
+      - name: Get snapshot version from Gradle
         id: version
         run: |
-          # Read the current version from Config.kt
-          CURRENT_VERSION=$(grep 'const val chartsVersion' buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt | sed 's/.*"\(.*\)".*/\1/')
-          echo "Current version from Config.kt: $CURRENT_VERSION"
-          # Generate unique snapshot version by appending timestamp and commit SHA
-          TIMESTAMP=$(date -u +"%Y%m%d%H%M%S")
-          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          SNAPSHOT_VERSION="${CURRENT_VERSION}-${TIMESTAMP}-${SHORT_SHA}"
+          # Use Gradle to get the automatically generated snapshot version
+          SNAPSHOT_VERSION=$(./gradlew :charts:printVersion -q)
           echo "snapshot_version=$SNAPSHOT_VERSION" >> $GITHUB_OUTPUT
-          echo "Generated snapshot version: $SNAPSHOT_VERSION"
-
-      - name: Update Config.kt with snapshot version
-        run: |
-          # Temporarily update the version in Config.kt for this build
-          sed -i.bak 's/const val chartsVersion = ".*"/const val chartsVersion = "${{ steps.version.outputs.snapshot_version }}"/' buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt
-          echo "Updated Config.kt with snapshot version: ${{ steps.version.outputs.snapshot_version }}"
+          echo "Gradle generated snapshot version: $SNAPSHOT_VERSION"
 
       - name: Decode GPG key
         run: |
