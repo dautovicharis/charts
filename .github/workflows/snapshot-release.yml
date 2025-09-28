@@ -1,7 +1,7 @@
 name: Snapshot Release
 on:
   push:
-    branches: ["main"]
+    branches: ["main","feature/ci-snapshot-release"]
     paths-ignore:
       - '**.md'
       - 'docs/**'
@@ -10,7 +10,7 @@ on:
       - '.github/workflows/create-js-demo..yml'
 
 permissions:
-  contents: read
+  contents: write
   issues: write
   pull-requests: write
 
@@ -41,24 +41,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Generate snapshot version
+      - name: Get snapshot version from Config.kt
         id: version
         run: |
-          # Read the current version from Config.kt
-          CURRENT_VERSION=$(grep 'const val chartsVersion' buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt | sed 's/.*"\(.*\)".*/\1/')
-          echo "Current version from Config.kt: $CURRENT_VERSION"
-          # Generate unique snapshot version by appending timestamp and commit SHA
-          TIMESTAMP=$(date -u +"%Y%m%d%H%M%S")
-          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          SNAPSHOT_VERSION="${CURRENT_VERSION}-${TIMESTAMP}-${SHORT_SHA}"
-          echo "snapshot_version=$SNAPSHOT_VERSION" >> $GITHUB_OUTPUT
-          echo "Generated snapshot version: $SNAPSHOT_VERSION"
-
-      - name: Update Config.kt with snapshot version
-        run: |
-          # Temporarily update the version in Config.kt for this build
-          sed -i.bak 's/const val chartsVersion = ".*"/const val chartsVersion = "${{ steps.version.outputs.snapshot_version }}"/' buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt
-          echo "Updated Config.kt with snapshot version: ${{ steps.version.outputs.snapshot_version }}"
+          # Read chartsVersion directly from buildSrc Config.kt to avoid Gradle output issues
+          set -euo pipefail
+          CONFIG_FILE="buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt"
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Config file not found: $CONFIG_FILE" >&2
+            exit 1
+          fi
+          SNAPSHOT_VERSION=$(grep -E 'const val chartsVersion\s*=\s*"' "$CONFIG_FILE" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
+          if [ -z "${SNAPSHOT_VERSION:-}" ]; then
+            echo "Failed to parse chartsVersion from $CONFIG_FILE" >&2
+            exit 1
+          fi
+          echo "snapshot_version=${SNAPSHOT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Config chartsVersion: ${SNAPSHOT_VERSION}"
 
       - name: Decode GPG key
         run: |
@@ -74,7 +73,7 @@ jobs:
           ORG_GRADLE_PROJECT_signing.secretKeyRingFile: ./secring.gpg
         run: |
           echo "Publishing snapshot version: ${{ steps.version.outputs.snapshot_version }}"
-          ./gradlew :charts:publishAllPublicationsToMavenCentralRepository --no-daemon --stacktrace
+          ./gradlew :charts:publish --no-daemon --stacktrace
 
       - name: Comment on commit
         uses: actions/github-script@v7

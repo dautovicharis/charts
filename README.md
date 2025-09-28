@@ -3,11 +3,11 @@
 
 
 [![Release](https://img.shields.io/maven-central/v/io.github.dautovicharis/charts.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/overview)
-[![Snapshot](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/dautovicharis/charts/)
+[![Snapshots](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) 
 [![Build Status](https://app.bitrise.io/app/23ce18a5-812b-463b-a463-ee85e65c726b/status.svg?token=X08KrAmKwbHjF0NvT05WdA&branch=main)](https://app.bitrise.io/app/23ce18a5-812b-463b-a463-ee85e65c726b)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dautovicharis_Charts&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dautovicharis_Charts)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dautovicharis_Charts&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dautovicharis_Charts)
-![](https://img.shields.io/badge/Jetpack_Compose-1.9.2-4285F4?logo=jetpackcompose)
+![](https://img.shields.io/badge/Jetpack_Compose-1.7.6-4285F4?logo=jetpackcompose)
 
 This is a simple chart library built with Jetpack Compose.
 
@@ -57,7 +57,7 @@ https://central.sonatype.com/search?q=io.github.dautovicharis.charts
 ```
 
 # Snapshots
-[![Snapshot](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/dautovicharis/charts/)
+[![Snapshots](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) ![](https://img.shields.io/badge/Jetpack_Compose-1.9.2-4285F4?logo=jetpackcompose)
 ```kotlin
     commonMain.dependencies {
         implementation("io.github.dautovicharis:charts:<snapshot-version>")
@@ -65,7 +65,8 @@ https://central.sonatype.com/search?q=io.github.dautovicharis.charts
 
     dependencyResolutionManagement {
         repositories {
-            maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
+            // Sonatype Central Portal Snapshots (replaces old s01.oss.sonatype.org)
+            maven("https://central.sonatype.com/repository/maven-snapshots/")
         }
     }
 ```

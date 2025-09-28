@@ -1,4 +1,4 @@
-import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -38,7 +38,7 @@ kotlin {
             api(compose.foundation)
             api(compose.material3)
             api(compose.ui)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
 
@@ -46,7 +46,7 @@ kotlin {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
         }
 
@@ -149,9 +149,6 @@ mavenPublishing {
             url.set("https://github.com/dautovicharis/Charts")
         }
     }
-
-    publishToMavenCentral(SonatypeHost.S01)
-    signAllPublications()
 }
 
 dependencies {
