@@ -29,7 +29,7 @@ implementation("io.github.dautovicharis:charts-iosx64:<version>")  // For iOS (x
 implementation("io.github.dautovicharis:charts-iosarm64:<version>") // For iOS (ARM64)
 ```
 
-### Snapshot Builds [![Snapshot](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/dautovicharis/charts/)
+### Snapshot Builds [![Snapshot](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml)
 Access the latest pre-release builds through the Sonatype snapshots repository. Snapshots contain the most recent features and fixes that haven't been officially released yet, allowing you to test upcoming functionality.
 ```kotlin
 commonMain.dependencies {
@@ -38,7 +38,8 @@ commonMain.dependencies {
 
 dependencyResolutionManagement {
     repositories {
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
+    // Sonatype Central Portal Snapshots (replaces old s01.oss.sonatype.org)
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
 ```
