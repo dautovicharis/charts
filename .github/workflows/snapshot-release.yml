@@ -41,13 +41,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Get snapshot version from Gradle
+      - name: Get snapshot version from Config.kt
         id: version
         run: |
-          # Use Gradle to get the automatically generated snapshot version
-          SNAPSHOT_VERSION=$(./gradlew :charts:printVersion -q)
-          echo "snapshot_version=$SNAPSHOT_VERSION" >> $GITHUB_OUTPUT
-          echo "Gradle generated snapshot version: $SNAPSHOT_VERSION"
+          # Read chartsVersion directly from buildSrc Config.kt to avoid Gradle output issues
+          set -euo pipefail
+          CONFIG_FILE="buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt"
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Config file not found: $CONFIG_FILE" >&2
+            exit 1
+          fi
+          SNAPSHOT_VERSION=$(grep -E 'const val chartsVersion\s*=\s*"' "$CONFIG_FILE" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
+          if [ -z "${SNAPSHOT_VERSION:-}" ]; then
+            echo "Failed to parse chartsVersion from $CONFIG_FILE" >&2
+            exit 1
+          fi
+          echo "snapshot_version=${SNAPSHOT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Config chartsVersion: ${SNAPSHOT_VERSION}"
 
       - name: Decode GPG key
         run: |

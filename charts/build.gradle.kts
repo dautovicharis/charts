@@ -114,23 +114,11 @@ tasks.register("dokkaHtml") {
     dependsOn("dokkaGenerate")
 }
 
-// Function to get the publish version (simplified - no hash)
-fun getPublishVersion(): String {
-    return Config.chartsVersion
-}
-
-// Task to print the publish version for CI/CD
-tasks.register("printVersion") {
-    doLast {
-        println(getPublishVersion())
-    }
-}
-
 mavenPublishing {
     coordinates(
         groupId = Config.groupId,
         artifactId = Config.artifactId,
-        version = getPublishVersion()
+        version = Config.chartsVersion
     )
 
     pom {
