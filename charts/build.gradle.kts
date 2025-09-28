@@ -1,4 +1,4 @@
-import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -38,7 +38,7 @@ kotlin {
             api(compose.foundation)
             api(compose.material3)
             api(compose.ui)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
 
@@ -46,7 +46,7 @@ kotlin {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
         }
 
@@ -114,11 +114,23 @@ tasks.register("dokkaHtml") {
     dependsOn("dokkaGenerate")
 }
 
+// Function to get the publish version (simplified - no hash)
+fun getPublishVersion(): String {
+    return Config.chartsVersion
+}
+
+// Task to print the publish version for CI/CD
+tasks.register("printVersion") {
+    doLast {
+        println(getPublishVersion())
+    }
+}
+
 mavenPublishing {
     coordinates(
         groupId = Config.groupId,
         artifactId = Config.artifactId,
-        version = Config.chartsVersion
+        version = getPublishVersion()
     )
 
     pom {
@@ -149,9 +161,6 @@ mavenPublishing {
             url.set("https://github.com/dautovicharis/Charts")
         }
     }
-
-    publishToMavenCentral(SonatypeHost.S01)
-    signAllPublications()
 }
 
 dependencies {

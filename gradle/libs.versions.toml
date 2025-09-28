@@ -3,7 +3,7 @@
 java = "17"
 
 # Android gradle plugin version
-agp = "8.13.0"
+agp = "8.12.0"
 
 androidx-navigation = "2.9.0"
 androidx-lifecycle = "2.9.4"
@@ -20,7 +20,7 @@ kotlinx-coroutines = "1.10.2"
 # Documentation: https://kotlin.github.io/dokka/
 dokka = "2.0.0"
 # https://github.com/vanniktech/gradle-maven-publish-plugin
-mavenPublish = "0.28.0"
+mavenPublish = "0.34.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
 buildConfig = "5.6.8"
 # https://sonarcloud.io
