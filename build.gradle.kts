@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.build.config) apply false
-    alias(libs.plugins.kover) apply true
     alias(libs.plugins.compose.compiler) apply false
 }
 
@@ -23,13 +22,11 @@ tasks.register("chartsTest") {
 
 tasks.register("chartsCheck") {
     group = "Charts"
-    description = "Build, tests and coverage report for the charts project"
+    description = "Build and tests for the charts project"
     dependsOn("build")
     dependsOn("chartsTest")
-    dependsOn("charts:koverXmlReport")
 
     tasks.findByName("chartsTest")?.mustRunAfter("build")
-    tasks.findByName("charts:koverXmlReport")?.mustRunAfter("chartsTest")
 }
 
 tasks.register("generateJsDemo") {
