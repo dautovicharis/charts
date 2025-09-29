@@ -4,7 +4,6 @@
 
 [![Release](https://img.shields.io/maven-central/v/io.github.dautovicharis/charts.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/overview)
 [![Snapshots](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) 
-[![Build Status](https://app.bitrise.io/app/23ce18a5-812b-463b-a463-ee85e65c726b/status.svg?token=X08KrAmKwbHjF0NvT05WdA&branch=main)](https://app.bitrise.io/app/23ce18a5-812b-463b-a463-ee85e65c726b)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dautovicharis_Charts&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dautovicharis_Charts)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dautovicharis_Charts&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dautovicharis_Charts)
 ![](https://img.shields.io/badge/Jetpack_Compose-1.7.6-4285F4?logo=jetpackcompose)

@@ -7,62 +7,68 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: create-docs-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-pr:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: 17
         distribution: 'zulu'
+        cache: gradle
 
     - name: Generate documentation
       run: ./gradlew dokkaHtml
 
     - name: Check for Changes
       id: check_changes
+      shell: bash
       run: |
-        git diff --exit-code || echo "Changes detected"
+        set -euo pipefail
         if [[ -n "$(git status --porcelain)" ]]; then
-          echo "changed=true" >> $GITHUB_ENV
+          echo "changed=true" >> "$GITHUB_OUTPUT"
         else
-          echo "changed=false" >> $GITHUB_ENV
+          echo "changed=false" >> "$GITHUB_OUTPUT"
         fi
-      continue-on-error: true 
 
     - name: Configure Git
-      if: env.changed == 'true'
+      if: ${{ steps.check_changes.outputs.changed == 'true' }}
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Create Commit
-      if: env.changed == 'true'
+      if: ${{ steps.check_changes.outputs.changed == 'true' }}
       run: |
         git add .
         git commit -m "Update docs"
 
     - name: Create Branch
-      if: env.changed == 'true'
+      if: ${{ steps.check_changes.outputs.changed == 'true' }}
+      id: create_branch
       run: |
         BRANCH_NAME="update/doc-$(date +%Y%m%d%H%M%S)"
         git checkout -b $BRANCH_NAME
         git push origin $BRANCH_NAME
-        echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV  # Store in environment variable
+        echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Pull Request
-      if: env.changed == 'true'
+      if: ${{ steps.check_changes.outputs.changed == 'true' }}
       uses: repo-sync/pull-request@v2
       with:
         destination_branch: main
         pr_title: "🤖 Update docs"
         pr_body: "This PR contains the result of running the ./gradlew dokkaHtml task."
-        source_branch: ${{ env.BRANCH_NAME }}
+        source_branch: ${{ steps.create_branch.outputs.branch_name }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
