@@ -23,8 +23,6 @@ dokka = "2.0.0"
 mavenPublish = "0.34.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
 buildConfig = "5.6.8"
-# https://sonarcloud.io
-sonarqube = "5.0.0.4638"
 # https://github.com/Kotlin/kotlinx-kover
 kover = "0.9.2"
 # https://insert-koin.io
@@ -52,7 +50,6 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 # https://developer.android.com/develop/ui/compose/compiler
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-multiplatform" }
