@@ -8,7 +8,6 @@ plugins {
     `maven-publish`
     signing
     alias(libs.plugins.mavenPublish)
-    alias(libs.plugins.kover)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -154,18 +153,4 @@ mavenPublishing {
 dependencies {
     dokkaHtmlPlugin(libs.dokka.versions)
     implementation(libs.dokka.doc)
-}
-
-kover {
-    reports {
-        filters {
-            excludes {
-                packages("io.github.dautovicharis.charts.preview")
-                annotatedBy(
-                    "androidx.compose.ui.tooling.preview.Preview"
-                )
-                androidGeneratedClasses()
-            }
-        }
-    }
 }

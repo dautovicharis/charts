@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.build.config)
-    alias(libs.plugins.kover)
     alias(libs.plugins.compose.compiler)
 }
 
