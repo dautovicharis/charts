@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Charts Demo</title>
-    <script type="module">
-        import { onWasmReady } from './skiko.mjs';
-        onWasmReady.then(() => {
-            import('./Charts.js');
-        });
-    </script>
 </head>
 <body>
 <div id="Charts"></div>
+<script type="module" src="Charts.js"></script>
 </body>
 </html>
