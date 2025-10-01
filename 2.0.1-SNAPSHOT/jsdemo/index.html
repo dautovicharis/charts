@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ComposeImageLoader</title>
-    <script src="skiko.js"></script>
+    <title>Charts Demo</title>
+    <script type="module">
+        import { onWasmReady } from './skiko.mjs';
+        onWasmReady.then(() => {
+            import('./Charts.js');
+        });
+    </script>
 </head>
 <body>
-<div>
-    <canvas id="ComposeTarget" width="800" height="600"></canvas>
-</div>
-<script src="Charts.js"></script>
+<div id="Charts"></div>
 </body>
 </html>
