@@ -80,12 +80,12 @@ jobs:
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+          SIGNING_IN_MEMORY_KEY: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
         shell: bash
         run: |
           set -euo pipefail
           missing=0
-          for v in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_PASSWORD SIGNING_SECRET_KEY_RING_FILE; do
+          for v in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_PASSWORD SIGNING_IN_MEMORY_KEY; do
             if [ -z "${!v:-}" ]; then
               echo "Missing secret: $v" >&2
               missing=1
@@ -97,20 +97,14 @@ jobs:
             echo "can_publish=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Decode GPG key
-        if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
-        run: |
-          echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 -d > secring.gpg
-          echo "GPG key file decoded successfully"
-
       - name: Publish snapshot to Maven Central
         if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signing.password: ${{ secrets.SIGNING_PASSWORD }}
-          ORG_GRADLE_PROJECT_signing.secretKeyRingFile: ./secring.gpg
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           echo "Publishing snapshot version: ${{ steps.version.outputs.snapshot_version }}"
           ./gradlew :charts:publish --no-daemon --stacktrace

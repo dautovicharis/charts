@@ -73,12 +73,12 @@ jobs:
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+          SIGNING_IN_MEMORY_KEY: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
         shell: bash
         run: |
           set -euo pipefail
           missing=0
-          for v in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_PASSWORD SIGNING_SECRET_KEY_RING_FILE; do
+          for v in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_PASSWORD SIGNING_IN_MEMORY_KEY; do
             if [ -z "${!v:-}" ]; then
               echo "Missing secret: $v" >&2
               missing=1
@@ -90,58 +90,17 @@ jobs:
             echo "can_publish=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Decode GPG key
-        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
-        run: |
-          echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 -d > secring.gpg
-          echo "GPG key file decoded successfully"
-
       - name: Publish to Maven Central
         if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signing.password: ${{ secrets.SIGNING_PASSWORD }}
-          ORG_GRADLE_PROJECT_signing.secretKeyRingFile: ./secring.gpg
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           echo "Publishing release version: ${{ steps.version.outputs.release_version }}"
           ./gradlew :charts:publish --no-daemon --no-build-cache --stacktrace
-
-      - name: Extract release notes
-        id: release_notes
-        run: |
-          # Extract release notes from docs/src/index.md
-          VERSION="${{ steps.version.outputs.release_version }}"
-          NOTES_FILE="docs/src/index.md"
-          
-          if [ -f "$NOTES_FILE" ]; then
-            # Try to extract release notes for this version
-            # This is a simple extraction - adjust the pattern based on your actual format
-            NOTES=$(awk "/## $VERSION/,/## [0-9]/" "$NOTES_FILE" | sed '1d;$d' || echo "")
-            
-            if [ -z "$NOTES" ]; then
-              NOTES="Release version $VERSION"
-            fi
-          else
-            NOTES="Release version $VERSION"
-          fi
-          
-          # Save to file to handle multiline content
-          echo "$NOTES" > release_notes.txt
-          echo "Release notes extracted"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.release_version }}
-          name: ${{ steps.version.outputs.release_version }}
-          body_path: release_notes.txt
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Git Tag
         run: |
@@ -158,7 +117,7 @@ jobs:
         with:
           script: |
             const version = '${{ steps.version.outputs.release_version }}';
-            const message = `🎉 **Release Published Successfully!**\n\nVersion: \`${version}\`\n\n✅ Published to Maven Central\n✅ GitHub Release created\n✅ Git tag created\n\nTo use this release:\n\`\`\`kotlin\nimplementation("io.github.dautovicharis:charts:${version}")\n\`\`\`\n\n📚 [Documentation](https://dautovicharis.github.io/charts/)\n📦 [Maven Central](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/${version})`;
+            const message = `🎉 **Release Published Successfully!**\n\nVersion: \`${version}\`\n\n✅ Published to Maven Central\n✅ Git tag created\n\nTo use this release:\n\`\`\`kotlin\nimplementation("io.github.dautovicharis:charts:${version}")\n\`\`\`\n\n📚 [Documentation](https://dautovicharis.github.io/charts/)\n📦 [Maven Central](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/${version})`;
 
             // Create a comment on the commit
             github.rest.repos.createCommitComment({
