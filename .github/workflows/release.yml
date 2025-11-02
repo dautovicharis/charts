@@ -96,16 +96,6 @@ jobs:
           echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 -d > secring.gpg
           echo "GPG key file decoded successfully"
 
-      - name: Build and Test
-        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
-        env:
-          ORG_GRADLE_PROJECT_signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signing.password: ${{ secrets.SIGNING_PASSWORD }}
-          ORG_GRADLE_PROJECT_signing.secretKeyRingFile: ./secring.gpg
-        run: |
-          echo "Building release version: ${{ steps.version.outputs.release_version }}"
-          ./gradlew chartsCheck -x jsBrowserTest -x testDebugUnitTest -x testReleaseUnitTest --no-daemon --no-build-cache --stacktrace
-
       - name: Publish to Maven Central
         if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
         env:
