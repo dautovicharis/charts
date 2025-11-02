@@ -4,7 +4,7 @@
 
 [![Release](https://img.shields.io/maven-central/v/io.github.dautovicharis/charts.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/overview)
 [![Snapshots](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) 
-![](https://img.shields.io/badge/Jetpack_Compose-1.7.6-4285F4?logo=jetpackcompose)
+![](https://img.shields.io/badge/Jetpack_Compose-1.9.2-4285F4?logo=jetpackcompose)
 
 This is a simple chart library built with Jetpack Compose.
 
