@@ -57,7 +57,7 @@ nav:
   - JS Demo: jsdemo/index.html
   - API:
       - 2.0.0: ../2.0.0/api/index.html
-      - 2.0.1-SNAPSHOT: ../2.0.1-SNAPSHOT/api/index.html
+      - 2.0.1: ../2.0.1/api/index.html
 
 # Markdown extensions
 markdown_extensions:

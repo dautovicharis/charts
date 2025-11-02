@@ -22,7 +22,7 @@ jobs:
   snapshot-release:
     name: Publish Snapshot Release
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'dautovicharis' && !contains(github.event.head_commit.message, '[skip-snapshot]') }}
+    if: ${{ github.repository_owner == 'dautovicharis' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,10 +60,20 @@ jobs:
             echo "Failed to parse chartsVersion from $CONFIG_FILE" >&2
             exit 1
           fi
+
+          # Check if version contains SNAPSHOT
+          if [[ "$SNAPSHOT_VERSION" != *"-SNAPSHOT"* ]]; then
+            echo "⏭️  Skipping snapshot release - version is not a SNAPSHOT: ${SNAPSHOT_VERSION}"
+            echo "is_snapshot=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_snapshot=true" >> "$GITHUB_OUTPUT"
+          fi
+
           echo "snapshot_version=${SNAPSHOT_VERSION}" >> "$GITHUB_OUTPUT"
           echo "Config chartsVersion: ${SNAPSHOT_VERSION}"
 
       - name: Check required secrets
+        if: ${{ steps.version.outputs.is_snapshot == 'true' }}
         id: secrets_check
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
@@ -88,13 +98,13 @@ jobs:
           fi
 
       - name: Decode GPG key
-        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
         run: |
           echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 -d > secring.gpg
           echo "GPG key file decoded successfully"
 
       - name: Publish snapshot to Maven Central
-        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
@@ -106,6 +116,7 @@ jobs:
           ./gradlew :charts:publish --no-daemon --stacktrace
 
       - name: Comment on commit
+        if: ${{ steps.version.outputs.is_snapshot == 'true' }}
         uses: actions/github-script@v7
         with:
           script: |

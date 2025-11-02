@@ -1,0 +1,175 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: release-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'dautovicharis' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Get version from Config.kt
+        id: version
+        run: |
+          set -euo pipefail
+          CONFIG_FILE="buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt"
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Config file not found: $CONFIG_FILE" >&2
+            exit 1
+          fi
+          VERSION=$(grep -E 'const val chartsVersion\s*=\s*"' "$CONFIG_FILE" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
+          if [ -z "${VERSION:-}" ]; then
+            echo "Failed to parse chartsVersion from $CONFIG_FILE" >&2
+            exit 1
+          fi
+          echo "release_version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "📦 Release version: ${VERSION}"
+
+      - name: Verify version is not a SNAPSHOT
+        run: |
+          VERSION="${{ steps.version.outputs.release_version }}"
+          if [[ "$VERSION" == *"-SNAPSHOT"* ]]; then
+            echo "❌ ERROR: Cannot release a SNAPSHOT version: $VERSION" >&2
+            echo "Please update Config.kt to a stable version (e.g., remove -SNAPSHOT suffix)" >&2
+            exit 1
+          fi
+          echo "✅ Version verified: $VERSION (not a SNAPSHOT)"
+
+      - name: Check required secrets
+        id: secrets_check
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for v in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_PASSWORD SIGNING_SECRET_KEY_RING_FILE; do
+            if [ -z "${!v:-}" ]; then
+              echo "Missing secret: $v" >&2
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 0 ]; then
+            echo "can_publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decode GPG key
+        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        run: |
+          echo "${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}" | base64 -d > secring.gpg
+          echo "GPG key file decoded successfully"
+
+      - name: Build and Test
+        run: |
+          echo "Building release version: ${{ steps.version.outputs.release_version }}"
+          ./gradlew chartsCheck -x jsBrowserTest -x testDebugUnitTest -x testReleaseUnitTest --no-daemon --no-build-cache --stacktrace
+
+      - name: Publish to Maven Central
+        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signing.keyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signing.password: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signing.secretKeyRingFile: ./secring.gpg
+        run: |
+          echo "Publishing release version: ${{ steps.version.outputs.release_version }}"
+          ./gradlew :charts:publish --no-daemon --no-build-cache --stacktrace
+
+      - name: Extract release notes
+        id: release_notes
+        run: |
+          # Extract release notes from docs/src/index.md
+          VERSION="${{ steps.version.outputs.release_version }}"
+          NOTES_FILE="docs/src/index.md"
+          
+          if [ -f "$NOTES_FILE" ]; then
+            # Try to extract release notes for this version
+            # This is a simple extraction - adjust the pattern based on your actual format
+            NOTES=$(awk "/## $VERSION/,/## [0-9]/" "$NOTES_FILE" | sed '1d;$d' || echo "")
+            
+            if [ -z "$NOTES" ]; then
+              NOTES="Release version $VERSION"
+            fi
+          else
+            NOTES="Release version $VERSION"
+          fi
+          
+          # Save to file to handle multiline content
+          echo "$NOTES" > release_notes.txt
+          echo "Release notes extracted"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.release_version }}
+          name: ${{ steps.version.outputs.release_version }}
+          body_path: release_notes.txt
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Git Tag
+        run: |
+          VERSION="${{ steps.version.outputs.release_version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${VERSION}" -m "Release version ${VERSION}"
+          git push origin "${VERSION}"
+          echo "✅ Git tag ${VERSION} created and pushed"
+
+      - name: Comment on success
+        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ steps.version.outputs.release_version }}';
+            const message = `🎉 **Release Published Successfully!**\n\nVersion: \`${version}\`\n\n✅ Published to Maven Central\n✅ GitHub Release created\n✅ Git tag created\n\nTo use this release:\n\`\`\`kotlin\nimplementation("io.github.dautovicharis:charts:${version}")\n\`\`\`\n\n📚 [Documentation](https://dautovicharis.github.io/charts/)\n📦 [Maven Central](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/${version})`;
+
+            // Create a comment on the commit
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: message
+            });
+
