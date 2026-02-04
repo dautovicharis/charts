@@ -26,7 +26,12 @@ class LineChartHelpersTest {
 
         testCases.forEach { entry: Map.Entry<Triple<Float, List<Float>, Size>, Offset> ->
             // Act
-            val nearestPoint = findNearestPoint(entry.key.first, entry.key.second, entry.key.third)
+            val nearestPoint = findNearestPoint(
+                touchX = entry.key.first,
+                scaledValues = entry.key.second,
+                size = entry.key.third,
+                bezier = false
+            )
 
             // Assert
             assertTrue { nearestPoint == entry.value }
