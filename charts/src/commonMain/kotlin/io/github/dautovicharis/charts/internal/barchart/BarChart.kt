@@ -15,6 +15,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.util.lerp
 import io.github.dautovicharis.charts.internal.ANIMATION_TARGET
@@ -52,6 +53,7 @@ internal fun BarChart(
     val maxValue = remember { chartData.points.max() }
     val minValue = remember { chartData.points.min() }
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
+    val spacingPx = with(LocalDensity.current) { style.space.toPx() }
 
     Canvas(modifier = style.modifier
         .testTag(TestTags.BAR_CHART)
@@ -62,7 +64,8 @@ internal fun BarChart(
                     getSelectedIndex(
                         position = offset,
                         dataSize = chartData.points.count(),
-                        canvasSize = size
+                        canvasSize = size,
+                        spacingPx = spacingPx
                     )
                 onValueChanged(selectedIndex)
             },
@@ -71,7 +74,8 @@ internal fun BarChart(
                     getSelectedIndex(
                         position = change.position,
                         dataSize = chartData.points.count(),
-                        canvasSize = size
+                        canvasSize = size,
+                        spacingPx = spacingPx
                     )
                 onValueChanged(selectedIndex)
                 change.consume()
