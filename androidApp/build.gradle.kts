@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.composeScreenshot)
 }
 
 android {
@@ -43,6 +44,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
+
+    testOptions {
+        screenshotTests {
+            imageDifferenceThreshold = 0.00025f
+        }
+    }
 }
 
 dependencies {
@@ -51,4 +60,9 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.koin.android)
     debugImplementation(libs.compose.ui.tooling)
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.compose.ui.tooling.preview)
+    screenshotTestImplementation(libs.compose.ui.tooling)
+    screenshotTestImplementation(project(":charts"))
+    screenshotTestImplementation(project(":app"))
 }
