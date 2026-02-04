@@ -11,14 +11,8 @@ plugins {
 tasks.register("chartsTest") {
     group = "Charts"
     description = "Relevant tests for the charts project"
-    dependsOn("charts:iosX64Test")
-    dependsOn("charts:connectedAndroidTest")
-    // Temporarily exclude jsTest due to Skia/Compose UI compatibility issues in browser environment
-    // dependsOn("charts:jsTest")
     dependsOn("charts:jvmTest")
-
-    tasks.findByName("charts:connectedAndroidTest")?.mustRunAfter("charts:iosX64Test")
-    tasks.findByName("charts:jvmTest")?.mustRunAfter("charts:connectedAndroidTest")
+    dependsOn(":androidApp:validateDebugScreenshotTest")
 }
 
 tasks.register("chartsCheck") {

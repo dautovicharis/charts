@@ -15,6 +15,8 @@ compose = "1.10.2"
 compose-plugin = "1.10.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.multiplatform
 kotlin-multiplatform = "2.3.0"
+# https://developer.android.com/studio/preview/compose-screenshot-testing
+compose-screenshot = "0.0.1-alpha13"
 # Coroutines version
 kotlinx-coroutines = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
@@ -43,6 +45,7 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-bom
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-bom" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
+screenshot-validation-api = { module = "com.android.tools.screenshot:screenshot-validation-api", version.ref = "compose-screenshot" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -55,3 +58,4 @@ mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublis
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 # https://developer.android.com/develop/ui/compose/compiler
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-multiplatform" }
+composeScreenshot = { id = "com.android.compose.screenshot", version.ref = "compose-screenshot" }
