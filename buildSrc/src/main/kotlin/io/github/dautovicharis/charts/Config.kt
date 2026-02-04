@@ -9,6 +9,7 @@ object Config {
 
     // Demo app
     const val demoNamespace = "$groupId.$artifactId.app"
+    const val demoLibraryNamespace = "$groupId.$artifactId.app.library"
     const val demoVersionName = "1.0.0"
     const val demoVersionCode = 4
 

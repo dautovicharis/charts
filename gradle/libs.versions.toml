@@ -3,26 +3,27 @@
 java = "17"
 
 # Android gradle plugin version
-agp = "8.12.0"
+agp = "8.13.2"
 
-androidx-navigation = "2.9.0"
-androidx-lifecycle = "2.9.4"
+androidx-navigation = "2.9.1"
+androidx-lifecycle = "2.9.6"
+androidx-activity = "1.12.3"
 
 # Kotlin compatibility
 # https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html#kotlin-compatibility
-compose = "1.9.2"
-compose-plugin = "1.9.0"
+compose = "1.10.2"
+compose-plugin = "1.10.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.multiplatform
-kotlin-multiplatform = "2.2.20"
+kotlin-multiplatform = "2.3.0"
 # Coroutines version
 kotlinx-coroutines = "1.10.2"
 
 # Documentation: https://kotlin.github.io/dokka/
-dokka = "2.0.0"
+dokka = "2.1.0"
 # https://github.com/vanniktech/gradle-maven-publish-plugin
-mavenPublish = "0.34.0"
+mavenPublish = "0.36.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
-buildConfig = "5.6.8"
+buildConfig = "6.0.7"
 # https://insert-koin.io
 # https://mvnrepository.com/artifact/io.insert-koin/koin-bom
 koin-bom = "4.1.1"
@@ -30,6 +31,7 @@ koin-bom = "4.1.1"
 [libraries]
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
@@ -45,6 +47,7 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-multiplatform" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-multiplatform" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }

@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 }
 
 include(":app")
+include(":androidApp")
 include(":charts")
 include(":docs")
  

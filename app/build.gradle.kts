@@ -1,15 +1,18 @@
+@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.build.config)
     alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
+    jvmToolchain(libs.versions.java.get().toInt())
     androidTarget()
     listOf(
         iosX64(),
@@ -33,12 +36,6 @@ kotlin {
     jvm()
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.compose.ui.tooling)
-            implementation(libs.koin.android)
-        }
-
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -65,38 +62,17 @@ kotlin {
 }
 
 android {
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    namespace = Config.demoLibraryNamespace
+    compileSdk = Config.compileSdk
 
     defaultConfig {
-        applicationId = Config.demoNamespace
-        namespace = Config.demoNamespace
-        compileSdk = Config.compileSdk
         minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        versionCode = Config.demoVersionCode
-        versionName = Config.demoVersionName
     }
 
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
-    }
-
-    buildTypes {
-        getByName("debug") {
-            isMinifyEnabled = false
-        }
-        getByName("release") {
-            isMinifyEnabled = true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlin {
@@ -113,11 +89,6 @@ android {
     }
 }
 
-// Required for Web
-compose.experimental {
-    web.application {}
-}
-
 // Required for Desktop
 compose.desktop {
     application {
@@ -132,7 +103,7 @@ compose.desktop {
 
 // Shared BuildConfig
 buildConfig {
-    packageName(Config.demoNamespace)
+    packageName(Config.demoLibraryNamespace)
     buildConfigField("CHARTS_VERSION", Config.chartsVersion)
     useKotlinOutput()
 }

@@ -55,7 +55,7 @@ import chartsproject.app.generated.resources.ic_check
 import chartsproject.app.generated.resources.ic_dark_mode
 import chartsproject.app.generated.resources.ic_github
 import chartsproject.app.generated.resources.themes_content_description
-import io.github.dautovicharis.charts.app.BuildConfig
+import io.github.dautovicharis.charts.app.library.BuildConfig
 import io.github.dautovicharis.charts.app.ChartScreen
 import io.github.dautovicharis.charts.app.ChartSubmenuItem
 import io.github.dautovicharis.charts.app.Navigation
