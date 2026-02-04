@@ -3,7 +3,7 @@
 
 
 [![Release](https://img.shields.io/maven-central/v/io.github.dautovicharis/charts.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/overview)
-[![Snapshots](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) 
+[![Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fgithub%2Fdautovicharis%2Fcharts%2Fmaven-metadata.xml&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) 
 ![](https://img.shields.io/badge/Jetpack_Compose-1.9.2-4285F4?logo=jetpackcompose)
 
 This is a simple chart library built with Jetpack Compose.
@@ -54,7 +54,7 @@ https://central.sonatype.com/search?q=io.github.dautovicharis.charts
 ```
 
 # Snapshots
-[![Snapshots](https://img.shields.io/nexus/s/io.github.dautovicharis/charts?server=https%3A%2F%2Fs01.oss.sonatype.org&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) ![](https://img.shields.io/badge/Jetpack_Compose-1.9.2-4285F4?logo=jetpackcompose)
+[![Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fgithub%2Fdautovicharis%2Fcharts%2Fmaven-metadata.xml&label=Snapshots&color=4285F4)](https://central.sonatype.com/repository/maven-snapshots/io/github/dautovicharis/charts/maven-metadata.xml) ![](https://img.shields.io/badge/Jetpack_Compose-1.9.2-4285F4?logo=jetpackcompose)
 ```kotlin
     commonMain.dependencies {
         implementation("io.github.dautovicharis:charts:<snapshot-version>")
