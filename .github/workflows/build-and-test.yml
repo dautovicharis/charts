@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -121,73 +122,43 @@ jobs:
                   g[k] += totals[k]
               g["failures_list"].extend(failures)
 
+          comment_path = "test-summary.md"
+          with open(comment_path, "w", encoding="utf-8") as w:
+              w.write("## Test Summary\\n\\n")
+
+              w.write("### JUnit Tests\\n")
+              w.write(f"- XML files discovered: {len(xml_files)} (pattern `{junit_pattern}`)\\n\\n")
+              if grouped:
+                  w.write("| Task | Total | Failed | Errors | Skipped |\\n")
+                  w.write("| --- | ---: | ---: | ---: | ---: |\\n")
+                  for key in sorted(grouped.keys()):
+                      g = grouped[key]
+                      w.write(f"| `{key}` | {g['tests']} | {g['failures']} | {g['errors']} | {g['skipped']} |\\n")
+                  w.write("\\n")
+              else:
+                  w.write("- No JUnit XML found.\\n\\n")
+
+              screenshot_report = Path("androidApp/build/reports/screenshotTest/preview/debug/index.html")
+              w.write("### Screenshot Tests (`:androidApp:validateDebugScreenshotTest`)\\n")
+              if screenshot_report.exists():
+                  w.write("- Status: report generated\\n\\n")
+              else:
+                  w.write("- Status: no report generated\\n\\n")
+
           summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
           if summary_path:
-              with open(summary_path, "a", encoding="utf-8") as w:
-                  w.write("## Test Summary\\n\\n")
-
-                  w.write("### JUnit Tests\\n")
-                  w.write(f"- XML files discovered: {len(xml_files)} (pattern `{junit_pattern}`)\\n\\n")
-                  if grouped:
-                      w.write("| Task | Total | Passed | Failed | Errors | Skipped |\\n")
-                      w.write("| --- | ---: | ---: | ---: | ---: | ---: |\\n")
-                      for key in sorted(grouped.keys()):
-                          g = grouped[key]
-                          passed = g["tests"] - g["failures"] - g["errors"] - g["skipped"]
-                          w.write(f"| `{key}` | {g['tests']} | {passed} | {g['failures']} | {g['errors']} | {g['skipped']} |\\n")
-                      w.write("\\n")
-
-                      # Failures (best effort)
-                      all_failures = []
-                      for key in sorted(grouped.keys()):
-                          for f in grouped[key]["failures_list"]:
-                              all_failures.append((key, f))
-                      if all_failures:
-                          w.write("Failing tests (first 20):\\n")
-                          for key, name in all_failures[:20]:
-                              w.write(f"- `{key}`: `{name}`\\n")
-                          w.write("\\n")
-                  else:
-                      w.write("- No JUnit XML found.\\n\\n")
-
-                  screenshot_report = Path("androidApp/build/reports/screenshotTest/preview/debug/index.html")
-                  w.write("### Screenshot Tests (`:androidApp:validateDebugScreenshotTest`)\\n")
-                  if screenshot_report.exists():
-                      w.write(f"- Report: `{screenshot_report}`\\n")
-                  else:
-                      w.write(f"- No report found at `{screenshot_report}`\\n")
-
-                  diffs_dir = Path("androidApp/build/outputs/screenshotTest-results/preview/debug/diffs")
-                  diff_files = []
-                  if diffs_dir.exists():
-                      diff_files = [p for p in diffs_dir.rglob("*") if p.is_file()]
-                  w.write(f"- Diff images: {len(diff_files)}\\n\\n")
-
-                  w.write("Artifacts uploaded (see workflow run artifacts):\\n")
-                  w.write("- `jvm-test-report`\\n")
-                  if screenshot_report.exists() or diffs_dir.exists():
-                      w.write("- `screenshot-test-report`\\n")
+              with open(comment_path, "r", encoding="utf-8") as src, open(summary_path, "a", encoding="utf-8") as dst:
+                  dst.write(src.read())
           PY
 
-      - name: Upload JVM Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Post PR Comment
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
         with:
-          name: jvm-test-report
-          path: |
-            charts/build/reports/tests/jvmTest/
-            charts/build/test-results/jvmTest/
-          if-no-files-found: warn
-
-      - name: Upload Screenshot Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshot-test-report
-          path: |
-            androidApp/build/reports/screenshotTest/preview/debug/
-            androidApp/build/outputs/screenshotTest-results/preview/debug/
-          if-no-files-found: warn
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: test-summary.md
+          edit-mode: replace
+          comment-identifier: test-summary
 
       - name: Fail If Gradle Failed
         if: steps.gradle.outcome == 'failure'
