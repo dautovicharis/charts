@@ -17,7 +17,7 @@ Use this file as the **single source of truth** for an agent to ship the current
 - **Branch name**: `<type>/<short-kebab>` (examples: `feat/add-template-gallery`, `fix/pdf-export-crash`)
 - **Commit message**: Conventional Commits (`type(scope): subject`)
 - **PR title**: same as commit header
-- **Remote**: `origin`
+- **Remote**: Use `upstream` if it exists; otherwise `origin`
 - **Base branch**: `main`
 
 ## Workflow (simple)
