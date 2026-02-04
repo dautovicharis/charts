@@ -72,7 +72,7 @@ internal fun validateBarData(data: ChartData): List<String> {
 
     if (pointsSize < MIN_REQUIRED_BAR) {
         val validationError =
-            ValidationErrors.RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_PIE)
+            ValidationErrors.RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_BAR)
         validationErrors.add(validationError)
         return validationErrors
     }

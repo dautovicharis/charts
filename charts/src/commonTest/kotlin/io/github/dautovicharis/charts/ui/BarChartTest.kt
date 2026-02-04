@@ -10,7 +10,7 @@ import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.internal.common.model.ChartDataType
 import io.github.dautovicharis.charts.internal.TestTags
-import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_LINE
+import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_BAR
 import io.github.dautovicharis.charts.internal.ValidationErrors.RULE_DATA_POINTS_LESS_THAN_MIN
 import io.github.dautovicharis.charts.internal.format
 import io.github.dautovicharis.charts.mock.MockTest.TITLE
@@ -43,7 +43,7 @@ class BarChartTest {
             items = ChartDataType.FloatData(listOf(1f)),
             title = TITLE
         )
-        val expectedError = RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_LINE)
+        val expectedError = RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_BAR)
 
         setContent {
             BarChart(dataSet)
