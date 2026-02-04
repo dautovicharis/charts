@@ -64,13 +64,10 @@ class PieChartTest {
             val sliceMiddlePosition =
                 getCoordinatesForSlice(index = index, size = size, slices = slices)
             onNodeWithTag(TestTags.PIE_CHART).performTouchInput {
-                down(Offset(0f, 0f))
-                moveTo(sliceMiddlePosition)
-            }
-            onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals(value).isDisplayed()
-            onNodeWithTag(TestTags.PIE_CHART).performTouchInput {
+                down(sliceMiddlePosition)
                 up()
             }
+            onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals(value).isDisplayed()
         }
     }
 
@@ -139,13 +136,10 @@ class PieChartTest {
             val sliceMiddlePosition =
                 getCoordinatesForSlice(index = index, size = size, slices = slices)
             onNodeWithTag(TestTags.PIE_CHART).performTouchInput {
-                down(Offset(0f, 0f))
-                moveTo(sliceMiddlePosition)
-            }
-            onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals(value).isDisplayed()
-            onNodeWithTag(TestTags.PIE_CHART).performTouchInput {
+                down(sliceMiddlePosition)
                 up()
             }
+            onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals(value).isDisplayed()
         }
     }
 }

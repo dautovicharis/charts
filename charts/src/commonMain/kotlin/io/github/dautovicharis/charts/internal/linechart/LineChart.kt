@@ -2,7 +2,7 @@ package io.github.dautovicharis.charts.internal.linechart
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
@@ -53,15 +53,19 @@ internal fun LineChart(
             show = true
         }
         .pointerInput(Unit) {
-            detectDragGestures(
-                onDragStart = {
+            detectHorizontalDragGestures(
+                onDragStart = { offset ->
                     dragging.value = true
+                    touchX.floatValue = offset.x
                 },
-                onDrag = { change, _ ->
+                onHorizontalDrag = { change, _ ->
                     touchX.floatValue = change.position.x
                     change.consume()
                 },
                 onDragEnd = {
+                    dragging.value = false
+                },
+                onDragCancel = {
                     dragging.value = false
                 }
             )

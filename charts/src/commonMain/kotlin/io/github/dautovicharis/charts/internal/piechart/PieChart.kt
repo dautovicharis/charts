@@ -2,7 +2,8 @@ package io.github.dautovicharis.charts.internal.piechart
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,20 +72,49 @@ internal fun PieChart(
         .testTag(TestTags.PIE_CHART)
         .onGloballyPositioned { show = true }
         .pointerInput(Unit) {
-            detectDragGestures(onDragEnd = {
-                selectedIndex = NO_SELECTION
-                onSliceTouched(selectedIndex)
-            }) { change, _ ->
+            detectTapGestures { offset ->
                 selectedIndex =
                     getSelectedIndex(
-                        pointX = change.position.x,
-                        pointY = change.position.y,
+                        pointX = offset.x,
+                        pointY = offset.y,
                         size = size,
                         slices = slices
                     )
                 onSliceTouched(selectedIndex)
-                change.consume()
             }
+        }
+        .pointerInput(Unit) {
+            detectDragGesturesAfterLongPress(
+                onDragStart = { offset ->
+                    selectedIndex =
+                        getSelectedIndex(
+                            pointX = offset.x,
+                            pointY = offset.y,
+                            size = size,
+                            slices = slices
+                        )
+                    onSliceTouched(selectedIndex)
+                },
+                onDrag = { change, _ ->
+                    selectedIndex =
+                        getSelectedIndex(
+                            pointX = change.position.x,
+                            pointY = change.position.y,
+                            size = size,
+                            slices = slices
+                        )
+                    onSliceTouched(selectedIndex)
+                    change.consume()
+                },
+                onDragEnd = {
+                    selectedIndex = NO_SELECTION
+                    onSliceTouched(selectedIndex)
+                },
+                onDragCancel = {
+                    selectedIndex = NO_SELECTION
+                    onSliceTouched(selectedIndex)
+                }
+            )
         }
         .drawWithCache {
             onDrawBehind {

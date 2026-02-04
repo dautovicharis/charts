@@ -3,7 +3,7 @@ package io.github.dautovicharis.charts.internal.barstackedchart
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,8 +54,17 @@ internal fun StackedBarChart(
         modifier = style.modifier
             .testTag(TestTags.STACKED_BAR_CHART)
             .pointerInput(Unit) {
-            detectDragGestures(
-                onDrag = { change, _ ->
+            detectHorizontalDragGestures(
+                onDragStart = { offset ->
+                    selectedIndex =
+                        getSelectedIndex(
+                            position = offset,
+                            dataSize = data.items.count(),
+                            canvasSize = size
+                        )
+                    onValueChanged(selectedIndex)
+                },
+                onHorizontalDrag = { change, _ ->
                     selectedIndex =
                         getSelectedIndex(
                             position = change.position,
@@ -63,8 +72,13 @@ internal fun StackedBarChart(
                             canvasSize = size
                         )
                     onValueChanged(selectedIndex)
+                    change.consume()
                 },
                 onDragEnd = {
+                    selectedIndex = NO_SELECTION
+                    onValueChanged(NO_SELECTION)
+                },
+                onDragCancel = {
                     selectedIndex = NO_SELECTION
                     onValueChanged(NO_SELECTION)
                 }
