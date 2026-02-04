@@ -39,6 +39,7 @@ class MainViewModel : ViewModel() {
                 ChartScreen.MultiLineChartScreen,
                 ChartScreen.BarChartScreen,
                 ChartScreen.StackedBarChartScreen,
+                ChartScreen.RadarChartScreen,
             )
         )
     )

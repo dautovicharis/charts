@@ -3,12 +3,14 @@ package io.github.dautovicharis.charts.internal
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_BAR
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_LINE
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_PIE
+import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_RADAR
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_STACKED_BAR
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.style.LineChartStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
+import io.github.dautovicharis.charts.style.RadarChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
 internal object ValidationErrors {
@@ -27,6 +29,7 @@ internal object ValidationErrors {
     const val MIN_REQUIRED_LINE: Int = 2
     const val MIN_REQUIRED_STACKED_BAR: Int = 1
     const val MIN_REQUIRED_BAR: Int = 2
+    const val MIN_REQUIRED_RADAR: Int = 3
 }
 
 internal fun String.format(vararg args: Any?): String {
@@ -49,6 +52,24 @@ internal fun validateLineData(
         data = data,
         pointsSize = firstPointsSize,
         minRequiredPointsSize = MIN_REQUIRED_LINE,
+        colorsSize = colorsSize,
+        expectedColorsSize = expectedColorsSize
+    )
+}
+
+internal fun validateRadarData(
+    data: MultiChartData,
+    style: RadarChartStyle
+): List<String> {
+    val firstPointsSize = data.items.first().item.points.size
+
+    val colorsSize = style.lineColors.size
+    val expectedColorsSize = data.items.size
+
+    return validateChartData(
+        data = data,
+        pointsSize = firstPointsSize,
+        minRequiredPointsSize = MIN_REQUIRED_RADAR,
         colorsSize = colorsSize,
         expectedColorsSize = expectedColorsSize
     )

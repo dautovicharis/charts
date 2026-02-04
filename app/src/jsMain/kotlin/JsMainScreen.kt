@@ -28,6 +28,8 @@ import io.github.dautovicharis.charts.app.demo.multiline.MultiLineBasicDemo
 import io.github.dautovicharis.charts.app.demo.multiline.MultiLineCustomDemo
 import io.github.dautovicharis.charts.app.demo.pie.PieChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.pie.PieChartCustomDemo
+import io.github.dautovicharis.charts.app.demo.radar.RadarChartBasicDemo
+import io.github.dautovicharis.charts.app.demo.radar.RadarChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarBasicDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarCustomDemo
 import io.github.dautovicharis.charts.app.ui.theme.AppTheme
@@ -121,6 +123,14 @@ internal fun JsMainScreen(viewModel: MainViewModel = koinViewModel()) {
 
                         ChartSubmenuItem.StackedBarChartCustom -> {
                             StackedBarCustomDemo()
+                        }
+
+                        ChartSubmenuItem.RadarChartBasic -> {
+                            RadarChartBasicDemo()
+                        }
+
+                        ChartSubmenuItem.RadarChartCustom -> {
+                            RadarChartCustomDemo()
                         }
                     }
                 }

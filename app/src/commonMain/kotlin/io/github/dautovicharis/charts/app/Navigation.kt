@@ -20,10 +20,12 @@ import chartsproject.app.generated.resources.ic_bar_chart
 import chartsproject.app.generated.resources.ic_line_chart
 import chartsproject.app.generated.resources.ic_multi_line_chart
 import chartsproject.app.generated.resources.ic_pie_chart
+import chartsproject.app.generated.resources.ic_radar_chart
 import chartsproject.app.generated.resources.ic_stacked_bar_chart
 import chartsproject.app.generated.resources.line_chart
 import chartsproject.app.generated.resources.multi_line_chart
 import chartsproject.app.generated.resources.pie_chart
+import chartsproject.app.generated.resources.radar_chart
 import io.github.dautovicharis.charts.app.demo.bar.BarChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.bar.BarChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.line.LineChartBasicDemo
@@ -32,6 +34,8 @@ import io.github.dautovicharis.charts.app.demo.multiline.MultiLineBasicDemo
 import io.github.dautovicharis.charts.app.demo.multiline.MultiLineCustomDemo
 import io.github.dautovicharis.charts.app.demo.pie.PieChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.pie.PieChartCustomDemo
+import io.github.dautovicharis.charts.app.demo.radar.RadarChartBasicDemo
+import io.github.dautovicharis.charts.app.demo.radar.RadarChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarBasicDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarCustomDemo
 import io.github.dautovicharis.charts.app.ui.theme.Theme
@@ -107,6 +111,18 @@ sealed class ChartSubmenuItem(
             title = Res.string.chart_custom
         )
 
+    // Radar Chart
+    data object RadarChartBasic :
+        ChartSubmenuItem(
+            route = "radarChartBasic",
+            title = Res.string.chart_basic
+        )
+
+    data object RadarChartCustom :
+        ChartSubmenuItem(
+            route = "radarChartCustom",
+            title = Res.string.chart_custom
+        )
 }
 
 sealed class ChartScreen(
@@ -165,6 +181,16 @@ sealed class ChartScreen(
             submenus = listOf(
                 ChartSubmenuItem.StackedBarChartBasic,
                 ChartSubmenuItem.StackedBarChartCustom
+            )
+        )
+
+    data object RadarChartScreen :
+        ChartScreen(
+            icon = Res.drawable.ic_radar_chart,
+            title = Res.string.radar_chart,
+            submenus = listOf(
+                ChartSubmenuItem.RadarChartBasic,
+                ChartSubmenuItem.RadarChartCustom
             )
         )
 }
@@ -234,6 +260,14 @@ fun Navigation(
 
         composable(ChartSubmenuItem.StackedBarChartCustom.route) {
             StackedBarCustomDemo()
+        }
+
+        composable(ChartSubmenuItem.RadarChartBasic.route) {
+            RadarChartBasicDemo()
+        }
+
+        composable(ChartSubmenuItem.RadarChartCustom.route) {
+            RadarChartCustomDemo()
         }
     }
 }

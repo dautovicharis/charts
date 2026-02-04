@@ -25,4 +25,5 @@ internal object TestTags {
     const val BAR_CHART = "BarChart"
     const val STACKED_BAR_CHART = "StackedBarChart"
     const val LINE_CHART = "LineChart"
+    const val RADAR_CHART = "RadarChart"
 }

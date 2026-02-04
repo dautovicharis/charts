@@ -43,6 +43,7 @@ kotlin {
             api(compose.foundation)
             api(compose.material3)
             api(compose.ui)
+            implementation(compose.preview)
             implementation(compose.components.resources)
             implementation(libs.kotlinx.collections.immutable)
         }
