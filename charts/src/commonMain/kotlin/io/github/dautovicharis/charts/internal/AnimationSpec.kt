@@ -1,5 +1,6 @@
 package io.github.dautovicharis.charts.internal
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 
@@ -17,6 +18,12 @@ internal object AnimationSpec {
         durationMillis = ANIMATION_DURATION_LINE,
         delay = 0,
         easing = LinearEasing
+    )
+
+    fun radarChart() = TweenSpec<Float>(
+        durationMillis = ANIMATION_DURATION_LINE + 200,
+        delay = 0,
+        easing = FastOutSlowInEasing
     )
 
     fun barChart(index: Int) = TweenSpec<Float>(

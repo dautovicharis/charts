@@ -23,6 +23,8 @@ import io.github.dautovicharis.charts.style.LineChartDefaults
 import io.github.dautovicharis.charts.style.LineChartStyle
 import io.github.dautovicharis.charts.style.PieChartDefaults
 import io.github.dautovicharis.charts.style.PieChartStyle
+import io.github.dautovicharis.charts.style.RadarChartDefaults
+import io.github.dautovicharis.charts.style.RadarChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
@@ -68,6 +70,22 @@ internal fun screenshotPieStyle(): PieChartStyle = PieChartDefaults.style(
     chartViewStyle = screenshotChartViewStyle(),
     donutPercentage = 0.45f,
     legendVisible = true
+)
+
+@Composable
+internal fun screenshotRadarStyle(
+    categoryLegendVisible: Boolean = true,
+    categoryPinsVisible: Boolean = true,
+    axisLabelVisible: Boolean = false,
+    fillVisible: Boolean = true
+): RadarChartStyle = RadarChartDefaults.style(
+    chartViewStyle = screenshotChartViewStyle(),
+    gridSteps = 6,
+    fillAlpha = 0.2f,
+    categoryLegendVisible = categoryLegendVisible,
+    categoryPinsVisible = categoryPinsVisible,
+    axisLabelVisible = axisLabelVisible,
+    fillVisible = fillVisible
 )
 
 internal fun barBasicData(): ChartDataSet =
@@ -121,4 +139,35 @@ internal fun pieBasicData(): ChartDataSet =
     listOf(38f, 24f, 16f, 12f, 10f).toChartDataSet(
         title = "Market Share",
         labels = listOf("Alpha", "Beta", "Gamma", "Delta", "Epsilon")
+    )
+
+internal fun radarBasicData(): ChartDataSet =
+    listOf(72f, 58f, 90f, 64f, 77f, 85f).toChartDataSet(
+        title = "Performance",
+        labels = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck")
+    )
+
+internal fun radarMultiData(): MultiChartDataSet =
+    listOf(
+        "Falcon" to listOf(78f, 62f, 90f, 55f, 70f, 80f),
+        "Tiger" to listOf(65f, 88f, 60f, 82f, 55f, 68f),
+        "Octane" to listOf(92f, 58f, 76f, 62f, 86f, 60f)
+    ).toMultiChartDataSet(
+        title = "Attributes",
+        categories = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck")
+    )
+
+internal fun radarMultiNoCategoriesData(): MultiChartDataSet =
+    listOf(
+        "Falcon" to listOf(78f, 62f, 90f, 55f, 70f, 80f),
+        "Tiger" to listOf(65f, 88f, 60f, 82f, 55f, 68f),
+        "Octane" to listOf(92f, 58f, 76f, 62f, 86f, 60f)
+    ).toMultiChartDataSet(
+        title = "Attributes"
+    )
+
+internal fun radarEdgeData(): ChartDataSet =
+    listOf(25f, 40f, 100f, 30f, 60f, 45f).toChartDataSet(
+        title = "Edge Values",
+        labels = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck")
     )

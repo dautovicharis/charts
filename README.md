@@ -353,6 +353,7 @@ private fun AddCustomStackedBarChart() {
 - [Multiline Chart](https://github.com/dautovicharis/Charts/blob/main/app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/multiline/MultiLineDemo.kt)
 - [Bar Chart](https://github.com/dautovicharis/Charts/blob/main/app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/bar/BarDemo.kt)
 - [Stacked Bar Chart](https://github.com/dautovicharis/Charts/blob/main/app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/stackedbar/StackedBarDemo.kt)
+- [Radar Chart](https://github.com/dautovicharis/Charts/blob/main/app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/radar/RadarDemo.kt)
 
 # Setup multiplatform env
 https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-setup.html

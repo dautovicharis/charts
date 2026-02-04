@@ -12,6 +12,7 @@
     <string name="bar_chart">Bar</string>
     <string name="bar_stacked_chart">Stacked Bar</string>
     <string name="multi_line_chart">Multi Line</string>
+    <string name="radar_chart">Radar</string>
 
     <string name="chart_basic">Basic</string>
     <string name="chart_custom">Custom</string>

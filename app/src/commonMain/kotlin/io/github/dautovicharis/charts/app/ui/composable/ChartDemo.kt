@@ -10,6 +10,7 @@ import io.github.dautovicharis.charts.app.demo.bar.BarChartStyleItems
 import io.github.dautovicharis.charts.app.demo.line.LineChartStyleItems
 import io.github.dautovicharis.charts.app.demo.multiline.MultiLineStyleItems
 import io.github.dautovicharis.charts.app.demo.pie.PieChartStyleItems
+import io.github.dautovicharis.charts.app.demo.radar.RadarChartStyleItems
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarChartStyleItems
 
 sealed class ChartStyleType {
@@ -27,6 +28,9 @@ sealed class ChartStyleType {
 
     data object StackedBarChartDefault : ChartStyleType()
     data object StackedBarChartCustom : ChartStyleType()
+
+    data object RadarChartDefault : ChartStyleType()
+    data object RadarChartCustom : ChartStyleType()
 }
 
 @Composable
@@ -57,5 +61,7 @@ private fun DemoStyleItems(type: ChartStyleType, colors: List<Color> = emptyList
         is ChartStyleType.BarChartCustom -> BarChartStyleItems.custom()
         is ChartStyleType.StackedBarChartDefault -> StackedBarChartStyleItems.default()
         is ChartStyleType.StackedBarChartCustom -> StackedBarChartStyleItems.custom(colors)
+        is ChartStyleType.RadarChartDefault -> RadarChartStyleItems.default()
+        is ChartStyleType.RadarChartCustom -> RadarChartStyleItems.custom(colors)
     }
 }
