@@ -28,12 +28,13 @@ import io.github.dautovicharis.charts.internal.common.composable.rememberShowSta
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.common.model.minMax
 import io.github.dautovicharis.charts.style.LineChartStyle
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun LineChart(
     data: MultiChartData,
     style: LineChartStyle,
-    colors: List<Color>,
+    colors: ImmutableList<Color>,
     onValueChanged: (Int) -> Unit = {}
 ) {
     var show by rememberShowState()
@@ -46,8 +47,9 @@ internal fun LineChart(
         label = "lineAnimation"
     )
 
-    val minMax = remember { data.minMax() }
-    Canvas(modifier = style.modifier
+    val minMax = remember(data) { data.minMax() }
+    Canvas(
+        modifier = style.modifier
         .testTag(TestTags.LINE_CHART)
         .onGloballyPositioned {
             show = true

@@ -2,14 +2,11 @@ package io.github.dautovicharis.charts
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.testTag
-import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barstackedchart.StackedBarChart
@@ -18,8 +15,12 @@ import io.github.dautovicharis.charts.internal.common.composable.Chart
 import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
 import io.github.dautovicharis.charts.internal.common.composable.Legend
 import io.github.dautovicharis.charts.internal.validateBarData
+import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * A composable function that displays a Stacked Bar Chart.
@@ -32,34 +33,38 @@ fun StackedBarChart(
     dataSet: MultiChartDataSet,
     style: StackedBarChartStyle = StackedBarChartDefaults.style()
 ) {
-    key(dataSet) {
-        val errors by remember {
-            mutableStateOf(
-                validateBarData(
-                    data = dataSet.data,
-                    style = style
-                )
-            )
-        }
+    val errors = remember(dataSet, style) {
+        validateBarData(
+            data = dataSet.data,
+            style = style
+        )
+    }
 
-        if (errors.isEmpty()) {
-            StackedBarChartContent(dataSet = dataSet, style = style)
-        } else {
-            ChartErrors(chartViewStyle = style.chartViewStyle, errors = errors)
-        }
+    if (errors.isEmpty()) {
+        StackedBarChartContent(dataSet = dataSet, style = style)
+    } else {
+        ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
     }
 }
 
 @Composable
 private fun StackedBarChartContent(dataSet: MultiChartDataSet, style: StackedBarChartStyle) {
-    var title by remember { mutableStateOf(dataSet.data.title) }
-    var labels by remember { mutableStateOf(listOf<String>()) }
+    var title by remember(dataSet) { mutableStateOf(dataSet.data.title) }
+    var labels by remember(dataSet) {
+        mutableStateOf<ImmutableList<String>>(persistentListOf())
+    }
 
-    val colors = derivedStateOf {
-        style.barColors.ifEmpty {
+    val colors: ImmutableList<androidx.compose.ui.graphics.Color> = remember(
+        dataSet,
+        style.barColors,
+        style.barColor
+    ) {
+        if (style.barColors.isEmpty()) {
             generateColorShades(style.barColor, dataSet.data.getFirstPointsSize())
+        } else {
+            style.barColors.toImmutableList()
         }
-    }.value
+    }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
         Text(
@@ -83,7 +88,7 @@ private fun StackedBarChartContent(dataSet: MultiChartDataSet, style: StackedBar
 
             if (dataSet.data.hasCategories()) {
                 labels = when (selectedIndex) {
-                    NO_SELECTION -> emptyList()
+                    NO_SELECTION -> persistentListOf()
                     else -> dataSet.data.items[selectedIndex].item.labels
                 }
             }

@@ -3,7 +3,6 @@ package io.github.dautovicharis.charts
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,6 +16,7 @@ import io.github.dautovicharis.charts.internal.validateBarData
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.style.BarChartDefaults
 import io.github.dautovicharis.charts.style.BarChartStyle
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * A composable function that displays a Bar Chart.
@@ -29,20 +29,16 @@ fun BarChart(
     dataSet: ChartDataSet,
     style: BarChartStyle = BarChartDefaults.style()
 ) {
-    key(dataSet) {
-        val errors by remember {
-            mutableStateOf(
-                validateBarData(
-                    data = dataSet.data.item
-                )
-            )
-        }
+    val errors = remember(dataSet) {
+        validateBarData(
+            data = dataSet.data.item
+        )
+    }
 
-        if (errors.isEmpty()) {
-            BarChartContent(dataSet = dataSet, style = style)
-        } else {
-            ChartErrors(chartViewStyle = style.chartViewStyle, errors = errors)
-        }
+    if (errors.isEmpty()) {
+        BarChartContent(dataSet = dataSet, style = style)
+    } else {
+        ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
     }
 }
 
@@ -51,7 +47,7 @@ private fun BarChartContent(
     dataSet: ChartDataSet,
     style: BarChartStyle
 ) {
-    var title by remember { mutableStateOf(dataSet.data.label) }
+    var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
     Chart(chartViewsStyle = style.chartViewStyle) {
         Text(
             modifier = style.chartViewStyle.modifierTopTitle

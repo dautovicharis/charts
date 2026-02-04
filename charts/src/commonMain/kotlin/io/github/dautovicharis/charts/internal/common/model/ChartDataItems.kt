@@ -1,12 +1,25 @@
 package io.github.dautovicharis.charts.internal.common.model
 
 import io.github.dautovicharis.charts.internal.NO_SELECTION
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 internal data class MultiChartData(
-    val items: List<ChartDataItem>,
-    val categories: List<String> = emptyList(),
+    val items: ImmutableList<ChartDataItem>,
+    val categories: ImmutableList<String> = persistentListOf(),
     val title: String
 ) {
+    constructor(
+        items: List<ChartDataItem>,
+        categories: List<String> = emptyList(),
+        title: String
+    ) : this(
+        items = items.toImmutableList(),
+        categories = categories.toImmutableList(),
+        title = title
+    )
+
     fun getFirstPointsSize(): Int {
         return items.first().item.points.size
     }

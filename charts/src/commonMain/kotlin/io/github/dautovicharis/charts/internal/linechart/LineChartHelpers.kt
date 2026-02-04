@@ -98,9 +98,9 @@ private fun cubicBezier(
     val oneMinusT2 = oneMinusT * oneMinusT
     val t2 = t * t
     return (oneMinusT2 * oneMinusT * p0) +
-        (3f * oneMinusT2 * t * p1) +
-        (3f * oneMinusT * t2 * p2) +
-        (t2 * t * p3)
+            (3f * oneMinusT2 * t * p1) +
+            (3f * oneMinusT * t2 * p2) +
+            (t2 * t * p3)
 }
 
 internal fun scaleValues(

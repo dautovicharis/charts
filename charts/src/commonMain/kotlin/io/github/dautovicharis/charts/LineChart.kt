@@ -1,11 +1,11 @@
 package io.github.dautovicharis.charts
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
-import io.github.dautovicharis.charts.model.ChartDataSet
-import io.github.dautovicharis.charts.model.MultiChartDataSet
+import androidx.compose.runtime.remember
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.linechart.LineChartImpl
+import io.github.dautovicharis.charts.model.ChartDataSet
+import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import io.github.dautovicharis.charts.style.LineChartStyle
 
@@ -20,15 +20,16 @@ fun LineChart(
     dataSet: ChartDataSet,
     style: LineChartStyle = LineChartDefaults.style()
 ) {
-    key(dataSet) {
-        LineChartImpl(
-            data = MultiChartData(
-                items = listOf(dataSet.data),
-                title = dataSet.data.label
-            ),
-            style = style
+    val data = remember(dataSet) {
+        MultiChartData(
+            items = listOf(dataSet.data),
+            title = dataSet.data.label
         )
     }
+    LineChartImpl(
+        data = data,
+        style = style
+    )
 }
 
 /**
@@ -42,10 +43,8 @@ fun LineChart(
     dataSet: MultiChartDataSet,
     style: LineChartStyle = LineChartDefaults.style()
 ) {
-    key(dataSet) {
-        LineChartImpl(
-            data = dataSet.data,
-            style = style
-        )
-    }
+    LineChartImpl(
+        data = dataSet.data,
+        style = style
+    )
 }

@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
@@ -28,6 +29,7 @@ import io.github.dautovicharis.charts.internal.common.composable.rememberShowSta
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.style.ChartViewStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
+import kotlinx.collections.immutable.ImmutableList
 
 internal data class PieSlice(
     val startDeg: Float,
@@ -40,6 +42,7 @@ internal data class PieSlice(
 @Composable
 internal fun PieChart(
     chartData: ChartData,
+    colors: ImmutableList<Color>,
     style: PieChartStyle,
     chartStyle: ChartViewStyle,
     onSliceTouched: (Int) -> Unit = {},
@@ -68,7 +71,8 @@ internal fun PieChart(
         label = "donutHoleAnimation"
     )
 
-    Box(modifier = style.modifier
+    Box(
+        modifier = style.modifier
         .testTag(TestTags.PIE_CHART)
         .onGloballyPositioned { show = true }
         .pointerInput(Unit) {
@@ -127,7 +131,7 @@ internal fun PieChart(
 
                     scale(scale) {
                         drawArc(
-                            color = style.pieColors[i],
+                            color = colors[i],
                             startAngle = slice.startDeg,
                             sweepAngle = slice.sweepAngle,
                             useCenter = true,

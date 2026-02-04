@@ -7,24 +7,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
-import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
-import io.github.dautovicharis.charts.internal.common.composable.Legend
 import io.github.dautovicharis.charts.internal.barstackedchart.generateColorShades
-import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
 import io.github.dautovicharis.charts.internal.common.composable.Chart
+import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
+import io.github.dautovicharis.charts.internal.common.composable.Legend
 import io.github.dautovicharis.charts.internal.piechart.PieChart
 import io.github.dautovicharis.charts.internal.piechart.calculatePercentages
 import io.github.dautovicharis.charts.internal.validatePieData
+import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.style.PieChartDefaults
 import io.github.dautovicharis.charts.style.PieChartStyle
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * A composable function that displays a Pie Chart.
@@ -37,43 +39,41 @@ fun PieChart(
     dataSet: ChartDataSet,
     style: PieChartStyle = PieChartDefaults.style(),
 ) {
-    key(dataSet) {
-        style.pieColors = style.pieColors.ifEmpty {
+    val pieChartColors = remember(
+        style.pieColors,
+        style.pieColor,
+        dataSet.data.item.points.size
+    ) {
+        if (style.pieColors.isEmpty()) {
             generateColorShades(style.pieColor, dataSet.data.item.points.size)
-        }
-
-        val errors by remember {
-            mutableStateOf(validatePieData(dataSet = dataSet, style = style))
-        }
-
-        if (errors.isNotEmpty()) {
-            ChartErrors(chartViewStyle = style.chartViewStyle, errors = errors)
         } else {
-            PieChartContent(dataSet = dataSet, style = style)
+            style.pieColors.toImmutableList()
         }
+    }
+
+    val errors = remember(dataSet, style) {
+        validatePieData(dataSet = dataSet, style = style)
+    }
+
+    if (errors.isNotEmpty()) {
+        ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
+    } else {
+        PieChartContent(dataSet = dataSet, style = style, pieChartColors = pieChartColors)
     }
 }
 
 @Composable
 private fun PieChartContent(
     dataSet: ChartDataSet,
-    style: PieChartStyle
+    style: PieChartStyle,
+    pieChartColors: ImmutableList<Color>
 ) {
-    var title by remember { mutableStateOf(dataSet.data.label) }
-    val pieChartColors by remember {
-        mutableStateOf(
-            if (style.pieColors.isEmpty()) {
-                generateColorShades(style.pieColor, dataSet.data.item.points.size)
-            } else {
-                style.pieColors
-            }
-        )
-    }
+    var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
 
-    val piePercentages by remember {
-        mutableStateOf(calculatePercentages(dataSet.data.item.points))
+    val piePercentages = remember(dataSet.data.item.points) {
+        calculatePercentages(dataSet.data.item.points)
     }
-    var selectedIndex by remember { mutableStateOf(NO_SELECTION) }
+    var selectedIndex by remember(dataSet) { mutableStateOf(NO_SELECTION) }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
         Text(
@@ -84,6 +84,7 @@ private fun PieChartContent(
         )
         PieChart(
             chartData = dataSet.data.item,
+            colors = pieChartColors,
             style = style,
             chartStyle = style.chartViewStyle
         ) { index ->
@@ -111,12 +112,12 @@ private fun PieChartContent(
             }
         }
 
-      if (style.legendVisible) {
-          Legend(
-              chartViewsStyle = style.chartViewStyle,
-              legend = dataSet.data.item.labels,
-              colors = pieChartColors
-          )
-      }
+        if (style.legendVisible) {
+            Legend(
+                chartViewsStyle = style.chartViewStyle,
+                legend = dataSet.data.item.labels,
+                colors = pieChartColors
+            )
+        }
     }
 }
