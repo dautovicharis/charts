@@ -1,23 +1,27 @@
 package io.github.dautovicharis.charts.internal
 
-import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_BAR
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_LINE
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_PIE
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_STACKED_BAR
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
+import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.style.LineChartStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
 internal object ValidationErrors {
     const val RULE_ITEM_POINTS_SIZE: String = "Item at index %d has %d points, expected %d."
+    const val RULE_ITEM_POINT_NOT_NUMBER: String =
+        "Item at index %d has non-numeric value at index %d."
     const val RULE_CATEGORIES_SIZE_MISMATCH: String =
         "Categories size %d does not match expected %d."
     const val RULE_COLORS_SIZE_MISMATCH: String = "Colors size %d does not match expected %d."
     const val RULE_DATA_POINTS_LESS_THAN_MIN: String =
         "Data points size should be greater than or equal to %d."
+    const val RULE_DATA_POINT_NOT_NUMBER: String =
+        "Data point at index %d is not a valid number."
 
     const val MIN_REQUIRED_PIE: Int = 2
     const val MIN_REQUIRED_LINE: Int = 2
@@ -76,6 +80,13 @@ internal fun validateBarData(data: ChartData): List<String> {
         validationErrors.add(validationError)
         return validationErrors
     }
+
+    data.points.forEachIndexed { index, value ->
+        if (value.isNaN()) {
+            val validationError = ValidationErrors.RULE_DATA_POINT_NOT_NUMBER.format(index)
+            validationErrors.add(validationError)
+        }
+    }
     return validationErrors
 }
 
@@ -93,6 +104,13 @@ internal fun validatePieData(
             ValidationErrors.RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_PIE)
         validationErrors.add(validationError)
         return validationErrors
+    }
+
+    dataSet.data.item.points.forEachIndexed { index, value ->
+        if (value.isNaN()) {
+            val validationError = ValidationErrors.RULE_DATA_POINT_NOT_NUMBER.format(index)
+            validationErrors.add(validationError)
+        }
     }
 
     // Rule 2: If colors are not empty, it should match pointsSize
@@ -147,6 +165,16 @@ private fun validateChartData(
         val validationError =
             ValidationErrors.RULE_COLORS_SIZE_MISMATCH.format(colorsSize, expectedColorsSize)
         validationErrors.add(validationError)
+    }
+
+    data.items.forEachIndexed { itemIndex, dataItem ->
+        dataItem.item.points.forEachIndexed { pointIndex, value ->
+            if (value.isNaN()) {
+                val validationError =
+                    ValidationErrors.RULE_ITEM_POINT_NOT_NUMBER.format(itemIndex, pointIndex)
+                validationErrors.add(validationError)
+            }
+        }
     }
     return validationErrors
 }

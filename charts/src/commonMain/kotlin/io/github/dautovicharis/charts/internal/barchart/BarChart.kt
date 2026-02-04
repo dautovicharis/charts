@@ -37,12 +37,12 @@ internal fun BarChart(
 ) {
     val barColor = style.barColor
     val animationState = rememberAnimationState()
-    val progress = remember {
+    val progress = remember(chartData) {
         chartData.points.map { animationState }
     }
 
     chartData.points.forEachIndexed { index, _ ->
-        LaunchedEffect(index) {
+        LaunchedEffect(chartData, index) {
             progress[index].animateTo(
                 targetValue = ANIMATION_TARGET,
                 animationSpec = AnimationSpec.barChart(index)
@@ -50,46 +50,47 @@ internal fun BarChart(
         }
     }
 
-    val maxValue = remember { chartData.points.max() }
-    val minValue = remember { chartData.points.min() }
+    val maxValue = remember(chartData) { chartData.points.max() }
+    val minValue = remember(chartData) { chartData.points.min() }
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
     val spacingPx = with(LocalDensity.current) { style.space.toPx() }
 
-    Canvas(modifier = style.modifier
+    Canvas(
+        modifier = style.modifier
         .testTag(TestTags.BAR_CHART)
         .pointerInput(Unit) {
-        detectHorizontalDragGestures(
-            onDragStart = { offset ->
-                selectedIndex =
-                    getSelectedIndex(
-                        position = offset,
-                        dataSize = chartData.points.count(),
-                        canvasSize = size,
-                        spacingPx = spacingPx
-                    )
-                onValueChanged(selectedIndex)
-            },
-            onHorizontalDrag = { change, _ ->
-                selectedIndex =
-                    getSelectedIndex(
-                        position = change.position,
-                        dataSize = chartData.points.count(),
-                        canvasSize = size,
-                        spacingPx = spacingPx
-                    )
-                onValueChanged(selectedIndex)
-                change.consume()
-            },
-            onDragEnd = {
-                selectedIndex = NO_SELECTION
-                onValueChanged(NO_SELECTION)
-            },
-            onDragCancel = {
-                selectedIndex = NO_SELECTION
-                onValueChanged(NO_SELECTION)
-            }
-        )
-    }, onDraw = {
+            detectHorizontalDragGestures(
+                onDragStart = { offset ->
+                    selectedIndex =
+                        getSelectedIndex(
+                            position = offset,
+                            dataSize = chartData.points.count(),
+                            canvasSize = size,
+                            spacingPx = spacingPx
+                        )
+                    onValueChanged(selectedIndex)
+                },
+                onHorizontalDrag = { change, _ ->
+                    selectedIndex =
+                        getSelectedIndex(
+                            position = change.position,
+                            dataSize = chartData.points.count(),
+                            canvasSize = size,
+                            spacingPx = spacingPx
+                        )
+                    onValueChanged(selectedIndex)
+                    change.consume()
+                },
+                onDragEnd = {
+                    selectedIndex = NO_SELECTION
+                    onValueChanged(NO_SELECTION)
+                },
+                onDragCancel = {
+                    selectedIndex = NO_SELECTION
+                    onValueChanged(NO_SELECTION)
+                }
+            )
+        }, onDraw = {
         drawBars(
             style = style,
             size = size,

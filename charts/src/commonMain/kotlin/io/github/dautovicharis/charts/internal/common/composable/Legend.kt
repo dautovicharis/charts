@@ -17,14 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.style.ChartViewStyle
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun Legend(
     chartViewsStyle: ChartViewStyle,
-    legend: List<String>,
-    colors: List<Color>,
-    labels: List<String> = emptyList()
+    legend: ImmutableList<String>,
+    colors: ImmutableList<Color>,
+    labels: ImmutableList<String> = persistentListOf()
 ) {
     FlowRow(
         modifier = chartViewsStyle.modifierLegend.animateContentSize(

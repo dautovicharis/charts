@@ -28,12 +28,13 @@ import io.github.dautovicharis.charts.internal.barchart.getSelectedIndex
 import io.github.dautovicharis.charts.internal.common.composable.rememberAnimationState
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun StackedBarChart(
     data: MultiChartData,
     style: StackedBarChartStyle,
-    colors: List<Color>,
+    colors: ImmutableList<Color>,
     onValueChanged: (Int) -> Unit = {}
 ) {
     val animationState = rememberAnimationState()
@@ -56,38 +57,38 @@ internal fun StackedBarChart(
         modifier = style.modifier
             .testTag(TestTags.STACKED_BAR_CHART)
             .pointerInput(Unit) {
-            detectHorizontalDragGestures(
-                onDragStart = { offset ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            position = offset,
-                            dataSize = data.items.count(),
-                            canvasSize = size,
-                            spacingPx = spacingPx
-                        )
-                    onValueChanged(selectedIndex)
-                },
-                onHorizontalDrag = { change, _ ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            position = change.position,
-                            dataSize = data.items.count(),
-                            canvasSize = size,
-                            spacingPx = spacingPx
-                        )
-                    onValueChanged(selectedIndex)
-                    change.consume()
-                },
-                onDragEnd = {
-                    selectedIndex = NO_SELECTION
-                    onValueChanged(NO_SELECTION)
-                },
-                onDragCancel = {
-                    selectedIndex = NO_SELECTION
-                    onValueChanged(NO_SELECTION)
-                }
-            )
-        }, onDraw = {
+                detectHorizontalDragGestures(
+                    onDragStart = { offset ->
+                        selectedIndex =
+                            getSelectedIndex(
+                                position = offset,
+                                dataSize = data.items.count(),
+                                canvasSize = size,
+                                spacingPx = spacingPx
+                            )
+                        onValueChanged(selectedIndex)
+                    },
+                    onHorizontalDrag = { change, _ ->
+                        selectedIndex =
+                            getSelectedIndex(
+                                position = change.position,
+                                dataSize = data.items.count(),
+                                canvasSize = size,
+                                spacingPx = spacingPx
+                            )
+                        onValueChanged(selectedIndex)
+                        change.consume()
+                    },
+                    onDragEnd = {
+                        selectedIndex = NO_SELECTION
+                        onValueChanged(NO_SELECTION)
+                    },
+                    onDragCancel = {
+                        selectedIndex = NO_SELECTION
+                        onValueChanged(NO_SELECTION)
+                    }
+                )
+            }, onDraw = {
             drawBars(
                 style = style,
                 size = size,
@@ -106,7 +107,7 @@ private fun DrawScope.drawBars(
     data: MultiChartData,
     progress: List<Animatable<Float, AnimationVector1D>>,
     selectedIndex: Int,
-    colors: List<Color>
+    colors: ImmutableList<Color>
 ) {
     val totalMaxValue = data.items.maxOf { it.item.points.sum() }
     val spacing = style.space.toPx()
