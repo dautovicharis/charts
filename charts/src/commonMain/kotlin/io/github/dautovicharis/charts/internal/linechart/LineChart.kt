@@ -289,7 +289,8 @@ private fun DrawScope.tryDrawDragPoints(
         val nearestPoint = findNearestPoint(
             touchX = touchX,
             scaledValues = values,
-            size = size
+            size = size,
+            bezier = style.bezier
         )
 
         val draggingCircleOffset = Offset(
