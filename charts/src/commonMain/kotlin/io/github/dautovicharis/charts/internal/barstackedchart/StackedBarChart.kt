@@ -15,6 +15,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.util.lerp
 import io.github.dautovicharis.charts.internal.ANIMATION_TARGET
@@ -40,6 +41,7 @@ internal fun StackedBarChart(
         data.items.map { animationState }
     }
     var selectedIndex by remember { mutableIntStateOf(-1) }
+    val spacingPx = with(LocalDensity.current) { style.space.toPx() }
 
     progress.forEachIndexed { index, _ ->
         LaunchedEffect(index) {
@@ -60,7 +62,8 @@ internal fun StackedBarChart(
                         getSelectedIndex(
                             position = offset,
                             dataSize = data.items.count(),
-                            canvasSize = size
+                            canvasSize = size,
+                            spacingPx = spacingPx
                         )
                     onValueChanged(selectedIndex)
                 },
@@ -69,7 +72,8 @@ internal fun StackedBarChart(
                         getSelectedIndex(
                             position = change.position,
                             dataSize = data.items.count(),
-                            canvasSize = size
+                            canvasSize = size,
+                            spacingPx = spacingPx
                         )
                     onValueChanged(selectedIndex)
                     change.consume()
