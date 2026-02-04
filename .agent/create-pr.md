@@ -21,6 +21,9 @@ Use this file as the **single source of truth** for an agent to ship the current
 - **Head remote (push)**: use `origin` if it exists; otherwise `upstream`
 - **Upstream repo**: `dautovicharis/charts`
 - **Base branch**: `main`
+- **PR head format**:
+  - If base is `upstream` and your branch is on `origin` (a fork), use `--head <forkOwner>:<branch>`.
+  - Otherwise use `--head <branch>`.
 
 ## Workflow (simple)
 
@@ -35,7 +38,10 @@ Use this file as the **single source of truth** for an agent to ship the current
 8. Write PR body to `$PR_BODY_FILE` (use the template below).
 9. Create PR (GitHub CLI), then delete the temp file:
    - Use the upstream repo as the PR target.
-   - `gh pr create --repo dautovicharis/charts --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
+   - If head is on the fork (`origin`), include the fork owner:
+     - `gh pr create --repo dautovicharis/charts --base main --head <forkOwner>:<branch> --title "<title>" --body-file "$PR_BODY_FILE"`
+   - If head is on upstream, use:
+     - `gh pr create --repo dautovicharis/charts --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - `rm -f "$PR_BODY_FILE"`
 10. Output the PR URL.
 
