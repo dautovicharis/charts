@@ -1,4 +1,6 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
+@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -18,8 +20,12 @@ buildscript {
 }
 
 kotlin {
+    jvmToolchain(libs.versions.java.get().toInt())
     androidTarget {
         publishLibraryVariants("release")
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.get()))
+        }
     }
 
     iosX64()
@@ -37,7 +43,6 @@ kotlin {
             api(compose.foundation)
             api(compose.material3)
             api(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
 
@@ -45,7 +50,6 @@ kotlin {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
         }
 
@@ -152,5 +156,5 @@ mavenPublishing {
 
 dependencies {
     dokkaHtmlPlugin(libs.dokka.versions)
-    implementation(libs.dokka.doc)
+    dokkaHtmlPlugin(libs.dokka.doc)
 }
