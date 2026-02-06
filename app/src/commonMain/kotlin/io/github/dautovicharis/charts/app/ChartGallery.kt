@@ -1,0 +1,189 @@
+package io.github.dautovicharis.charts.app
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+
+private val GalleryCardShape = RoundedCornerShape(24.dp)
+
+@Composable
+fun ChartGallery(
+    menuState: MenuState,
+    onSubmenuSelected: (ChartSubmenuItem) -> Unit,
+    versionLabel: String,
+    modifier: Modifier = Modifier,
+    viewModel: ChartGalleryViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val menuItems = menuState.menuItems
+    val items = state.items.ifEmpty { viewModel.buildItems(menuItems) }
+
+    LaunchedEffect(menuItems) {
+        viewModel.setMenuItems(menuItems)
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.runPreviewLoop()
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items.forEach { item ->
+            val accent = chartAccent(item.destination)
+
+            ChartGalleryCard(
+                item = item,
+                accent = accent,
+                onBasic = {
+                    item.basicItem?.let(onSubmenuSelected)
+                },
+                onCustom = {
+                    item.customItem?.let(onSubmenuSelected)
+                },
+                basicPreview = {
+                    ChartPreview(
+                        destination = item.destination,
+                        isCustom = false,
+                        previews = state.previews
+                    )
+                },
+                customPreview = {
+                    ChartPreview(
+                        destination = item.destination,
+                        isCustom = true,
+                        previews = state.previews
+                    )
+                }
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = versionLabel,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ChartGalleryCard(
+    item: ChartGalleryItemUiState,
+    accent: Color,
+    onBasic: () -> Unit,
+    onCustom: () -> Unit,
+    basicPreview: @Composable () -> Unit,
+    customPreview: @Composable () -> Unit
+) {
+    ElevatedCard(
+        shape = GalleryCardShape,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(accent.copy(alpha = 0.16f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(item.destination.icon),
+                        contentDescription = stringResource(item.destination.title),
+                        tint = accent
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(item.destination.title),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = item.subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ChartPreviewFrame(
+                        accent = accent,
+                        onClick = onBasic
+                    ) {
+                        basicPreview()
+                    }
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ChartPreviewFrame(
+                        accent = accent,
+                        onClick = onCustom
+                    ) {
+                        customPreview()
+                    }
+                }
+            }
+        }
+    }
+}

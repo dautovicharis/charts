@@ -14,11 +14,15 @@ import io.github.dautovicharis.charts.style.LineChartStyle
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun LineChart(
     dataSet: ChartDataSet,
-    style: LineChartStyle = LineChartDefaults.style()
+    style: LineChartStyle = LineChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val data = remember(dataSet) {
         MultiChartData(
@@ -28,7 +32,9 @@ fun LineChart(
     }
     LineChartImpl(
         data = data,
-        style = style
+        style = style,
+        interactionEnabled = interactionEnabled,
+        animateOnStart = animateOnStart
     )
 }
 
@@ -37,14 +43,20 @@ fun LineChart(
  *
  * @param dataSet The data sets to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun LineChart(
     dataSet: MultiChartDataSet,
-    style: LineChartStyle = LineChartDefaults.style()
+    style: LineChartStyle = LineChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     LineChartImpl(
         data = dataSet.data,
-        style = style
+        style = style,
+        interactionEnabled = interactionEnabled,
+        animateOnStart = animateOnStart
     )
 }

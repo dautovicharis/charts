@@ -27,11 +27,15 @@ import kotlinx.collections.immutable.toImmutableList
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun StackedBarChart(
     dataSet: MultiChartDataSet,
-    style: StackedBarChartStyle = StackedBarChartDefaults.style()
+    style: StackedBarChartStyle = StackedBarChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val errors = remember(dataSet, style) {
         validateBarData(
@@ -41,14 +45,24 @@ fun StackedBarChart(
     }
 
     if (errors.isEmpty()) {
-        StackedBarChartContent(dataSet = dataSet, style = style)
+        StackedBarChartContent(
+            dataSet = dataSet,
+            style = style,
+            interactionEnabled = interactionEnabled,
+            animateOnStart = animateOnStart
+        )
     } else {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
     }
 }
 
 @Composable
-private fun StackedBarChartContent(dataSet: MultiChartDataSet, style: StackedBarChartStyle) {
+private fun StackedBarChartContent(
+    dataSet: MultiChartDataSet,
+    style: StackedBarChartStyle,
+    interactionEnabled: Boolean,
+    animateOnStart: Boolean
+) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.title) }
     var labels by remember(dataSet) {
         mutableStateOf<ImmutableList<String>>(persistentListOf())
@@ -67,17 +81,21 @@ private fun StackedBarChartContent(dataSet: MultiChartDataSet, style: StackedBar
     }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
-        Text(
-            modifier = style.chartViewStyle.modifierTopTitle
-                .testTag(TestTags.CHART_TITLE),
-            text = title,
-            style = style.chartViewStyle.styleTitle
-        )
+        if (title.isNotBlank()) {
+            Text(
+                modifier = style.chartViewStyle.modifierTopTitle
+                    .testTag(TestTags.CHART_TITLE),
+                text = title,
+                style = style.chartViewStyle.styleTitle
+            )
+        }
 
         StackedBarChart(
             data = dataSet.data,
             style = style,
-            colors = colors
+            colors = colors,
+            interactionEnabled = interactionEnabled,
+            animateOnStart = animateOnStart
         ) { selectedIndex ->
             title = when (selectedIndex) {
                 NO_SELECTION -> dataSet.data.title

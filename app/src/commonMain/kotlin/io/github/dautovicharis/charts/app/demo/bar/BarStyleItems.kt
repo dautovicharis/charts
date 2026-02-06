@@ -11,11 +11,6 @@ object BarChartStyleItems {
     fun default(): StyleItems {
         return barChartTableItems(BarChartDefaults.style())
     }
-
-    @Composable
-    fun custom(): StyleItems {
-        return barChartTableItems(BarDemoStyle.custom())
-    }
 }
 
 @Composable

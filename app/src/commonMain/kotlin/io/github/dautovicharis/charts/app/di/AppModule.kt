@@ -1,6 +1,21 @@
 package io.github.dautovicharis.charts.app.di
 
-import MainViewModel
+import io.github.dautovicharis.charts.app.ChartGalleryViewModel
+import io.github.dautovicharis.charts.app.MainViewModel
+import io.github.dautovicharis.charts.app.data.BarSampleUseCase
+import io.github.dautovicharis.charts.app.data.ChartPreviewUseCase
+import io.github.dautovicharis.charts.app.data.LineSampleUseCase
+import io.github.dautovicharis.charts.app.data.MultiLineSampleUseCase
+import io.github.dautovicharis.charts.app.data.PieSampleUseCase
+import io.github.dautovicharis.charts.app.data.RadarSampleUseCase
+import io.github.dautovicharis.charts.app.data.StackedBarSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultChartPreviewUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
 import io.github.dautovicharis.charts.app.demo.bar.BarChartViewModel
 import io.github.dautovicharis.charts.app.demo.line.LineChartViewModel
 import io.github.dautovicharis.charts.app.demo.multiline.MultiLineChartViewModel
@@ -11,11 +26,19 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { PieChartViewModel() }
+    single<ChartPreviewUseCase> { DefaultChartPreviewUseCase() }
+    single<PieSampleUseCase> { DefaultPieSampleUseCase() }
+    single<LineSampleUseCase> { DefaultLineSampleUseCase() }
+    single<MultiLineSampleUseCase> { DefaultMultiLineSampleUseCase() }
+    single<BarSampleUseCase> { DefaultBarSampleUseCase() }
+    single<StackedBarSampleUseCase> { DefaultStackedBarSampleUseCase() }
+    single<RadarSampleUseCase> { DefaultRadarSampleUseCase() }
+    viewModel { PieChartViewModel(get()) }
+    viewModel { ChartGalleryViewModel(get()) }
     viewModel { MainViewModel() }
-    viewModel { LineChartViewModel() }
-    viewModel { MultiLineChartViewModel() }
-    viewModel { BarChartViewModel() }
-    viewModel { StackedBarChartViewModel() }
-    viewModel { RadarChartViewModel() }
+    viewModel { LineChartViewModel(get()) }
+    viewModel { MultiLineChartViewModel(get()) }
+    viewModel { BarChartViewModel(get()) }
+    viewModel { StackedBarChartViewModel(get()) }
+    viewModel { RadarChartViewModel(get()) }
 }

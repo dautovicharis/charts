@@ -23,11 +23,15 @@ import kotlinx.collections.immutable.toImmutableList
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun BarChart(
     dataSet: ChartDataSet,
-    style: BarChartStyle = BarChartDefaults.style()
+    style: BarChartStyle = BarChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val errors = remember(dataSet) {
         validateBarData(
@@ -36,7 +40,12 @@ fun BarChart(
     }
 
     if (errors.isEmpty()) {
-        BarChartContent(dataSet = dataSet, style = style)
+        BarChartContent(
+            dataSet = dataSet,
+            style = style,
+            interactionEnabled = interactionEnabled,
+            animateOnStart = animateOnStart
+        )
     } else {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
     }
@@ -45,18 +54,27 @@ fun BarChart(
 @Composable
 private fun BarChartContent(
     dataSet: ChartDataSet,
-    style: BarChartStyle
+    style: BarChartStyle,
+    interactionEnabled: Boolean,
+    animateOnStart: Boolean
 ) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
     Chart(chartViewsStyle = style.chartViewStyle) {
-        Text(
-            modifier = style.chartViewStyle.modifierTopTitle
-                .testTag(TestTags.CHART_TITLE),
-            text = title,
-            style = style.chartViewStyle.styleTitle
-        )
+        if (title.isNotBlank()) {
+            Text(
+                modifier = style.chartViewStyle.modifierTopTitle
+                    .testTag(TestTags.CHART_TITLE),
+                text = title,
+                style = style.chartViewStyle.styleTitle
+            )
+        }
 
-        BarChart(chartData = dataSet.data.item, style = style) {
+        BarChart(
+            chartData = dataSet.data.item,
+            style = style,
+            interactionEnabled = interactionEnabled,
+            animateOnStart = animateOnStart
+        ) {
             title = when (it) {
                 NO_SELECTION -> dataSet.data.label
                 else -> dataSet.data.item.labels[it]

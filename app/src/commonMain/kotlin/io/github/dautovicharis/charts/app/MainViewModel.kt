@@ -1,18 +1,19 @@
+package io.github.dautovicharis.charts.app
+
 import androidx.lifecycle.ViewModel
-import io.github.dautovicharis.charts.app.ChartScreen
-import io.github.dautovicharis.charts.app.ChartSubmenuItem
 import io.github.dautovicharis.charts.app.ui.theme.Theme
 import io.github.dautovicharis.charts.app.ui.theme.blueViolet
+import io.github.dautovicharis.charts.app.ui.theme.citrusGrove
 import io.github.dautovicharis.charts.app.ui.theme.deepOceanBlue
 import io.github.dautovicharis.charts.app.ui.theme.deepRed
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 data class MenuState(
-    val menuItems: List<ChartScreen>,
-    val selectedSubmenu: ChartSubmenuItem? = null,
-    val expandedMenuIndex: Int? = null
+    val menuItems: List<ChartDestination>,
+    val selectedSubmenu: ChartSubmenuItem? = null
 )
 
 enum class DarkModeSettings {
@@ -20,8 +21,6 @@ enum class DarkModeSettings {
     On,
     Off
 }
-
-data class SubmenuState(val subMenuItems: List<ChartSubmenuItem>)
 
 data class ThemesState(
     val themes: List<Theme>,
@@ -34,31 +33,32 @@ class MainViewModel : ViewModel() {
     private val _menuState = MutableStateFlow(
         MenuState(
             listOf(
-                ChartScreen.PieChartScreen,
-                ChartScreen.LineChartScreen,
-                ChartScreen.MultiLineChartScreen,
-                ChartScreen.BarChartScreen,
-                ChartScreen.StackedBarChartScreen,
-                ChartScreen.RadarChartScreen,
+                ChartDestination.PieChartScreen,
+                ChartDestination.LineChartScreen,
+                ChartDestination.MultiLineChartScreen,
+                ChartDestination.BarChartScreen,
+                ChartDestination.RadarChartScreen,
             )
         )
     )
 
-    val menuState: StateFlow<MenuState> = _menuState
+    val menuState: StateFlow<MenuState> = _menuState.asStateFlow()
 
     private val _themeState = MutableStateFlow(
         ThemesState(
             themes = listOf(
-                Theme(deepRed),
-                Theme(blueViolet),
-                Theme(deepOceanBlue)
+                deepRed,
+                blueViolet,
+                deepOceanBlue,
+                citrusGrove
             ),
-            selectedTheme = Theme(deepRed),
+            selectedTheme = deepRed,
             darkMode = DarkModeSettings.System,
             useDynamicColors = false
         )
     )
-    val themeState: StateFlow<ThemesState> = _themeState
+
+    val themeState: StateFlow<ThemesState> = _themeState.asStateFlow()
 
     fun onThemeSelected(newTheme: Theme) {
         _themeState.update {
@@ -99,22 +99,6 @@ class MainViewModel : ViewModel() {
         _menuState.update {
             it.copy(selectedSubmenu = null)
         }
-    }
-
-    fun onMenuToggle(index: Int) {
-        _menuState.update { state ->
-            val newExpandedMenuIndex = if (state.expandedMenuIndex == index) {
-                null
-            } else {
-                index
-            }
-            state.copy(expandedMenuIndex = newExpandedMenuIndex)
-        }
-    }
-
-    fun setDefaultState() {
-        onMenuToggle(0)
-        onSubmenuSelected(ChartSubmenuItem.PieChartBasic)
     }
 
     fun resolveDarkTheme(isSystemInDark: Boolean): Boolean {

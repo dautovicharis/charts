@@ -18,13 +18,17 @@ import androidx.compose.ui.unit.dp
  * @property chartViewStyle The style to be applied to the chart view.
  * @property barColor The color to be used for the bars in the chart.
  * @property space The space between the bars in the chart.
+ * @property minValue Optional fixed minimum value for the chart scale.
+ * @property maxValue Optional fixed maximum value for the chart scale.
  */
 @Immutable
 class BarChartStyle internal constructor(
     internal val modifier: Modifier,
     internal val chartViewStyle: ChartViewStyle,
     val barColor: Color,
-    val space: Dp
+    val space: Dp,
+    val minValue: Float?,
+    val maxValue: Float?
 ): Style {
     /**
      * Returns a list of the properties of the BarChartStyle.
@@ -32,7 +36,9 @@ class BarChartStyle internal constructor(
     override fun getProperties(): List<Pair<String, Any>> {
         return listOf(
             BarChartStyle::barColor.name to barColor,
-            BarChartStyle::space.name to space
+            BarChartStyle::space.name to space,
+            BarChartStyle::minValue.name to (minValue ?: "auto"),
+            BarChartStyle::maxValue.name to (maxValue ?: "auto")
         )
     }
 }
@@ -52,6 +58,8 @@ object BarChartDefaults {
     fun style(
         barColor: Color = MaterialTheme.colorScheme.primary,
         space: Dp = 10.dp,
+        minValue: Float? = null,
+        maxValue: Float? = null,
         chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): BarChartStyle {
         val padding = chartViewStyle.innerPadding
@@ -64,6 +72,8 @@ object BarChartDefaults {
             modifier = modifier,
             barColor = barColor,
             space = space,
+            minValue = minValue,
+            maxValue = maxValue,
             chartViewStyle = chartViewStyle
         )
     }

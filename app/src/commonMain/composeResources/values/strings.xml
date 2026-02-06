@@ -5,6 +5,35 @@
     <!-- Content descriptions -->
     <string name="github_url_content_description">GitHub repository</string>
     <string name="themes_content_description">Selected app theme</string>
+    <string name="cd_close_settings">Close settings</string>
+    <string name="cd_open_settings">Open settings</string>
+    <string name="cd_navigate_back">Back</string>
+    <string name="cd_show_parameters">Show parameters</string>
+    <string name="cd_hide_parameters">Hide parameters</string>
+    <string name="cd_regenerate_chart">Regenerate chart</string>
+    <string name="cd_refresh_data">Refresh data</string>
+    <string name="cd_play_live_updates">Start live updates</string>
+    <string name="cd_pause_live_updates">Pause live updates</string>
+    <string name="cd_select_theme">Select theme %1$d</string>
+
+    <!-- Drawer -->
+    <string name="drawer_header_title">Settings</string>
+    <string name="drawer_header_subtitle">Personalize your charts</string>
+    <string name="drawer_section_appearance">Appearance</string>
+    <string name="drawer_title_dark_mode">Dark mode</string>
+    <string name="drawer_dark_mode_subtitle">Current: %1$s</string>
+    <string name="drawer_title_dynamic_colors">Dynamic colors</string>
+    <string name="drawer_dynamic_colors_subtitle">Use Material You colors</string>
+    <string name="drawer_section_themes">Themes</string>
+    <string name="drawer_dynamic_colors_disable_hint">Disable dynamic colors to choose a theme.</string>
+    <string name="drawer_section_links">Links</string>
+    <string name="drawer_title_github">GitHub</string>
+    <string name="drawer_github_subtitle">Star the project or file an issue</string>
+
+    <!-- Settings -->
+    <string name="dark_mode_system">System</string>
+    <string name="dark_mode_on">On</string>
+    <string name="dark_mode_off">Off</string>
 
     <!-- Charts title -->
     <string name="pie_chart">Pie</string>

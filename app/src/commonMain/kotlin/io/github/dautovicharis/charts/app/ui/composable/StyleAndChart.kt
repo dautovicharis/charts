@@ -9,15 +9,15 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
@@ -25,7 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,45 +32,46 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import chartsproject.app.generated.resources.Res
+import chartsproject.app.generated.resources.cd_hide_parameters
+import chartsproject.app.generated.resources.cd_refresh_data
+import chartsproject.app.generated.resources.cd_regenerate_chart
+import chartsproject.app.generated.resources.cd_show_parameters
 import chartsproject.app.generated.resources.ic_replay
 import chartsproject.app.generated.resources.ic_visibility_off
 import chartsproject.app.generated.resources.ic_visibility_on
 import org.jetbrains.compose.resources.painterResource
-import kotlin.random.Random
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StyleAndChartComponent(
+    modifier: Modifier = Modifier,
     tableItems: StyleItems,
     columns: List<String> = listOf("Parameter", "Value"),
     buttonsVisibility: Boolean = true,
+    extraButtons: @Composable RowScope.() -> Unit = {},
     chartItem: @Composable () -> Unit,
     onRefresh: () -> Unit
 ) {
-    val extraBold = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
-    val columnWeight = 1f / columns.size
-    val outerPadding = 15.dp
+    val titleStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
+    val columnWeight = if (columns.isNotEmpty()) 1f / columns.size else 1f
+    val contentPadding = 16.dp
 
-    val (tableItemsVisible, setTableItemsVisible) = remember { mutableStateOf(!buttonsVisibility) }
-    val chartItemKey = remember { mutableIntStateOf(0) }
+    var tableItemsVisible by remember { mutableStateOf(!buttonsVisibility) }
+    var chartItemKey by remember { mutableIntStateOf(0) }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(outerPadding)
+            .padding(contentPadding)
     ) {
         Text(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(bottom = 12.dp),
             text = tableItems.name,
-            style = extraBold,
+            style = titleStyle,
             color = MaterialTheme.colorScheme.onSurface
         )
 
@@ -83,8 +83,7 @@ fun StyleAndChartComponent(
             StyleAndChartContent(
                 columns = columns,
                 items = tableItems.items,
-                columnWeight = columnWeight,
-                outerPadding = outerPadding
+                columnWeight = columnWeight
             )
         }
 
@@ -93,8 +92,9 @@ fun StyleAndChartComponent(
         if (buttonsVisibility) {
             StyleAndChartButtons(
                 tableItemsVisible = tableItemsVisible,
-                setTableItemsVisible = setTableItemsVisible,
-                chartItemKey = chartItemKey,
+                onToggleTable = { tableItemsVisible = !tableItemsVisible },
+                onRegenerateChart = { chartItemKey += 1 },
+                extraButtons = extraButtons,
                 onRefresh = onRefresh
             )
         }
@@ -105,48 +105,45 @@ fun StyleAndChartComponent(
 private fun StyleAndChartContent(
     columns: List<String>,
     items: List<StyleItem>,
-    columnWeight: Float,
-    outerPadding: Dp
+    columnWeight: Float
 ) {
     Column(
-        modifier = Modifier
-            .wrapContentSize()
+        modifier = Modifier.fillMaxWidth()
     ) {
         // Header
         Row(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(horizontal = outerPadding)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            columns.forEach { column ->
+            columns.forEachIndexed { index, column ->
                 StyleAndChartItemRow(
                     text = column,
                     weight = columnWeight,
                     fontWeight = FontWeight.Medium
                 )
-                Spacer(modifier = Modifier.width(1.dp))
+                if (index < columns.lastIndex) {
+                    Spacer(modifier = Modifier.width(1.dp))
+                }
             }
         }
 
         // Items
-        items.forEach {
+        items.forEach { item ->
             Row(
                 Modifier
-                    .wrapContentSize()
-                    .padding(start = outerPadding, end = outerPadding, bottom = 2.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 2.dp)
                     .border(
                         BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface),
                         shape = MaterialTheme.shapes.small
                     )
-                    .clip(MaterialTheme.shapes.small)
             ) {
-                StyleAndChartItemRow(text = it.name, weight = columnWeight)
+                StyleAndChartItemRow(text = item.name, weight = columnWeight)
                 Spacer(modifier = Modifier.width(1.dp))
                 StyleAndChartItemRow(
-                    text = it.value,
+                    text = item.value,
                     weight = columnWeight,
-                    color = it.color,
-                    isChanged = it.isChanged
+                    color = item.color,
+                    isChanged = item.isChanged
                 )
             }
         }
@@ -161,28 +158,35 @@ private fun RowScope.StyleAndChartItemRow(
     color: Color? = null,
     isChanged: Boolean = false
 ) {
-    val localDensity = LocalDensity.current
-    var textHeight by remember { mutableStateOf(0.dp) }
     val textFontWeight = if (isChanged) FontWeight.SemiBold else fontWeight
 
-    Row(modifier = Modifier.weight(weight)) {
+    if (color == null) {
         Text(
             modifier = Modifier
-                .weight(0.9f)
-                .onGloballyPositioned {
-                    textHeight = it.size.height.dp
-                    textHeight = with(localDensity) { it.size.height.toDp() }
-                }
+                .weight(weight)
                 .padding(5.dp),
             text = text,
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = textFontWeight
         )
-        color?.let {
+    } else {
+        Row(
+            modifier = Modifier
+                .weight(weight)
+                .height(IntrinsicSize.Min)
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(0.9f)
+                    .padding(5.dp),
+                text = text,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = textFontWeight
+            )
             Box(
                 modifier = Modifier
                     .weight(0.1f)
-                    .height(textHeight)
+                    .fillMaxHeight()
                     .background(color)
                     .border(0.5.dp, MaterialTheme.colorScheme.onSurface)
             )
@@ -193,15 +197,13 @@ private fun RowScope.StyleAndChartItemRow(
 @Composable
 private fun StyleAndChartChartItem(
     chartItem: @Composable () -> Unit,
-    chartItemKey: MutableState<Int>
+    chartItemKey: Int
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        key(chartItemKey.value) {
+        key(chartItemKey) {
             chartItem()
         }
     }
@@ -210,42 +212,48 @@ private fun StyleAndChartChartItem(
 @Composable
 private fun StyleAndChartButtons(
     tableItemsVisible: Boolean,
-    setTableItemsVisible: (Boolean) -> Unit,
-    chartItemKey: MutableState<Int>,
+    onToggleTable: () -> Unit,
+    onRegenerateChart: () -> Unit,
+    extraButtons: @Composable RowScope.() -> Unit,
     onRefresh: () -> Unit
 ) {
+    val visibilityIcon =
+        if (tableItemsVisible) Res.drawable.ic_visibility_on else Res.drawable.ic_visibility_off
+    val visibilityContentDescription = stringResource(
+        if (tableItemsVisible) Res.string.cd_hide_parameters else Res.string.cd_show_parameters
+    )
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         IconButton(
-            onClick = { setTableItemsVisible(!tableItemsVisible) }
+            onClick = onToggleTable
         ) {
             Icon(
-                painter = painterResource(
-                    if (tableItemsVisible) Res.drawable.ic_visibility_on else Res.drawable.ic_visibility_off),
+                painter = painterResource(visibilityIcon),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = null
+                contentDescription = visibilityContentDescription
             )
         }
 
         IconButton(
-            onClick = {
-                chartItemKey.value = Random.nextInt()
-            }
+            onClick = onRegenerateChart
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ic_replay),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = null
+                contentDescription = stringResource(Res.string.cd_regenerate_chart)
             )
         }
+
+        extraButtons()
 
         IconButton(onClick = onRefresh) {
             Icon(
                 imageVector = Icons.Filled.Refresh,
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = null
+                contentDescription = stringResource(Res.string.cd_refresh_data)
             )
         }
     }
