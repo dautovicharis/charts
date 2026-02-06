@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable static exports for Vercel
-  output: 'standalone',
-  
   // Enable trailing slashes for clean URLs
   trailingSlash: false,
   
