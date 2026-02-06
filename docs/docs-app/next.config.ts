@@ -29,22 +29,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  
-  // Rewrites to serve static assets
-  async rewrites() {
-    return [
-      // Serve static API docs
-      {
-        source: '/static/api/:version/:path*',
-        destination: '/api-static/:version/:path*',
-      },
-      // Serve static demo assets
-      {
-        source: '/static/demo/:version/:path*',
-        destination: '/demo-static/:version/:path*',
-      },
-    ];
-  },
 };
 
 export default nextConfig;
