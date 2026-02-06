@@ -28,11 +28,11 @@ tasks.register("chartsTest") {
 tasks.register("chartsCheck") {
     group = "Charts"
     description = "Build and tests for the charts project"
-    dependsOn("ktlintCheck")
+    dependsOn(getTasksByName("ktlintCheck", true))
     dependsOn("build")
     dependsOn("chartsTest")
 
-    tasks.findByName("build")?.mustRunAfter("ktlintCheck")
+    tasks.findByName("build")?.mustRunAfter(getTasksByName("ktlintCheck", true))
     tasks.findByName("chartsTest")?.mustRunAfter("build")
 }
 
