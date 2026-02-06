@@ -18,7 +18,8 @@ internal fun MultiChartData.normalizeByMinMax(
 
 internal fun ChartData.normalizeBarValues(
     minValue: Double,
-    maxValue: Double
+    maxValue: Double,
+    useFixedRange: Boolean
 ): List<Float> {
     val rangeValue = maxValue - minValue
     if (rangeValue == 0.0) {
@@ -35,8 +36,16 @@ internal fun ChartData.normalizeBarValues(
     return points.map { value ->
         val clamped = value.coerceIn(minValue, maxValue)
         when {
-            allPositive -> (clamped / maxValue).toFloat()
-            allNegative -> (clamped / kotlin.math.abs(minValue)).toFloat()
+            allPositive -> if (useFixedRange) {
+                ((clamped - minValue) / rangeValue).toFloat()
+            } else {
+                (clamped / maxValue).toFloat()
+            }
+            allNegative -> if (useFixedRange) {
+                ((clamped - maxValue) / rangeValue).toFloat()
+            } else {
+                (clamped / kotlin.math.abs(minValue)).toFloat()
+            }
             else -> (clamped / rangeValue).toFloat()
         }
     }

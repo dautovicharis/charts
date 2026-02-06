@@ -43,11 +43,12 @@ internal fun BarChart(
     val barColor = style.barColor
     val isPreview = LocalInspectionMode.current
     val valueAnimationSpec = remember { AnimationSpec.barChart(0) }
+    val hasFixedRange = style.minValue != null || style.maxValue != null
     val (fixedMin, fixedMax) = remember(chartData, style) {
         chartData.resolveBarRange(style.minValue, style.maxValue)
     }
-    val targetNormalized = remember(chartData, fixedMin, fixedMax) {
-        chartData.normalizeBarValues(fixedMin, fixedMax)
+    val targetNormalized = remember(chartData, fixedMin, fixedMax, hasFixedRange) {
+        chartData.normalizeBarValues(fixedMin, fixedMax, hasFixedRange)
     }
     val initialValues = remember(chartData.points.size, isPreview, animateOnStart) {
         if (isPreview || !animateOnStart) targetNormalized else null
