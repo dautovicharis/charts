@@ -38,12 +38,12 @@ tasks.register("chartsCheck") {
 
 tasks.register("generateJsDemo") {
     group = "Charts"
-    description = "Builds the JS app and copies necessary files to docs/src/jsdemo"
+    description = "Builds the JS app and copies necessary files to docs/static/demo/snapshot"
 
     dependsOn(getTasksByName("jsBrowserDistribution", true))
     doLast {
         val buildDir = file("app/build/dist/js/productionExecutable")
-        val destinationDir = file("docs/src/jsdemo")
+        val destinationDir = file("docs/static/demo/snapshot")
 
         if (!destinationDir.exists()) {
             destinationDir.mkdirs()
@@ -60,9 +60,9 @@ tasks.register("generateJsDemo") {
 
 tasks.register("generateDocs") {
     group = "Charts"
-    description = "Generate the documentation with version index page"
+    description = "Generate Dokka API docs and JS demo to docs/static/"
 
     dependsOn("charts:dokkaGenerate")
     dependsOn("generateJsDemo")
-    println("✅Documentation generated successfully!")
+    println("✅Documentation generated successfully to docs/static/!")
 }

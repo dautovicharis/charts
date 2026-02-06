@@ -104,7 +104,7 @@ dokka {
     }
 
     dokkaPublications.html {
-        outputDirectory.set(file(project.rootDir.resolve("docs/src/api")))
+        outputDirectory.set(file(project.rootDir.resolve("docs/static/api/snapshot")))
     }
 
     pluginsConfiguration {

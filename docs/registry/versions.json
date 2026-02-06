@@ -1,0 +1,31 @@
+{
+  "versions": [
+    {
+      "id": "snapshot",
+      "label": "Snapshot",
+      "wikiRoot": "/docs/content/snapshot/wiki",
+      "apiBase": "/docs/static/api/snapshot",
+      "demoBase": "/docs/static/demo/snapshot",
+      "releasedAt": "2026-02-06",
+      "notes": "Latest development snapshot"
+    },
+    {
+      "id": "2.0.1",
+      "label": "2.0.1",
+      "wikiRoot": "/docs/content/2.0.1/wiki",
+      "apiBase": "/docs/static/api/2.0.1",
+      "demoBase": "/docs/static/demo/2.0.1",
+      "releasedAt": "2024-11-02",
+      "notes": "Latest stable release with ProGuard fixes and Compose 1.9.2"
+    },
+    {
+      "id": "2.0.0",
+      "label": "2.0.0",
+      "wikiRoot": "/docs/content/2.0.0/wiki",
+      "apiBase": "/docs/static/api/2.0.0",
+      "demoBase": "/docs/static/demo/2.0.0",
+      "releasedAt": "2024-10-01",
+      "notes": "Initial 2.0 release"
+    }
+  ]
+}

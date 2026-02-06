@@ -1,78 +1,80 @@
-# Documentation Management
+# Charts Documentation
 
-This directory contains the documentation for the Charts library, built using Dokka, MkDocs with Material theme and versioned using Mike.
+A modern documentation site for the Charts library with versioned content, API documentation, and interactive playground.
 
-## Prerequisites
+## Structure
 
-1. Install required tools:
-```bash
-pip install mkdocs mkdocs-material mike
+```
+docs/
+├── docs-app/          # Next.js documentation application
+├── content/           # Versioned wiki content (Markdown/MDX)
+│   └── v2/
+│       └── wiki/      # Wiki pages for v2
+├── static/            # Generated static assets
+│   ├── api/           # Dokka-generated API docs per version
+│   │   └── v2/
+│   └── demo/          # Kotlin/JS demo output per version
+│       └── v2/
+└── registry/
+    └── versions.json  # Version registry (source of truth)
 ```
 
-## Creating New Documentation Version
-Update `chartsVersion` in the `buildSrc/../Config.kt` file if necessary.
+## Getting Started
 
-### 1. Generate Documentation
-Generate the API documentation and JS demo:
-```bash
-./gradlew generateDocs
-```
-This task:
-- Generates API documentation with Dokka
-- Builds and copies JS demo files
-- Places files in the correct directories
+### Prerequisites
 
-### 2. Deploy New Version
-From the `docs` directory:
-```bash
-cd docs
-mike deploy X.Y.Z latest
-```
-Replace `X.Y.Z` with your version number (e.g., `2.0.1`).
+- Node.js 18+
+- npm
 
-### 3. Set Default Version (Optional)
-If this should be the default version shown to users:
+### Development
+
 ```bash
-mike set-default X.Y.Z
+cd docs-app
+npm install
+npm run dev
 ```
 
-### 4. Push to GitHub
-To deploy to GitHub Pages:
+The documentation site will be available at `http://localhost:3000`.
+
+### Building
+
 ```bash
-mike deploy X.Y.Z latest --push
+npm run build
+npm run start
 ```
 
-## Local Preview
+## Version Registry
 
-Preview documentation locally:
-```bash
-# Preview current version
-mkdocs build
-mkdocs serve
+The version registry at `registry/versions.json` is the source of truth for all documentation versions. Each version entry includes:
 
-# Preview all versions
-mike serve
-```
+- `id` - Unique version identifier (e.g., "v2")
+- `label` - Display label (e.g., "2.x")
+- `wikiRoot` - Path to wiki content
+- `apiBase` - Path to Dokka API docs
+- `demoBase` - Path to JS demo (optional)
+- `releasedAt` - Release date
+- `notes` - Optional release notes
 
-## Documentation Structure
+## Adding a New Version
 
-- `src/api/` - Generated Dokka API documentation
-- `src/jsdemo/` - Generated JS demo files
-- `mkdocs.yml` - MkDocs configuration
-- `public-site/` - Generated mkdocs documentation site
+1. Create version content folder: `content/vX/wiki/`
+2. Add required pages: `index.md`
+3. Generate Dokka output: `static/api/vX/`
+4. Generate JS demo (if enabled): `static/demo/vX/`
+5. Update `registry/versions.json` with the new version entry
+6. Create a PR against `main`
 
-## Version Management
+## Content Guidelines
 
-Each version maintains its own:
-- API documentation
-- Navigation structure
-- JS demo
+- Wiki pages are plain Markdown (`.md`) or MDX (`.mdx`)
+- No required frontmatter (optional `title`, `description`, `order`)
+- Navigation order follows file structure
+- Include release notes in the version `index.md`
 
-The version selector in the documentation header allows users to switch between versions.
+## Deployment
 
-## References
+The site is deployed on Vercel. Any push to `main` triggers a new deployment.
 
-- [Dokka](https://kotlin.github.io/dokka/)
-- [MkDocs](https://www.mkdocs.org/)
-- [MkDocs Material Theme](https://squidfunk.github.io/mkdocs-material/)
-- [Mike](https://github.com/jimporter/mike)
+## Legacy Versions
+
+Legacy versions (v1, v1.1) include wiki and API docs only. The playground is disabled for legacy versions to avoid rebuilding historical demos.
