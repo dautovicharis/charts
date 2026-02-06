@@ -15,12 +15,11 @@ internal const val CHARTS_PREVIEW_DEVICE: String = "spec:width=411dp,height=891d
 @Preview(
     name = "Light",
     uiMode = UI_MODE_NIGHT_NO or UI_MODE_TYPE_NORMAL,
-    device = CHARTS_PREVIEW_DEVICE
+    device = CHARTS_PREVIEW_DEVICE,
 )
 @Preview(
     name = "Dark",
     uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL,
-    device = CHARTS_PREVIEW_DEVICE
+    device = CHARTS_PREVIEW_DEVICE,
 )
 internal annotation class ChartsPreviewLightDark
-

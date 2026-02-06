@@ -18,41 +18,47 @@ private fun parseStringToDouble(value: String): Double {
 internal fun List<Double>.toChartData(
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartData = ChartData(
-    this.mapIndexed { index, it ->
-        (if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${it}${postfix}") to it
-    }
-)
+    labels: List<String>? = null,
+): ChartData =
+    ChartData(
+        this.mapIndexed { index, it ->
+            (if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${it}$postfix") to it
+        },
+    )
 
 @JvmName("toFloatChartData")
 internal fun List<Float>.toChartData(
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartData = ChartData(
-    this.mapIndexed { index, it ->
-        (if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${it}${postfix}") to it.toDouble()
-    }
-)
+    labels: List<String>? = null,
+): ChartData =
+    ChartData(
+        this.mapIndexed { index, it ->
+            (if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${it}$postfix") to it.toDouble()
+        },
+    )
 
 @JvmName("toStringChartData")
 internal fun List<String>.toChartData(
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartData = ChartData(this.mapIndexed { index, value ->
-    val label = if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${value}${postfix}"
-    label to parseStringToDouble(value)
-})
+    labels: List<String>? = null,
+): ChartData =
+    ChartData(
+        this.mapIndexed { index, value ->
+            val label = if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${value}$postfix"
+            label to parseStringToDouble(value)
+        },
+    )
 
 @JvmName("toIntChartData")
 internal fun List<Int>.toChartData(
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartData = ChartData(
-    this.mapIndexed { index, it ->
-        (if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${it}${postfix}") to it.toDouble()
-    }
-)
+    labels: List<String>? = null,
+): ChartData =
+    ChartData(
+        this.mapIndexed { index, it ->
+            (if (!labels.isNullOrEmpty()) labels[index] else "${prefix}${it}$postfix") to it.toDouble()
+        },
+    )

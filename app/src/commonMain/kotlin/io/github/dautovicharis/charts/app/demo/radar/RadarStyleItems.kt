@@ -22,11 +22,9 @@ object RadarChartStyleItems {
 }
 
 @Composable
-fun radarChartTableItems(
-    currentStyle: RadarChartStyle
-): StyleItems {
+fun radarChartTableItems(currentStyle: RadarChartStyle): StyleItems {
     return ChartStyleItems(
         currentStyle = currentStyle,
-        defaultStyle = RadarChartDefaults.style()
+        defaultStyle = RadarChartDefaults.style(),
     )
 }

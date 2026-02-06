@@ -12,7 +12,7 @@ import kotlin.math.sin
 internal fun seriesAnimationProgress(
     index: Int,
     total: Int,
-    animationProgress: Float
+    animationProgress: Float,
 ): Float {
     if (total <= 1) return animationProgress.coerceIn(0f, 1f)
     val staggerWindow = 0.45f
@@ -25,7 +25,7 @@ internal fun seriesAnimationProgress(
 internal fun axisIndexForOffset(
     offset: Offset,
     size: IntSize,
-    axisCount: Int
+    axisCount: Int,
 ): Int {
     if (axisCount <= 0) return NO_SELECTION
     val center = Offset(size.width / 2f, size.height / 2f)
@@ -46,7 +46,7 @@ internal fun axisIndexForOffset(
 internal fun buildAxisLabelPositions(
     axisCount: Int,
     center: Offset,
-    radius: Float
+    radius: Float,
 ): List<Offset> {
     if (axisCount == 0) return emptyList()
     val startAngle = (-PI / 2f).toFloat()
@@ -55,7 +55,7 @@ internal fun buildAxisLabelPositions(
         val angle = startAngle + angleStep * index
         Offset(
             x = center.x + cos(angle) * radius,
-            y = center.y + sin(angle) * radius
+            y = center.y + sin(angle) * radius,
         )
     }
 }

@@ -11,18 +11,18 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class NormalizationTest {
-
     @Test
     fun normalizeBarValues_whenZeroRange_usesSign() {
         // Arrange
         val chartData = listOf(-2.0f, 0.0f, 3.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = 5.0,
-            maxValue = 5.0,
-            useFixedRange = true
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = 5.0,
+                maxValue = 5.0,
+                useFixedRange = true,
+            )
 
         // Assert
         assertContentEquals(expected = listOf(-1f, 0f, 1f), actual = normalized)
@@ -34,16 +34,17 @@ class NormalizationTest {
         val chartData = listOf(-20.0f, -10.0f, 0.0f, 10.0f, 20.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = -10.0,
-            maxValue = 10.0,
-            useFixedRange = true
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = -10.0,
+                maxValue = 10.0,
+                useFixedRange = true,
+            )
 
         // Assert
         assertContentEquals(
             expected = listOf(-0.5f, -0.5f, 0f, 0.5f, 0.5f),
-            actual = normalized
+            actual = normalized,
         )
     }
 
@@ -53,11 +54,12 @@ class NormalizationTest {
         val chartData = listOf(10.0f, 25.0f, 50.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = 10.0,
-            maxValue = 50.0,
-            useFixedRange = false
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = 10.0,
+                maxValue = 50.0,
+                useFixedRange = false,
+            )
 
         // Assert
         assertContentEquals(expected = listOf(0.2f, 0.5f, 1f), actual = normalized)
@@ -69,11 +71,12 @@ class NormalizationTest {
         val chartData = listOf(25.0f, 50.0f, 125.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = 50.0,
-            maxValue = 100.0,
-            useFixedRange = true
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = 50.0,
+                maxValue = 100.0,
+                useFixedRange = true,
+            )
 
         // Assert
         assertContentEquals(expected = listOf(0f, 0f, 1f), actual = normalized)
@@ -85,11 +88,12 @@ class NormalizationTest {
         val chartData = listOf(10.0f, 25.0f, 50.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = 10.0,
-            maxValue = 50.0,
-            useFixedRange = true
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = 10.0,
+                maxValue = 50.0,
+                useFixedRange = true,
+            )
 
         // Assert
         assertContentEquals(expected = listOf(0f, 0.375f, 1f), actual = normalized)
@@ -101,11 +105,12 @@ class NormalizationTest {
         val chartData = listOf(-50.0f, -25.0f, -10.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = -50.0,
-            maxValue = -10.0,
-            useFixedRange = false
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = -50.0,
+                maxValue = -10.0,
+                useFixedRange = false,
+            )
 
         // Assert
         assertContentEquals(expected = listOf(-1f, -0.5f, -0.2f), actual = normalized)
@@ -117,11 +122,12 @@ class NormalizationTest {
         val chartData = listOf(-50.0f, -25.0f, -10.0f).toChartData()
 
         // Act
-        val normalized = chartData.normalizeBarValues(
-            minValue = -50.0,
-            maxValue = -10.0,
-            useFixedRange = true
-        )
+        val normalized =
+            chartData.normalizeBarValues(
+                minValue = -50.0,
+                maxValue = -10.0,
+                useFixedRange = true,
+            )
 
         // Assert
         assertContentEquals(expected = listOf(-1f, -0.375f, 0f), actual = normalized)
@@ -143,13 +149,15 @@ class NormalizationTest {
     @Test
     fun normalizeStackedValues_returnsNormalizedSums() {
         // Arrange
-        val data = MultiChartData(
-            items = listOf(
-                ChartDataItem("A", listOf(1.0f, 1.0f).toChartData()),
-                ChartDataItem("B", listOf(1.0f, 3.0f).toChartData())
-            ),
-            title = "Title"
-        )
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem("A", listOf(1.0f, 1.0f).toChartData()),
+                        ChartDataItem("B", listOf(1.0f, 3.0f).toChartData()),
+                    ),
+                title = "Title",
+            )
 
         // Act
         val normalized = data.normalizeStackedValues()
@@ -161,13 +169,15 @@ class NormalizationTest {
     @Test
     fun normalizeStackedValues_whenAllZero_returnsZeros() {
         // Arrange
-        val data = MultiChartData(
-            items = listOf(
-                ChartDataItem("A", listOf(0.0f, 0.0f).toChartData()),
-                ChartDataItem("B", listOf(0.0f, 0.0f).toChartData())
-            ),
-            title = "Title"
-        )
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem("A", listOf(0.0f, 0.0f).toChartData()),
+                        ChartDataItem("B", listOf(0.0f, 0.0f).toChartData()),
+                    ),
+                title = "Title",
+            )
 
         // Act
         val normalized = data.normalizeStackedValues()

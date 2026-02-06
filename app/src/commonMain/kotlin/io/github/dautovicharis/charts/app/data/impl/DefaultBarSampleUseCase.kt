@@ -11,7 +11,11 @@ class DefaultBarSampleUseCase : BarSampleUseCase {
         return barInitialValues.toChartDataSet(title = title)
     }
 
-    override fun barDataSet(range: IntRange, numOfPoints: IntRange, title: String): ChartDataSet {
+    override fun barDataSet(
+        range: IntRange,
+        numOfPoints: IntRange,
+        title: String,
+    ): ChartDataSet {
         val points = numOfPoints.random()
         val values = List(points) { range.random().toFloat() }
         return values.toChartDataSet(title = title)

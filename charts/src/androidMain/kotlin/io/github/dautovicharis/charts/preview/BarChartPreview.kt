@@ -11,7 +11,7 @@ import io.github.dautovicharis.charts.style.BarChartDefaults
 private fun BarChartPreview() {
     BarChart(
         dataSet = Mock.barChart(),
-        style = BarChartDefaults.style()
+        style = BarChartDefaults.style(),
     )
 }
 
@@ -45,7 +45,7 @@ private fun BarChartError() {
     ChartsDefaultTheme {
         BarChart(
             dataSet = Mock.barChart(1),
-            style = BarChartDefaults.style()
+            style = BarChartDefaults.style(),
         )
     }
 }

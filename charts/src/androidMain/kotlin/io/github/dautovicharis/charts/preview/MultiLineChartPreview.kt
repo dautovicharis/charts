@@ -10,27 +10,28 @@ import io.github.dautovicharis.charts.preview.mock.Mock
 import io.github.dautovicharis.charts.style.ChartViewDefaults
 import io.github.dautovicharis.charts.style.LineChartDefaults
 
-
 @Composable
 private fun MultiLineChartPreview() {
-    val colors = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.secondary,
-        MaterialTheme.colorScheme.tertiary,
-        MaterialTheme.colorScheme.error
-    )
+    val colors =
+        listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.tertiary,
+            MaterialTheme.colorScheme.error,
+        )
 
-    val style = LineChartDefaults.style(
-        bezier = true,
-        lineColors = colors,
-        dragPointSize = 5f,
-        pointVisible = true,
-        chartViewStyle = ChartViewDefaults.style(width = 300.dp)
-    )
+    val style =
+        LineChartDefaults.style(
+            bezier = true,
+            lineColors = colors,
+            dragPointSize = 5f,
+            pointVisible = true,
+            chartViewStyle = ChartViewDefaults.style(width = 300.dp),
+        )
 
     LineChart(
         dataSet = Mock.lineChart(),
-        style = style
+        style = style,
     )
 }
 
@@ -61,24 +62,26 @@ private fun MultiLineChartDynamic() {
 @Preview
 @Composable
 private fun MultiLineChartError() {
-    val colors = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.secondary,
-        MaterialTheme.colorScheme.tertiary
-    )
+    val colors =
+        listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.tertiary,
+        )
 
-    val style = LineChartDefaults.style(
-        bezier = true,
-        lineColors = colors,
-        dragPointSize = 5f,
-        pointVisible = true,
-        chartViewStyle = ChartViewDefaults.style(width = 300.dp)
-    )
+    val style =
+        LineChartDefaults.style(
+            bezier = true,
+            lineColors = colors,
+            dragPointSize = 5f,
+            pointVisible = true,
+            chartViewStyle = ChartViewDefaults.style(width = 300.dp),
+        )
 
     ChartsDefaultTheme {
         LineChart(
             dataSet = Mock.lineChartInvalid(),
-            style = style
+            style = style,
         )
     }
 }

@@ -12,13 +12,13 @@ fun ChartDemo(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     extraButtons: @Composable RowScope.() -> Unit = {},
-    chartItem: @Composable () -> Unit
+    chartItem: @Composable () -> Unit,
 ) {
     StyleAndChartComponent(
         modifier = modifier.verticalScroll(rememberScrollState()),
         tableItems = styleItems,
         extraButtons = extraButtons,
         onRefresh = onRefresh,
-        chartItem = chartItem
+        chartItem = chartItem,
     )
 }

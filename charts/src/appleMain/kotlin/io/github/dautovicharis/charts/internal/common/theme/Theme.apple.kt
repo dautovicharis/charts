@@ -7,16 +7,17 @@ import androidx.compose.runtime.Composable
 internal actual fun ChartsDefaultTheme(
     darkTheme: Boolean,
     dynamicColor: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        darkTheme -> DarkColors
-        else -> LightColors
-    }
+    val colorScheme =
+        when {
+            darkTheme -> DarkColors
+            else -> LightColors
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

@@ -13,23 +13,32 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class RadarChartHelpersTest {
-
     private val eps = 0.0001f
     private val pixelEps = 0.01f
+
     private fun centerOf(size: IntSize) = Offset(size.width / 2f, size.height / 2f)
 
     private fun topOf(size: IntSize) = Offset(size.width / 2f, 0f + pixelEps)
+
     private fun rightOf(size: IntSize) = Offset(size.width - pixelEps, size.height / 2f)
+
     private fun bottomOf(size: IntSize) = Offset(size.width / 2f, size.height - pixelEps)
+
     private fun leftOf(size: IntSize) = Offset(0f + pixelEps, size.height / 2f)
 
-    private fun assertOffsetEquals(expected: Offset, actual: Offset, tolerance: Float = eps) {
+    private fun assertOffsetEquals(
+        expected: Offset,
+        actual: Offset,
+        tolerance: Float = eps,
+    ) {
         assertEquals(expected.x, actual.x, tolerance)
         assertEquals(expected.y, actual.y, tolerance)
     }
 
-    private fun distance(a: Offset, b: Offset): Float =
-        hypot((a.x - b.x).toDouble(), (a.y - b.y).toDouble()).toFloat()
+    private fun distance(
+        a: Offset,
+        b: Offset,
+    ): Float = hypot((a.x - b.x).toDouble(), (a.y - b.y).toDouble()).toFloat()
 
     @Test
     fun seriesAnimationProgress_singleSeries_returnsInputProgress() {
@@ -78,12 +87,17 @@ class RadarChartHelpersTest {
         }
 
         // Clear intent: 4-axis radar usually maps to top/right/bottom/left
-        val expected = listOf(
-            Offset(0f, -radius),   // top
-            Offset(radius, 0f),    // right
-            Offset(0f, radius),    // bottom
-            Offset(-radius, 0f),   // left
-        )
+        val expected =
+            listOf(
+                // top
+                Offset(0f, -radius),
+                // right
+                Offset(radius, 0f),
+                // bottom
+                Offset(0f, radius),
+                // left
+                Offset(-radius, 0f),
+            )
 
         expected.zip(positions).forEachIndexed { i, (e, a) ->
             assertOffsetEquals(e, a, eps)

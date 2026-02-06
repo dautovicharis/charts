@@ -16,9 +16,7 @@ object StackedBarChartStyleItems {
 }
 
 @Composable
-fun multiBarChartTableItems(
-    currentStyle: StackedBarChartStyle,
-): StyleItems {
+fun multiBarChartTableItems(currentStyle: StackedBarChartStyle): StyleItems {
     return ChartStyleItems(
         currentStyle = currentStyle,
         defaultStyle = StackedBarChartDefaults.style(),

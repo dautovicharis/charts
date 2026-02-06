@@ -72,23 +72,24 @@ fun SettingsDrawerContent(
     onThemeSelected: (Theme) -> Unit,
     onDarkModeToggle: () -> Unit,
     onDynamicToggle: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     val hasDynamicColors = LocalHasDynamicColorFeature.current
     val githubUrl = stringResource(Res.string.github_url)
     val uriHandler = LocalUriHandler.current
-    val darkModeLabel = stringResource(
-        when (themeState.darkMode) {
-            DarkModeSettings.System -> Res.string.dark_mode_system
-            DarkModeSettings.On -> Res.string.dark_mode_on
-            DarkModeSettings.Off -> Res.string.dark_mode_off
-        }
-    )
+    val darkModeLabel =
+        stringResource(
+            when (themeState.darkMode) {
+                DarkModeSettings.System -> Res.string.dark_mode_system
+                DarkModeSettings.On -> Res.string.dark_mode_on
+                DarkModeSettings.Off -> Res.string.dark_mode_off
+            },
+        )
 
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.surface,
         drawerShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp),
-        modifier = Modifier.width(320.dp)
+        modifier = Modifier.width(320.dp),
     ) {
         DrawerHeader(onClose = onClose)
 
@@ -100,13 +101,13 @@ fun SettingsDrawerContent(
                 Icon(
                     imageVector = Icons.Filled.DarkMode,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
             trailing = {
                 SettingBadge(text = darkModeLabel)
             },
-            onClick = onDarkModeToggle
+            onClick = onDarkModeToggle,
         )
 
         if (hasDynamicColors) {
@@ -114,7 +115,7 @@ fun SettingsDrawerContent(
                 title = stringResource(Res.string.drawer_title_dynamic_colors),
                 subtitle = stringResource(Res.string.drawer_dynamic_colors_subtitle),
                 checked = themeState.useDynamicColors,
-                onCheckedChange = { onDynamicToggle() }
+                onCheckedChange = { onDynamicToggle() },
             )
         }
 
@@ -124,12 +125,12 @@ fun SettingsDrawerContent(
                 text = stringResource(Res.string.drawer_dynamic_colors_disable_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
             )
         } else {
             ThemeSwatches(
                 themeState = themeState,
-                onThemeSelected = onThemeSelected
+                onThemeSelected = onThemeSelected,
             )
         }
 
@@ -141,10 +142,10 @@ fun SettingsDrawerContent(
                 Icon(
                     painter = painterResource(Res.drawable.ic_github),
                     contentDescription = stringResource(Res.string.github_url_content_description),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
-            onClick = { uriHandler.openUri(githubUrl) }
+            onClick = { uriHandler.openUri(githubUrl) },
         )
         Spacer(modifier = Modifier.height(20.dp))
     }
@@ -152,40 +153,42 @@ fun SettingsDrawerContent(
 
 @Composable
 private fun DrawerHeader(onClose: () -> Unit) {
-    val headerBrush = Brush.horizontalGradient(
-        listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
-            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.75f)
+    val headerBrush =
+        Brush.horizontalGradient(
+            listOf(
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
+                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.75f),
+            ),
         )
-    )
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(headerBrush)
-            .padding(18.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(headerBrush)
+                .padding(18.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column {
                 Text(
                     text = stringResource(Res.string.drawer_header_title),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
                 Text(
                     text = stringResource(Res.string.drawer_header_subtitle),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                 )
             }
             IconButton(onClick = onClose) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = stringResource(Res.string.cd_close_settings),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         }
@@ -198,7 +201,7 @@ private fun DrawerSectionTitle(text: String) {
         text = text,
         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
     )
 }
 
@@ -208,28 +211,31 @@ private fun DrawerSettingCard(
     subtitle: String,
     leading: @Composable () -> Unit,
     trailing: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-            .clickable(onClick = onClick)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 6.dp)
+                .clickable(onClick = onClick),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center,
             ) {
                 leading()
             }
@@ -238,12 +244,12 @@ private fun DrawerSettingCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 )
             }
             trailing?.invoke()
@@ -256,32 +262,35 @@ private fun DrawerToggleCard(
     title: String,
     subtitle: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 6.dp),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.16f)),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.16f)),
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.Filled.Tune,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary
+                    tint = MaterialTheme.colorScheme.secondary,
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
@@ -289,17 +298,17 @@ private fun DrawerToggleCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 )
             }
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange
+                onCheckedChange = onCheckedChange,
             )
         }
     }
@@ -308,11 +317,11 @@ private fun DrawerToggleCard(
 @Composable
 private fun ThemeSwatches(
     themeState: ThemesState,
-    onThemeSelected: (Theme) -> Unit
+    onThemeSelected: (Theme) -> Unit,
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item { Spacer(modifier = Modifier.width(16.dp)) }
         itemsIndexed(items = themeState.themes) { index, theme ->
@@ -321,28 +330,30 @@ private fun ThemeSwatches(
             FilledIconToggleButton(
                 checked = isSelectedTheme,
                 onCheckedChange = { onThemeSelected(theme) },
-                modifier = Modifier
-                    .size(40.dp)
-                    .semantics { contentDescription = themeContentDescription },
-                shape = CircleShape
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .semantics { contentDescription = themeContentDescription },
+                shape = CircleShape,
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(theme.light.primary)
-                        .border(
-                            width = if (isSelectedTheme) 2.dp else 0.dp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(28.dp)
+                            .clip(CircleShape)
+                            .background(theme.light.primary)
+                            .border(
+                                width = if (isSelectedTheme) 2.dp else 0.dp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                shape = CircleShape,
+                            ),
+                    contentAlignment = Alignment.Center,
                 ) {
                     if (isSelectedTheme) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_check),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
@@ -356,13 +367,13 @@ private fun ThemeSwatches(
 private fun SettingBadge(text: String) {
     Surface(
         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
         )
     }
 }

@@ -13,70 +13,74 @@ import kotlinx.coroutines.flow.update
 
 data class MenuState(
     val menuItems: List<ChartDestination>,
-    val selectedSubmenu: ChartSubmenuItem? = null
+    val selectedSubmenu: ChartSubmenuItem? = null,
 )
 
 enum class DarkModeSettings {
     System,
     On,
-    Off
+    Off,
 }
 
 data class ThemesState(
     val themes: List<Theme>,
     val selectedTheme: Theme,
     val darkMode: DarkModeSettings,
-    val useDynamicColors: Boolean
+    val useDynamicColors: Boolean,
 )
 
 class MainViewModel : ViewModel() {
-    private val _menuState = MutableStateFlow(
-        MenuState(
-            listOf(
-                ChartDestination.PieChartScreen,
-                ChartDestination.LineChartScreen,
-                ChartDestination.MultiLineChartScreen,
-                ChartDestination.BarChartScreen,
-                ChartDestination.RadarChartScreen,
-            )
+    private val _menuState =
+        MutableStateFlow(
+            MenuState(
+                listOf(
+                    ChartDestination.PieChartScreen,
+                    ChartDestination.LineChartScreen,
+                    ChartDestination.MultiLineChartScreen,
+                    ChartDestination.BarChartScreen,
+                    ChartDestination.RadarChartScreen,
+                ),
+            ),
         )
-    )
 
     val menuState: StateFlow<MenuState> = _menuState.asStateFlow()
 
-    private val _themeState = MutableStateFlow(
-        ThemesState(
-            themes = listOf(
-                deepRed,
-                blueViolet,
-                deepOceanBlue,
-                citrusGrove
+    private val _themeState =
+        MutableStateFlow(
+            ThemesState(
+                themes =
+                    listOf(
+                        deepRed,
+                        blueViolet,
+                        deepOceanBlue,
+                        citrusGrove,
+                    ),
+                selectedTheme = deepRed,
+                darkMode = DarkModeSettings.System,
+                useDynamicColors = false,
             ),
-            selectedTheme = deepRed,
-            darkMode = DarkModeSettings.System,
-            useDynamicColors = false
         )
-    )
 
     val themeState: StateFlow<ThemesState> = _themeState.asStateFlow()
 
     fun onThemeSelected(newTheme: Theme) {
         _themeState.update {
             it.copy(
-                selectedTheme = newTheme
+                selectedTheme = newTheme,
             )
         }
     }
 
     fun toggleDarkMode() {
         _themeState.update {
-            val newDarkMode = when (it.darkMode) {
-                DarkModeSettings.System -> DarkModeSettings.Off
-                DarkModeSettings.Off -> DarkModeSettings.On
-                DarkModeSettings.On -> DarkModeSettings.System
-            }
+            val newDarkMode =
+                when (it.darkMode) {
+                    DarkModeSettings.System -> DarkModeSettings.Off
+                    DarkModeSettings.Off -> DarkModeSettings.On
+                    DarkModeSettings.On -> DarkModeSettings.System
+                }
             it.copy(
-                darkMode = newDarkMode
+                darkMode = newDarkMode,
             )
         }
     }
@@ -84,7 +88,7 @@ class MainViewModel : ViewModel() {
     fun toggleDynamicColor() {
         _themeState.update {
             it.copy(
-                useDynamicColors = !it.useDynamicColors
+                useDynamicColors = !it.useDynamicColors,
             )
         }
     }

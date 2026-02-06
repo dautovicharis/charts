@@ -13,10 +13,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,7 +49,7 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
     AppTheme(
         theme = themeState.selectedTheme,
         useDynamicColors = themeState.useDynamicColors,
-        darkTheme = viewModel.resolveDarkTheme(isSystemInDarkTheme())
+        darkTheme = viewModel.resolveDarkTheme(isSystemInDarkTheme()),
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -59,9 +59,9 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
                     onThemeSelected = viewModel::onThemeSelected,
                     onDarkModeToggle = viewModel::toggleDarkMode,
                     onDynamicToggle = viewModel::toggleDynamicColor,
-                    onClose = { scope.launch { drawerState.close() } }
+                    onClose = { scope.launch { drawerState.close() } },
                 )
-            }
+            },
         ) {
             Scaffold(
                 topBar = {
@@ -72,7 +72,7 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
                                 IconButton(onClick = { navController.popBackStack() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = stringResource(Res.string.cd_navigate_back)
+                                        contentDescription = stringResource(Res.string.cd_navigate_back),
                                     )
                                 }
                             }
@@ -81,18 +81,18 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                 Icon(
                                     imageVector = Icons.Filled.Tune,
-                                    contentDescription = stringResource(Res.string.cd_open_settings)
+                                    contentDescription = stringResource(Res.string.cd_open_settings),
                                 )
                             }
-                        }
+                        },
                     )
-                }
+                },
             ) { innerPadding ->
                 Navigation(
                     navController = navController,
                     menuState = menuState,
                     onSubmenuSelected = viewModel::onSubmenuSelected,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
                 )
             }
         }
@@ -109,19 +109,20 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
 @Composable
 fun MainScreenContent(
     menuState: MenuState,
-    onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit
+    onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background,
     ) {
         ChartGallery(
             menuState = menuState,
             onSubmenuSelected = onSubmenuSelected,
             versionLabel = "Charts: ${BuildConfig.CHARTS_VERSION}",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
         )
     }
 }

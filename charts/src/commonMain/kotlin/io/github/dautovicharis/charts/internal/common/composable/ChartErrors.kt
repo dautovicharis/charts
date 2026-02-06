@@ -19,24 +19,29 @@ import io.github.dautovicharis.charts.style.ChartViewStyle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-internal fun ChartErrors(style: ChartViewStyle, errors: ImmutableList<String>) {
+internal fun ChartErrors(
+    style: ChartViewStyle,
+    errors: ImmutableList<String>,
+) {
     ChartsDefaultTheme(content = {
         Column(
-            modifier = style.modifierMain
-                .padding(15.dp)
-                .testTag(TestTags.CHART_ERROR)
+            modifier =
+                style.modifierMain
+                    .padding(15.dp)
+                    .testTag(TestTags.CHART_ERROR),
         ) {
             errors.forEach { error ->
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.errorContainer,
-                            shape = RoundedCornerShape(5.dp)
-                        )
-                        .padding(5.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.errorContainer,
+                                shape = RoundedCornerShape(5.dp),
+                            )
+                            .padding(5.dp),
                     text = "$error\n",
-                    color = MaterialTheme.colorScheme.onErrorContainer
+                    color = MaterialTheme.colorScheme.onErrorContainer,
                 )
                 Spacer(modifier = Modifier.height(5.dp))
             }

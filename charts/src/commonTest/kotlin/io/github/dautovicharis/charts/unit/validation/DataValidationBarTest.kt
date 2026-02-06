@@ -15,7 +15,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DataValidationBarTest {
-
     @Test
     fun validateBarData_invalidCategories_validationErrorsPresent() {
         // Arrange
@@ -31,7 +30,7 @@ class DataValidationBarTest {
         val expectedError =
             ValidationErrors.RULE_CATEGORIES_SIZE_MISMATCH.format(
                 dataSet.data.categories.size,
-                expectedCategoriesSize
+                expectedCategoriesSize,
             )
         assertTrue(validationErrors.isNotEmpty())
         assertEquals(validationErrors.first(), expectedError)

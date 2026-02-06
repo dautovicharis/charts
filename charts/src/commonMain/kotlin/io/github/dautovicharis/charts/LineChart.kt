@@ -22,19 +22,20 @@ fun LineChart(
     dataSet: ChartDataSet,
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val data = remember(dataSet) {
-        MultiChartData(
-            items = listOf(dataSet.data),
-            title = dataSet.data.label
-        )
-    }
+    val data =
+        remember(dataSet) {
+            MultiChartData(
+                items = listOf(dataSet.data),
+                title = dataSet.data.label,
+            )
+        }
     LineChartImpl(
         data = data,
         style = style,
         interactionEnabled = interactionEnabled,
-        animateOnStart = animateOnStart
+        animateOnStart = animateOnStart,
     )
 }
 
@@ -51,12 +52,12 @@ fun LineChart(
     dataSet: MultiChartDataSet,
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
     LineChartImpl(
         data = dataSet.data,
         style = style,
         interactionEnabled = interactionEnabled,
-        animateOnStart = animateOnStart
+        animateOnStart = animateOnStart,
     )
 }

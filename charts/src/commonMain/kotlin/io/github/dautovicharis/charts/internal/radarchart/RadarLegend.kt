@@ -30,15 +30,17 @@ internal fun RadarLegend(
     series: ImmutableList<String>,
     seriesColors: ImmutableList<Color>,
     categories: ImmutableList<String>,
-    categoryColors: ImmutableList<Color>
+    categoryColors: ImmutableList<Color>,
 ) {
     Column(
-        modifier = chartViewsStyle.modifierLegend.animateContentSize(
-            animationSpec = tween(
-                durationMillis = 300,
-                easing = LinearOutSlowInEasing
-            )
-        )
+        modifier =
+            chartViewsStyle.modifierLegend.animateContentSize(
+                animationSpec =
+                    tween(
+                        durationMillis = 300,
+                        easing = LinearOutSlowInEasing,
+                    ),
+            ),
     ) {
         if (series.isNotEmpty()) {
             LegendTitle("Series")
@@ -47,7 +49,7 @@ internal fun RadarLegend(
                 items = series,
                 colors = seriesColors,
                 fallbackColor = MaterialTheme.colorScheme.primary,
-                itemPadding = chartViewsStyle.innerPadding
+                itemPadding = chartViewsStyle.innerPadding,
             )
         }
 
@@ -62,7 +64,7 @@ internal fun RadarLegend(
                 items = categories,
                 colors = categoryColors,
                 fallbackColor = neutral,
-                itemPadding = chartViewsStyle.innerPadding
+                itemPadding = chartViewsStyle.innerPadding,
             )
         }
     }
@@ -73,7 +75,7 @@ private fun LegendTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -83,27 +85,29 @@ private fun LegendItems(
     items: ImmutableList<String>,
     colors: ImmutableList<Color>?,
     fallbackColor: Color,
-    itemPadding: androidx.compose.ui.unit.Dp
+    itemPadding: androidx.compose.ui.unit.Dp,
 ) {
     FlowRow {
         items.forEachIndexed { index, label ->
             val color = colors?.getOrNull(index) ?: fallbackColor
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(
-                    end = itemPadding,
-                    bottom = itemPadding / 2f
-                )
+                modifier =
+                    Modifier.padding(
+                        end = itemPadding,
+                        bottom = itemPadding / 2f,
+                    ),
             ) {
                 androidx.compose.foundation.layout.Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .background(color, shape = CircleShape)
+                    modifier =
+                        Modifier
+                            .size(10.dp)
+                            .background(color, shape = CircleShape),
                 )
                 Text(
                     text = label,
                     color = color,
-                    modifier = Modifier.padding(start = 6.dp)
+                    modifier = Modifier.padding(start = 6.dp),
                 )
             }
         }

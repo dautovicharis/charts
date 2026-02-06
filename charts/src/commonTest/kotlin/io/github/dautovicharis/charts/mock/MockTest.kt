@@ -5,8 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.internal.common.model.ChartDataType.FloatData
+import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.style.ChartViewStyle
 import io.github.dautovicharis.charts.style.LineChartStyle
@@ -28,52 +28,60 @@ internal object MockTest {
     private val categories = listOf("Jan", "Feb", "Mar", "Apr")
     val colors = listOf(Color.Red, Color.Green, Color.Cyan, Color.Black)
 
-    private val dataItems = listOf(
-        FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
-        SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
-        THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
-        FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM)
-    )
+    private val dataItems =
+        listOf(
+            FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
+            SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
+            THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
+            FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM),
+        )
 
-    val dataSet = ChartDataSet(
-        items = FloatData(listOf(10f, 20f, 30f, 40f)),
-        title = TITLE
-    )
+    val dataSet =
+        ChartDataSet(
+            items = FloatData(listOf(10f, 20f, 30f, 40f)),
+            title = TITLE,
+        )
 
-    val multiDataSet = MultiChartDataSet(
-        items = dataItems,
-        categories = categories,
-        title = TITLE
-    )
+    val multiDataSet =
+        MultiChartDataSet(
+            items = dataItems,
+            categories = categories,
+            title = TITLE,
+        )
 
     fun invalidMultiDataSet(): MultiChartDataSet {
-        val items = listOf(
-            FIRST_ITEM_NAME to FloatData(FIRST_ITEM.dropLast(1)),
-            SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
-            THIRD_ITEM_NAME to FloatData(THIRD_ITEM.dropLast(1)),
-            FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM)
-        )
+        val items =
+            listOf(
+                FIRST_ITEM_NAME to FloatData(FIRST_ITEM.dropLast(1)),
+                SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
+                THIRD_ITEM_NAME to FloatData(THIRD_ITEM.dropLast(1)),
+                FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM),
+            )
 
         return MultiChartDataSet(
             items = items,
             categories = categories.dropLast(1),
             title = TITLE,
-            prefix = "$"
+            prefix = "$",
         )
     }
 
-    fun invalidMultiDataSet(index: Int, empty: Boolean = false): MultiChartDataSet {
+    fun invalidMultiDataSet(
+        index: Int,
+        empty: Boolean = false,
+    ): MultiChartDataSet {
         val updatedDataItems = dataItems.toMutableList()
-        updatedDataItems[index] = if (empty) {
-            updatedDataItems[index].copy(second = FloatData(emptyList()))
-        } else {
-            updatedDataItems[index].copy(second = FloatData(updatedDataItems[index].second.values.drop(2)))
-        }
+        updatedDataItems[index] =
+            if (empty) {
+                updatedDataItems[index].copy(second = FloatData(emptyList()))
+            } else {
+                updatedDataItems[index].copy(second = FloatData(updatedDataItems[index].second.values.drop(2)))
+            }
 
         return MultiChartDataSet(
             items = updatedDataItems,
             categories = categories,
-            title = TITLE
+            title = TITLE,
         )
     }
 
@@ -81,7 +89,7 @@ internal object MockTest {
         return MultiChartDataSet(
             items = dataItems,
             categories = categories.drop(1),
-            title = TITLE
+            title = TITLE,
         )
     }
 
@@ -101,7 +109,7 @@ internal object MockTest {
             dragPointColor = Color.Red,
             dragPointColorSameAsLine = true,
             pointColorSameAsLine = true,
-            chartViewStyle = mockChartViewStyle()
+            chartViewStyle = mockChartViewStyle(),
         )
     }
 
@@ -111,7 +119,7 @@ internal object MockTest {
             barColors = barColors,
             barColor = Color.Red,
             space = Dp(10f),
-            chartViewStyle = mockChartViewStyle()
+            chartViewStyle = mockChartViewStyle(),
         )
     }
 
@@ -121,7 +129,7 @@ internal object MockTest {
             barColors = barColors,
             barColor = Color.Red,
             space = Dp(10f),
-            chartViewStyle = mockChartViewStyle()
+            chartViewStyle = mockChartViewStyle(),
         )
     }
 
@@ -134,7 +142,7 @@ internal object MockTest {
             borderColor = Color.Black,
             borderWidth = 2f,
             legendVisible = true,
-            chartViewStyle = mockChartViewStyle()
+            chartViewStyle = mockChartViewStyle(),
         )
     }
 

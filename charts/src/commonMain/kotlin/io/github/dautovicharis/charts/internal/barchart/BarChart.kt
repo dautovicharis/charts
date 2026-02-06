@@ -38,26 +38,30 @@ internal fun BarChart(
     style: BarChartStyle,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
-    onValueChanged: (Int) -> Unit = {}
+    onValueChanged: (Int) -> Unit = {},
 ) {
     val barColor = style.barColor
     val isPreview = LocalInspectionMode.current
     val valueAnimationSpec = remember { AnimationSpec.barChart(0) }
     val hasFixedRange = style.minValue != null || style.maxValue != null
-    val (fixedMin, fixedMax) = remember(chartData, style) {
-        chartData.resolveBarRange(style.minValue, style.maxValue)
-    }
-    val targetNormalized = remember(chartData, fixedMin, fixedMax, hasFixedRange) {
-        chartData.normalizeBarValues(fixedMin, fixedMax, hasFixedRange)
-    }
-    val initialValues = remember(chartData.points.size, isPreview, animateOnStart) {
-        if (isPreview || !animateOnStart) targetNormalized else null
-    }
-    val animatedValues = remember(chartData.points.size, isPreview, animateOnStart) {
-        chartData.points.mapIndexed { index, _ ->
-            Animatable(initialValues?.getOrNull(index) ?: 0f)
+    val (fixedMin, fixedMax) =
+        remember(chartData, style) {
+            chartData.resolveBarRange(style.minValue, style.maxValue)
         }
-    }
+    val targetNormalized =
+        remember(chartData, fixedMin, fixedMax, hasFixedRange) {
+            chartData.normalizeBarValues(fixedMin, fixedMax, hasFixedRange)
+        }
+    val initialValues =
+        remember(chartData.points.size, isPreview, animateOnStart) {
+            if (isPreview || !animateOnStart) targetNormalized else null
+        }
+    val animatedValues =
+        remember(chartData.points.size, isPreview, animateOnStart) {
+            chartData.points.mapIndexed { index, _ ->
+                Animatable(initialValues?.getOrNull(index) ?: 0f)
+            }
+        }
     val hasInitialized = remember { mutableStateOf(false) }
 
     LaunchedEffect(targetNormalized) {
@@ -72,7 +76,7 @@ internal fun BarChart(
                     } else {
                         animatable.animateTo(
                             targetValue = target,
-                            animationSpec = valueAnimationSpec
+                            animationSpec = valueAnimationSpec,
                         )
                     }
                 }
@@ -86,48 +90,50 @@ internal fun BarChart(
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
     val spacingPx = with(LocalDensity.current) { style.space.toPx() }
 
-    val interactionModifier = if (interactionEnabled) {
-        Modifier.pointerInput(Unit) {
-            detectHorizontalDragGestures(
-                onDragStart = { offset ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            position = offset,
-                            dataSize = chartData.points.count(),
-                            canvasSize = size,
-                            spacingPx = spacingPx
-                        )
-                    onValueChanged(selectedIndex)
-                },
-                onHorizontalDrag = { change, _ ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            position = change.position,
-                            dataSize = chartData.points.count(),
-                            canvasSize = size,
-                            spacingPx = spacingPx
-                        )
-                    onValueChanged(selectedIndex)
-                    change.consume()
-                },
-                onDragEnd = {
-                    selectedIndex = NO_SELECTION
-                    onValueChanged(NO_SELECTION)
-                },
-                onDragCancel = {
-                    selectedIndex = NO_SELECTION
-                    onValueChanged(NO_SELECTION)
-                }
-            )
+    val interactionModifier =
+        if (interactionEnabled) {
+            Modifier.pointerInput(Unit) {
+                detectHorizontalDragGestures(
+                    onDragStart = { offset ->
+                        selectedIndex =
+                            getSelectedIndex(
+                                position = offset,
+                                dataSize = chartData.points.count(),
+                                canvasSize = size,
+                                spacingPx = spacingPx,
+                            )
+                        onValueChanged(selectedIndex)
+                    },
+                    onHorizontalDrag = { change, _ ->
+                        selectedIndex =
+                            getSelectedIndex(
+                                position = change.position,
+                                dataSize = chartData.points.count(),
+                                canvasSize = size,
+                                spacingPx = spacingPx,
+                            )
+                        onValueChanged(selectedIndex)
+                        change.consume()
+                    },
+                    onDragEnd = {
+                        selectedIndex = NO_SELECTION
+                        onValueChanged(NO_SELECTION)
+                    },
+                    onDragCancel = {
+                        selectedIndex = NO_SELECTION
+                        onValueChanged(NO_SELECTION)
+                    },
+                )
+            }
+        } else {
+            Modifier
         }
-    } else {
-        Modifier
-    }
 
     Canvas(
-        modifier = style.modifier
-            .testTag(TestTags.BAR_CHART)
-            .then(interactionModifier),
+        modifier =
+            style.modifier
+                .testTag(TestTags.BAR_CHART)
+                .then(interactionModifier),
         onDraw = {
             drawBars(
                 style = style,
@@ -136,9 +142,9 @@ internal fun BarChart(
                 selectedIndex = selectedIndex,
                 barColor = barColor,
                 maxValue = maxValue,
-                minValue = minValue
+                minValue = minValue,
             )
-        }
+        },
     )
 }
 
@@ -149,18 +155,20 @@ private fun DrawScope.drawBars(
     selectedIndex: Int,
     barColor: Color,
     maxValue: Double,
-    minValue: Double
+    minValue: Double,
 ) {
     val rangeValue = maxValue - minValue
-    val baselineY = when {
-        rangeValue == 0.0 -> if (maxValue < 0.0) 0f else size.height
-        else -> (size.height * (maxValue / rangeValue)).toFloat()
-    }
-    val clampedBaselineY = when {
-        baselineY < 0f -> 0f
-        baselineY > size.height -> size.height
-        else -> baselineY
-    }
+    val baselineY =
+        when {
+            rangeValue == 0.0 -> if (maxValue < 0.0) 0f else size.height
+            else -> (size.height * (maxValue / rangeValue)).toFloat()
+        }
+    val clampedBaselineY =
+        when {
+            baselineY < 0f -> 0f
+            baselineY > size.height -> size.height
+            else -> baselineY
+        }
     val dataSize = normalizedValues.size
 
     normalizedValues.forEachIndexed { index, value ->
@@ -176,10 +184,11 @@ private fun DrawScope.drawBars(
         drawRect(
             color = barColor,
             topLeft = Offset(x = left, y = top.toFloat()),
-            size = Size(
-                width = barWidth * selectedBarScale,
-                height = barHeight
-            )
+            size =
+                Size(
+                    width = barWidth * selectedBarScale,
+                    height = barHeight,
+                ),
         )
     }
 }

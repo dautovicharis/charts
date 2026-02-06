@@ -8,11 +8,11 @@ internal const val PREVIEW_DEVICE: String = "spec:width=411dp,height=891dp,dpi=4
 @Preview(
     name = "Light",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    device = PREVIEW_DEVICE
+    device = PREVIEW_DEVICE,
 )
 @Preview(
     name = "Dark",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = PREVIEW_DEVICE
+    device = PREVIEW_DEVICE,
 )
 internal annotation class ScreenshotPreview

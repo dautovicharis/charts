@@ -28,7 +28,6 @@ private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 private val LIVE_LINE_POINTS_RANGE = 9..9
 
 object LineDemoStyle {
-
     @Composable
     fun default(): LineChartStyle {
         return LineChartDefaults.style(chartViewStyle = ChartViewDemoStyle.custom())
@@ -46,7 +45,7 @@ object LineDemoStyle {
             dragPointVisible = false,
             dragPointSize = 8f,
             dragActivePointSize = 15f,
-            chartViewStyle = ChartViewDemoStyle.custom()
+            chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
 }
@@ -74,21 +73,22 @@ fun LineChartBasicDemo(viewModel: LineChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         LineChart(
             dataSet = dataSet,
-            style = LineDemoStyle.default()
+            style = LineDemoStyle.default(),
         )
     }
 }
@@ -116,21 +116,22 @@ fun LineChartCustomDemo(viewModel: LineChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         LineChart(
             dataSet = dataSet,
-            style = LineDemoStyle.custom()
+            style = LineDemoStyle.custom(),
         )
     }
 }

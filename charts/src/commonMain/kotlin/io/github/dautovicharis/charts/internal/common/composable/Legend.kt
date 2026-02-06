@@ -26,37 +26,41 @@ internal fun Legend(
     chartViewsStyle: ChartViewStyle,
     legend: ImmutableList<String>,
     colors: ImmutableList<Color>,
-    labels: ImmutableList<String> = persistentListOf()
+    labels: ImmutableList<String> = persistentListOf(),
 ) {
     FlowRow(
-        modifier = chartViewsStyle.modifierLegend.animateContentSize(
-            animationSpec = tween(
-                durationMillis = 300,
-                easing = LinearOutSlowInEasing
-            )
-        )
+        modifier =
+            chartViewsStyle.modifierLegend.animateContentSize(
+                animationSpec =
+                    tween(
+                        durationMillis = 300,
+                        easing = LinearOutSlowInEasing,
+                    ),
+            ),
     ) {
-
         repeat(legend.size) { index ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier
-                        .size(15.dp)
-                        .background(colors[index])
+                    modifier =
+                        Modifier
+                            .size(15.dp)
+                            .background(colors[index]),
                 )
 
-                val label = when (labels.isEmpty()) {
-                    true -> legend[index]
-                    else -> "${legend[index]} - ${labels[index]}"
-                }
+                val label =
+                    when (labels.isEmpty()) {
+                        true -> legend[index]
+                        else -> "${legend[index]} - ${labels[index]}"
+                    }
 
                 Text(
                     text = label,
                     color = colors[index],
-                    modifier = Modifier.padding(
-                        start = chartViewsStyle.innerPadding,
-                        end = chartViewsStyle.innerPadding
-                    )
+                    modifier =
+                        Modifier.padding(
+                            start = chartViewsStyle.innerPadding,
+                            end = chartViewsStyle.innerPadding,
+                        ),
                 )
             }
         }

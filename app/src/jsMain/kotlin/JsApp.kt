@@ -4,7 +4,7 @@ import io.github.dautovicharis.charts.app.di.initKoin
 import org.jetbrains.skiko.wasm.onWasmReady
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun main () {
+fun main() {
     initKoin()
     onWasmReady {
         ComposeViewport("Charts") {

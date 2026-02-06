@@ -28,8 +28,8 @@ class BarChartStyle internal constructor(
     val barColor: Color,
     val space: Dp,
     val minValue: Float?,
-    val maxValue: Float?
-): Style {
+    val maxValue: Float?,
+) : Style {
     /**
      * Returns a list of the properties of the BarChartStyle.
      */
@@ -38,7 +38,7 @@ class BarChartStyle internal constructor(
             BarChartStyle::barColor.name to barColor,
             BarChartStyle::space.name to space,
             BarChartStyle::minValue.name to (minValue ?: "auto"),
-            BarChartStyle::maxValue.name to (maxValue ?: "auto")
+            BarChartStyle::maxValue.name to (maxValue ?: "auto"),
         )
     }
 }
@@ -63,10 +63,11 @@ object BarChartDefaults {
         chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): BarChartStyle {
         val padding = chartViewStyle.innerPadding
-        val modifier: Modifier = Modifier
-            .padding(padding)
-            .aspectRatio(1f)
-            .fillMaxSize()
+        val modifier: Modifier =
+            Modifier
+                .padding(padding)
+                .aspectRatio(1f)
+                .fillMaxSize()
 
         return BarChartStyle(
             modifier = modifier,
@@ -74,7 +75,7 @@ object BarChartDefaults {
             space = space,
             minValue = minValue,
             maxValue = maxValue,
-            chartViewStyle = chartViewStyle
+            chartViewStyle = chartViewStyle,
         )
     }
 }

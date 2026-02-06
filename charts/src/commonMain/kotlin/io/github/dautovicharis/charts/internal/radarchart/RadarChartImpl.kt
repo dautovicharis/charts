@@ -23,46 +23,51 @@ internal fun RadarChartImpl(
     data: MultiChartData,
     style: RadarChartStyle = RadarChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val errors = remember(data, style) {
-        validateRadarData(
-            data = data,
-            style = style
-        )
-    }
+    val errors =
+        remember(data, style) {
+            validateRadarData(
+                data = data,
+                style = style,
+            )
+        }
 
     if (errors.isEmpty()) {
         var title by remember(data) { mutableStateOf(data.title) }
 
-        val lineColors = remember(data, style.lineColors, style.lineColor) {
-            if (data.hasSingleItem()) {
-                persistentListOf(style.lineColor)
-            } else if (style.lineColors.isEmpty()) {
-                generateColorShades(style.lineColor, data.items.size)
-            } else {
-                style.lineColors.toImmutableList()
+        val lineColors =
+            remember(data, style.lineColors, style.lineColor) {
+                if (data.hasSingleItem()) {
+                    persistentListOf(style.lineColor)
+                } else if (style.lineColors.isEmpty()) {
+                    generateColorShades(style.lineColor, data.items.size)
+                } else {
+                    style.lineColors.toImmutableList()
+                }
             }
-        }
 
         Chart(chartViewsStyle = style.chartViewStyle) {
             if (title.isNotBlank()) {
                 Text(
-                    modifier = style.chartViewStyle.modifierTopTitle
-                        .testTag(TestTags.CHART_TITLE),
+                    modifier =
+                        style.chartViewStyle.modifierTopTitle
+                            .testTag(TestTags.CHART_TITLE),
                     text = title,
-                    style = style.chartViewStyle.styleTitle
+                    style = style.chartViewStyle.styleTitle,
                 )
             }
 
             val categories = if (data.hasCategories()) data.categories else persistentListOf()
-            val legendCategories = when (style.categoryLegendVisible) {
-                true -> categories
-                else -> persistentListOf()
-            }
-            val categoryColorsList = remember(categories, style.categoryColors) {
-                categoryColors(style, categories.size)
-            }
+            val legendCategories =
+                when (style.categoryLegendVisible) {
+                    true -> categories
+                    else -> persistentListOf()
+                }
+            val categoryColorsList =
+                remember(categories, style.categoryColors) {
+                    categoryColors(style, categories.size)
+                }
 
             RadarChart(
                 data = data,
@@ -74,14 +79,15 @@ internal fun RadarChartImpl(
                 animateOnStart = animateOnStart,
                 onValueChanged = { selectedIndex ->
                     title = data.getLabel(selectedIndex)
-                }
+                },
             )
 
-            val series = if (data.hasSingleItem()) {
-                persistentListOf()
-            } else {
-                data.items.map { it.label }.toImmutableList()
-            }
+            val series =
+                if (data.hasSingleItem()) {
+                    persistentListOf()
+                } else {
+                    data.items.map { it.label }.toImmutableList()
+                }
 
             if (series.isNotEmpty() || legendCategories.isNotEmpty()) {
                 RadarLegend(
@@ -89,7 +95,7 @@ internal fun RadarChartImpl(
                     series = series,
                     seriesColors = lineColors,
                     categories = legendCategories,
-                    categoryColors = categoryColorsList
+                    categoryColors = categoryColorsList,
                 )
             }
         }

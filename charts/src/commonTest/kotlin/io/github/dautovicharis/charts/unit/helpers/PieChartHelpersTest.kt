@@ -13,7 +13,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class PieChartHelpersTest {
-
     private companion object {
         private const val WIDTH = 500
         private const val HEIGHT = 500
@@ -26,18 +25,27 @@ class PieChartHelpersTest {
      */
     @Test
     fun isPointInCircle_pointsInsideAndOutsideCircle_correctlyIdentifiesPoints() {
-        val testPoints = hashMapOf(
-            Pair(50f, 50f) to false,   // Outside the circle
-            Pair(250f, 0f) to true,    // On the top edge of the circle
-            Pair(0f, 250f) to true,    // On the left edge of the circle
-            Pair(500f, 250f) to true,  // On the right edge of the circle
-            Pair(250f, 500f) to true,  // On the bottom edge of the circle
-            Pair(100f, 100f) to true,  // Inside the circle
-            Pair(400f, 400f) to true,  // Inside the circle
-            Pair(0f, 0f) to false,     // Outside the circle
-            Pair(600f, 600f) to false  // Outside the circle
-        )
-
+        val testPoints =
+            hashMapOf(
+                // Outside the circle
+                Pair(50f, 50f) to false,
+                // On the top edge of the circle
+                Pair(250f, 0f) to true,
+                // On the left edge of the circle
+                Pair(0f, 250f) to true,
+                // On the right edge of the circle
+                Pair(500f, 250f) to true,
+                // On the bottom edge of the circle
+                Pair(250f, 500f) to true,
+                // Inside the circle
+                Pair(100f, 100f) to true,
+                // Inside the circle
+                Pair(400f, 400f) to true,
+                // Outside the circle
+                Pair(0f, 0f) to false,
+                // Outside the circle
+                Pair(600f, 600f) to false,
+            )
 
         testPoints.forEach { entry: Map.Entry<Pair<Float, Float>, Boolean> ->
             // Arrange
@@ -48,14 +56,13 @@ class PieChartHelpersTest {
                 isPointInCircle(
                     pointX = entry.key.first,
                     pointY = entry.key.second,
-                    size = size
+                    size = size,
                 )
 
             // Assert
             assertTrue { result == entry.value }
         }
     }
-
 
     /**
      * This test checks whether the function `degree` correctly calculates degrees on a chart.
@@ -64,12 +71,17 @@ class PieChartHelpersTest {
      */
     @Test
     fun degree_calculatingDegrees_correctDegreesReturned() {
-        val testPoints = hashMapOf(
-            Pair(300f, 300f) to Pair(0.0, 90.0),     // First Quadrant
-            Pair(200f, 300f) to Pair(90.0, 180.0),   // Second Quadrant
-            Pair(100f, 100f) to Pair(180.0, 270.0),  // Third Quadrant
-            Pair(260f, 100f) to Pair(270.0, 360.0),   // Fourth Quadrant
-        )
+        val testPoints =
+            hashMapOf(
+                // First Quadrant
+                Pair(300f, 300f) to Pair(0.0, 90.0),
+                // Second Quadrant
+                Pair(200f, 300f) to Pair(90.0, 180.0),
+                // Third Quadrant
+                Pair(100f, 100f) to Pair(180.0, 270.0),
+                // Fourth Quadrant
+                Pair(260f, 100f) to Pair(270.0, 360.0),
+            )
 
         testPoints.forEach { entry: Map.Entry<Pair<Float, Float>, Pair<Double, Double>> ->
             // Arrange
@@ -92,12 +104,13 @@ class PieChartHelpersTest {
     @Test
     fun getCoordinates_returnsCorrectCoordinates() {
         // Arrange
-        val testData = hashMapOf(
-            0 to Pair(368.88208f, 288.62714f),
-            1 to Pair(288.62714f, 368.88208f),
-            2 to Pair(131.11794f, 288.62714f),
-            3 to Pair(288.62714f, 131.11794f)
-        )
+        val testData =
+            hashMapOf(
+                0 to Pair(368.88208f, 288.62714f),
+                1 to Pair(288.62714f, 368.88208f),
+                2 to Pair(131.11794f, 288.62714f),
+                3 to Pair(288.62714f, 131.11794f),
+            )
         val slices = createPieSlices(dataSet.data.item)
         val size = IntSize(WIDTH, HEIGHT)
 
@@ -111,16 +124,16 @@ class PieChartHelpersTest {
         }
     }
 
-
     @Test
     fun calculatePercentages_returnsCorrectPercentages() {
         // Arrange
-        val testData = hashMapOf(
-            listOf(10.0, 20.0, 30.0) to listOf("16.67", "33.33", "50.0"),
-            listOf(1.0, 1.0, 1.0) to listOf("33.33", "33.33", "33.33"),
-            listOf(0.0, 0.0, 0.0) to listOf("NaN", "NaN", "NaN"),
-            listOf(100.0, 0.0, 0.0) to listOf("100.0", "0.0", "0.0")
-        )
+        val testData =
+            hashMapOf(
+                listOf(10.0, 20.0, 30.0) to listOf("16.67", "33.33", "50.0"),
+                listOf(1.0, 1.0, 1.0) to listOf("33.33", "33.33", "33.33"),
+                listOf(0.0, 0.0, 0.0) to listOf("NaN", "NaN", "NaN"),
+                listOf(100.0, 0.0, 0.0) to listOf("100.0", "0.0", "0.0"),
+            )
 
         // Act & Assert
         testData.forEach { entry ->

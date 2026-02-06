@@ -123,7 +123,7 @@ mavenPublishing {
     coordinates(
         groupId = Config.groupId,
         artifactId = Config.artifactId,
-        version = Config.chartsVersion
+        version = Config.chartsVersion,
     )
 
     pom {

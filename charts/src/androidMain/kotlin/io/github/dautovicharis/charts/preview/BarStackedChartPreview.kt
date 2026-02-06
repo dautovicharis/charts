@@ -12,7 +12,7 @@ import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 private fun StackedBarChartPreview() {
     StackedBarChart(
         dataSet = Mock.stackedBarChart(),
-        style = StackedBarChartDefaults.style()
+        style = StackedBarChartDefaults.style(),
     )
 }
 
@@ -44,15 +44,16 @@ private fun StackedBarChartDynamic() {
 @Composable
 private fun StackedBarChartError() {
     val barColor = MaterialTheme.colorScheme.primary
-    val style = StackedBarChartDefaults.style(
-        barColors = listOf(barColor),
-        space = 8.dp
-    )
+    val style =
+        StackedBarChartDefaults.style(
+            barColors = listOf(barColor),
+            space = 8.dp,
+        )
 
     ChartsDefaultTheme {
         StackedBarChart(
             dataSet = Mock.stackedBarChartInvalid(),
-            style = style
+            style = style,
         )
     }
 }

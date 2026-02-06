@@ -14,14 +14,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DataValidationStringDataTest {
-
     @Test
     fun validateBarData_stringDataWithInvalidValue_validationErrorsPresent() {
         // Arrange
-        val dataSet = ChartDataSet(
-            items = ChartDataType.StringData(listOf("1.0", "invalid", "3.0")),
-            title = TITLE
-        )
+        val dataSet =
+            ChartDataSet(
+                items = ChartDataType.StringData(listOf("1.0", "invalid", "3.0")),
+                title = TITLE,
+            )
 
         // Act
         val validationErrors = validateBarData(dataSet.data.item)
@@ -36,8 +36,9 @@ class DataValidationStringDataTest {
     @Test
     fun validateLineData_stringDataWithInvalidValue_validationErrorsPresent() {
         // Arrange
-        val dataSet = listOf("Series" to listOf("2.0", "invalid"))
-            .toMultiChartDataSet(title = TITLE)
+        val dataSet =
+            listOf("Series" to listOf("2.0", "invalid"))
+                .toMultiChartDataSet(title = TITLE)
         val lineChartStyle =
             MockTest.mockLineChartStyle(lineColors = listOf(MockTest.colors.first()))
 

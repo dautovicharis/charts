@@ -31,20 +31,21 @@ fun BarChart(
     dataSet: ChartDataSet,
     style: BarChartStyle = BarChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val errors = remember(dataSet) {
-        validateBarData(
-            data = dataSet.data.item
-        )
-    }
+    val errors =
+        remember(dataSet) {
+            validateBarData(
+                data = dataSet.data.item,
+            )
+        }
 
     if (errors.isEmpty()) {
         BarChartContent(
             dataSet = dataSet,
             style = style,
             interactionEnabled = interactionEnabled,
-            animateOnStart = animateOnStart
+            animateOnStart = animateOnStart,
         )
     } else {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
@@ -56,16 +57,17 @@ private fun BarChartContent(
     dataSet: ChartDataSet,
     style: BarChartStyle,
     interactionEnabled: Boolean,
-    animateOnStart: Boolean
+    animateOnStart: Boolean,
 ) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
     Chart(chartViewsStyle = style.chartViewStyle) {
         if (title.isNotBlank()) {
             Text(
-                modifier = style.chartViewStyle.modifierTopTitle
-                    .testTag(TestTags.CHART_TITLE),
+                modifier =
+                    style.chartViewStyle.modifierTopTitle
+                        .testTag(TestTags.CHART_TITLE),
                 text = title,
-                style = style.chartViewStyle.styleTitle
+                style = style.chartViewStyle.styleTitle,
             )
         }
 
@@ -73,12 +75,13 @@ private fun BarChartContent(
             chartData = dataSet.data.item,
             style = style,
             interactionEnabled = interactionEnabled,
-            animateOnStart = animateOnStart
+            animateOnStart = animateOnStart,
         ) {
-            title = when (it) {
-                NO_SELECTION -> dataSet.data.label
-                else -> dataSet.data.item.labels[it]
-            }
+            title =
+                when (it) {
+                    NO_SELECTION -> dataSet.data.label
+                    else -> dataSet.data.item.labels[it]
+                }
         }
     }
 }

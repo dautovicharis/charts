@@ -41,23 +41,25 @@ fun PieChart(
     dataSet: ChartDataSet,
     style: PieChartStyle = PieChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val pieChartColors = remember(
-        style.pieColors,
-        style.pieColor,
-        dataSet.data.item.points.size
-    ) {
-        if (style.pieColors.isEmpty()) {
-            generateColorShades(style.pieColor, dataSet.data.item.points.size)
-        } else {
-            style.pieColors.toImmutableList()
+    val pieChartColors =
+        remember(
+            style.pieColors,
+            style.pieColor,
+            dataSet.data.item.points.size,
+        ) {
+            if (style.pieColors.isEmpty()) {
+                generateColorShades(style.pieColor, dataSet.data.item.points.size)
+            } else {
+                style.pieColors.toImmutableList()
+            }
         }
-    }
 
-    val errors = remember(dataSet, style) {
-        validatePieData(dataSet = dataSet, style = style)
-    }
+    val errors =
+        remember(dataSet, style) {
+            validatePieData(dataSet = dataSet, style = style)
+        }
 
     if (errors.isNotEmpty()) {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
@@ -67,7 +69,7 @@ fun PieChart(
             style = style,
             pieChartColors = pieChartColors,
             interactionEnabled = interactionEnabled,
-            animateOnStart = animateOnStart
+            animateOnStart = animateOnStart,
         )
     }
 }
@@ -78,22 +80,24 @@ private fun PieChartContent(
     style: PieChartStyle,
     pieChartColors: ImmutableList<Color>,
     interactionEnabled: Boolean,
-    animateOnStart: Boolean
+    animateOnStart: Boolean,
 ) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
 
-    val piePercentages = remember(dataSet.data.item.points) {
-        calculatePercentages(dataSet.data.item.points)
-    }
+    val piePercentages =
+        remember(dataSet.data.item.points) {
+            calculatePercentages(dataSet.data.item.points)
+        }
     var selectedIndex by remember(dataSet) { mutableStateOf(NO_SELECTION) }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
         if (title.isNotBlank()) {
             Text(
-                modifier = style.chartViewStyle.modifierTopTitle
-                    .testTag(TestTags.CHART_TITLE),
+                modifier =
+                    style.chartViewStyle.modifierTopTitle
+                        .testTag(TestTags.CHART_TITLE),
                 text = title,
-                style = style.chartViewStyle.styleTitle
+                style = style.chartViewStyle.styleTitle,
             )
         }
         PieChart(
@@ -102,21 +106,22 @@ private fun PieChartContent(
             style = style,
             chartStyle = style.chartViewStyle,
             interactionEnabled = interactionEnabled,
-            animateOnStart = animateOnStart
+            animateOnStart = animateOnStart,
         ) { index ->
             selectedIndex = index
-            title = when (index) {
-                NO_SELECTION -> dataSet.data.label
-                else -> {
-                    dataSet.data.item.labels[index]
+            title =
+                when (index) {
+                    NO_SELECTION -> dataSet.data.label
+                    else -> {
+                        dataSet.data.item.labels[index]
+                    }
                 }
-            }
         }
 
         AnimatedVisibility(
             visible = selectedIndex != NO_SELECTION,
             enter = expandVertically(),
-            exit = shrinkVertically()
+            exit = shrinkVertically(),
         ) {
             if (selectedIndex != NO_SELECTION) {
                 Text(
@@ -132,7 +137,7 @@ private fun PieChartContent(
             Legend(
                 chartViewsStyle = style.chartViewStyle,
                 legend = dataSet.data.item.labels,
-                colors = pieChartColors
+                colors = pieChartColors,
             )
         }
     }

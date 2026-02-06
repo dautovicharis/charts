@@ -42,7 +42,7 @@ class LineChartStyle internal constructor(
     val dragPointSize: Float,
     val dragPointVisible: Boolean,
     val dragActivePointSize: Float,
-    val dragPointColor: Color
+    val dragPointColor: Color,
 ) : Style {
     /**
      * Returns a list of the properties of the LineChartStyle.
@@ -58,7 +58,7 @@ class LineChartStyle internal constructor(
             LineChartStyle::dragPointSize.name to dragPointSize,
             LineChartStyle::dragPointVisible.name to dragPointVisible,
             LineChartStyle::dragActivePointSize.name to dragActivePointSize,
-            LineChartStyle::dragPointColor.name to dragPointColor
+            LineChartStyle::dragPointColor.name to dragPointColor,
         )
     }
 }
@@ -106,13 +106,14 @@ object LineChartDefaults {
         dragPointVisible: Boolean = true,
         dragActivePointSize: Float = 12f,
         dragPointColor: Color = defaultDragPointColor(),
-        chartViewStyle: ChartViewStyle = ChartViewDefaults.style()
+        chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): LineChartStyle {
         val padding = chartViewStyle.innerPadding
-        val modifier: Modifier = Modifier
-            .wrapContentSize()
-            .padding(padding)
-            .aspectRatio(1f)
+        val modifier: Modifier =
+            Modifier
+                .wrapContentSize()
+                .padding(padding)
+                .aspectRatio(1f)
 
         val pointColorSameAsLine = pointColor == defaultPointColor()
         val dragPointColorSameAsLine = pointColor == defaultDragPointColor()
@@ -131,7 +132,7 @@ object LineChartDefaults {
             pointColorSameAsLine = pointColorSameAsLine,
             dragPointColor = dragPointColor,
             dragPointColorSameAsLine = dragPointColorSameAsLine,
-            chartViewStyle = chartViewStyle
+            chartViewStyle = chartViewStyle,
         )
     }
 }

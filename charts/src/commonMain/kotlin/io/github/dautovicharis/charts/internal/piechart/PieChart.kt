@@ -44,7 +44,7 @@ internal data class PieSlice(
     val endDeg: Float,
     val sweepAngle: Float,
     val value: Double,
-    val normalizedValue: Double
+    val normalizedValue: Double,
 )
 
 @Composable
@@ -60,9 +60,10 @@ internal fun PieChart(
     val isPreview = LocalInspectionMode.current
     var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
     val values = chartData.points
-    val animatables = remember(values.size) {
-        values.map { Animatable(it.toFloat()) }
-    }
+    val animatables =
+        remember(values.size) {
+            values.map { Animatable(it.toFloat()) }
+        }
     val hasInitialized = remember { mutableStateOf(false) }
     LaunchedEffect(values) {
         if (values.isEmpty()) return@LaunchedEffect
@@ -74,7 +75,7 @@ internal fun PieChart(
             } else {
                 animatables[index].animateTo(
                     targetValue = target,
-                    animationSpec = AnimationSpec.pieChartValue()
+                    animationSpec = AnimationSpec.pieChartValue(),
                 )
             }
         }
@@ -84,131 +85,136 @@ internal fun PieChart(
     val slices = createPieSlices(animatables.map { it.value.toDouble() })
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
 
-    val selectedSliceAnimation = animateFloatAsState(
-        targetValue = if (selectedIndex == NO_SELECTION) DEFAULT_SCALE else MAX_SCALE,
-        animationSpec = tween(durationMillis = ANIMATION_DURATION),
-        label = "sliceAnimation"
-    )
-
-    val slicesAnimations = List(slices.size) { index ->
+    val selectedSliceAnimation =
         animateFloatAsState(
-            targetValue = if (show) DEFAULT_SCALE else 0f,
-            animationSpec = AnimationSpec.pieChart(index),
-            label = "scaleAnimation"
+            targetValue = if (selectedIndex == NO_SELECTION) DEFAULT_SCALE else MAX_SCALE,
+            animationSpec = tween(durationMillis = ANIMATION_DURATION),
+            label = "sliceAnimation",
         )
-    }
+
+    val slicesAnimations =
+        List(slices.size) { index ->
+            animateFloatAsState(
+                targetValue = if (show) DEFAULT_SCALE else 0f,
+                animationSpec = AnimationSpec.pieChart(index),
+                label = "scaleAnimation",
+            )
+        }
 
     val donutHoleAnimation by animateFloatAsState(
         targetValue = if (show) style.donutPercentage else 0f,
         animationSpec = AnimationSpec.pieChartDonut(),
-        label = "donutHoleAnimation"
+        label = "donutHoleAnimation",
     )
 
-    val interactionModifier = if (interactionEnabled) {
-        Modifier
-            .pointerInput(Unit) {
-                detectTapGestures { offset ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            pointX = offset.x,
-                            pointY = offset.y,
-                            size = size,
-                            slices = slices
-                        )
-                    onSliceTouched(selectedIndex)
-                }
-            }
-            .pointerInput(Unit) {
-                detectDragGesturesAfterLongPress(
-                    onDragStart = { offset ->
+    val interactionModifier =
+        if (interactionEnabled) {
+            Modifier
+                .pointerInput(Unit) {
+                    detectTapGestures { offset ->
                         selectedIndex =
                             getSelectedIndex(
                                 pointX = offset.x,
                                 pointY = offset.y,
                                 size = size,
-                                slices = slices
+                                slices = slices,
                             )
-                        onSliceTouched(selectedIndex)
-                    },
-                    onDrag = { change, _ ->
-                        selectedIndex =
-                            getSelectedIndex(
-                                pointX = change.position.x,
-                                pointY = change.position.y,
-                                size = size,
-                                slices = slices
-                            )
-                        onSliceTouched(selectedIndex)
-                        change.consume()
-                    },
-                    onDragEnd = {
-                        selectedIndex = NO_SELECTION
-                        onSliceTouched(selectedIndex)
-                    },
-                    onDragCancel = {
-                        selectedIndex = NO_SELECTION
                         onSliceTouched(selectedIndex)
                     }
-                )
-            }
-    } else {
-        Modifier
-    }
+                }
+                .pointerInput(Unit) {
+                    detectDragGesturesAfterLongPress(
+                        onDragStart = { offset ->
+                            selectedIndex =
+                                getSelectedIndex(
+                                    pointX = offset.x,
+                                    pointY = offset.y,
+                                    size = size,
+                                    slices = slices,
+                                )
+                            onSliceTouched(selectedIndex)
+                        },
+                        onDrag = { change, _ ->
+                            selectedIndex =
+                                getSelectedIndex(
+                                    pointX = change.position.x,
+                                    pointY = change.position.y,
+                                    size = size,
+                                    slices = slices,
+                                )
+                            onSliceTouched(selectedIndex)
+                            change.consume()
+                        },
+                        onDragEnd = {
+                            selectedIndex = NO_SELECTION
+                            onSliceTouched(selectedIndex)
+                        },
+                        onDragCancel = {
+                            selectedIndex = NO_SELECTION
+                            onSliceTouched(selectedIndex)
+                        },
+                    )
+                }
+        } else {
+            Modifier
+        }
 
     Box(
-        modifier = style.modifier
-            .testTag(TestTags.PIE_CHART)
-            .onGloballyPositioned { show = true }
-            .then(interactionModifier)
-            .drawWithCache {
-            onDrawBehind {
-                val layerBounds = Rect(0f, 0f, size.width, size.height)
-                drawContext.canvas.saveLayer(layerBounds, Paint())
+        modifier =
+            style.modifier
+                .testTag(TestTags.PIE_CHART)
+                .onGloballyPositioned { show = true }
+                .then(interactionModifier)
+                .drawWithCache {
+                    onDrawBehind {
+                        val layerBounds = Rect(0f, 0f, size.width, size.height)
+                        drawContext.canvas.saveLayer(layerBounds, Paint())
 
-                slices.forEachIndexed { i, slice ->
-                    val scale = when (selectedIndex) {
-                        NO_SELECTION -> slicesAnimations[i].value
-                        i -> selectedSliceAnimation.value
-                        else -> DEFAULT_SCALE
+                        slices.forEachIndexed { i, slice ->
+                            val scale =
+                                when (selectedIndex) {
+                                    NO_SELECTION -> slicesAnimations[i].value
+                                    i -> selectedSliceAnimation.value
+                                    else -> DEFAULT_SCALE
+                                }
+
+                            scale(scale) {
+                                drawArc(
+                                    color = colors[i],
+                                    startAngle = slice.startDeg,
+                                    sweepAngle = slice.sweepAngle,
+                                    useCenter = true,
+                                    style = Fill,
+                                )
+                                drawArc(
+                                    color = style.borderColor,
+                                    startAngle = slice.startDeg,
+                                    sweepAngle = slice.sweepAngle,
+                                    useCenter = true,
+                                    style = Stroke(width = style.borderWidth),
+                                )
+                            }
+                        }
+
+                        if (donutHoleAnimation > 0f) {
+                            val totalRadius = size.width / 2
+                            val innerRadius = totalRadius * (donutHoleAnimation / 100f)
+                            drawCircle(
+                                color = Color.Transparent,
+                                radius = innerRadius,
+                                center = Offset(totalRadius, totalRadius),
+                                blendMode = BlendMode.Clear,
+                            )
+                            drawCircle(
+                                color = style.borderColor,
+                                radius = innerRadius,
+                                center = Offset(totalRadius, totalRadius),
+                                style = Stroke(width = style.borderWidth),
+                            )
+                        }
+
+                        drawContext.canvas.restore()
                     }
-
-                    scale(scale) {
-                        drawArc(
-                            color = colors[i],
-                            startAngle = slice.startDeg,
-                            sweepAngle = slice.sweepAngle,
-                            useCenter = true,
-                            style = Fill
-                        )
-                        drawArc(
-                            color = style.borderColor,
-                            startAngle = slice.startDeg,
-                            sweepAngle = slice.sweepAngle,
-                            useCenter = true,
-                            style = Stroke(width = style.borderWidth)
-                        )
-                    }
-                }
-
-                if (donutHoleAnimation > 0f) {
-                    val totalRadius = size.width / 2
-                    val innerRadius = totalRadius * (donutHoleAnimation / 100f)
-                    drawCircle(
-                        color = Color.Transparent,
-                        radius = innerRadius,
-                        center = Offset(totalRadius, totalRadius),
-                        blendMode = BlendMode.Clear
-                    )
-                    drawCircle(
-                        color = style.borderColor,
-                        radius = innerRadius,
-                        center = Offset(totalRadius, totalRadius),
-                        style = Stroke(width = style.borderWidth)
-                    )
-                }
-
-                drawContext.canvas.restore()
-            }
-        }
+                },
     )
 }

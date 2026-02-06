@@ -6,5 +6,5 @@ package io.github.dautovicharis.charts.app.ui.theme
 data class Theme(
     val name: String,
     val light: UiColors,
-    val dark: UiColors
+    val dark: UiColors,
 )

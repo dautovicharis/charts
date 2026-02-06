@@ -16,7 +16,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DataValidationLineTest {
-
     // Line data
     @Test
     fun lineAndStackedBarChartData_validDataSet_noValidationErrors() {
@@ -35,7 +34,6 @@ class DataValidationLineTest {
         assertTrue(barErrors.isEmpty())
     }
 
-
     @Test
     fun validateLineData_invalidCategories_validationErrorsPresent() {
         // Arrange
@@ -51,7 +49,7 @@ class DataValidationLineTest {
         val expectedError =
             ValidationErrors.RULE_CATEGORIES_SIZE_MISMATCH.format(
                 dataSet.data.categories.size,
-                expectedCategoriesSize
+                expectedCategoriesSize,
             )
         assertTrue(validationErrors.isNotEmpty())
         assertEquals(validationErrors.first(), expectedError)

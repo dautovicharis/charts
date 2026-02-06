@@ -18,36 +18,38 @@ import io.github.dautovicharis.charts.model.ChartDataSet
 import kotlin.test.Test
 
 class RadarChartTest {
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun radarChart_withValidData_displaysChart() =
+        runComposeUiTest {
+            val expectedTitle = dataSet.data.label
+
+            setContent {
+                RadarChart(dataSet)
+            }
+
+            onNodeWithTag(TestTags.RADAR_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+        }
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun radarChart_withValidData_displaysChart() = runComposeUiTest {
-        val expectedTitle = dataSet.data.label
+    fun radarChart_withInvalidData_displaysError() =
+        runComposeUiTest {
+            val dataSet =
+                ChartDataSet(
+                    items = ChartDataType.FloatData(listOf(1f, 2f)),
+                    title = TITLE,
+                )
+            val expectedError = RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_RADAR)
 
-        setContent {
-            RadarChart(dataSet)
+            setContent {
+                RadarChart(dataSet)
+            }
+
+            onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
+            onNodeWithText("${expectedError}\n").isDisplayed()
         }
-
-        onNodeWithTag(TestTags.RADAR_CHART).isDisplayed()
-        onNodeWithTag(TestTags.CHART_TITLE)
-            .assertTextEquals(expectedTitle)
-            .isDisplayed()
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun radarChart_withInvalidData_displaysError() = runComposeUiTest {
-        val dataSet = ChartDataSet(
-            items = ChartDataType.FloatData(listOf(1f, 2f)),
-            title = TITLE
-        )
-        val expectedError = RULE_DATA_POINTS_LESS_THAN_MIN.format(MIN_REQUIRED_RADAR)
-
-        setContent {
-            RadarChart(dataSet)
-        }
-
-        onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
-        onNodeWithText("${expectedError}\n").isDisplayed()
-    }
 }

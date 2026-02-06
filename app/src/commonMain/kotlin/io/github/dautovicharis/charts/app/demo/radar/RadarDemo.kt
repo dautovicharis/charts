@@ -29,11 +29,10 @@ import org.koin.compose.viewmodel.koinViewModel
 private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 
 object RadarDemoStyle {
-
     @Composable
     fun default(): RadarChartStyle {
         return RadarChartDefaults.style(
-            chartViewStyle = ChartViewDemoStyle.custom()
+            chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
 
@@ -53,7 +52,7 @@ object RadarDemoStyle {
             axisLabelColor = chartColors.axisLabel,
             fillAlpha = 0.2f,
             categoryLegendVisible = false,
-            chartViewStyle = ChartViewDemoStyle.custom()
+            chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
 }
@@ -80,21 +79,22 @@ fun RadarChartBasicDemo(viewModel: RadarChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         RadarChart(
             dataSet = dataSet.basicDataSet,
-            style = RadarDemoStyle.default()
+            style = RadarDemoStyle.default(),
         )
     }
 }
@@ -104,9 +104,10 @@ fun RadarChartCustomDemo(viewModel: RadarChartViewModel = koinViewModel()) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
-    val lineColors = remember(dataSet.seriesKeys, chartColors) {
-        chartColors.seriesColors(dataSet.seriesKeys)
-    }
+    val lineColors =
+        remember(dataSet.seriesKeys, chartColors) {
+            chartColors.seriesColors(dataSet.seriesKeys)
+        }
 
     val refresh: () -> Unit = {
         viewModel.regenerateCustomDataSet()
@@ -129,21 +130,22 @@ fun RadarChartCustomDemo(viewModel: RadarChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         RadarChart(
             dataSet = dataSet.customDataSet,
-            style = RadarDemoStyle.custom(lineColors)
+            style = RadarDemoStyle.custom(lineColors),
         )
     }
 }

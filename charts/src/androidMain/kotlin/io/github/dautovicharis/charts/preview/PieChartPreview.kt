@@ -17,21 +17,23 @@ private fun PieChartPreview() {
     val backgroundColor = MaterialTheme.colorScheme.surface
     val borderColor = MaterialTheme.colorScheme.surface
 
-    val style: PieChartStyle = PieChartDefaults.style(
-        pieColor = pieColor,
-        borderColor = borderColor,
-        donutPercentage = 0f,
-        chartViewStyle = ChartViewDefaults.style(
-            backgroundColor = backgroundColor,
-            cornerRadius = 20.dp,
-            shadow = 15.dp,
-            innerPadding = 15.dp
+    val style: PieChartStyle =
+        PieChartDefaults.style(
+            pieColor = pieColor,
+            borderColor = borderColor,
+            donutPercentage = 0f,
+            chartViewStyle =
+                ChartViewDefaults.style(
+                    backgroundColor = backgroundColor,
+                    cornerRadius = 20.dp,
+                    shadow = 15.dp,
+                    innerPadding = 15.dp,
+                ),
         )
-    )
 
     PieChart(
         dataSet = Mock.pieChart(),
-        style = style
+        style = style,
     )
 }
 
@@ -65,7 +67,7 @@ private fun PieChartError() {
     ChartsDefaultTheme {
         PieChart(
             dataSet = Mock.pieChart(1),
-            style = PieChartDefaults.style()
+            style = PieChartDefaults.style(),
         )
     }
 }

@@ -25,20 +25,21 @@ import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarChartViewMod
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val appModule = module {
-    single<ChartPreviewUseCase> { DefaultChartPreviewUseCase() }
-    single<PieSampleUseCase> { DefaultPieSampleUseCase() }
-    single<LineSampleUseCase> { DefaultLineSampleUseCase() }
-    single<MultiLineSampleUseCase> { DefaultMultiLineSampleUseCase() }
-    single<BarSampleUseCase> { DefaultBarSampleUseCase() }
-    single<StackedBarSampleUseCase> { DefaultStackedBarSampleUseCase() }
-    single<RadarSampleUseCase> { DefaultRadarSampleUseCase() }
-    viewModel { PieChartViewModel(get()) }
-    viewModel { ChartGalleryViewModel(get()) }
-    viewModel { MainViewModel() }
-    viewModel { LineChartViewModel(get()) }
-    viewModel { MultiLineChartViewModel(get()) }
-    viewModel { BarChartViewModel(get()) }
-    viewModel { StackedBarChartViewModel(get()) }
-    viewModel { RadarChartViewModel(get()) }
-}
+val appModule =
+    module {
+        single<ChartPreviewUseCase> { DefaultChartPreviewUseCase() }
+        single<PieSampleUseCase> { DefaultPieSampleUseCase() }
+        single<LineSampleUseCase> { DefaultLineSampleUseCase() }
+        single<MultiLineSampleUseCase> { DefaultMultiLineSampleUseCase() }
+        single<BarSampleUseCase> { DefaultBarSampleUseCase() }
+        single<StackedBarSampleUseCase> { DefaultStackedBarSampleUseCase() }
+        single<RadarSampleUseCase> { DefaultRadarSampleUseCase() }
+        viewModel { PieChartViewModel(get()) }
+        viewModel { ChartGalleryViewModel(get()) }
+        viewModel { MainViewModel() }
+        viewModel { LineChartViewModel(get()) }
+        viewModel { MultiLineChartViewModel(get()) }
+        viewModel { BarChartViewModel(get()) }
+        viewModel { StackedBarChartViewModel(get()) }
+        viewModel { RadarChartViewModel(get()) }
+    }

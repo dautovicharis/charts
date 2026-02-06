@@ -34,7 +34,7 @@ class PieChartStyle internal constructor(
     val pieColor: Color,
     val borderColor: Color,
     val borderWidth: Float,
-    val legendVisible: Boolean
+    val legendVisible: Boolean,
 ) : Style {
     /**
      * Returns a list of the properties of the PieChartStyle.
@@ -46,7 +46,7 @@ class PieChartStyle internal constructor(
             PieChartStyle::pieColor.name to pieColor,
             PieChartStyle::borderColor.name to borderColor,
             PieChartStyle::borderWidth.name to borderWidth,
-            PieChartStyle::legendVisible.name to legendVisible
+            PieChartStyle::legendVisible.name to legendVisible,
         )
     }
 }
@@ -76,23 +76,25 @@ object PieChartDefaults {
         donutPercentage: Float = 0f,
         borderWidth: Float = 3f,
         legendVisible: Boolean = false,
-        chartViewStyle: ChartViewStyle = ChartViewDefaults.style()
+        chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): PieChartStyle {
         return PieChartStyle(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(innerPadding)
-                .aspectRatio(1f),
-            donutPercentage = donutPercentage.coerceIn(
-                DONUT_MIN_PERCENTAGE,
-                DONUT_MAX_PERCENTAGE
-            ),
+            modifier =
+                Modifier
+                    .wrapContentSize()
+                    .padding(innerPadding)
+                    .aspectRatio(1f),
+            donutPercentage =
+                donutPercentage.coerceIn(
+                    DONUT_MIN_PERCENTAGE,
+                    DONUT_MAX_PERCENTAGE,
+                ),
             pieColors = pieColors,
             pieColor = pieColor,
             borderColor = borderColor,
             borderWidth = borderWidth,
             legendVisible = legendVisible,
-            chartViewStyle = chartViewStyle
+            chartViewStyle = chartViewStyle,
         )
     }
 }
