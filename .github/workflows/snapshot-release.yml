@@ -6,8 +6,6 @@ on:
       - '**.md'
       - 'docs/**'
       - '.github/workflows/deploy-gh-pages.yml'
-      - '.github/workflows/create-docs.yml'
-      - '.github/workflows/create-js-demo.yml'
 
 permissions:
   contents: write

@@ -1,0 +1,29 @@
+# Ignore generated artifacts and non-docs projects to keep Vercel uploads small.
+.gradle/
+.kotlin/
+kotlin-js-store/
+build/
+**/build/
+**/node_modules/
+**/.next/
+**/dist/
+**/out/
+
+# Local/IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Non-docs modules
+androidApp/
+app/
+charts/
+iosApp/
+buildSrc/
+gradle/
+
+# Generated docs assets (fetched from orphan branch during build)
+docs/static/
+
+# Misc
+.agent/
