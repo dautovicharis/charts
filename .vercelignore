@@ -14,13 +14,13 @@ build/
 .vscode/
 .DS_Store
 
-# Non-docs modules
-androidApp/
-app/
-charts/
-iosApp/
-buildSrc/
-gradle/
+# Non-docs modules (root only)
+/androidApp/
+/app/
+/charts/
+/iosApp/
+/buildSrc/
+/gradle/
 
 # Generated docs assets (fetched from orphan branch during build)
 docs/static/
