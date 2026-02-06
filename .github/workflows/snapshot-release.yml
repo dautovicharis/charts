@@ -1,11 +1,8 @@
 name: Snapshot Release
 on:
-  push:
-    branches: ["main","feature/ci-snapshot-release"]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.github/workflows/deploy-gh-pages.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 
 permissions:
   contents: write
@@ -17,10 +14,49 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Check for Changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect recent changes
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "Manual run - proceeding regardless of recent changes."
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          files=$(git log --since="24 hours ago" --name-only --pretty=format: | sort -u)
+          if [ -z "${files:-}" ]; then
+            echo "No commits in the last 24 hours."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          filtered=$(echo "$files" | grep -vE '(^docs/|\.md$|^\.github/workflows/deploy-gh-pages\.yml$)' || true)
+          if [ -z "${filtered:-}" ]; then
+            echo "Only ignored paths changed in the last 24 hours."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected in the last 24 hours:"
+            echo "$filtered"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
   snapshot-release:
     name: Publish Snapshot Release
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'dautovicharis' }}
+    needs: changes
+    if: ${{ github.repository_owner == 'dautovicharis' && needs.changes.outputs.has_changes == 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
