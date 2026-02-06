@@ -2,12 +2,11 @@ package io.github.dautovicharis.charts.app.di
 
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.includes
 
-fun initKoin(config : KoinAppDeclaration? = null){
+fun initKoin(appDeclaration: KoinAppDeclaration? = null) {
     startKoin {
         printLogger()
-        includes(config)
+        appDeclaration?.invoke(this)
         modules(appModule)
     }
 }

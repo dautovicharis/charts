@@ -89,10 +89,14 @@ internal fun getSelectedIndex(
 }
 
 internal fun createPieSlices(data: ChartData): List<PieSlice> {
+    return createPieSlices(data.points)
+}
+
+internal fun createPieSlices(values: List<Double>): List<PieSlice> {
     return mutableListOf<PieSlice>().apply {
         var lastEndDeg = 0.0
-        val maxValue = data.points.sum()
-        for (slice in data.points) {
+        val maxValue = values.sum()
+        for (slice in values) {
             val normalized = slice / maxValue
             val startDeg = lastEndDeg
             val endDeg = lastEndDeg + (normalized * 360)

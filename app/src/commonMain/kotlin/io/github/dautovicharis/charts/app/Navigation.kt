@@ -1,19 +1,12 @@
 package io.github.dautovicharis.charts.app
 
-import MainScreenContent
-import MenuState
-import ThemesState
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import chartsproject.app.generated.resources.Res
 import chartsproject.app.generated.resources.bar_chart
-import chartsproject.app.generated.resources.bar_stacked_chart
 import chartsproject.app.generated.resources.chart_basic
 import chartsproject.app.generated.resources.chart_custom
 import chartsproject.app.generated.resources.ic_bar_chart
@@ -21,13 +14,11 @@ import chartsproject.app.generated.resources.ic_line_chart
 import chartsproject.app.generated.resources.ic_multi_line_chart
 import chartsproject.app.generated.resources.ic_pie_chart
 import chartsproject.app.generated.resources.ic_radar_chart
-import chartsproject.app.generated.resources.ic_stacked_bar_chart
 import chartsproject.app.generated.resources.line_chart
 import chartsproject.app.generated.resources.multi_line_chart
 import chartsproject.app.generated.resources.pie_chart
 import chartsproject.app.generated.resources.radar_chart
 import io.github.dautovicharis.charts.app.demo.bar.BarChartBasicDemo
-import io.github.dautovicharis.charts.app.demo.bar.BarChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.line.LineChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.line.LineChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.multiline.MultiLineBasicDemo
@@ -36,9 +27,7 @@ import io.github.dautovicharis.charts.app.demo.pie.PieChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.pie.PieChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.radar.RadarChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.radar.RadarChartCustomDemo
-import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarBasicDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarCustomDemo
-import io.github.dautovicharis.charts.app.ui.theme.Theme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
@@ -92,19 +81,7 @@ sealed class ChartSubmenuItem(
             title = Res.string.chart_basic
         )
 
-    data object BarChartCustom :
-        ChartSubmenuItem(
-            route = "barChartCustom",
-            title = Res.string.chart_custom
-        )
-
     // Stacked Bar Chart
-    data object StackedBarChartBasic :
-        ChartSubmenuItem(
-            route = "stackedBarChartBasic",
-            title = Res.string.chart_basic
-        )
-
     data object StackedBarChartCustom :
         ChartSubmenuItem(
             route = "stackedBarChartCustom",
@@ -125,7 +102,7 @@ sealed class ChartSubmenuItem(
         )
 }
 
-sealed class ChartScreen(
+sealed class ChartDestination(
     val icon: DrawableResource,
     val title: StringResource,
     val submenus: List<ChartSubmenuItem> = emptyList()
@@ -135,7 +112,7 @@ sealed class ChartScreen(
     }
 
     data object PieChartScreen :
-        ChartScreen(
+        ChartDestination(
             icon = Res.drawable.ic_pie_chart,
             title = Res.string.pie_chart,
             submenus = listOf(
@@ -145,7 +122,7 @@ sealed class ChartScreen(
         )
 
     data object LineChartScreen :
-        ChartScreen(
+        ChartDestination(
             icon = Res.drawable.ic_line_chart,
             title = Res.string.line_chart,
             submenus = listOf(
@@ -155,7 +132,7 @@ sealed class ChartScreen(
         )
 
     data object MultiLineChartScreen :
-        ChartScreen(
+        ChartDestination(
             icon = Res.drawable.ic_multi_line_chart,
             title = Res.string.multi_line_chart,
             submenus = listOf(
@@ -165,27 +142,17 @@ sealed class ChartScreen(
         )
 
     data object BarChartScreen :
-        ChartScreen(
+        ChartDestination(
             icon = Res.drawable.ic_bar_chart,
             title = Res.string.bar_chart,
             submenus = listOf(
                 ChartSubmenuItem.BarChartBasic,
-                ChartSubmenuItem.BarChartCustom
-            )
-        )
-
-    data object StackedBarChartScreen :
-        ChartScreen(
-            icon = Res.drawable.ic_stacked_bar_chart,
-            title = Res.string.bar_stacked_chart,
-            submenus = listOf(
-                ChartSubmenuItem.StackedBarChartBasic,
                 ChartSubmenuItem.StackedBarChartCustom
             )
         )
 
     data object RadarChartScreen :
-        ChartScreen(
+        ChartDestination(
             icon = Res.drawable.ic_radar_chart,
             title = Res.string.radar_chart,
             submenus = listOf(
@@ -198,28 +165,19 @@ sealed class ChartScreen(
 @Composable
 fun Navigation(
     navController: NavHostController,
-    themeState: State<ThemesState>,
-    menuState: State<MenuState>,
-    onThemeSelected: (Theme) -> Unit,
+    menuState: MenuState,
     onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
-    onMenuToggle: (index: Int) -> Unit,
-    onDarkModeToggle: () -> Unit,
-    onDynamicToggle: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = ChartScreen.MainScreen.ROUTE,
-        modifier = Modifier.padding(top = 45.dp)
+        startDestination = ChartDestination.MainScreen.ROUTE,
+        modifier = modifier
     ) {
-        composable(ChartScreen.MainScreen.ROUTE) {
+        composable(ChartDestination.MainScreen.ROUTE) {
             MainScreenContent(
-                themeState = themeState,
-                onThemeSelected = onThemeSelected,
                 menuState = menuState,
-                onSubmenuSelected = onSubmenuSelected,
-                onMenuToggle = onMenuToggle,
-                onDarkModeToggle = onDarkModeToggle,
-                onDynamicToggle = onDynamicToggle
+                onSubmenuSelected = onSubmenuSelected
             )
         }
         composable(ChartSubmenuItem.PieChartBasic.route) {
@@ -248,14 +206,6 @@ fun Navigation(
 
         composable(ChartSubmenuItem.BarChartBasic.route) {
             BarChartBasicDemo()
-        }
-
-        composable(ChartSubmenuItem.BarChartCustom.route) {
-            BarChartCustomDemo()
-        }
-
-        composable(ChartSubmenuItem.StackedBarChartBasic.route) {
-            StackedBarBasicDemo()
         }
 
         composable(ChartSubmenuItem.StackedBarChartCustom.route) {

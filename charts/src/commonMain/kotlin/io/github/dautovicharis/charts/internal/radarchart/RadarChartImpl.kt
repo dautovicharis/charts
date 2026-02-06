@@ -21,7 +21,9 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 internal fun RadarChartImpl(
     data: MultiChartData,
-    style: RadarChartStyle = RadarChartDefaults.style()
+    style: RadarChartStyle = RadarChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val errors = remember(data, style) {
         validateRadarData(
@@ -44,12 +46,14 @@ internal fun RadarChartImpl(
         }
 
         Chart(chartViewsStyle = style.chartViewStyle) {
-            Text(
-                modifier = style.chartViewStyle.modifierTopTitle
-                    .testTag(TestTags.CHART_TITLE),
-                text = title,
-                style = style.chartViewStyle.styleTitle
-            )
+            if (title.isNotBlank()) {
+                Text(
+                    modifier = style.chartViewStyle.modifierTopTitle
+                        .testTag(TestTags.CHART_TITLE),
+                    text = title,
+                    style = style.chartViewStyle.styleTitle
+                )
+            }
 
             val categories = if (data.hasCategories()) data.categories else persistentListOf()
             val legendCategories = when (style.categoryLegendVisible) {
@@ -66,6 +70,8 @@ internal fun RadarChartImpl(
                 colors = lineColors,
                 categoryColors = categoryColorsList,
                 axisLabels = categories,
+                interactionEnabled = interactionEnabled,
+                animateOnStart = animateOnStart,
                 onValueChanged = { selectedIndex ->
                     title = data.getLabel(selectedIndex)
                 }

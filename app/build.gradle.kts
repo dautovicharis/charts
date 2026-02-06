@@ -52,6 +52,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.kotlinx.collections.immutable)
         }
 
         jvmMain.dependencies {

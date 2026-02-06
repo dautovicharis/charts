@@ -14,11 +14,15 @@ import io.github.dautovicharis.charts.style.RadarChartStyle
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun RadarChart(
     dataSet: ChartDataSet,
-    style: RadarChartStyle = RadarChartDefaults.style()
+    style: RadarChartStyle = RadarChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val data = remember(dataSet) {
         MultiChartData(
@@ -29,7 +33,9 @@ fun RadarChart(
     }
     RadarChartImpl(
         data = data,
-        style = style
+        style = style,
+        interactionEnabled = interactionEnabled,
+        animateOnStart = animateOnStart
     )
 }
 
@@ -38,14 +44,20 @@ fun RadarChart(
  *
  * @param dataSet The data sets to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun RadarChart(
     dataSet: MultiChartDataSet,
-    style: RadarChartStyle = RadarChartDefaults.style()
+    style: RadarChartStyle = RadarChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     RadarChartImpl(
         data = dataSet.data,
-        style = style
+        style = style,
+        interactionEnabled = interactionEnabled,
+        animateOnStart = animateOnStart
     )
 }

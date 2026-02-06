@@ -47,6 +47,12 @@ internal object AnimationSpec {
         easing = LinearEasing
     )
 
+    fun pieChartValue() = TweenSpec<Float>(
+        durationMillis = ANIMATION_DURATION_LINE,
+        delay = 0,
+        easing = FastOutSlowInEasing
+    )
+
     fun pieChartDonut() = TweenSpec<Float>(
         durationMillis = 900,
         delay = 0

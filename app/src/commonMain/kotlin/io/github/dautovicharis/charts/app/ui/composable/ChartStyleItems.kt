@@ -1,16 +1,19 @@
 package io.github.dautovicharis.charts.app.ui.composable
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import io.github.dautovicharis.charts.style.Style
 
-class StyleItems(
+typealias ColorNameResolver = (Color) -> String
+
+data class StyleItems(
     val name: String,
     val items: List<StyleItem>
 )
 
-class StyleItem(
+data class StyleItem(
     val name: String,
     val value: String,
     val color: Color? = null,
@@ -22,6 +25,19 @@ fun ChartStyleItems(
     currentStyle: Style,
     defaultStyle: Style
 ): StyleItems {
+    val resolver = materialColorNameResolver(MaterialTheme.colorScheme)
+    return buildStyleItems(
+        currentStyle = currentStyle,
+        defaultStyle = defaultStyle,
+        colorNameResolver = resolver
+    )
+}
+
+fun buildStyleItems(
+    currentStyle: Style,
+    defaultStyle: Style,
+    colorNameResolver: ColorNameResolver = { "Custom color" }
+): StyleItems {
 
     val currentProperties = currentStyle.getProperties()
     val defaultProperties = defaultStyle.getProperties().toMap()
@@ -29,55 +45,57 @@ fun ChartStyleItems(
     val items = currentProperties.map { (name, currentValue) ->
         val defaultValue = defaultProperties[name]
         val isChanged = currentValue != defaultValue
-        val isColor = currentValue is Color
-        val isListOfColors =
-            currentValue is List<*>
 
-        if (isListOfColors) {
-            val value = if (isChanged) "Custom" else "Default"
-            StyleItem(
-                name = name,
-                value = value,
-                isChanged = isChanged
-            )
-        } else if (isColor) {
-            StyleItem(
-                name = name,
-                value = (currentValue as Color).getName(),
-                color = currentValue,
-                isChanged = isChanged
-            )
-        } else {
-            StyleItem(
-                name = name,
-                value = currentValue.toString(),
-                isChanged = isChanged
-            )
+        when (currentValue) {
+            is List<*> -> {
+                val value = if (isChanged) "Custom" else "Default"
+                StyleItem(
+                    name = name,
+                    value = value,
+                    isChanged = isChanged
+                )
+            }
+            is Color -> {
+                StyleItem(
+                    name = name,
+                    value = colorNameResolver(currentValue),
+                    color = currentValue,
+                    isChanged = isChanged
+                )
+            }
+            else -> {
+                StyleItem(
+                    name = name,
+                    value = currentValue.toString(),
+                    isChanged = isChanged
+                )
+            }
         }
     }
 
-    val isChanged = items.any { it.isChanged }
-    val styleName = currentStyle::class.simpleName + if (isChanged) " (Custom)" else " (Default)"
+    val hasCustomValues = items.any { it.isChanged }
+    val baseName = currentStyle::class.simpleName ?: "Style"
+    val styleName = if (hasCustomValues) "$baseName (Custom)" else "$baseName (Default)"
     return StyleItems(
         name = styleName,
         items = items
     )
 }
 
-@Composable
-private fun Color.getName(): String {
-    return when (this) {
-        MaterialTheme.colorScheme.primary -> "MaterialTheme\n.colorScheme\n.primary"
-        MaterialTheme.colorScheme.secondary -> "MaterialTheme\n.colorScheme\n.secondary"
-        MaterialTheme.colorScheme.tertiary -> "MaterialTheme\n.colorScheme\n.tertiary"
-        MaterialTheme.colorScheme.background -> "MaterialTheme\n.colorScheme\n.background"
-        MaterialTheme.colorScheme.surface -> "MaterialTheme\n.colorScheme\n.surface"
-        MaterialTheme.colorScheme.error -> "MaterialTheme\n.colorScheme\n.error"
-        MaterialTheme.colorScheme.onPrimary -> "MaterialTheme\n.colorScheme\n.onPrimary"
-        MaterialTheme.colorScheme.onSecondary -> "MaterialTheme\n.colorScheme\n.onSecondary"
-        MaterialTheme.colorScheme.onBackground -> "MaterialTheme\n.colorScheme\n.onBackground"
-        MaterialTheme.colorScheme.onSurface -> "MaterialTheme\n.colorScheme\n.onSurface"
-        MaterialTheme.colorScheme.onError -> "MaterialTheme\n.colorScheme\n.onError"
-        else -> "Custom color"
-    }
+private fun materialColorNameResolver(colorScheme: ColorScheme): ColorNameResolver {
+    val colorNames = mapOf(
+        colorScheme.primary to "MaterialTheme\n.colorScheme\n.primary",
+        colorScheme.secondary to "MaterialTheme\n.colorScheme\n.secondary",
+        colorScheme.tertiary to "MaterialTheme\n.colorScheme\n.tertiary",
+        colorScheme.background to "MaterialTheme\n.colorScheme\n.background",
+        colorScheme.surface to "MaterialTheme\n.colorScheme\n.surface",
+        colorScheme.error to "MaterialTheme\n.colorScheme\n.error",
+        colorScheme.onPrimary to "MaterialTheme\n.colorScheme\n.onPrimary",
+        colorScheme.onSecondary to "MaterialTheme\n.colorScheme\n.onSecondary",
+        colorScheme.onBackground to "MaterialTheme\n.colorScheme\n.onBackground",
+        colorScheme.onSurface to "MaterialTheme\n.colorScheme\n.onSurface",
+        colorScheme.onError to "MaterialTheme\n.colorScheme\n.onError"
+    )
+
+    return { color -> colorNames[color] ?: "Custom color" }
 }

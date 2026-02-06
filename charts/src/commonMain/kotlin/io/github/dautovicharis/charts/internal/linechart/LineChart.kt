@@ -1,9 +1,11 @@
 package io.github.dautovicharis.charts.internal.linechart
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -11,6 +13,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -19,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
 import io.github.dautovicharis.charts.internal.ANIMATION_TARGET
 import io.github.dautovicharis.charts.internal.AnimationSpec
@@ -27,19 +31,26 @@ import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.common.composable.rememberShowState
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.common.model.minMax
+import io.github.dautovicharis.charts.internal.common.model.normalizeByMinMax
 import io.github.dautovicharis.charts.style.LineChartStyle
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun LineChart(
     data: MultiChartData,
     style: LineChartStyle,
     colors: ImmutableList<Color>,
+    interactionEnabled: Boolean,
+    animateOnStart: Boolean,
     onValueChanged: (Int) -> Unit = {}
 ) {
-    var show by rememberShowState()
+    val isPreview = LocalInspectionMode.current
+    var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
     val touchX = remember { mutableFloatStateOf(0f) }
     val dragging = remember { mutableStateOf(false) }
+    val valueAnimationSpec = remember { AnimationSpec.lineChart() }
 
     val lineAnimation by animateFloatAsState(
         targetValue = if (show) ANIMATION_TARGET else 0f,
@@ -48,13 +59,68 @@ internal fun LineChart(
     )
 
     val minMax = remember(data) { data.minMax() }
-    Canvas(
-        modifier = style.modifier
-        .testTag(TestTags.LINE_CHART)
-        .onGloballyPositioned {
-            show = true
+    val targetNormalized = remember(data, minMax) { data.normalizeByMinMax(minMax, 0f) }
+    val pointsCount = data.getFirstPointsSize()
+    val seriesCount = data.items.size
+    val animatedValues = remember(seriesCount, pointsCount) {
+        List(seriesCount) { seriesIndex ->
+            List(pointsCount) { pointIndex ->
+                val initialValue = when {
+                    isPreview || !animateOnStart ->
+                        targetNormalized.getOrNull(seriesIndex)?.getOrNull(pointIndex) ?: 0f
+                    else -> 0f
+                }
+                Animatable(initialValue)
+            }
         }
-        .pointerInput(Unit) {
+    }
+    val hasInitialized = remember { mutableStateOf(false) }
+
+    LaunchedEffect(show, targetNormalized) {
+        if (pointsCount <= 0 || seriesCount == 0) return@LaunchedEffect
+        if (!show && !isPreview) {
+            animatedValues.forEach { series ->
+                series.forEach { animatable -> animatable.snapTo(0f) }
+            }
+            hasInitialized.value = false
+            return@LaunchedEffect
+        }
+
+        if (isPreview || !hasInitialized.value) {
+            animatedValues.forEachIndexed { seriesIndex, series ->
+                val targetSeries = targetNormalized.getOrNull(seriesIndex) ?: emptyList()
+                series.forEachIndexed { pointIndex, animatable ->
+                    val target = targetSeries.getOrNull(pointIndex) ?: 0f
+                    animatable.snapTo(target)
+                }
+            }
+            hasInitialized.value = true
+            return@LaunchedEffect
+        }
+
+        coroutineScope {
+            animatedValues.forEachIndexed { seriesIndex, series ->
+                val targetSeries = targetNormalized.getOrNull(seriesIndex) ?: emptyList()
+                series.forEachIndexed { pointIndex, animatable ->
+                    val target = targetSeries.getOrNull(pointIndex) ?: 0f
+                    launch {
+                        val shouldAnimate = !isPreview && (animateOnStart || hasInitialized.value)
+                        if (!shouldAnimate) {
+                            animatable.snapTo(target)
+                        } else {
+                            animatable.animateTo(
+                                targetValue = target,
+                                animationSpec = valueAnimationSpec
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    val interactionModifier = if (interactionEnabled) {
+        Modifier.pointerInput(Unit) {
             detectHorizontalDragGestures(
                 onDragStart = { offset ->
                     dragging.value = true
@@ -71,15 +137,22 @@ internal fun LineChart(
                     dragging.value = false
                 }
             )
-        },
+        }
+    } else {
+        Modifier
+    }
+
+    Canvas(
+        modifier = style.modifier
+            .testTag(TestTags.LINE_CHART)
+            .onGloballyPositioned {
+                show = true
+            }
+            .then(interactionModifier),
         onDraw = {
             data.items.forEachIndexed { index, it ->
-                val scaledValues = scaleValues(
-                    values = it.item.points,
-                    size = size,
-                    minValue = minMax.first,
-                    maxValue = minMax.second
-                )
+                val seriesValues = animatedValues.getOrNull(index).orEmpty()
+                val scaledValues = seriesValues.map { value -> value.value * size.height }
                 if (show) {
                     drawChartPath(
                         values = scaledValues,

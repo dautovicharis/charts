@@ -9,12 +9,6 @@ import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
 object StackedBarChartStyleItems {
     @Composable
-    fun default(): StyleItems {
-        val style = StackedBarChartDefaults.style()
-        return multiBarChartTableItems(style)
-    }
-
-    @Composable
     fun custom(barColors: List<Color>): StyleItems {
         val style = StackedBarDemoStyle.custom(barColors)
         return multiBarChartTableItems(style)

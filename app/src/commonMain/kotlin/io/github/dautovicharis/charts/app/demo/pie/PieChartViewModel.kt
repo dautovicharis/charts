@@ -1,11 +1,8 @@
 package io.github.dautovicharis.charts.app.demo.pie
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import io.github.dautovicharis.charts.app.ui.theme.ColorPalette
-import io.github.dautovicharis.charts.app.ui.theme.generateColors
+import io.github.dautovicharis.charts.app.data.PieSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
-import io.github.dautovicharis.charts.model.toChartDataSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,10 +10,12 @@ import kotlinx.coroutines.flow.update
 
 data class PieChartState(
     val dataSet: ChartDataSet,
-    val pieColors: List<Color> = emptyList()
+    val segmentKeys: List<String> = emptyList()
 )
 
-class PieChartViewModel : ViewModel() {
+class PieChartViewModel(
+    private val pieSampleUseCase: PieSampleUseCase
+) : ViewModel() {
 
     companion object {
         private const val CHART_TITLE = "Pie Chart"
@@ -24,55 +23,51 @@ class PieChartViewModel : ViewModel() {
     }
 
     private val _dataSet = MutableStateFlow(
-        PieChartState(
-            dataSet = listOf(8, 23, 54, 32, 12, 37, 7, 23, 43).toChartDataSet(
-                title = CHART_TITLE,
-                postfix = POSTFIX
+        pieSampleUseCase.initialPieSample(
+            title = CHART_TITLE,
+            postfix = POSTFIX
+        ).let { sample ->
+            PieChartState(
+                dataSet = sample.dataSet,
+                segmentKeys = sample.segmentKeys
             )
-        )
+        }
     )
 
     val dataSet: StateFlow<PieChartState> = _dataSet.asStateFlow()
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
     fun regenerateDefaultDataSet(range: IntRange = 10..100, numOfPoints: IntRange = 5..15) {
-        regenerateDataSet(range = range, numOfPoints = numOfPoints)
+        val sample = pieSampleUseCase.pieSample(
+            range = range,
+            numOfPoints = numOfPoints,
+            title = CHART_TITLE,
+            postfix = POSTFIX
+        )
+        _dataSet.update {
+            it.copy(
+                dataSet = sample.dataSet,
+                segmentKeys = sample.segmentKeys
+            )
+        }
     }
 
     fun regenerateCustomDataSet(range: IntRange = 10..1000) {
-        val labels = listOf(
-            "Public Transport",
-            "Fuel",
-            "Groceries",
-            "Eating out",
-            "Taxes",
-            "Rent",
-            "Entertainment",
-            "Other"
+        val sample = pieSampleUseCase.pieCustomSample(
+            range = range,
+            title = CHART_TITLE,
+            postfix = POSTFIX
         )
-        regenerateDataSet(range = range, labels = labels)
-    }
-
-    private fun regenerateDataSet(
-        range: IntRange,
-        numOfPoints: IntRange = 5..15,
-        labels: List<String> = emptyList()
-    ) {
-        val numberOfPoints = if (labels.isEmpty()) {
-            numOfPoints.random()
-        } else {
-            labels.size
-        }
-
-        val newData = List(numberOfPoints) { range.random() }
-        val newDataSet =
-            newData.toChartDataSet(title = CHART_TITLE, postfix = POSTFIX, labels = labels)
-
-        val newColors = generateColors(numberOfPoints, fromColors = ColorPalette.chartColors)
         _dataSet.update {
             it.copy(
-                dataSet = newDataSet,
-                pieColors = newColors
+                dataSet = sample.dataSet,
+                segmentKeys = sample.segmentKeys
             )
         }
+    }
+
+    fun togglePlaying() {
+        _isPlaying.update { !it }
     }
 }

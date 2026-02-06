@@ -28,7 +28,8 @@ import io.github.dautovicharis.charts.style.RadarChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
-internal val ScreenshotTheme = Theme(deepRed)
+internal val ScreenshotTheme = deepRed
+internal const val SCREENSHOT_ANIMATE_ON_START = false
 
 @Composable
 internal fun ScreenshotSurface(

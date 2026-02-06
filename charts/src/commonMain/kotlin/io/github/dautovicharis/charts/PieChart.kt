@@ -33,11 +33,15 @@ import kotlinx.collections.immutable.toImmutableList
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
+ * @param interactionEnabled Enables touch interactions (tap/drag selection). Defaults to true.
+ * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
 fun PieChart(
     dataSet: ChartDataSet,
     style: PieChartStyle = PieChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val pieChartColors = remember(
         style.pieColors,
@@ -58,7 +62,13 @@ fun PieChart(
     if (errors.isNotEmpty()) {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
     } else {
-        PieChartContent(dataSet = dataSet, style = style, pieChartColors = pieChartColors)
+        PieChartContent(
+            dataSet = dataSet,
+            style = style,
+            pieChartColors = pieChartColors,
+            interactionEnabled = interactionEnabled,
+            animateOnStart = animateOnStart
+        )
     }
 }
 
@@ -66,7 +76,9 @@ fun PieChart(
 private fun PieChartContent(
     dataSet: ChartDataSet,
     style: PieChartStyle,
-    pieChartColors: ImmutableList<Color>
+    pieChartColors: ImmutableList<Color>,
+    interactionEnabled: Boolean,
+    animateOnStart: Boolean
 ) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
 
@@ -76,17 +88,21 @@ private fun PieChartContent(
     var selectedIndex by remember(dataSet) { mutableStateOf(NO_SELECTION) }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
-        Text(
-            modifier = style.chartViewStyle.modifierTopTitle
-                .testTag(TestTags.CHART_TITLE),
-            text = title,
-            style = style.chartViewStyle.styleTitle
-        )
+        if (title.isNotBlank()) {
+            Text(
+                modifier = style.chartViewStyle.modifierTopTitle
+                    .testTag(TestTags.CHART_TITLE),
+                text = title,
+                style = style.chartViewStyle.styleTitle
+            )
+        }
         PieChart(
             chartData = dataSet.data.item,
             colors = pieChartColors,
             style = style,
-            chartStyle = style.chartViewStyle
+            chartStyle = style.chartViewStyle,
+            interactionEnabled = interactionEnabled,
+            animateOnStart = animateOnStart
         ) { index ->
             selectedIndex = index
             title = when (index) {

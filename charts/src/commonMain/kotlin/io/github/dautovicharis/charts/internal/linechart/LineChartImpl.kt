@@ -25,6 +25,8 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun LineChartImpl(
     data: MultiChartData,
     style: LineChartStyle = LineChartDefaults.style(),
+    interactionEnabled: Boolean = true,
+    animateOnStart: Boolean = true
 ) {
     val errors = remember(data, style) {
         validateLineData(
@@ -50,17 +52,21 @@ internal fun LineChartImpl(
         }
 
         Chart(chartViewsStyle = style.chartViewStyle) {
-            Text(
-                modifier = style.chartViewStyle.modifierTopTitle
-                    .testTag(TestTags.CHART_TITLE),
-                text = title,
-                style = style.chartViewStyle.styleTitle
-            )
+            if (title.isNotBlank()) {
+                Text(
+                    modifier = style.chartViewStyle.modifierTopTitle
+                        .testTag(TestTags.CHART_TITLE),
+                    text = title,
+                    style = style.chartViewStyle.styleTitle
+                )
+            }
 
             LineChart(
                 data = data,
                 style = style,
-                colors = lineColors
+                colors = lineColors,
+                interactionEnabled = interactionEnabled,
+                animateOnStart = animateOnStart
             ) { selectedIndex ->
                 title = data.getLabel(selectedIndex)
 

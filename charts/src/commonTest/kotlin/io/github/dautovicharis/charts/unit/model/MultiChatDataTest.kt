@@ -5,6 +5,7 @@ import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.internal.common.model.ChartDataItem
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.common.model.minMax
+import io.github.dautovicharis.charts.internal.common.model.normalizeByMinMax
 import io.github.dautovicharis.charts.internal.common.model.toChartData
 import io.github.dautovicharis.charts.mock.MockTest
 import kotlin.test.Test
@@ -33,6 +34,58 @@ class MultiChatDataTest {
         // Assert
         assertTrue { max == 5.0 }
         assertTrue { min == 0.5 }
+    }
+
+    @Test
+    fun normalizeByMinMax_returnsNormalizedValues() {
+        // Arrange
+        val multiChartData = MultiChartData(
+            items = listOf(
+                ChartDataItem("Series1", listOf(0.0f, 5.0f).toChartData()),
+                ChartDataItem("Series2", listOf(2.5f, 10.0f).toChartData())
+            ),
+            title = "Title"
+        )
+        val minMax = multiChartData.minMax()
+
+        // Act
+        val normalized = multiChartData.normalizeByMinMax(minMax, zeroRangeValue = 0f)
+
+        // Assert
+        assertContentEquals(
+            expected = listOf(0f, 0.5f),
+            actual = normalized[0]
+        )
+        assertContentEquals(
+            expected = listOf(0.25f, 1f),
+            actual = normalized[1]
+        )
+    }
+
+    @Test
+    fun normalizeByMinMax_whenZeroRange_usesZeroRangeValue() {
+        // Arrange
+        val multiChartData = MultiChartData(
+            items = listOf(
+                ChartDataItem("Series1", listOf(3.0f, 3.0f).toChartData()),
+                ChartDataItem("Series2", listOf(3.0f, 3.0f).toChartData())
+            ),
+            title = "Title"
+        )
+        val minMax = multiChartData.minMax()
+
+        // Act
+        val normalized = multiChartData.normalizeByMinMax(minMax, zeroRangeValue = 1f)
+
+        // Assert
+        assertContentEquals(
+            expected = listOf(1f, 1f),
+            actual = normalized[0]
+        )
+        assertContentEquals(
+            expected = listOf(1f, 1f),
+            actual = normalized[1]
+        )
     }
 
     @Test
