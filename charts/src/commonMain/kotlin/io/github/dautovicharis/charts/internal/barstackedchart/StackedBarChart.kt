@@ -141,18 +141,23 @@ private fun DrawScope.drawBars(
     selectedIndex: Int,
     colors: ImmutableList<Color>
 ) {
-    val totalMaxValue = data.items.maxOf { it.item.points.sum() }
     val spacing = style.space.toPx()
     val barWidth = (size.width - spacing * (data.items.size - 1)) / data.items.size
 
     data.items.forEachIndexed { index, item ->
         var topOffset = size.height
         val selectedBarScale = if (index == selectedIndex) MAX_SCALE else DEFAULT_SCALE
+        val barTotal = item.item.points.sum()
         item.item.points.forEachIndexed { dataIndex, value ->
-            val height = lerp(
-                0f,
-                (value.toFloat() * selectedBarScale / totalMaxValue.toFloat()) * size.height,
-                progress[index].value
+            val segmentShare = when {
+                barTotal == 0.0 -> 0f
+                else -> (value / barTotal).toFloat()
+            }
+            val height = stackedSegmentHeight(
+                segmentShare = segmentShare,
+                chartHeight = size.height,
+                barScale = selectedBarScale,
+                progress = progress.getOrNull(index)?.value ?: 0f
             )
             topOffset -= height
 
@@ -166,4 +171,13 @@ private fun DrawScope.drawBars(
             )
         }
     }
+}
+
+internal fun stackedSegmentHeight(
+    segmentShare: Float,
+    chartHeight: Float,
+    barScale: Float,
+    progress: Float
+): Float {
+    return lerp(0f, segmentShare * chartHeight * barScale, progress)
 }
