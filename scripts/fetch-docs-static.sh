@@ -6,20 +6,42 @@ REMOTE_URL="${DOCS_STATIC_REMOTE_URL:-}"
 BRANCH="${DOCS_STATIC_BRANCH:-docs-static}"
 SKIP="${DOCS_SKIP_STATIC_FETCH:-}"
 
-if [[ "${SKIP}" == "1" || "${SKIP}" == "true" ]]; then
-  exit 0
-fi
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 STATIC_DIR="${REPO_ROOT}/docs/static"
+CONTENT_DIR="${REPO_ROOT}/docs/content"
+DOCS_APP_PUBLIC_DIR="${REPO_ROOT}/docs/docs-app/public"
+
+sync_public_assets() {
+  if [[ "${VERCEL:-}" != "1" && "${CI:-}" != "true" ]]; then
+    return 0
+  fi
+
+  mkdir -p "${DOCS_APP_PUBLIC_DIR}"
+
+  # Materialize real directories. Symlinks in public are not reliably deployed.
+  rm -rf "${DOCS_APP_PUBLIC_DIR}/content"
+  cp -a "${CONTENT_DIR}" "${DOCS_APP_PUBLIC_DIR}/content"
+
+  rm -rf "${DOCS_APP_PUBLIC_DIR}/static"
+  if [[ -d "${STATIC_DIR}" ]]; then
+    cp -a "${STATIC_DIR}" "${DOCS_APP_PUBLIC_DIR}/static"
+  fi
+}
+
+if [[ "${SKIP}" == "1" || "${SKIP}" == "true" ]]; then
+  sync_public_assets
+  exit 0
+fi
 
 if [[ -d "${STATIC_DIR}/api" ]]; then
+  sync_public_assets
   exit 0
 fi
 
 if ! git -C "${REPO_ROOT}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "Not a git repository; skipping docs/static fetch." >&2
+  sync_public_assets
   exit 0
 fi
 
@@ -64,6 +86,7 @@ if ! git -C "${REPO_ROOT}" remote get-url "${REMOTE}" >/dev/null 2>&1; then
     git -C "${REPO_ROOT}" remote add "${REMOTE}" "${REMOTE_URL}"
   else
     echo "Remote ${REMOTE} not configured; skipping docs/static fetch." >&2
+    sync_public_assets
     exit 0
   fi
 fi
@@ -71,3 +94,4 @@ fi
 echo "Fetching docs/static from ${REMOTE}/${BRANCH}..."
 git -C "${REPO_ROOT}" fetch "${REMOTE}" "${BRANCH}"
 git -C "${REPO_ROOT}" checkout "${REMOTE}/${BRANCH}" -- docs/static
+sync_public_assets
