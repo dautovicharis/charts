@@ -33,79 +33,79 @@ import org.jetbrains.compose.resources.StringResource
 
 sealed class ChartSubmenuItem(
     val route: String,
-    val title: StringResource
+    val title: StringResource,
 ) {
-
     // Pie Chart
     data object PieChartBasic :
         ChartSubmenuItem(
             route = "pieChartBasic",
-            title = Res.string.chart_basic
+            title = Res.string.chart_basic,
         )
 
     data object PieChartCustom :
         ChartSubmenuItem(
             route = "pieChartCustom",
-            title = Res.string.chart_custom
+            title = Res.string.chart_custom,
         )
+
     // Line Chart
     data object LineChartBasic :
         ChartSubmenuItem(
             route = "lineChartBasic",
-            title = Res.string.chart_basic
+            title = Res.string.chart_basic,
         )
 
     data object LineChartCustom :
         ChartSubmenuItem(
             route = "lineChartCustom",
-            title = Res.string.chart_custom
+            title = Res.string.chart_custom,
         )
 
     // Multi Line Chart
     data object MultiLineChartBasic :
         ChartSubmenuItem(
             route = "multiLineChartBasic",
-            title = Res.string.chart_basic
+            title = Res.string.chart_basic,
         )
 
     data object MultiLineChartCustom :
         ChartSubmenuItem(
             route = "multiLineChartCustom",
-            title = Res.string.chart_custom
+            title = Res.string.chart_custom,
         )
 
     // Bar Chart
     data object BarChartBasic :
         ChartSubmenuItem(
             route = "barChartBasic",
-            title = Res.string.chart_basic
+            title = Res.string.chart_basic,
         )
 
     // Stacked Bar Chart
     data object StackedBarChartCustom :
         ChartSubmenuItem(
             route = "stackedBarChartCustom",
-            title = Res.string.chart_custom
+            title = Res.string.chart_custom,
         )
 
     // Radar Chart
     data object RadarChartBasic :
         ChartSubmenuItem(
             route = "radarChartBasic",
-            title = Res.string.chart_basic
+            title = Res.string.chart_basic,
         )
 
     data object RadarChartCustom :
         ChartSubmenuItem(
             route = "radarChartCustom",
-            title = Res.string.chart_custom
+            title = Res.string.chart_custom,
         )
 }
 
 sealed class ChartDestination(
     val icon: DrawableResource,
     val title: StringResource,
-    val submenus: List<ChartSubmenuItem> = emptyList()
+    val submenus: List<ChartSubmenuItem> = emptyList(),
 ) {
     object MainScreen {
         const val ROUTE = "main"
@@ -115,50 +115,55 @@ sealed class ChartDestination(
         ChartDestination(
             icon = Res.drawable.ic_pie_chart,
             title = Res.string.pie_chart,
-            submenus = listOf(
-                ChartSubmenuItem.PieChartBasic,
-                ChartSubmenuItem.PieChartCustom
-            )
+            submenus =
+                listOf(
+                    ChartSubmenuItem.PieChartBasic,
+                    ChartSubmenuItem.PieChartCustom,
+                ),
         )
 
     data object LineChartScreen :
         ChartDestination(
             icon = Res.drawable.ic_line_chart,
             title = Res.string.line_chart,
-            submenus = listOf(
-                ChartSubmenuItem.LineChartBasic,
-                ChartSubmenuItem.LineChartCustom
-            )
+            submenus =
+                listOf(
+                    ChartSubmenuItem.LineChartBasic,
+                    ChartSubmenuItem.LineChartCustom,
+                ),
         )
 
     data object MultiLineChartScreen :
         ChartDestination(
             icon = Res.drawable.ic_multi_line_chart,
             title = Res.string.multi_line_chart,
-            submenus = listOf(
-                ChartSubmenuItem.MultiLineChartBasic,
-                ChartSubmenuItem.MultiLineChartCustom
-            )
+            submenus =
+                listOf(
+                    ChartSubmenuItem.MultiLineChartBasic,
+                    ChartSubmenuItem.MultiLineChartCustom,
+                ),
         )
 
     data object BarChartScreen :
         ChartDestination(
             icon = Res.drawable.ic_bar_chart,
             title = Res.string.bar_chart,
-            submenus = listOf(
-                ChartSubmenuItem.BarChartBasic,
-                ChartSubmenuItem.StackedBarChartCustom
-            )
+            submenus =
+                listOf(
+                    ChartSubmenuItem.BarChartBasic,
+                    ChartSubmenuItem.StackedBarChartCustom,
+                ),
         )
 
     data object RadarChartScreen :
         ChartDestination(
             icon = Res.drawable.ic_radar_chart,
             title = Res.string.radar_chart,
-            submenus = listOf(
-                ChartSubmenuItem.RadarChartBasic,
-                ChartSubmenuItem.RadarChartCustom
-            )
+            submenus =
+                listOf(
+                    ChartSubmenuItem.RadarChartBasic,
+                    ChartSubmenuItem.RadarChartCustom,
+                ),
         )
 }
 
@@ -167,17 +172,17 @@ fun Navigation(
     navController: NavHostController,
     menuState: MenuState,
     onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
         startDestination = ChartDestination.MainScreen.ROUTE,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable(ChartDestination.MainScreen.ROUTE) {
             MainScreenContent(
                 menuState = menuState,
-                onSubmenuSelected = onSubmenuSelected
+                onSubmenuSelected = onSubmenuSelected,
             )
         }
         composable(ChartSubmenuItem.PieChartBasic.route) {

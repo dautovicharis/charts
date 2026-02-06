@@ -20,7 +20,7 @@ data class UiColors(
     val onSurface: Color,
     val surfaceVariant: Color,
     val error: Color,
-    val onError: Color
+    val onError: Color,
 )
 
 private object UiNeutrals {
@@ -45,138 +45,150 @@ private object UiNeutrals {
     val darkOnError = Color(0xFF690005)
 }
 
-val deepOceanBlue = Theme(
-    name = "Deep Ocean Blue",
-    light = UiColors(
-        primary = Color(0xFF006D9C),
-        onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFB9F7FF),
-        secondary = Color(0xFF1F5BFF),
-        onSecondary = Color(0xFFFFFFFF),
-        tertiary = Color(0xFF9D00FF),
-        background = UiNeutrals.lightBackground,
-        onBackground = UiNeutrals.lightOnBackground,
-        surface = UiNeutrals.lightSurface,
-        onSurface = UiNeutrals.lightOnSurface,
-        surfaceVariant = UiNeutrals.lightSurfaceVariant,
-        error = UiNeutrals.lightError,
-        onError = UiNeutrals.lightOnError
-    ),
-    dark = UiColors(
-        primary = Color(0xFF00E5FF),
-        onPrimary = Color(0xFF001318),
-        primaryContainer = Color(0xFF004A5A),
-        secondary = Color(0xFFA7C0FF),
-        onSecondary = Color(0xFF00153D),
-        tertiary = Color(0xFFE0A3FF),
-        background = UiNeutrals.darkBackground,
-        onBackground = UiNeutrals.darkOnBackground,
-        surface = UiNeutrals.darkSurface,
-        onSurface = UiNeutrals.darkOnSurface,
-        surfaceVariant = UiNeutrals.darkSurfaceVariant,
-        error = UiNeutrals.darkError,
-        onError = UiNeutrals.darkOnError
+val deepOceanBlue =
+    Theme(
+        name = "Deep Ocean Blue",
+        light =
+            UiColors(
+                primary = Color(0xFF006D9C),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFB9F7FF),
+                secondary = Color(0xFF1F5BFF),
+                onSecondary = Color(0xFFFFFFFF),
+                tertiary = Color(0xFF9D00FF),
+                background = UiNeutrals.lightBackground,
+                onBackground = UiNeutrals.lightOnBackground,
+                surface = UiNeutrals.lightSurface,
+                onSurface = UiNeutrals.lightOnSurface,
+                surfaceVariant = UiNeutrals.lightSurfaceVariant,
+                error = UiNeutrals.lightError,
+                onError = UiNeutrals.lightOnError,
+            ),
+        dark =
+            UiColors(
+                primary = Color(0xFF00E5FF),
+                onPrimary = Color(0xFF001318),
+                primaryContainer = Color(0xFF004A5A),
+                secondary = Color(0xFFA7C0FF),
+                onSecondary = Color(0xFF00153D),
+                tertiary = Color(0xFFE0A3FF),
+                background = UiNeutrals.darkBackground,
+                onBackground = UiNeutrals.darkOnBackground,
+                surface = UiNeutrals.darkSurface,
+                onSurface = UiNeutrals.darkOnSurface,
+                surfaceVariant = UiNeutrals.darkSurfaceVariant,
+                error = UiNeutrals.darkError,
+                onError = UiNeutrals.darkOnError,
+            ),
     )
-)
 
-val blueViolet = Theme(
-    name = "Blue Violet",
-    light = UiColors(
-        primary = Color(0xFF6C2CFF),
-        onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFE3D9FF),
-        secondary = Color(0xFF0077B6),
-        onSecondary = Color(0xFFFFFFFF),
-        tertiary = Color(0xFFB0006F),
-        background = UiNeutrals.lightBackground,
-        onBackground = UiNeutrals.lightOnBackground,
-        surface = UiNeutrals.lightSurface,
-        onSurface = UiNeutrals.lightOnSurface,
-        surfaceVariant = UiNeutrals.lightSurfaceVariant,
-        error = UiNeutrals.lightError,
-        onError = UiNeutrals.lightOnError
-    ),
-    dark = UiColors(
-        primary = Color(0xFFBBA4FF),
-        onPrimary = Color(0xFF21005A),
-        primaryContainer = Color(0xFF3D1A86),
-        secondary = Color(0xFF00E5FF),
-        onSecondary = Color(0xFF001318),
-        tertiary = Color(0xFFFF4DB1),
-        background = UiNeutrals.darkBackground,
-        onBackground = UiNeutrals.darkOnBackground,
-        surface = UiNeutrals.darkSurface,
-        onSurface = UiNeutrals.darkOnSurface,
-        surfaceVariant = UiNeutrals.darkSurfaceVariant,
-        error = UiNeutrals.darkError,
-        onError = UiNeutrals.darkOnError
+val blueViolet =
+    Theme(
+        name = "Blue Violet",
+        light =
+            UiColors(
+                primary = Color(0xFF6C2CFF),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFE3D9FF),
+                secondary = Color(0xFF0077B6),
+                onSecondary = Color(0xFFFFFFFF),
+                tertiary = Color(0xFFB0006F),
+                background = UiNeutrals.lightBackground,
+                onBackground = UiNeutrals.lightOnBackground,
+                surface = UiNeutrals.lightSurface,
+                onSurface = UiNeutrals.lightOnSurface,
+                surfaceVariant = UiNeutrals.lightSurfaceVariant,
+                error = UiNeutrals.lightError,
+                onError = UiNeutrals.lightOnError,
+            ),
+        dark =
+            UiColors(
+                primary = Color(0xFFBBA4FF),
+                onPrimary = Color(0xFF21005A),
+                primaryContainer = Color(0xFF3D1A86),
+                secondary = Color(0xFF00E5FF),
+                onSecondary = Color(0xFF001318),
+                tertiary = Color(0xFFFF4DB1),
+                background = UiNeutrals.darkBackground,
+                onBackground = UiNeutrals.darkOnBackground,
+                surface = UiNeutrals.darkSurface,
+                onSurface = UiNeutrals.darkOnSurface,
+                surfaceVariant = UiNeutrals.darkSurfaceVariant,
+                error = UiNeutrals.darkError,
+                onError = UiNeutrals.darkOnError,
+            ),
     )
-)
 
-val deepRed = Theme(
-    name = "Deep Red",
-    light = UiColors(
-        primary = Color(0xFFC0006F),
-        onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFFFD6EA),
-        secondary = Color(0xFF006A8E),
-        onSecondary = Color(0xFFFFFFFF),
-        tertiary = Color(0xFF3F7A00),
-        background = UiNeutrals.lightBackground,
-        onBackground = UiNeutrals.lightOnBackground,
-        surface = UiNeutrals.lightSurface,
-        onSurface = UiNeutrals.lightOnSurface,
-        surfaceVariant = UiNeutrals.lightSurfaceVariant,
-        error = UiNeutrals.lightError,
-        onError = UiNeutrals.lightOnError
-    ),
-    dark = UiColors(
-        primary = Color(0xFFFF4DB1),
-        onPrimary = Color(0xFF2A0018),
-        primaryContainer = Color(0xFF5A0034),
-        secondary = Color(0xFF00E5FF),
-        onSecondary = Color(0xFF001318),
-        tertiary = Color(0xFFC6FF00),
-        background = UiNeutrals.darkBackground,
-        onBackground = UiNeutrals.darkOnBackground,
-        surface = UiNeutrals.darkSurface,
-        onSurface = UiNeutrals.darkOnSurface,
-        surfaceVariant = UiNeutrals.darkSurfaceVariant,
-        error = UiNeutrals.darkError,
-        onError = UiNeutrals.darkOnError
+val deepRed =
+    Theme(
+        name = "Deep Red",
+        light =
+            UiColors(
+                primary = Color(0xFFC0006F),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFFFD6EA),
+                secondary = Color(0xFF006A8E),
+                onSecondary = Color(0xFFFFFFFF),
+                tertiary = Color(0xFF3F7A00),
+                background = UiNeutrals.lightBackground,
+                onBackground = UiNeutrals.lightOnBackground,
+                surface = UiNeutrals.lightSurface,
+                onSurface = UiNeutrals.lightOnSurface,
+                surfaceVariant = UiNeutrals.lightSurfaceVariant,
+                error = UiNeutrals.lightError,
+                onError = UiNeutrals.lightOnError,
+            ),
+        dark =
+            UiColors(
+                primary = Color(0xFFFF4DB1),
+                onPrimary = Color(0xFF2A0018),
+                primaryContainer = Color(0xFF5A0034),
+                secondary = Color(0xFF00E5FF),
+                onSecondary = Color(0xFF001318),
+                tertiary = Color(0xFFC6FF00),
+                background = UiNeutrals.darkBackground,
+                onBackground = UiNeutrals.darkOnBackground,
+                surface = UiNeutrals.darkSurface,
+                onSurface = UiNeutrals.darkOnSurface,
+                surfaceVariant = UiNeutrals.darkSurfaceVariant,
+                error = UiNeutrals.darkError,
+                onError = UiNeutrals.darkOnError,
+            ),
     )
-)
 
-val citrusGrove = Theme(
-    name = "Citrus Grove",
-    light = UiColors(
-        primary = Color(0xFF2B7D00),
-        onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFE6FFB3),
-        secondary = Color(0xFF9A4F00),
-        onSecondary = Color(0xFFFFFFFF),
-        tertiary = Color(0xFF006D9C),
-        background = UiNeutrals.lightBackground,
-        onBackground = UiNeutrals.lightOnBackground,
-        surface = UiNeutrals.lightSurface,
-        onSurface = UiNeutrals.lightOnSurface,
-        surfaceVariant = UiNeutrals.lightSurfaceVariant,
-        error = UiNeutrals.lightError,
-        onError = UiNeutrals.lightOnError
-    ),
-    dark = UiColors(
-        primary = Color(0xFFC6FF00),
-        onPrimary = Color(0xFF1B2200),
-        primaryContainer = Color(0xFF334000),
-        secondary = Color(0xFFFFB84D),
-        onSecondary = Color(0xFF2A1700),
-        tertiary = Color(0xFF00E5FF),
-        background = UiNeutrals.darkBackground,
-        onBackground = UiNeutrals.darkOnBackground,
-        surface = UiNeutrals.darkSurface,
-        onSurface = UiNeutrals.darkOnSurface,
-        surfaceVariant = UiNeutrals.darkSurfaceVariant,
-        error = UiNeutrals.darkError,
-        onError = UiNeutrals.darkOnError
+val citrusGrove =
+    Theme(
+        name = "Citrus Grove",
+        light =
+            UiColors(
+                primary = Color(0xFF2B7D00),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFE6FFB3),
+                secondary = Color(0xFF9A4F00),
+                onSecondary = Color(0xFFFFFFFF),
+                tertiary = Color(0xFF006D9C),
+                background = UiNeutrals.lightBackground,
+                onBackground = UiNeutrals.lightOnBackground,
+                surface = UiNeutrals.lightSurface,
+                onSurface = UiNeutrals.lightOnSurface,
+                surfaceVariant = UiNeutrals.lightSurfaceVariant,
+                error = UiNeutrals.lightError,
+                onError = UiNeutrals.lightOnError,
+            ),
+        dark =
+            UiColors(
+                primary = Color(0xFFC6FF00),
+                onPrimary = Color(0xFF1B2200),
+                primaryContainer = Color(0xFF334000),
+                secondary = Color(0xFFFFB84D),
+                onSecondary = Color(0xFF2A1700),
+                tertiary = Color(0xFF00E5FF),
+                background = UiNeutrals.darkBackground,
+                onBackground = UiNeutrals.darkOnBackground,
+                surface = UiNeutrals.darkSurface,
+                onSurface = UiNeutrals.darkOnSurface,
+                surfaceVariant = UiNeutrals.darkSurfaceVariant,
+                error = UiNeutrals.darkError,
+                onError = UiNeutrals.darkOnError,
+            ),
     )
-)

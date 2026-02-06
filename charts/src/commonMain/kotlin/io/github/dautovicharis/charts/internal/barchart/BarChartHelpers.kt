@@ -8,7 +8,7 @@ internal fun getSelectedIndex(
     position: Offset,
     dataSize: Int,
     canvasSize: IntSize,
-    spacingPx: Float
+    spacingPx: Float,
 ): Int {
     if (dataSize <= 0 || canvasSize.width <= 0) return 0
 

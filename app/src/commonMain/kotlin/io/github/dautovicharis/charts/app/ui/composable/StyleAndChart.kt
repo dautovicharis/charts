@@ -54,7 +54,7 @@ fun StyleAndChartComponent(
     buttonsVisibility: Boolean = true,
     extraButtons: @Composable RowScope.() -> Unit = {},
     chartItem: @Composable () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
 ) {
     val titleStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold)
     val columnWeight = if (columns.isNotEmpty()) 1f / columns.size else 1f
@@ -64,26 +64,27 @@ fun StyleAndChartComponent(
     var chartItemKey by remember { mutableIntStateOf(0) }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(contentPadding)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(contentPadding),
     ) {
         Text(
             modifier = Modifier.padding(bottom = 12.dp),
             text = tableItems.name,
             style = titleStyle,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         AnimatedVisibility(
             visible = tableItemsVisible,
             enter = expandVertically(),
-            exit = shrinkVertically()
+            exit = shrinkVertically(),
         ) {
             StyleAndChartContent(
                 columns = columns,
                 items = tableItems.items,
-                columnWeight = columnWeight
+                columnWeight = columnWeight,
             )
         }
 
@@ -95,7 +96,7 @@ fun StyleAndChartComponent(
                 onToggleTable = { tableItemsVisible = !tableItemsVisible },
                 onRegenerateChart = { chartItemKey += 1 },
                 extraButtons = extraButtons,
-                onRefresh = onRefresh
+                onRefresh = onRefresh,
             )
         }
     }
@@ -105,20 +106,20 @@ fun StyleAndChartComponent(
 private fun StyleAndChartContent(
     columns: List<String>,
     items: List<StyleItem>,
-    columnWeight: Float
+    columnWeight: Float,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         // Header
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             columns.forEachIndexed { index, column ->
                 StyleAndChartItemRow(
                     text = column,
                     weight = columnWeight,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
                 if (index < columns.lastIndex) {
                     Spacer(modifier = Modifier.width(1.dp))
@@ -134,8 +135,8 @@ private fun StyleAndChartContent(
                     .padding(bottom = 2.dp)
                     .border(
                         BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface),
-                        shape = MaterialTheme.shapes.small
-                    )
+                        shape = MaterialTheme.shapes.small,
+                    ),
             ) {
                 StyleAndChartItemRow(text = item.name, weight = columnWeight)
                 Spacer(modifier = Modifier.width(1.dp))
@@ -143,7 +144,7 @@ private fun StyleAndChartContent(
                     text = item.value,
                     weight = columnWeight,
                     color = item.color,
-                    isChanged = item.isChanged
+                    isChanged = item.isChanged,
                 )
             }
         }
@@ -156,39 +157,43 @@ private fun RowScope.StyleAndChartItemRow(
     weight: Float,
     fontWeight: FontWeight = FontWeight.Normal,
     color: Color? = null,
-    isChanged: Boolean = false
+    isChanged: Boolean = false,
 ) {
     val textFontWeight = if (isChanged) FontWeight.SemiBold else fontWeight
 
     if (color == null) {
         Text(
-            modifier = Modifier
-                .weight(weight)
-                .padding(5.dp),
+            modifier =
+                Modifier
+                    .weight(weight)
+                    .padding(5.dp),
             text = text,
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = textFontWeight
+            fontWeight = textFontWeight,
         )
     } else {
         Row(
-            modifier = Modifier
-                .weight(weight)
-                .height(IntrinsicSize.Min)
+            modifier =
+                Modifier
+                    .weight(weight)
+                    .height(IntrinsicSize.Min),
         ) {
             Text(
-                modifier = Modifier
-                    .weight(0.9f)
-                    .padding(5.dp),
+                modifier =
+                    Modifier
+                        .weight(0.9f)
+                        .padding(5.dp),
                 text = text,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = textFontWeight
+                fontWeight = textFontWeight,
             )
             Box(
-                modifier = Modifier
-                    .weight(0.1f)
-                    .fillMaxHeight()
-                    .background(color)
-                    .border(0.5.dp, MaterialTheme.colorScheme.onSurface)
+                modifier =
+                    Modifier
+                        .weight(0.1f)
+                        .fillMaxHeight()
+                        .background(color)
+                        .border(0.5.dp, MaterialTheme.colorScheme.onSurface),
             )
         }
     }
@@ -197,11 +202,11 @@ private fun RowScope.StyleAndChartItemRow(
 @Composable
 private fun StyleAndChartChartItem(
     chartItem: @Composable () -> Unit,
-    chartItemKey: Int
+    chartItemKey: Int,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         key(chartItemKey) {
             chartItem()
@@ -215,35 +220,36 @@ private fun StyleAndChartButtons(
     onToggleTable: () -> Unit,
     onRegenerateChart: () -> Unit,
     extraButtons: @Composable RowScope.() -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
 ) {
     val visibilityIcon =
         if (tableItemsVisible) Res.drawable.ic_visibility_on else Res.drawable.ic_visibility_off
-    val visibilityContentDescription = stringResource(
-        if (tableItemsVisible) Res.string.cd_hide_parameters else Res.string.cd_show_parameters
-    )
+    val visibilityContentDescription =
+        stringResource(
+            if (tableItemsVisible) Res.string.cd_hide_parameters else Res.string.cd_show_parameters,
+        )
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         IconButton(
-            onClick = onToggleTable
+            onClick = onToggleTable,
         ) {
             Icon(
                 painter = painterResource(visibilityIcon),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = visibilityContentDescription
+                contentDescription = visibilityContentDescription,
             )
         }
 
         IconButton(
-            onClick = onRegenerateChart
+            onClick = onRegenerateChart,
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ic_replay),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = stringResource(Res.string.cd_regenerate_chart)
+                contentDescription = stringResource(Res.string.cd_regenerate_chart),
             )
         }
 
@@ -253,7 +259,7 @@ private fun StyleAndChartButtons(
             Icon(
                 imageVector = Icons.Filled.Refresh,
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = stringResource(Res.string.cd_refresh_data)
+                contentDescription = stringResource(Res.string.cd_refresh_data),
             )
         }
     }

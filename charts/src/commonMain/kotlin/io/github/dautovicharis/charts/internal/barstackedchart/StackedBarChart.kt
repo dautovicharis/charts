@@ -41,18 +41,20 @@ internal fun StackedBarChart(
     colors: ImmutableList<Color>,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
-    onValueChanged: (Int) -> Unit = {}
+    onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
     val targetNormalized = remember(data, style) { data.normalizeStackedValues() }
-    val initialValues = remember(data.items.size, isPreview, animateOnStart) {
-        if (isPreview || !animateOnStart) targetNormalized else null
-    }
-    val animatedValues = remember(data.items.size, isPreview, animateOnStart) {
-        data.items.mapIndexed { index, _ ->
-            Animatable(initialValues?.getOrNull(index) ?: 0f)
+    val initialValues =
+        remember(data.items.size, isPreview, animateOnStart) {
+            if (isPreview || !animateOnStart) targetNormalized else null
         }
-    }
+    val animatedValues =
+        remember(data.items.size, isPreview, animateOnStart) {
+            data.items.mapIndexed { index, _ ->
+                Animatable(initialValues?.getOrNull(index) ?: 0f)
+            }
+        }
     val hasInitialized = remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(-1) }
     val spacingPx = with(LocalDensity.current) { style.space.toPx() }
@@ -69,7 +71,7 @@ internal fun StackedBarChart(
                     } else {
                         animatable.animateTo(
                             targetValue = target,
-                            animationSpec = AnimationSpec.barChart(0)
+                            animationSpec = AnimationSpec.barChart(0),
                         )
                     }
                 }
@@ -78,48 +80,50 @@ internal fun StackedBarChart(
         hasInitialized.value = true
     }
 
-    val interactionModifier = if (interactionEnabled) {
-        Modifier.pointerInput(Unit) {
-            detectHorizontalDragGestures(
-                onDragStart = { offset ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            position = offset,
-                            dataSize = data.items.count(),
-                            canvasSize = size,
-                            spacingPx = spacingPx
-                        )
-                    onValueChanged(selectedIndex)
-                },
-                onHorizontalDrag = { change, _ ->
-                    selectedIndex =
-                        getSelectedIndex(
-                            position = change.position,
-                            dataSize = data.items.count(),
-                            canvasSize = size,
-                            spacingPx = spacingPx
-                        )
-                    onValueChanged(selectedIndex)
-                    change.consume()
-                },
-                onDragEnd = {
-                    selectedIndex = NO_SELECTION
-                    onValueChanged(NO_SELECTION)
-                },
-                onDragCancel = {
-                    selectedIndex = NO_SELECTION
-                    onValueChanged(NO_SELECTION)
-                }
-            )
+    val interactionModifier =
+        if (interactionEnabled) {
+            Modifier.pointerInput(Unit) {
+                detectHorizontalDragGestures(
+                    onDragStart = { offset ->
+                        selectedIndex =
+                            getSelectedIndex(
+                                position = offset,
+                                dataSize = data.items.count(),
+                                canvasSize = size,
+                                spacingPx = spacingPx,
+                            )
+                        onValueChanged(selectedIndex)
+                    },
+                    onHorizontalDrag = { change, _ ->
+                        selectedIndex =
+                            getSelectedIndex(
+                                position = change.position,
+                                dataSize = data.items.count(),
+                                canvasSize = size,
+                                spacingPx = spacingPx,
+                            )
+                        onValueChanged(selectedIndex)
+                        change.consume()
+                    },
+                    onDragEnd = {
+                        selectedIndex = NO_SELECTION
+                        onValueChanged(NO_SELECTION)
+                    },
+                    onDragCancel = {
+                        selectedIndex = NO_SELECTION
+                        onValueChanged(NO_SELECTION)
+                    },
+                )
+            }
+        } else {
+            Modifier
         }
-    } else {
-        Modifier
-    }
 
     Canvas(
-        modifier = style.modifier
-            .testTag(TestTags.STACKED_BAR_CHART)
-            .then(interactionModifier),
+        modifier =
+            style.modifier
+                .testTag(TestTags.STACKED_BAR_CHART)
+                .then(interactionModifier),
         onDraw = {
             drawBars(
                 style = style,
@@ -127,9 +131,9 @@ internal fun StackedBarChart(
                 data = data,
                 progress = animatedValues,
                 selectedIndex = selectedIndex,
-                colors = colors
+                colors = colors,
             )
-        }
+        },
     )
 }
 
@@ -139,7 +143,7 @@ private fun DrawScope.drawBars(
     data: MultiChartData,
     progress: List<Animatable<Float, AnimationVector1D>>,
     selectedIndex: Int,
-    colors: ImmutableList<Color>
+    colors: ImmutableList<Color>,
 ) {
     val spacing = style.space.toPx()
     val barWidth = (size.width - spacing * (data.items.size - 1)) / data.items.size
@@ -149,25 +153,28 @@ private fun DrawScope.drawBars(
         val selectedBarScale = if (index == selectedIndex) MAX_SCALE else DEFAULT_SCALE
         val barTotal = item.item.points.sum()
         item.item.points.forEachIndexed { dataIndex, value ->
-            val segmentShare = when {
-                barTotal == 0.0 -> 0f
-                else -> (value / barTotal).toFloat()
-            }
-            val height = stackedSegmentHeight(
-                segmentShare = segmentShare,
-                chartHeight = size.height,
-                barScale = selectedBarScale,
-                progress = progress.getOrNull(index)?.value ?: 0f
-            )
+            val segmentShare =
+                when {
+                    barTotal == 0.0 -> 0f
+                    else -> (value / barTotal).toFloat()
+                }
+            val height =
+                stackedSegmentHeight(
+                    segmentShare = segmentShare,
+                    chartHeight = size.height,
+                    barScale = selectedBarScale,
+                    progress = progress.getOrNull(index)?.value ?: 0f,
+                )
             topOffset -= height
 
             drawRect(
                 color = colors[dataIndex],
                 topLeft = Offset(x = index * (barWidth + spacing), y = topOffset),
-                size = Size(
-                    width = barWidth * selectedBarScale,
-                    height = height
-                )
+                size =
+                    Size(
+                        width = barWidth * selectedBarScale,
+                        height = height,
+                    ),
             )
         }
     }
@@ -177,7 +184,7 @@ internal fun stackedSegmentHeight(
     segmentShare: Float,
     chartHeight: Float,
     barScale: Float,
-    progress: Float
+    progress: Float,
 ): Float {
     return lerp(0f, segmentShare * chartHeight * barScale, progress)
 }

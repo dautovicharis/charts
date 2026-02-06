@@ -14,9 +14,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
  * @return A [MutableState] of [Boolean] indicating if the current mode is preview mode.
  */
 @Composable
-internal fun rememberShowState(
-    isPreviewMode: Boolean = LocalInspectionMode.current
-): MutableState<Boolean> =
+internal fun rememberShowState(isPreviewMode: Boolean = LocalInspectionMode.current): MutableState<Boolean> =
     remember { mutableStateOf(isPreviewMode) }
 
 /**
@@ -26,6 +24,5 @@ internal fun rememberShowState(
  */
 @Composable
 internal fun rememberAnimationState(
-    isPreviewMode: Boolean = LocalInspectionMode.current
-): Animatable<Float, AnimationVector1D> =
-    remember { Animatable(if (isPreviewMode) 1.0f else 0f) }
+    isPreviewMode: Boolean = LocalInspectionMode.current,
+): Animatable<Float, AnimationVector1D> = remember { Animatable(if (isPreviewMode) 1.0f else 0f) }

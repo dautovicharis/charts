@@ -26,16 +26,15 @@ private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 private val LIVE_BAR_POINTS_RANGE = 7..7
 
 object BarDemoStyle {
-
     @Composable
     fun default(
         minValue: Float? = null,
-        maxValue: Float? = null
+        maxValue: Float? = null,
     ): BarChartStyle {
         return BarChartDefaults.style(
             chartViewStyle = ChartViewDemoStyle.custom(),
             minValue = minValue,
-            maxValue = maxValue
+            maxValue = maxValue,
         )
     }
 }
@@ -66,21 +65,22 @@ fun BarChartBasicDemo(viewModel: BarChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         BarChart(
             dataSet,
-            style = if (isPlaying) liveStyle else defaultStyle
+            style = if (isPlaying) liveStyle else defaultStyle,
         )
     }
 }

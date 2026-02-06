@@ -30,7 +30,6 @@ private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 private val LIVE_PIE_POINTS_RANGE = 9..9
 
 object PieChartDemoStyle {
-
     @Composable
     fun default(): PieChartStyle {
         return PieChartDefaults.style(chartViewStyle = ChartViewDemoStyle.custom())
@@ -45,7 +44,7 @@ object PieChartDemoStyle {
             borderWidth = 5f,
             pieColors = pieColors,
             legendVisible = true,
-            chartViewStyle = ChartViewDemoStyle.custom()
+            chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
 }
@@ -73,21 +72,22 @@ fun PieChartBasicDemo(viewModel: PieChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         PieChart(
             dataSet = dataSet.dataSet,
-            style = PieChartDemoStyle.default()
+            style = PieChartDemoStyle.default(),
         )
     }
 }
@@ -97,9 +97,10 @@ fun PieChartCustomDemo(viewModel: PieChartViewModel = koinViewModel()) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
-    val pieColors = remember(dataSet.segmentKeys, chartColors) {
-        chartColors.seriesColors(dataSet.segmentKeys)
-    }
+    val pieColors =
+        remember(dataSet.segmentKeys, chartColors) {
+            chartColors.seriesColors(dataSet.segmentKeys)
+        }
     LaunchedEffect(Unit) {
         viewModel.regenerateCustomDataSet()
     }
@@ -117,21 +118,22 @@ fun PieChartCustomDemo(viewModel: PieChartViewModel = koinViewModel()) {
         onRefresh = viewModel::regenerateCustomDataSet,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         PieChart(
             dataSet = dataSet.dataSet,
-            style = PieChartDemoStyle.custom(pieColors)
+            style = PieChartDemoStyle.custom(pieColors),
         )
     }
 }

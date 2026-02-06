@@ -12,22 +12,23 @@ import io.github.dautovicharis.charts.style.LineChartDefaults
 
 @Composable
 private fun LineChartViewPreview() {
-    val colors = listOf(
-        MaterialTheme.colorScheme.primary
+    val colors =
+        listOf(
+            MaterialTheme.colorScheme.primary,
+        )
 
-    )
-
-    val style = LineChartDefaults.style(
-        bezier = true,
-        lineColors = colors,
-        dragPointSize = 5f,
-        pointVisible = true,
-        chartViewStyle = ChartViewDefaults.style(width = 300.dp)
-    )
+    val style =
+        LineChartDefaults.style(
+            bezier = true,
+            lineColors = colors,
+            dragPointSize = 5f,
+            pointVisible = true,
+            chartViewStyle = ChartViewDefaults.style(width = 300.dp),
+        )
 
     LineChart(
         dataSet = Mock.lineChartSimple(),
-        style = style
+        style = style,
     )
 }
 
@@ -61,7 +62,7 @@ private fun LineChartError() {
     ChartsDefaultTheme {
         LineChart(
             dataSet = Mock.lineChartSimple(1),
-            style = LineChartDefaults.style()
+            style = LineChartDefaults.style(),
         )
     }
 }

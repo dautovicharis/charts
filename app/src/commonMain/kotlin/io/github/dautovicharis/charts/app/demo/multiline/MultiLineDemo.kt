@@ -44,7 +44,7 @@ object MultiLineDemoStyle {
             bezier = false,
             pointColor = chartColors.highlight,
             dragPointColor = chartColors.selection,
-            chartViewStyle = ChartViewDemoStyle.custom()
+            chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
 }
@@ -71,20 +71,22 @@ fun MultiLineBasicDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
         onRefresh = refresh,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         LineChart(
-            dataSet = dataSet.dataSet, style = MultiLineDemoStyle.default()
+            dataSet = dataSet.dataSet,
+            style = MultiLineDemoStyle.default(),
         )
     }
 }
@@ -94,9 +96,10 @@ fun MultiLineCustomDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
-    val lineColors = remember(dataSet.seriesKeys, chartColors) {
-        chartColors.seriesColors(dataSet.seriesKeys)
-    }
+    val lineColors =
+        remember(dataSet.seriesKeys, chartColors) {
+            chartColors.seriesColors(dataSet.seriesKeys)
+        }
 
     LaunchedEffect(isPlaying) {
         if (!isPlaying) return@LaunchedEffect
@@ -112,21 +115,22 @@ fun MultiLineCustomDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
         onRefresh = viewModel::regenerateDataSet,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         LineChart(
             dataSet = dataSet.dataSet,
-            style = MultiLineDemoStyle.custom(lineColors = lineColors)
+            style = MultiLineDemoStyle.custom(lineColors = lineColors),
         )
     }
 }

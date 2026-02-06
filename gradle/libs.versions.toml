@@ -27,6 +27,8 @@ dokka = "2.1.0"
 mavenPublish = "0.36.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
 buildConfig = "6.0.7"
+# https://github.com/JLLeitschuh/ktlint-gradle
+ktlint = "12.1.1"
 # https://insert-koin.io
 # https://mvnrepository.com/artifact/io.insert-koin/koin-bom
 koin-bom = "4.1.1"
@@ -59,3 +61,4 @@ build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfi
 # https://developer.android.com/develop/ui/compose/compiler
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-multiplatform" }
 composeScreenshot = { id = "com.android.compose.screenshot", version.ref = "compose-screenshot" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

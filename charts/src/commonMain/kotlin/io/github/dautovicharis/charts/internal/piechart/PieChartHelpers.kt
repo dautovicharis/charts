@@ -21,7 +21,11 @@ import kotlin.math.sqrt
  * @param size The size of the circle as [IntSize].
  * @return `true` if the point is inside the circle, `false` otherwise.
  */
-internal fun isPointInCircle(pointX: Float, pointY: Float, size: IntSize): Boolean {
+internal fun isPointInCircle(
+    pointX: Float,
+    pointY: Float,
+    size: IntSize,
+): Boolean {
     // Calculate the center coordinates of the circle
     val centerX = size.center.x
     val centerY = size.center.y
@@ -45,7 +49,11 @@ internal fun isPointInCircle(pointX: Float, pointY: Float, size: IntSize): Boole
  * @param size The size of the circle as [IntSize].
  * @return The degree of the point in relation to the center of the circle.
  */
-internal fun degree(pointX: Float, pointY: Float, size: IntSize): Double {
+internal fun degree(
+    pointX: Float,
+    pointY: Float,
+    size: IntSize,
+): Double {
     // Calculate the differences in x and y coordinates between the point and the center of the circle
     val dx = pointX - size.center.x
     val dy = pointY - size.center.y
@@ -60,13 +68,14 @@ internal fun degree(pointX: Float, pointY: Float, size: IntSize): Double {
     val isInTopRight = dx >= 0 && dy <= 0
 
     // Adjust the degree based on the quadrant
-    val degree = when {
-        isInBottomRight -> acuteDegree
-        isInBottomLeft -> 180.0 - abs(acuteDegree)
-        isInTopLeft -> 180.0 + abs(acuteDegree)
-        isInTopRight -> 360.0 - abs(acuteDegree)
-        else -> 0.0
-    }
+    val degree =
+        when {
+            isInBottomRight -> acuteDegree
+            isInBottomLeft -> 180.0 - abs(acuteDegree)
+            isInTopLeft -> 180.0 + abs(acuteDegree)
+            isInTopRight -> 360.0 - abs(acuteDegree)
+            else -> 0.0
+        }
     return degree
 }
 
@@ -74,7 +83,7 @@ internal fun getSelectedIndex(
     pointX: Float,
     pointY: Float,
     size: IntSize,
-    slices: List<PieSlice>
+    slices: List<PieSlice>,
 ): Int {
     return when (isPointInCircle(pointX = pointX, pointY = pointY, size = size)) {
         true -> {
@@ -107,8 +116,8 @@ internal fun createPieSlices(values: List<Double>): List<PieSlice> {
                     endDeg = endDeg.toFloat(),
                     value = slice,
                     sweepAngle = (endDeg - startDeg).toFloat(),
-                    normalizedValue = normalized
-                )
+                    normalizedValue = normalized,
+                ),
             )
         }
     }
@@ -125,7 +134,7 @@ internal fun createPieSlices(values: List<Double>): List<PieSlice> {
 internal fun getCoordinatesForSlice(
     index: Int,
     size: IntSize,
-    slices: List<PieSlice>
+    slices: List<PieSlice>,
 ): Offset {
     val slice = slices[index]
     val startAngle = slice.startDeg
@@ -147,7 +156,6 @@ internal fun getCoordinatesForSlice(
 
     return Offset(x, y)
 }
-
 
 internal fun calculatePercentages(values: List<Double>): List<String> {
     val total = values.sum()

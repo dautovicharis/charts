@@ -70,7 +70,7 @@ class RadarChartStyle internal constructor(
     val lineColors: List<Color>,
     val lineWidth: Float,
     val fillAlpha: Float,
-    val fillVisible: Boolean
+    val fillVisible: Boolean,
 ) : Style {
     /**
      * Returns a list of the properties of the RadarChartStyle.
@@ -99,7 +99,7 @@ class RadarChartStyle internal constructor(
             RadarChartStyle::lineColors.name to lineColors,
             RadarChartStyle::lineWidth.name to lineWidth,
             RadarChartStyle::fillAlpha.name to fillAlpha,
-            RadarChartStyle::fillVisible.name to fillVisible
+            RadarChartStyle::fillVisible.name to fillVisible,
         )
     }
 }
@@ -148,20 +148,22 @@ object RadarChartDefaults {
         lineWidth: Float = 3f,
         fillAlpha: Float = 0.25f,
         fillVisible: Boolean = true,
-        chartViewStyle: ChartViewStyle = ChartViewDefaults.style()
+        chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): RadarChartStyle {
         val padding = chartViewStyle.innerPadding
-        val modifier: Modifier = Modifier
-            .wrapContentSize()
-            .padding(padding)
-            .aspectRatio(1f)
+        val modifier: Modifier =
+            Modifier
+                .wrapContentSize()
+                .padding(padding)
+                .aspectRatio(1f)
 
         val pointColorSameAsLine = pointColor == defaultPointColor()
-        val resolvedCategoryPinSize = if (categoryPinSize.isNaN()) {
-            pointSize * 2f
-        } else {
-            categoryPinSize
-        }
+        val resolvedCategoryPinSize =
+            if (categoryPinSize.isNaN()) {
+                pointSize * 2f
+            } else {
+                categoryPinSize
+            }
 
         return RadarChartStyle(
             modifier = modifier,
@@ -189,7 +191,7 @@ object RadarChartDefaults {
             lineColors = lineColors,
             lineWidth = lineWidth,
             fillAlpha = fillAlpha,
-            fillVisible = fillVisible
+            fillVisible = fillVisible,
         )
     }
 }

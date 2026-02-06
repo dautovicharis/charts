@@ -26,14 +26,15 @@ internal fun LineChartImpl(
     data: MultiChartData,
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val errors = remember(data, style) {
-        validateLineData(
-            data = data,
-            style = style
-        )
-    }
+    val errors =
+        remember(data, style) {
+            validateLineData(
+                data = data,
+                style = style,
+            )
+        }
 
     if (errors.isEmpty()) {
         var title by remember(data) { mutableStateOf(data.title) }
@@ -41,23 +42,25 @@ internal fun LineChartImpl(
             mutableStateOf<ImmutableList<String>>(persistentListOf())
         }
 
-        val lineColors = remember(data, style.lineColors, style.lineColor) {
-            if (data.hasSingleItem()) {
-                persistentListOf(style.lineColor)
-            } else if (style.lineColors.isEmpty()) {
-                generateColorShades(style.lineColor, data.items.size)
-            } else {
-                style.lineColors.toImmutableList()
+        val lineColors =
+            remember(data, style.lineColors, style.lineColor) {
+                if (data.hasSingleItem()) {
+                    persistentListOf(style.lineColor)
+                } else if (style.lineColors.isEmpty()) {
+                    generateColorShades(style.lineColor, data.items.size)
+                } else {
+                    style.lineColors.toImmutableList()
+                }
             }
-        }
 
         Chart(chartViewsStyle = style.chartViewStyle) {
             if (title.isNotBlank()) {
                 Text(
-                    modifier = style.chartViewStyle.modifierTopTitle
-                        .testTag(TestTags.CHART_TITLE),
+                    modifier =
+                        style.chartViewStyle.modifierTopTitle
+                            .testTag(TestTags.CHART_TITLE),
                     text = title,
-                    style = style.chartViewStyle.styleTitle
+                    style = style.chartViewStyle.styleTitle,
                 )
             }
 
@@ -66,15 +69,16 @@ internal fun LineChartImpl(
                 style = style,
                 colors = lineColors,
                 interactionEnabled = interactionEnabled,
-                animateOnStart = animateOnStart
+                animateOnStart = animateOnStart,
             ) { selectedIndex ->
                 title = data.getLabel(selectedIndex)
 
                 if (data.hasCategories()) {
-                    labels = when (selectedIndex) {
-                        NO_SELECTION -> persistentListOf()
-                        else -> data.items.map { it.item.labels[selectedIndex] }.toImmutableList()
-                    }
+                    labels =
+                        when (selectedIndex) {
+                            NO_SELECTION -> persistentListOf()
+                            else -> data.items.map { it.item.labels[selectedIndex] }.toImmutableList()
+                        }
                 }
             }
 
@@ -83,11 +87,11 @@ internal fun LineChartImpl(
                     chartViewsStyle = style.chartViewStyle,
                     legend = data.items.map { it.label }.toImmutableList(),
                     colors = lineColors,
-                    labels = labels
+                    labels = labels,
                 )
             }
         }
     } else {
-        ChartErrors(style = style.chartViewStyle, errors =  errors.toImmutableList())
+        ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
     }
 }

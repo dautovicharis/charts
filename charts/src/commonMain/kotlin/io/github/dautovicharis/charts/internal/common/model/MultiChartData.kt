@@ -8,16 +8,16 @@ import kotlinx.collections.immutable.toImmutableList
 internal data class MultiChartData(
     val items: ImmutableList<ChartDataItem>,
     val categories: ImmutableList<String> = persistentListOf(),
-    val title: String
+    val title: String,
 ) {
     constructor(
         items: List<ChartDataItem>,
         categories: List<String> = emptyList(),
-        title: String
+        title: String,
     ) : this(
         items = items.toImmutableList(),
         categories = categories.toImmutableList(),
-        title = title
+        title = title,
     )
 
     fun getFirstPointsSize(): Int {

@@ -1,15 +1,14 @@
 package io.github.dautovicharis.charts.unit.model
 
-import io.github.dautovicharis.charts.model.ChartDataSet
-import io.github.dautovicharis.charts.internal.common.model.ChartDataType
 import io.github.dautovicharis.charts.internal.common.model.ChartData
+import io.github.dautovicharis.charts.internal.common.model.ChartDataType
 import io.github.dautovicharis.charts.mock.MockTest
+import io.github.dautovicharis.charts.model.ChartDataSet
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class ChartDataTest {
-
     // DoubleList
     @Test
     fun chartDataSet_doubleList_correctDataReturned() {
@@ -18,7 +17,7 @@ class ChartDataTest {
         val itemsType = ChartDataType.DoubleData(items)
 
         // Act
-        val inputDataSet = ChartDataSet(items = itemsType , title = MockTest.TITLE )
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE)
 
         // Assert
         assertContentEquals(actual = inputDataSet.data.item.points, expected = items)
@@ -34,7 +33,7 @@ class ChartDataTest {
         val itemsType = ChartDataType.FloatData(items)
 
         // Act
-        val inputDataSet = ChartDataSet(items = itemsType , title = MockTest.TITLE )
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE)
 
         // Assert
         assertContentEquals(actual = inputDataSet.data.item.points, expected = listOf(1.5, 2.5, 3.5))
@@ -50,7 +49,7 @@ class ChartDataTest {
         val itemsType = ChartDataType.StringData(items)
 
         // Act
-        val inputDataSet = ChartDataSet(items = itemsType , title = MockTest.TITLE, postfix = " °C")
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE, postfix = " °C")
 
         // Assert
         assertContentEquals(actual = inputDataSet.data.item.points, expected = listOf(25.5, 40.0, 70.5))
@@ -66,7 +65,7 @@ class ChartDataTest {
         val itemsType = ChartDataType.StringData(items)
 
         // Act
-        val inputDataSet = ChartDataSet(items = itemsType , title = MockTest.TITLE, prefix = "$")
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE, prefix = "$")
 
         // Assert
         assertContentEquals(actual = inputDataSet.data.item.points, expected = listOf(1.0, 2.0, 3.0))
@@ -82,7 +81,7 @@ class ChartDataTest {
         val itemsType = ChartDataType.StringData(items)
 
         // Act
-        val inputDataSet = ChartDataSet(items = itemsType , title = MockTest.TITLE)
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE)
 
         // Assert
         assertContentEquals(actual = inputDataSet.data.item.points, expected = listOf(-1.0, 2.0, 3.0))
@@ -106,7 +105,7 @@ class ChartDataTest {
         val itemsType = ChartDataType.IntData(items)
 
         // Act
-        val inputDataSet = ChartDataSet(items = itemsType , title = MockTest.TITLE)
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE)
 
         // Assert
         assertContentEquals(actual = inputDataSet.data.item.points, expected = listOf(-1.0, 2.0, 3.0))

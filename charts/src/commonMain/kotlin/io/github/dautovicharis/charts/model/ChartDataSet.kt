@@ -21,34 +21,40 @@ class ChartDataSet internal constructor(
     postfix: String = "",
     labels: List<String>? = null,
 ) {
-    internal val data: ChartDataItem = ChartDataItem(
-        label = title,
-        item = when (items) {
-            is ChartDataType.FloatData -> items.values.toChartData(
-                prefix = prefix,
-                postfix = postfix,
-                labels = labels
-            )
+    internal val data: ChartDataItem =
+        ChartDataItem(
+            label = title,
+            item =
+                when (items) {
+                    is ChartDataType.FloatData ->
+                        items.values.toChartData(
+                            prefix = prefix,
+                            postfix = postfix,
+                            labels = labels,
+                        )
 
-            is ChartDataType.DoubleData -> items.values.toChartData(
-                prefix = prefix,
-                postfix = postfix,
-                labels = labels
-            )
+                    is ChartDataType.DoubleData ->
+                        items.values.toChartData(
+                            prefix = prefix,
+                            postfix = postfix,
+                            labels = labels,
+                        )
 
-            is ChartDataType.IntData -> items.values.toChartData(
-                prefix = prefix,
-                postfix = postfix,
-                labels = labels
-            )
+                    is ChartDataType.IntData ->
+                        items.values.toChartData(
+                            prefix = prefix,
+                            postfix = postfix,
+                            labels = labels,
+                        )
 
-            is ChartDataType.StringData -> items.values.toChartData(
-                prefix = prefix,
-                postfix = postfix,
-                labels = labels
-            )
-        }
-    )
+                    is ChartDataType.StringData ->
+                        items.values.toChartData(
+                            prefix = prefix,
+                            postfix = postfix,
+                            labels = labels,
+                        )
+                },
+        )
 
     /**
      * @constructor Creates a new ChartDataSet with the provided items, title, and labels.
@@ -57,8 +63,8 @@ class ChartDataSet internal constructor(
      * @param title The title of the data set.
      * @param labels The labels to be used for each data item..
      */
-    internal constructor(items: ChartDataType, title: String, labels: List<String>)
-            : this(items = items, title = title, prefix = "", postfix = "", labels = labels)
+    internal constructor(items: ChartDataType, title: String, labels: List<String>) :
+        this(items = items, title = title, prefix = "", postfix = "", labels = labels)
 }
 
 @JvmName("toFloatChartDataSet")
@@ -66,7 +72,7 @@ fun List<Float>.toChartDataSet(
     title: String,
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
+    labels: List<String>? = null,
 ): ChartDataSet {
     return ChartDataSet(ChartDataType.FloatData(this), title, prefix, postfix, labels)
 }
@@ -76,24 +82,21 @@ fun List<Double>.toChartDataSet(
     title: String,
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartDataSet =
-    ChartDataSet(ChartDataType.DoubleData(this), title, prefix, postfix, labels)
+    labels: List<String>? = null,
+): ChartDataSet = ChartDataSet(ChartDataType.DoubleData(this), title, prefix, postfix, labels)
 
 @JvmName("toIntChartDataSet")
 fun List<Int>.toChartDataSet(
     title: String,
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartDataSet =
-    ChartDataSet(ChartDataType.IntData(this), title, prefix, postfix, labels)
+    labels: List<String>? = null,
+): ChartDataSet = ChartDataSet(ChartDataType.IntData(this), title, prefix, postfix, labels)
 
 @JvmName("toStringChartDataSet")
 fun List<String>.toChartDataSet(
     title: String,
     prefix: String = "",
     postfix: String = "",
-    labels: List<String>? = null
-): ChartDataSet =
-    ChartDataSet(ChartDataType.StringData(this), title, prefix, postfix, labels)
+    labels: List<String>? = null,
+): ChartDataSet = ChartDataSet(ChartDataType.StringData(this), title, prefix, postfix, labels)

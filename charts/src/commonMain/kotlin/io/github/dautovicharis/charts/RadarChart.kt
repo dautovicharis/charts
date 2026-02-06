@@ -22,20 +22,21 @@ fun RadarChart(
     dataSet: ChartDataSet,
     style: RadarChartStyle = RadarChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val data = remember(dataSet) {
-        MultiChartData(
-            items = listOf(dataSet.data),
-            categories = dataSet.data.item.labels,
-            title = dataSet.data.label
-        )
-    }
+    val data =
+        remember(dataSet) {
+            MultiChartData(
+                items = listOf(dataSet.data),
+                categories = dataSet.data.item.labels,
+                title = dataSet.data.label,
+            )
+        }
     RadarChartImpl(
         data = data,
         style = style,
         interactionEnabled = interactionEnabled,
-        animateOnStart = animateOnStart
+        animateOnStart = animateOnStart,
     )
 }
 
@@ -52,12 +53,12 @@ fun RadarChart(
     dataSet: MultiChartDataSet,
     style: RadarChartStyle = RadarChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
     RadarChartImpl(
         data = dataSet.data,
         style = style,
         interactionEnabled = interactionEnabled,
-        animateOnStart = animateOnStart
+        animateOnStart = animateOnStart,
     )
 }

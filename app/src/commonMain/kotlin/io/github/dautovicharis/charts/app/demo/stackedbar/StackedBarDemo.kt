@@ -33,7 +33,7 @@ object StackedBarDemoStyle {
     fun custom(barColors: List<Color>): StackedBarChartStyle {
         return StackedBarChartDefaults.style(
             barColors = barColors,
-            chartViewStyle = ChartViewDemoStyle.custom()
+            chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
 }
@@ -43,9 +43,10 @@ fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) 
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
-    val barColors = remember(dataSet.segmentKeys, chartColors) {
-        chartColors.seriesColors(dataSet.segmentKeys)
-    }
+    val barColors =
+        remember(dataSet.segmentKeys, chartColors) {
+            chartColors.seriesColors(dataSet.segmentKeys)
+        }
 
     LaunchedEffect(Unit) {
         viewModel.regenerateDataSet()
@@ -65,21 +66,22 @@ fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) 
         onRefresh = viewModel::regenerateDataSet,
         extraButtons = {
             IconButton(
-                onClick = viewModel::togglePlaying
+                onClick = viewModel::togglePlaying,
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(
-                        if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates
-                    )
+                    contentDescription =
+                        stringResource(
+                            if (isPlaying) Res.string.cd_pause_live_updates else Res.string.cd_play_live_updates,
+                        ),
                 )
             }
-        }
+        },
     ) {
         StackedBarChart(
             dataSet = dataSet.dataSet,
-            style = StackedBarDemoStyle.custom(barColors)
+            style = StackedBarDemoStyle.custom(barColors),
         )
     }
 }

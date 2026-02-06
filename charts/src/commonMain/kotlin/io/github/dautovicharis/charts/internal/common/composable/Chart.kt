@@ -9,14 +9,18 @@ import io.github.dautovicharis.charts.internal.common.theme.ChartsDefaultTheme
 import io.github.dautovicharis.charts.style.ChartViewStyle
 
 @Composable
-internal fun Chart(chartViewsStyle: ChartViewStyle, content: @Composable () -> Unit) {
+internal fun Chart(
+    chartViewsStyle: ChartViewStyle,
+    content: @Composable () -> Unit,
+) {
     ChartsDefaultTheme {
         Box(
-            modifier = chartViewsStyle.modifierMain
+            modifier = chartViewsStyle.modifierMain,
         ) {
             Column(
-                modifier = Modifier
-                    .wrapContentSize()
+                modifier =
+                    Modifier
+                        .wrapContentSize(),
             ) {
                 content()
             }

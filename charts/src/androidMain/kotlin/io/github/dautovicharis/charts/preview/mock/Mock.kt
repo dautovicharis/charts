@@ -1,7 +1,7 @@
 package io.github.dautovicharis.charts.preview.mock
 
-import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.internal.common.model.ChartDataType.FloatData
+import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import kotlin.random.Random
 
@@ -25,16 +25,18 @@ internal object Mock {
 
     private const val PREFIX = "$"
 
-    private val ITEMS = listOf(
-        FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
-        SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
-        THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
-        FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM)
-    )
+    private val ITEMS =
+        listOf(
+            FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
+            SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
+            THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
+            FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM),
+        )
 
     private fun mockList(
-        size: Int, minFloat: Float = -300f,
-        maxFloat: Float = 500f
+        size: Int,
+        minFloat: Float = -300f,
+        maxFloat: Float = 500f,
     ): List<Float> {
         val mockList = mutableListOf<Float>()
         repeat(size) {
@@ -47,7 +49,7 @@ internal object Mock {
     fun barChart(size: Int = 10): ChartDataSet {
         return ChartDataSet(
             items = FloatData(mockList(size = size)),
-            title = BAR_CHART_TITLE
+            title = BAR_CHART_TITLE,
         )
     }
 
@@ -55,22 +57,23 @@ internal object Mock {
         return MultiChartDataSet(
             items = ITEMS,
             categories = CATEGORIES,
-            title = STACKED_BAR_CHART_TITLE
+            title = STACKED_BAR_CHART_TITLE,
         )
     }
 
     fun stackedBarChartInvalid(): MultiChartDataSet {
-        val items = listOf(
-            FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
-            SECOND_ITEM_NAME to FloatData(SECOND_ITEM.dropLast(1)),
-            THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
-            FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM.dropLast(1))
-        )
+        val items =
+            listOf(
+                FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
+                SECOND_ITEM_NAME to FloatData(SECOND_ITEM.dropLast(1)),
+                THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
+                FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM.dropLast(1)),
+            )
 
         return MultiChartDataSet(
             items = items,
             categories = CATEGORIES.dropLast(1),
-            title = STACKED_BAR_CHART_TITLE
+            title = STACKED_BAR_CHART_TITLE,
         )
     }
 
@@ -79,37 +82,38 @@ internal object Mock {
             items = ITEMS,
             categories = CATEGORIES,
             title = LINE_CHART_TITLE,
-            prefix = PREFIX
+            prefix = PREFIX,
         )
     }
 
     fun lineChartSimple(size: Int = 10): ChartDataSet {
         return ChartDataSet(
             items = FloatData(mockList(size = size)),
-            title = LINE_CHART_TITLE
+            title = LINE_CHART_TITLE,
         )
     }
 
     fun lineChartInvalid(): MultiChartDataSet {
-        val items = listOf(
-            FIRST_ITEM_NAME to FloatData(FIRST_ITEM.dropLast(1)),
-            SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
-            THIRD_ITEM_NAME to FloatData(THIRD_ITEM.dropLast(1)),
-            FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM)
-        )
+        val items =
+            listOf(
+                FIRST_ITEM_NAME to FloatData(FIRST_ITEM.dropLast(1)),
+                SECOND_ITEM_NAME to FloatData(SECOND_ITEM),
+                THIRD_ITEM_NAME to FloatData(THIRD_ITEM.dropLast(1)),
+                FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM),
+            )
 
         return MultiChartDataSet(
             items = items,
             categories = CATEGORIES.dropLast(1),
             title = LINE_CHART_TITLE,
-            prefix = PREFIX
+            prefix = PREFIX,
         )
     }
 
     fun pieChart(size: Int = 9): ChartDataSet {
         return ChartDataSet(
             items = FloatData(mockList(size = size, minFloat = 7f, maxFloat = 54f)),
-            title = PIE_CHART_TITLE
+            title = PIE_CHART_TITLE,
         )
     }
 }

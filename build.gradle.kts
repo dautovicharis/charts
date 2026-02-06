@@ -6,6 +6,16 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.build.config) apply false
     alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.ktlint) apply false
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension>("ktlint") {
+        android.set(true)
+        ignoreFailures.set(false)
+    }
 }
 
 tasks.register("chartsTest") {
@@ -18,9 +28,11 @@ tasks.register("chartsTest") {
 tasks.register("chartsCheck") {
     group = "Charts"
     description = "Build and tests for the charts project"
+    dependsOn(getTasksByName("ktlintCheck", true))
     dependsOn("build")
     dependsOn("chartsTest")
 
+    tasks.findByName("build")?.mustRunAfter(getTasksByName("ktlintCheck", true))
     tasks.findByName("chartsTest")?.mustRunAfter("build")
 }
 

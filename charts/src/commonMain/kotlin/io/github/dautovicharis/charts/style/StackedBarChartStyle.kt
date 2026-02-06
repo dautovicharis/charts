@@ -25,7 +25,7 @@ class StackedBarChartStyle internal constructor(
     val barColor: Color,
     val space: Dp,
     val barColors: List<Color>,
-): Style {
+) : Style {
     /**
      * Returns a list of the properties of the StackedBarChartStyle.
      */
@@ -33,7 +33,7 @@ class StackedBarChartStyle internal constructor(
         return listOf(
             StackedBarChartStyle::barColor.name to barColor,
             StackedBarChartStyle::space.name to space,
-            StackedBarChartStyle::barColors.name to barColors
+            StackedBarChartStyle::barColors.name to barColors,
         )
     }
 }
@@ -55,20 +55,21 @@ object StackedBarChartDefaults {
         barColor: Color = MaterialTheme.colorScheme.primary,
         space: Dp = 10.dp,
         barColors: List<Color> = emptyList(),
-        chartViewStyle: ChartViewStyle = ChartViewDefaults.style()
+        chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): StackedBarChartStyle {
         val padding = chartViewStyle.innerPadding
-        val modifier: Modifier = Modifier
-            .padding(padding)
-            .aspectRatio(1f)
-            .fillMaxSize()
+        val modifier: Modifier =
+            Modifier
+                .padding(padding)
+                .aspectRatio(1f)
+                .fillMaxSize()
 
         return StackedBarChartStyle(
             modifier = modifier,
             barColor = barColor,
             space = space,
             barColors = barColors,
-            chartViewStyle = chartViewStyle
+            chartViewStyle = chartViewStyle,
         )
     }
 }

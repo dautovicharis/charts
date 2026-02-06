@@ -1,21 +1,20 @@
 package io.github.dautovicharis.charts.unit.validation
 
-import io.github.dautovicharis.charts.model.ChartDataSet
-import io.github.dautovicharis.charts.internal.common.model.ChartDataType
 import io.github.dautovicharis.charts.internal.ValidationErrors
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_PIE
+import io.github.dautovicharis.charts.internal.common.model.ChartDataType
 import io.github.dautovicharis.charts.internal.format
 import io.github.dautovicharis.charts.internal.validatePieData
 import io.github.dautovicharis.charts.mock.MockTest.TITLE
 import io.github.dautovicharis.charts.mock.MockTest.colors
 import io.github.dautovicharis.charts.mock.MockTest.dataSet
 import io.github.dautovicharis.charts.mock.MockTest.mockPieChartStyle
+import io.github.dautovicharis.charts.model.ChartDataSet
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DataValidationPieTest {
-
     @Test
     fun validatePieData_validDataSet_noValidationErrors() {
         // Arrange
@@ -31,10 +30,11 @@ class DataValidationPieTest {
     @Test
     fun validatePieData_invalidDataItems_validationErrorsPresent() {
         // Arrange
-        val chartDataSet = ChartDataSet(
-            items = ChartDataType.FloatData(listOf(10f)),
-            title = TITLE,
-        )
+        val chartDataSet =
+            ChartDataSet(
+                items = ChartDataType.FloatData(listOf(10f)),
+                title = TITLE,
+            )
 
         val pieChartStyle = mockPieChartStyle()
 
@@ -42,7 +42,7 @@ class DataValidationPieTest {
         val validationErrors =
             validatePieData(
                 dataSet = chartDataSet,
-                style = pieChartStyle
+                style = pieChartStyle,
             )
 
         // Assert

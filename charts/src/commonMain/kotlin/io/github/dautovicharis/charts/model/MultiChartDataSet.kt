@@ -23,43 +23,50 @@ class MultiChartDataSet internal constructor(
     categories: List<String> = emptyList(),
     title: String,
     prefix: String = "",
-    postfix: String = ""
+    postfix: String = "",
 ) {
     internal val data: MultiChartData
 
     init {
-        val dataItems = items.map {
-            ChartDataItem(
-                label = it.first,
-                item = when (val item = it.second) {
-                    is ChartDataType.FloatData -> item.values.toChartData(
-                        prefix = prefix,
-                        postfix = postfix
-                    )
+        val dataItems =
+            items.map {
+                ChartDataItem(
+                    label = it.first,
+                    item =
+                        when (val item = it.second) {
+                            is ChartDataType.FloatData ->
+                                item.values.toChartData(
+                                    prefix = prefix,
+                                    postfix = postfix,
+                                )
 
-                    is ChartDataType.DoubleData -> item.values.toChartData(
-                        prefix = prefix,
-                        postfix = postfix
-                    )
+                            is ChartDataType.DoubleData ->
+                                item.values.toChartData(
+                                    prefix = prefix,
+                                    postfix = postfix,
+                                )
 
-                    is ChartDataType.IntData -> item.values.toChartData(
-                        prefix = prefix,
-                        postfix = postfix
-                    )
+                            is ChartDataType.IntData ->
+                                item.values.toChartData(
+                                    prefix = prefix,
+                                    postfix = postfix,
+                                )
 
-                    is ChartDataType.StringData -> item.values.toChartData(
-                        prefix = prefix,
-                        postfix = postfix
-                    )
-                }
+                            is ChartDataType.StringData ->
+                                item.values.toChartData(
+                                    prefix = prefix,
+                                    postfix = postfix,
+                                )
+                        },
+                )
+            }
+
+        data =
+            MultiChartData(
+                items = dataItems,
+                title = title,
+                categories = categories,
             )
-        }
-
-        data = MultiChartData(
-            items = dataItems,
-            title = title,
-            categories = categories
-        )
     }
 }
 
@@ -68,11 +75,12 @@ fun List<Pair<String, List<Float>>>.toMultiChartDataSet(
     title: String,
     categories: List<String> = emptyList(),
     prefix: String = "",
-    postfix: String = ""
+    postfix: String = "",
 ): MultiChartDataSet {
-    val items = this.map { (label, values) ->
-        label to ChartDataType.FloatData(values)
-    }
+    val items =
+        this.map { (label, values) ->
+            label to ChartDataType.FloatData(values)
+        }
     return MultiChartDataSet(items, categories, title, prefix, postfix)
 }
 
@@ -81,11 +89,12 @@ fun List<Pair<String, List<Double>>>.toMultiChartDataSet(
     title: String,
     categories: List<String> = emptyList(),
     prefix: String = "",
-    postfix: String = ""
+    postfix: String = "",
 ): MultiChartDataSet {
-    val items = this.map { (label, values) ->
-        label to ChartDataType.DoubleData(values)
-    }
+    val items =
+        this.map { (label, values) ->
+            label to ChartDataType.DoubleData(values)
+        }
     return MultiChartDataSet(items, categories, title, prefix, postfix)
 }
 
@@ -94,11 +103,12 @@ fun List<Pair<String, List<Int>>>.toMultiChartDataSet(
     title: String,
     categories: List<String> = emptyList(),
     prefix: String = "",
-    postfix: String = ""
+    postfix: String = "",
 ): MultiChartDataSet {
-    val items = this.map { (label, values) ->
-        label to ChartDataType.IntData(values)
-    }
+    val items =
+        this.map { (label, values) ->
+            label to ChartDataType.IntData(values)
+        }
     return MultiChartDataSet(items, categories, title, prefix, postfix)
 }
 
@@ -107,10 +117,11 @@ fun List<Pair<String, List<String>>>.toMultiChartDataSet(
     title: String,
     categories: List<String> = emptyList(),
     prefix: String = "",
-    postfix: String = ""
+    postfix: String = "",
 ): MultiChartDataSet {
-    val items = this.map { (label, values) ->
-        label to ChartDataType.StringData(values)
-    }
+    val items =
+        this.map { (label, values) ->
+            label to ChartDataType.StringData(values)
+        }
     return MultiChartDataSet(items, categories, title, prefix, postfix)
 }

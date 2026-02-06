@@ -40,7 +40,7 @@ fun ChartGallery(
     onSubmenuSelected: (ChartSubmenuItem) -> Unit,
     versionLabel: String,
     modifier: Modifier = Modifier,
-    viewModel: ChartGalleryViewModel = koinViewModel()
+    viewModel: ChartGalleryViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val menuItems = menuState.menuItems
@@ -55,11 +55,12 @@ fun ChartGallery(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 18.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 18.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items.forEach { item ->
             val accent = chartAccent(item.destination)
@@ -77,29 +78,30 @@ fun ChartGallery(
                     ChartPreview(
                         destination = item.destination,
                         isCustom = false,
-                        previews = state.previews
+                        previews = state.previews,
                     )
                 },
                 customPreview = {
                     ChartPreview(
                         destination = item.destination,
                         isCustom = true,
-                        previews = state.previews
+                        previews = state.previews,
                     )
-                }
+                },
             )
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 12.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, bottom = 12.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = versionLabel,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
         }
     }
@@ -112,32 +114,34 @@ private fun ChartGalleryCard(
     onBasic: () -> Unit,
     onCustom: () -> Unit,
     basicPreview: @Composable () -> Unit,
-    customPreview: @Composable () -> Unit
+    customPreview: @Composable () -> Unit,
 ) {
     ElevatedCard(
         shape = GalleryCardShape,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(38.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(accent.copy(alpha = 0.16f)),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(accent.copy(alpha = 0.16f)),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(item.destination.icon),
                         contentDescription = stringResource(item.destination.title),
-                        tint = accent
+                        tint = accent,
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dp))
@@ -145,12 +149,12 @@ private fun ChartGalleryCard(
                     Text(
                         text = stringResource(item.destination.title),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = item.subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     )
                 }
             }
@@ -159,26 +163,26 @@ private fun ChartGalleryCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Column(
                     modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ChartPreviewFrame(
                         accent = accent,
-                        onClick = onBasic
+                        onClick = onBasic,
                     ) {
                         basicPreview()
                     }
                 }
                 Column(
                     modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ChartPreviewFrame(
                         accent = accent,
-                        onClick = onCustom
+                        onClick = onCustom,
                     ) {
                         customPreview()
                     }

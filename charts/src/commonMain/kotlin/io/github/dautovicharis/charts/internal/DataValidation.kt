@@ -41,7 +41,7 @@ internal fun String.format(vararg args: Any?): String {
 
 internal fun validateLineData(
     data: MultiChartData,
-    style: LineChartStyle
+    style: LineChartStyle,
 ): List<String> {
     val firstPointsSize = data.items.first().item.points.size
 
@@ -53,13 +53,13 @@ internal fun validateLineData(
         pointsSize = firstPointsSize,
         minRequiredPointsSize = MIN_REQUIRED_LINE,
         colorsSize = colorsSize,
-        expectedColorsSize = expectedColorsSize
+        expectedColorsSize = expectedColorsSize,
     )
 }
 
 internal fun validateRadarData(
     data: MultiChartData,
-    style: RadarChartStyle
+    style: RadarChartStyle,
 ): List<String> {
     val firstPointsSize = data.items.first().item.points.size
 
@@ -71,13 +71,13 @@ internal fun validateRadarData(
         pointsSize = firstPointsSize,
         minRequiredPointsSize = MIN_REQUIRED_RADAR,
         colorsSize = colorsSize,
-        expectedColorsSize = expectedColorsSize
+        expectedColorsSize = expectedColorsSize,
     )
 }
 
 internal fun validateBarData(
     data: MultiChartData,
-    style: StackedBarChartStyle
+    style: StackedBarChartStyle,
 ): List<String> {
     val firstPointsSize = data.items.first().item.points.size
     val colorsSize = style.barColors.size
@@ -87,7 +87,7 @@ internal fun validateBarData(
         pointsSize = firstPointsSize,
         minRequiredPointsSize = MIN_REQUIRED_STACKED_BAR,
         colorsSize = colorsSize,
-        expectedColorsSize = firstPointsSize
+        expectedColorsSize = firstPointsSize,
     )
 }
 
@@ -113,7 +113,7 @@ internal fun validateBarData(data: ChartData): List<String> {
 
 internal fun validatePieData(
     dataSet: ChartDataSet,
-    style: PieChartStyle
+    style: PieChartStyle,
 ): List<String> {
     val validationErrors = mutableListOf<String>()
     val pointsSize = dataSet.data.item.points.size
@@ -148,7 +148,7 @@ private fun validateChartData(
     pointsSize: Int,
     minRequiredPointsSize: Int,
     colorsSize: Int,
-    expectedColorsSize: Int
+    expectedColorsSize: Int,
 ): List<String> {
     val validationErrors = mutableListOf<String>()
 
@@ -163,21 +163,23 @@ private fun validateChartData(
     // Rule 2: Each item should have the same number of points
     data.items.forEachIndexed { index, dataItem ->
         if (dataItem.item.points.size != pointsSize) {
-            val validationError = ValidationErrors.RULE_ITEM_POINTS_SIZE.format(
-                index,
-                dataItem.item.points.size,
-                pointsSize
-            )
+            val validationError =
+                ValidationErrors.RULE_ITEM_POINTS_SIZE.format(
+                    index,
+                    dataItem.item.points.size,
+                    pointsSize,
+                )
             validationErrors.add(validationError)
         }
     }
 
     // Rule 3: If categories are not empty, it should match pointsSize
     if (data.hasCategories() && data.categories.size != pointsSize) {
-        val validationError = ValidationErrors.RULE_CATEGORIES_SIZE_MISMATCH.format(
-            data.categories.size,
-            pointsSize
-        )
+        val validationError =
+            ValidationErrors.RULE_CATEGORIES_SIZE_MISMATCH.format(
+                data.categories.size,
+                pointsSize,
+            )
         validationErrors.add(validationError)
     }
 

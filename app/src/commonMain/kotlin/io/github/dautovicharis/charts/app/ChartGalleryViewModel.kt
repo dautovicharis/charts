@@ -4,18 +4,18 @@ import androidx.lifecycle.ViewModel
 import io.github.dautovicharis.charts.app.data.ChartPreviewUseCase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 data class ChartGalleryItemUiState(
     val destination: ChartDestination,
     val subtitle: String,
     val basicItem: ChartSubmenuItem?,
-    val customItem: ChartSubmenuItem?
+    val customItem: ChartSubmenuItem?,
 )
 
 data class ChartGalleryPreviewState(
@@ -24,24 +24,24 @@ data class ChartGalleryPreviewState(
     val multiLineSeries: List<Pair<String, List<Float>>>,
     val barValues: List<Float>,
     val stackedSeries: List<Pair<String, List<Float>>>,
-    val radarSeries: List<Pair<String, List<Float>>>
+    val radarSeries: List<Pair<String, List<Float>>>,
 )
 
 data class ChartGalleryState(
     val items: List<ChartGalleryItemUiState>,
-    val previews: ChartGalleryPreviewState
+    val previews: ChartGalleryPreviewState,
 )
 
 class ChartGalleryViewModel(
-    private val previewUseCase: ChartPreviewUseCase
+    private val previewUseCase: ChartPreviewUseCase,
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow(
-        ChartGalleryState(
-            items = emptyList(),
-            previews = previewUseCase.previewSeed()
+    private val _state =
+        MutableStateFlow(
+            ChartGalleryState(
+                items = emptyList(),
+                previews = previewUseCase.previewSeed(),
+            ),
         )
-    )
 
     val state: StateFlow<ChartGalleryState> = _state.asStateFlow()
     private var isLoopRunning = false
@@ -52,7 +52,7 @@ class ChartGalleryViewModel(
                 destination = screen,
                 subtitle = subtitleFor(screen),
                 basicItem = screen.submenus.firstOrNull(),
-                customItem = screen.submenus.lastOrNull()
+                customItem = screen.submenus.lastOrNull(),
             )
         }
     }
@@ -74,7 +74,7 @@ class ChartGalleryViewModel(
                         jitterMs = 350L,
                         update = { previews ->
                             previews.copy(pieValues = previewUseCase.nextPiePreview(previews.pieValues))
-                        }
+                        },
                     )
                 }
                 launch {
@@ -83,7 +83,7 @@ class ChartGalleryViewModel(
                         jitterMs = 450L,
                         update = { previews ->
                             previews.copy(lineValues = previewUseCase.nextLinePreview(previews.lineValues))
-                        }
+                        },
                     )
                 }
                 launch {
@@ -92,7 +92,7 @@ class ChartGalleryViewModel(
                         jitterMs = 500L,
                         update = { previews ->
                             previews.copy(multiLineSeries = previewUseCase.nextMultiLinePreview())
-                        }
+                        },
                     )
                 }
                 launch {
@@ -101,7 +101,7 @@ class ChartGalleryViewModel(
                         jitterMs = 400L,
                         update = { previews ->
                             previews.copy(barValues = previewUseCase.nextBarPreview(previews.barValues))
-                        }
+                        },
                     )
                 }
                 launch {
@@ -110,7 +110,7 @@ class ChartGalleryViewModel(
                         jitterMs = 500L,
                         update = { previews ->
                             previews.copy(stackedSeries = previewUseCase.nextStackedPreview())
-                        }
+                        },
                     )
                 }
                 launch {
@@ -119,7 +119,7 @@ class ChartGalleryViewModel(
                         jitterMs = 600L,
                         update = { previews ->
                             previews.copy(radarSeries = previewUseCase.nextRadarPreview())
-                        }
+                        },
                     )
                 }
             }
@@ -131,7 +131,7 @@ class ChartGalleryViewModel(
     private suspend fun previewLoop(
         baseIntervalMs: Long,
         jitterMs: Long,
-        update: (ChartGalleryPreviewState) -> ChartGalleryPreviewState
+        update: (ChartGalleryPreviewState) -> ChartGalleryPreviewState,
     ) {
         while (true) {
             delay(randomizedInterval(baseIntervalMs, jitterMs))
@@ -156,7 +156,10 @@ class ChartGalleryViewModel(
         private const val MIN_PREVIEW_INTERVAL_MS = 700L
     }
 
-    private fun randomizedInterval(baseIntervalMs: Long, jitterMs: Long): Long {
+    private fun randomizedInterval(
+        baseIntervalMs: Long,
+        jitterMs: Long,
+    ): Long {
         if (jitterMs <= 0) return baseIntervalMs.coerceAtLeast(MIN_PREVIEW_INTERVAL_MS)
         val delta = Random.nextLong(-jitterMs, jitterMs + 1)
         return (baseIntervalMs + delta).coerceAtLeast(MIN_PREVIEW_INTERVAL_MS)

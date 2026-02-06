@@ -11,7 +11,11 @@ class DefaultLineSampleUseCase : LineSampleUseCase {
         return lineInitialValues.toChartDataSet(title = title)
     }
 
-    override fun lineDataSet(range: IntRange, numOfPoints: IntRange, title: String): ChartDataSet {
+    override fun lineDataSet(
+        range: IntRange,
+        numOfPoints: IntRange,
+        title: String,
+    ): ChartDataSet {
         val points = numOfPoints.random()
         val values = List(points) { range.random() }
         return values.toChartDataSet(title = title)

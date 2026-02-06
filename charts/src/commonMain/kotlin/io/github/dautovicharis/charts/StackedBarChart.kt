@@ -35,21 +35,22 @@ fun StackedBarChart(
     dataSet: MultiChartDataSet,
     style: StackedBarChartStyle = StackedBarChartDefaults.style(),
     interactionEnabled: Boolean = true,
-    animateOnStart: Boolean = true
+    animateOnStart: Boolean = true,
 ) {
-    val errors = remember(dataSet, style) {
-        validateBarData(
-            data = dataSet.data,
-            style = style
-        )
-    }
+    val errors =
+        remember(dataSet, style) {
+            validateBarData(
+                data = dataSet.data,
+                style = style,
+            )
+        }
 
     if (errors.isEmpty()) {
         StackedBarChartContent(
             dataSet = dataSet,
             style = style,
             interactionEnabled = interactionEnabled,
-            animateOnStart = animateOnStart
+            animateOnStart = animateOnStart,
         )
     } else {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
@@ -61,32 +62,34 @@ private fun StackedBarChartContent(
     dataSet: MultiChartDataSet,
     style: StackedBarChartStyle,
     interactionEnabled: Boolean,
-    animateOnStart: Boolean
+    animateOnStart: Boolean,
 ) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.title) }
     var labels by remember(dataSet) {
         mutableStateOf<ImmutableList<String>>(persistentListOf())
     }
 
-    val colors: ImmutableList<androidx.compose.ui.graphics.Color> = remember(
-        dataSet,
-        style.barColors,
-        style.barColor
-    ) {
-        if (style.barColors.isEmpty()) {
-            generateColorShades(style.barColor, dataSet.data.getFirstPointsSize())
-        } else {
-            style.barColors.toImmutableList()
+    val colors: ImmutableList<androidx.compose.ui.graphics.Color> =
+        remember(
+            dataSet,
+            style.barColors,
+            style.barColor,
+        ) {
+            if (style.barColors.isEmpty()) {
+                generateColorShades(style.barColor, dataSet.data.getFirstPointsSize())
+            } else {
+                style.barColors.toImmutableList()
+            }
         }
-    }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
         if (title.isNotBlank()) {
             Text(
-                modifier = style.chartViewStyle.modifierTopTitle
-                    .testTag(TestTags.CHART_TITLE),
+                modifier =
+                    style.chartViewStyle.modifierTopTitle
+                        .testTag(TestTags.CHART_TITLE),
                 text = title,
-                style = style.chartViewStyle.styleTitle
+                style = style.chartViewStyle.styleTitle,
             )
         }
 
@@ -95,20 +98,22 @@ private fun StackedBarChartContent(
             style = style,
             colors = colors,
             interactionEnabled = interactionEnabled,
-            animateOnStart = animateOnStart
+            animateOnStart = animateOnStart,
         ) { selectedIndex ->
-            title = when (selectedIndex) {
-                NO_SELECTION -> dataSet.data.title
-                else -> {
-                    dataSet.data.items[selectedIndex].label
+            title =
+                when (selectedIndex) {
+                    NO_SELECTION -> dataSet.data.title
+                    else -> {
+                        dataSet.data.items[selectedIndex].label
+                    }
                 }
-            }
 
             if (dataSet.data.hasCategories()) {
-                labels = when (selectedIndex) {
-                    NO_SELECTION -> persistentListOf()
-                    else -> dataSet.data.items[selectedIndex].item.labels
-                }
+                labels =
+                    when (selectedIndex) {
+                        NO_SELECTION -> persistentListOf()
+                        else -> dataSet.data.items[selectedIndex].item.labels
+                    }
             }
         }
 
@@ -117,7 +122,7 @@ private fun StackedBarChartContent(
                 chartViewsStyle = style.chartViewStyle,
                 colors = colors,
                 legend = dataSet.data.categories,
-                labels = labels
+                labels = labels,
             )
         }
     }

@@ -9,44 +9,47 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class StateTest {
-
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun rememberShowState_shouldReturnFalse() = runComposeUiTest {
-        setContent {
-            val result = rememberShowState()
-            assertFalse {
-                result.value
+    fun rememberShowState_shouldReturnFalse() =
+        runComposeUiTest {
+            setContent {
+                val result = rememberShowState()
+                assertFalse {
+                    result.value
+                }
             }
         }
-    }
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun rememberShowState_shouldReturnTrue() = runComposeUiTest {
-        setContent {
-            val result = rememberShowState(isPreviewMode = true)
-            assertTrue {
-                result.value
+    fun rememberShowState_shouldReturnTrue() =
+        runComposeUiTest {
+            setContent {
+                val result = rememberShowState(isPreviewMode = true)
+                assertTrue {
+                    result.value
+                }
             }
         }
-    }
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun rememberAnimationState_shouldReturnZero() = runComposeUiTest {
-        setContent {
-            val result = rememberAnimationState()
-            assertTrue { result.value == 0f }
+    fun rememberAnimationState_shouldReturnZero() =
+        runComposeUiTest {
+            setContent {
+                val result = rememberAnimationState()
+                assertTrue { result.value == 0f }
+            }
         }
-    }
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun rememberAnimationState_shouldReturnOne() = runComposeUiTest {
-        setContent {
-            val result = rememberAnimationState(isPreviewMode = true)
-            assertTrue { result.value == 1f }
+    fun rememberAnimationState_shouldReturnOne() =
+        runComposeUiTest {
+            setContent {
+                val result = rememberAnimationState(isPreviewMode = true)
+                assertTrue { result.value == 1f }
+            }
         }
-    }
 }

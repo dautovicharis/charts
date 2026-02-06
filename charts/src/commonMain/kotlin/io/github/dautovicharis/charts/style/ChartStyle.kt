@@ -39,13 +39,13 @@ class ChartViewStyle internal constructor(
     val modifierLegend: Modifier,
     val innerPadding: Dp,
     val width: Dp,
-    val backgroundColor: Color
+    val backgroundColor: Color,
 )
 
 /**
  * An object that provides default styles for a Chart View.
  */
- object ChartViewDefaults {
+object ChartViewDefaults {
     /**
      * Returns a ChartViewStyle with the provided parameters or their default values.
      *
@@ -65,32 +65,35 @@ class ChartViewStyle internal constructor(
         shadow: Dp = 15.dp,
         backgroundColor: Color = MaterialTheme.colorScheme.surface,
     ): ChartViewStyle {
-
         val modifierTitle: Modifier = Modifier.padding(top = innerPadding, start = innerPadding)
-        val modifierLegend: Modifier = Modifier
-            .wrapContentSize()
-            .padding(start = innerPadding, end = innerPadding, bottom = innerPadding)
+        val modifierLegend: Modifier =
+            Modifier
+                .wrapContentSize()
+                .padding(start = innerPadding, end = innerPadding, bottom = innerPadding)
 
-        val modifierMain: Modifier = Modifier
-            .wrapContentHeight()
-            .padding(outerPadding)
-            .shadow(elevation = shadow, shape = RoundedCornerShape(cornerRadius))
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(cornerRadius)
+        val modifierMain: Modifier =
+            Modifier
+                .wrapContentHeight()
+                .padding(outerPadding)
+                .shadow(elevation = shadow, shape = RoundedCornerShape(cornerRadius))
+                .background(
+                    color = backgroundColor,
+                    shape = RoundedCornerShape(cornerRadius),
+                )
+
+        val updatedModifierMain =
+            when (width) {
+                Dp.Infinity -> modifierMain.fillMaxWidth()
+                else -> modifierMain.width(width)
+            }
+
+        val titleStyle =
+            TextStyle(
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.ExtraBold,
             )
-
-        val updatedModifierMain = when (width) {
-            Dp.Infinity -> modifierMain.fillMaxWidth()
-            else -> modifierMain.width(width)
-        }
-
-        val titleStyle = TextStyle(
-            fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Start,
-            fontWeight = FontWeight.ExtraBold
-        )
 
         return ChartViewStyle(
             modifierMain = updatedModifierMain,
@@ -99,7 +102,7 @@ class ChartViewStyle internal constructor(
             modifierLegend = modifierLegend,
             innerPadding = innerPadding,
             width = width,
-            backgroundColor = backgroundColor
+            backgroundColor = backgroundColor,
         )
     }
 }
