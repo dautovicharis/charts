@@ -37,9 +37,8 @@ object PieChartDemoStyle {
 
     @Composable
     fun custom(pieColors: List<Color>): PieChartStyle {
-        val chartColors = LocalChartColors.current
         return PieChartDefaults.style(
-            borderColor = chartColors.tooltipOnSurface,
+            borderColor = MaterialTheme.colorScheme.surface,
             donutPercentage = 40f,
             borderWidth = 5f,
             pieColors = pieColors,

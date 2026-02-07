@@ -209,7 +209,9 @@ private fun StyleAndChartChartItem(
         horizontalArrangement = Arrangement.Center,
     ) {
         key(chartItemKey) {
-            chartItem()
+            DrawerGestureLockContainer {
+                chartItem()
+            }
         }
     }
 }
