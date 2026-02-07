@@ -115,7 +115,7 @@ private fun PieChartPreview(
                 pieColors = colors,
                 donutPercentage = 40f,
                 borderWidth = 5f,
-                borderColor = chartColors.tooltipOnSurface,
+                borderColor = Color.White,
                 chartViewStyle = previewChartViewStyle(),
             )
         } else {
@@ -177,18 +177,14 @@ private fun MultiLineChartPreview(
             series.toMultiChartDataSet(title = "")
         }
     val chartColors = LocalChartColors.current
-    val seriesKeys =
-        remember(series) {
-            series.map { it.first }
-        }
-    val colors =
-        remember(seriesKeys, chartColors) {
-            chartColors.seriesColors(seriesKeys)
+    val lineColors =
+        remember(series, chartColors) {
+            chartColors.seriesColors(series.size)
         }
     val style =
         if (isCustom) {
             LineChartDefaults.style(
-                lineColors = colors,
+                lineColors = lineColors,
                 dragPointVisible = false,
                 pointVisible = true,
                 bezier = false,
@@ -230,21 +226,14 @@ private fun BarChartPreview(values: List<Float>) {
 
 @Composable
 private fun StackedBarChartPreview(series: List<Pair<String, List<Float>>>) {
-    val segmentKeys = remember { listOf("Jan", "Feb", "Mar") }
     val dataSet =
         remember(series) {
             series.toMultiChartDataSet(title = "")
-        }
-    val chartColors = LocalChartColors.current
-    val colors =
-        remember(segmentKeys, chartColors) {
-            chartColors.seriesColors(segmentKeys)
         }
     StackedBarChart(
         dataSet = dataSet,
         style =
             StackedBarChartDefaults.style(
-                barColors = colors,
                 chartViewStyle = previewChartViewStyle(),
             ),
         interactionEnabled = false,
@@ -285,13 +274,9 @@ private fun RadarChartPreview(
             }
         }
     val chartColors = LocalChartColors.current
-    val seriesKeys =
-        remember(previewSeries) {
-            previewSeries.map { it.first }
-        }
     val lineColors =
-        remember(seriesKeys, chartColors) {
-            chartColors.seriesColors(seriesKeys)
+        remember(previewSeries, chartColors) {
+            chartColors.seriesColors(previewSeries.size)
         }
     val dataSet =
         remember(previewSeries) {

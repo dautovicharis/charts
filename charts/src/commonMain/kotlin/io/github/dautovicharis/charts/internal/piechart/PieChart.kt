@@ -3,7 +3,6 @@ package io.github.dautovicharis.charts.internal.piechart
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -34,9 +33,10 @@ import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.common.composable.rememberShowState
 import io.github.dautovicharis.charts.internal.common.model.ChartData
-import io.github.dautovicharis.charts.style.ChartViewStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 internal data class PieSlice(
@@ -52,7 +52,6 @@ internal fun PieChart(
     chartData: ChartData,
     colors: ImmutableList<Color>,
     style: PieChartStyle,
-    chartStyle: ChartViewStyle,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
     selectedSliceIndex: Int = NO_SELECTION,
@@ -62,29 +61,44 @@ internal fun PieChart(
     var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
     val values = chartData.points
     val animatables =
-        remember(values.size) {
-            values.map { Animatable(it.toFloat()) }
+        remember(values.size, isPreview, animateOnStart) {
+            List(values.size) { index ->
+                val initialValue =
+                    if (isPreview || !animateOnStart) {
+                        values[index].toFloat()
+                    } else {
+                        0f
+                    }
+                Animatable(initialValue)
+            }
         }
     val hasInitialized = remember { mutableStateOf(false) }
-    LaunchedEffect(values) {
+    LaunchedEffect(values, isPreview, animateOnStart) {
         if (values.isEmpty()) return@LaunchedEffect
-        values.forEachIndexed { index, value ->
-            val target = value.toFloat()
-            val shouldAnimate = !isPreview && (animateOnStart || hasInitialized.value)
-            if (!shouldAnimate) {
-                animatables[index].snapTo(target)
-            } else {
-                animatables[index].animateTo(
-                    targetValue = target,
-                    animationSpec = AnimationSpec.pieChartValue(),
-                )
+        val shouldAnimate = !isPreview && (animateOnStart || hasInitialized.value)
+        coroutineScope {
+            values.forEachIndexed { index, value ->
+                launch {
+                    val target = value.toFloat()
+                    if (!shouldAnimate) {
+                        animatables[index].snapTo(target)
+                    } else {
+                        animatables[index].animateTo(
+                            targetValue = target,
+                            animationSpec = AnimationSpec.pieChartValue(),
+                        )
+                    }
+                }
             }
         }
         hasInitialized.value = true
     }
 
-    val slices = createPieSlices(animatables.map { it.value.toDouble() })
+    val interactionSlices = remember(values) { createPieSlices(values) }
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
+    LaunchedEffect(selectedSliceIndex) {
+        selectedIndex = selectedSliceIndex
+    }
     val effectiveSelectedIndex =
         when (selectedSliceIndex) {
             NO_SELECTION -> selectedIndex
@@ -99,7 +113,7 @@ internal fun PieChart(
         )
 
     val slicesAnimations =
-        List(slices.size) { index ->
+        List(values.size) { index ->
             animateFloatAsState(
                 targetValue = if (show) DEFAULT_SCALE else 0f,
                 animationSpec = AnimationSpec.pieChart(index),
@@ -116,50 +130,17 @@ internal fun PieChart(
     val interactionModifier =
         if (interactionEnabled) {
             Modifier
-                .pointerInput(Unit) {
+                .pointerInput(interactionSlices) {
                     detectTapGestures { offset ->
                         selectedIndex =
                             getSelectedIndex(
                                 pointX = offset.x,
                                 pointY = offset.y,
                                 size = size,
-                                slices = slices,
+                                slices = interactionSlices,
                             )
                         onSliceTouched(selectedIndex)
                     }
-                }
-                .pointerInput(Unit) {
-                    detectDragGesturesAfterLongPress(
-                        onDragStart = { offset ->
-                            selectedIndex =
-                                getSelectedIndex(
-                                    pointX = offset.x,
-                                    pointY = offset.y,
-                                    size = size,
-                                    slices = slices,
-                                )
-                            onSliceTouched(selectedIndex)
-                        },
-                        onDrag = { change, _ ->
-                            selectedIndex =
-                                getSelectedIndex(
-                                    pointX = change.position.x,
-                                    pointY = change.position.y,
-                                    size = size,
-                                    slices = slices,
-                                )
-                            onSliceTouched(selectedIndex)
-                            change.consume()
-                        },
-                        onDragEnd = {
-                            selectedIndex = NO_SELECTION
-                            onSliceTouched(selectedIndex)
-                        },
-                        onDragCancel = {
-                            selectedIndex = NO_SELECTION
-                            onSliceTouched(selectedIndex)
-                        },
-                    )
                 }
         } else {
             Modifier
@@ -172,21 +153,27 @@ internal fun PieChart(
                 .onGloballyPositioned { show = true }
                 .then(interactionModifier)
                 .drawWithCache {
-                    onDrawBehind {
-                        val overflowInset = size.minDimension * (MAX_SCALE - DEFAULT_SCALE) / 2f
-                        val pieBounds =
-                            Rect(
-                                left = overflowInset,
-                                top = overflowInset,
-                                right = size.width - overflowInset,
-                                bottom = size.height - overflowInset,
-                            )
-                        val pieCenter = pieBounds.center
-                        val pieRadius = min(pieBounds.width, pieBounds.height) / 2f
-                        val layerBounds = Rect(0f, 0f, size.width, size.height)
-                        drawContext.canvas.saveLayer(layerBounds, Paint())
+                    val overflowInset = size.minDimension * (MAX_SCALE - DEFAULT_SCALE) / 2f
+                    val pieBounds =
+                        Rect(
+                            left = overflowInset,
+                            top = overflowInset,
+                            right = size.width - overflowInset,
+                            bottom = size.height - overflowInset,
+                        )
+                    val pieCenter = pieBounds.center
+                    val pieRadius = min(pieBounds.width, pieBounds.height) / 2f
+                    val layerBounds = Rect(0f, 0f, size.width, size.height)
+                    val borderStroke = Stroke(width = style.borderWidth)
 
-                        slices.forEachIndexed { i, slice ->
+                    onDrawBehind {
+                        val animatedSlices = createPieSlices(animatables.map { it.value.toDouble() })
+                        val shouldDrawDonutHole = donutHoleAnimation > 0f
+                        if (shouldDrawDonutHole) {
+                            drawContext.canvas.saveLayer(layerBounds, Paint())
+                        }
+
+                        animatedSlices.forEachIndexed { i, slice ->
                             val scale =
                                 when (effectiveSelectedIndex) {
                                     NO_SELECTION -> slicesAnimations[i].value
@@ -209,14 +196,14 @@ internal fun PieChart(
                                     startAngle = slice.startDeg,
                                     sweepAngle = slice.sweepAngle,
                                     useCenter = true,
-                                    style = Stroke(width = style.borderWidth),
+                                    style = borderStroke,
                                     topLeft = pieBounds.topLeft,
                                     size = pieBounds.size,
                                 )
                             }
                         }
 
-                        if (donutHoleAnimation > 0f) {
+                        if (shouldDrawDonutHole) {
                             val innerRadius = pieRadius * (donutHoleAnimation / 100f)
                             drawCircle(
                                 color = Color.Transparent,
@@ -228,11 +215,10 @@ internal fun PieChart(
                                 color = style.borderColor,
                                 radius = innerRadius,
                                 center = pieCenter,
-                                style = Stroke(width = style.borderWidth),
+                                style = borderStroke,
                             )
+                            drawContext.canvas.restore()
                         }
-
-                        drawContext.canvas.restore()
                     }
                 },
     )

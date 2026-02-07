@@ -9,8 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chartsproject.app.generated.resources.Res
 import chartsproject.app.generated.resources.cd_pause_live_updates
@@ -18,8 +16,6 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.StackedBarChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
-import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
-import io.github.dautovicharis.charts.app.ui.theme.seriesColors
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 import kotlinx.coroutines.delay
@@ -30,9 +26,8 @@ private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 
 object StackedBarDemoStyle {
     @Composable
-    fun custom(barColors: List<Color>): StackedBarChartStyle {
+    fun custom(): StackedBarChartStyle {
         return StackedBarChartDefaults.style(
-            barColors = barColors,
             chartViewStyle = ChartViewDemoStyle.custom(),
         )
     }
@@ -42,11 +37,6 @@ object StackedBarDemoStyle {
 fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
-    val chartColors = LocalChartColors.current
-    val barColors =
-        remember(dataSet.segmentKeys, chartColors) {
-            chartColors.seriesColors(dataSet.segmentKeys)
-        }
 
     LaunchedEffect(Unit) {
         viewModel.regenerateDataSet()
@@ -62,7 +52,7 @@ fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) 
     }
 
     ChartDemo(
-        styleItems = StackedBarChartStyleItems.custom(barColors),
+        styleItems = StackedBarChartStyleItems.custom(),
         onRefresh = viewModel::regenerateDataSet,
         extraButtons = {
             IconButton(
@@ -81,7 +71,7 @@ fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) 
     ) {
         StackedBarChart(
             dataSet = dataSet.dataSet,
-            style = StackedBarDemoStyle.custom(barColors),
+            style = StackedBarDemoStyle.custom(),
         )
     }
 }

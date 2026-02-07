@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Surface
@@ -59,7 +60,6 @@ import chartsproject.app.generated.resources.drawer_title_dynamic_colors
 import chartsproject.app.generated.resources.drawer_title_github
 import chartsproject.app.generated.resources.github_url
 import chartsproject.app.generated.resources.github_url_content_description
-import chartsproject.app.generated.resources.ic_check
 import chartsproject.app.generated.resources.ic_github
 import io.github.dautovicharis.charts.app.ui.theme.LocalHasDynamicColorFeature
 import io.github.dautovicharis.charts.app.ui.theme.Theme
@@ -346,28 +346,30 @@ private fun ThemeSwatches(
                         .size(40.dp)
                         .semantics { contentDescription = themeContentDescription },
                 shape = CircleShape,
+                colors =
+                    IconButtonDefaults.filledIconToggleButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                        checkedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    ),
             ) {
                 Box(
                     modifier =
                         Modifier
                             .size(28.dp)
-                            .clip(CircleShape)
-                            .background(theme.light.primary)
                             .border(
-                                width = if (isSelectedTheme) 2.dp else 0.dp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                width = if (isSelectedTheme) 2.dp else 1.dp,
+                                color =
+                                    if (isSelectedTheme) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                                    },
                                 shape = CircleShape,
-                            ),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isSelectedTheme) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_check),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    }
-                }
+                            )
+                            .padding(2.dp)
+                            .clip(CircleShape)
+                            .background(theme.light.primary),
+                )
             }
         }
         item { Spacer(modifier = Modifier.width(16.dp)) }
