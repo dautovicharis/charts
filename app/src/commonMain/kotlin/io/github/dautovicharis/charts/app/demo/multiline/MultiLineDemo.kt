@@ -98,7 +98,7 @@ fun MultiLineCustomDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
     val chartColors = LocalChartColors.current
     val lineColors =
         remember(dataSet.seriesKeys, chartColors) {
-            chartColors.seriesColors(dataSet.seriesKeys)
+            chartColors.seriesColors(dataSet.seriesKeys.size)
         }
 
     LaunchedEffect(isPlaying) {

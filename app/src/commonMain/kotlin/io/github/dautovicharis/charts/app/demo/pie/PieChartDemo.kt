@@ -98,7 +98,7 @@ fun PieChartCustomDemo(viewModel: PieChartViewModel = koinViewModel()) {
     val chartColors = LocalChartColors.current
     val pieColors =
         remember(dataSet.segmentKeys, chartColors) {
-            chartColors.seriesColors(dataSet.segmentKeys)
+            chartColors.seriesColors(dataSet.segmentKeys.size)
         }
     LaunchedEffect(Unit) {
         viewModel.regenerateCustomDataSet()

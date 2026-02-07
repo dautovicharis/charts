@@ -1,18 +1,22 @@
 package io.github.dautovicharis.charts
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barstackedchart.generateColorShades
@@ -27,13 +31,17 @@ import io.github.dautovicharis.charts.style.PieChartDefaults
 import io.github.dautovicharis.charts.style.PieChartStyle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
+
+private const val SELECTED_TITLE_PERCENTAGE_SIZE_FACTOR = 0.72f
+internal const val PIE_SELECTION_AUTO_DESELECT_TIMEOUT_MS = 3000L
 
 /**
  * A composable function that displays a Pie Chart.
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
- * @param interactionEnabled Enables touch interactions (tap/drag selection). Defaults to true.
+ * @param interactionEnabled Enables touch interactions (tap selection). Defaults to true.
  * @param animateOnStart Enables initial chart animations. Defaults to true.
  * @param selectedSliceIndex Optional preselected slice index for deterministic rendering (e.g. screenshots).
  */
@@ -93,53 +101,68 @@ private fun PieChartContent(
     val forcedSelectedIndex =
         selectedSliceIndex.takeIf { it in dataSet.data.item.points.indices } ?: NO_SELECTION
     var selectedIndex by remember(dataSet) { mutableIntStateOf(NO_SELECTION) }
+    var selectionInteractionId by remember(dataSet) { mutableIntStateOf(0) }
     val effectiveSelectedIndex =
         when (forcedSelectedIndex) {
             NO_SELECTION -> selectedIndex
             else -> forcedSelectedIndex
         }
-    val title =
-        when (effectiveSelectedIndex) {
-            NO_SELECTION -> dataSet.data.label
-            else -> dataSet.data.item.labels[effectiveSelectedIndex]
+    val hasSelection = effectiveSelectedIndex != NO_SELECTION
+    val selectedTitle =
+        if (hasSelection) {
+            dataSet.data.item.labels[effectiveSelectedIndex]
+        } else {
+            dataSet.data.label
         }
 
+    LaunchedEffect(forcedSelectedIndex, selectedIndex, selectionInteractionId) {
+        if (forcedSelectedIndex != NO_SELECTION || selectedIndex == NO_SELECTION) return@LaunchedEffect
+        delay(PIE_SELECTION_AUTO_DESELECT_TIMEOUT_MS)
+        selectedIndex = NO_SELECTION
+    }
+
     Chart(chartViewsStyle = style.chartViewStyle) {
-        if (title.isNotBlank()) {
-            Text(
-                modifier =
-                    style.chartViewStyle.modifierTopTitle
-                        .testTag(TestTags.CHART_TITLE),
-                text = title,
-                style = style.chartViewStyle.styleTitle,
-            )
+        if (selectedTitle.isNotBlank()) {
+            if (hasSelection) {
+                Row(
+                    modifier =
+                        style.chartViewStyle.modifierTopTitle
+                            .fillMaxWidth()
+                            .padding(end = style.chartViewStyle.innerPadding),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        modifier = Modifier.testTag(TestTags.CHART_TITLE),
+                        text = selectedTitle,
+                        style = style.chartViewStyle.styleTitle,
+                    )
+                    Text(
+                        text = "${piePercentages[effectiveSelectedIndex]}%",
+                        style = selectedPercentageStyle(style.chartViewStyle.styleTitle),
+                    )
+                }
+            } else {
+                Text(
+                    modifier = style.chartViewStyle.modifierTopTitle.testTag(TestTags.CHART_TITLE),
+                    text = selectedTitle,
+                    style = style.chartViewStyle.styleTitle,
+                )
+            }
         }
         PieChart(
             chartData = dataSet.data.item,
             colors = pieChartColors,
             style = style,
-            chartStyle = style.chartViewStyle,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
-            selectedSliceIndex = forcedSelectedIndex,
+            selectedSliceIndex = effectiveSelectedIndex,
         ) { index ->
             if (forcedSelectedIndex == NO_SELECTION) {
                 selectedIndex = index
-            }
-        }
-
-        AnimatedVisibility(
-            visible = effectiveSelectedIndex != NO_SELECTION,
-            enter = expandVertically(),
-            exit = shrinkVertically(),
-        ) {
-            if (effectiveSelectedIndex != NO_SELECTION) {
-                Text(
-                    modifier = style.chartViewStyle.modifierLegend.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "${piePercentages[effectiveSelectedIndex]}%",
-                    style = style.chartViewStyle.styleTitle,
-                )
+                if (index != NO_SELECTION) {
+                    selectionInteractionId += 1
+                }
             }
         }
 
@@ -151,4 +174,11 @@ private fun PieChartContent(
             )
         }
     }
+}
+
+private fun selectedPercentageStyle(base: TextStyle): TextStyle {
+    return base.copy(
+        fontSize = base.fontSize * SELECTED_TITLE_PERCENTAGE_SIZE_FACTOR,
+        fontWeight = FontWeight.SemiBold,
+    )
 }
