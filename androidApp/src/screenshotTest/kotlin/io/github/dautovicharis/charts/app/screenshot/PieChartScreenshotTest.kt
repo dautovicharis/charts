@@ -21,3 +21,18 @@ fun PieChartBasicPreview() {
         )
     }
 }
+
+@PreviewTest
+@ScreenshotPreview
+@Composable
+fun PieChartSelectedSlicePreview() {
+    ScreenshotSurface {
+        PieChart(
+            dataSet = pieBasicData(),
+            style = screenshotPieStyle(),
+            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+            interactionEnabled = false,
+            selectedSliceIndex = 1,
+        )
+    }
+}

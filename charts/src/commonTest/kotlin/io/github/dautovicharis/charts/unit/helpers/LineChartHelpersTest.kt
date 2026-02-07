@@ -2,12 +2,65 @@ package io.github.dautovicharis.charts.unit.helpers
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import io.github.dautovicharis.charts.internal.linechart.cubicControlPointsForSegment
 import io.github.dautovicharis.charts.internal.linechart.findNearestPoint
 import io.github.dautovicharis.charts.internal.linechart.scaleValues
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class LineChartHelpersTest {
+    @Test
+    fun cubicControlPointsForSegment_middleSegment_correctControlPointsReturned() {
+        // Arrange
+        val points =
+            listOf(
+                Offset(0f, 0f),
+                Offset(10f, 10f),
+                Offset(20f, 0f),
+                Offset(30f, 10f),
+            )
+        val segmentStartIndex = 1
+
+        // Act
+        val controls =
+            cubicControlPointsForSegment(
+                points = points,
+                segmentStartIndex = segmentStartIndex,
+            )
+
+        // Assert
+        val tolerance = 0.0001f
+        assertEquals(13.166667f, controls.first.x, tolerance)
+        assertEquals(10f, controls.first.y, tolerance)
+        assertEquals(16.833334f, controls.second.x, tolerance)
+        assertEquals(0f, controls.second.y, tolerance)
+    }
+
+    @Test
+    fun cubicControlPointsForSegment_zeroTension_controlPointsMatchSegmentEnds() {
+        // Arrange
+        val points =
+            listOf(
+                Offset(0f, 0f),
+                Offset(10f, 10f),
+                Offset(20f, 0f),
+            )
+        val segmentStartIndex = 1
+
+        // Act
+        val controls =
+            cubicControlPointsForSegment(
+                points = points,
+                segmentStartIndex = segmentStartIndex,
+                tension = 0f,
+            )
+
+        // Assert
+        assertEquals(points[segmentStartIndex], controls.first)
+        assertEquals(points[segmentStartIndex + 1], controls.second)
+    }
+
     @Test
     fun findNearestPoint_validInput_correctOffsetReturned() {
         // Arrange

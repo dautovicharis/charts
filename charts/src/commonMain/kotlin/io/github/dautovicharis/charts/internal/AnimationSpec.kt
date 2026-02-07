@@ -15,7 +15,7 @@ internal object AnimationSpec {
 
     fun lineChart() =
         TweenSpec<Float>(
-            durationMillis = ANIMATION_DURATION_LINE,
+            durationMillis = ANIMATION_DURATION_LINE_CHART,
             delay = 0,
             easing = LinearEasing,
         )

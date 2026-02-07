@@ -10,6 +10,7 @@ internal const val MAX_SCALE = 1.05f
 internal const val ANIMATION_DURATION = 200
 internal const val ANIMATION_DURATION_BAR = 500
 internal const val ANIMATION_DURATION_LINE = 1200
+internal const val ANIMATION_DURATION_LINE_CHART = 1700
 
 // Animation duration offset
 internal const val ANIMATION_OFFSET = 50
