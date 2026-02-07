@@ -73,6 +73,7 @@ fun SettingsDrawerContent(
     onDarkModeToggle: () -> Unit,
     onDynamicToggle: () -> Unit,
     onClose: () -> Unit,
+    showCloseButton: Boolean = true,
 ) {
     val hasDynamicColors = LocalHasDynamicColorFeature.current
     val githubUrl = stringResource(Res.string.github_url)
@@ -91,7 +92,10 @@ fun SettingsDrawerContent(
         drawerShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp),
         modifier = Modifier.width(320.dp),
     ) {
-        DrawerHeader(onClose = onClose)
+        DrawerHeader(
+            onClose = onClose,
+            showCloseButton = showCloseButton,
+        )
 
         DrawerSectionTitle(text = stringResource(Res.string.drawer_section_appearance))
         DrawerSettingCard(
@@ -152,7 +156,10 @@ fun SettingsDrawerContent(
 }
 
 @Composable
-private fun DrawerHeader(onClose: () -> Unit) {
+private fun DrawerHeader(
+    onClose: () -> Unit,
+    showCloseButton: Boolean,
+) {
     val headerBrush =
         Brush.horizontalGradient(
             listOf(
@@ -184,12 +191,16 @@ private fun DrawerHeader(onClose: () -> Unit) {
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                 )
             }
-            IconButton(onClick = onClose) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(Res.string.cd_close_settings),
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                )
+            if (showCloseButton) {
+                IconButton(onClick = onClose) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(Res.string.cd_close_settings),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.size(40.dp))
             }
         }
     }
