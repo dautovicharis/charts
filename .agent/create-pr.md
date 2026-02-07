@@ -11,6 +11,8 @@ Use this file as the **single source of truth** for an agent to ship the current
 - If **any step fails**, stop immediately and report the error.
 - Never push directly to the base branch (usually `main`).
 - Do **not** force-push or rewrite history unless explicitly asked.
+- Include the snapshot docs update workflow before staging/commit:
+  - Follow `.agent/update-snapshot-docs.md`.
 
 ## Conventions (short)
 
@@ -30,20 +32,23 @@ Use this file as the **single source of truth** for an agent to ship the current
 1. Infer the summary from context (do not ask the user).
 2. Decide remotes (base vs head) using the conventions above.
 3. Create a new branch: `git checkout -b <branch>`.
-4. Stage changes: `git add -A`
-5. Commit: `git commit -m "<commit>"`
-6. Push: `git push -u <head-remote> <branch>`
-7. Create a temp PR body file (auto-cleaned at the end of this flow):
+4. Update snapshot docs:
+   - Run the `.agent/update-snapshot-docs.md` workflow.
+   - Ensure only source docs updates (for example `docs/content/snapshot/wiki/**`) remain on the PR branch.
+5. Stage changes: `git add -A`
+6. Commit: `git commit -m "<commit>"`
+7. Push: `git push -u <head-remote> <branch>`
+8. Create a temp PR body file (auto-cleaned at the end of this flow):
    - `PR_BODY_FILE="$(mktemp -t pr-body.XXXXXX.md)"`
-8. Write PR body to `$PR_BODY_FILE` (use the template below).
-9. Create PR (GitHub CLI), then delete the temp file:
+9. Write PR body to `$PR_BODY_FILE` (use the template below).
+10. Create PR (GitHub CLI), then delete the temp file:
    - Use the upstream repo as the PR target.
    - If head is on the fork (`origin`), include the fork owner:
      - `gh pr create --repo dautovicharis/charts --base main --head <forkOwner>:<branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - If head is on upstream, use:
      - `gh pr create --repo dautovicharis/charts --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - `rm -f "$PR_BODY_FILE"`
-10. Output the PR URL.
+11. Output the PR URL.
 
 ## PR body template (short)
 

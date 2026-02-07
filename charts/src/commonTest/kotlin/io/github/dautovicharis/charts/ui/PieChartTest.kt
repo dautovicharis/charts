@@ -14,6 +14,7 @@ import io.github.dautovicharis.charts.internal.ValidationErrors.RULE_COLORS_SIZE
 import io.github.dautovicharis.charts.internal.ValidationErrors.RULE_DATA_POINTS_LESS_THAN_MIN
 import io.github.dautovicharis.charts.internal.common.model.ChartDataType
 import io.github.dautovicharis.charts.internal.format
+import io.github.dautovicharis.charts.internal.piechart.calculatePercentages
 import io.github.dautovicharis.charts.internal.piechart.createPieSlices
 import io.github.dautovicharis.charts.internal.piechart.getCoordinatesForSlice
 import io.github.dautovicharis.charts.mock.MockTest.TITLE
@@ -145,5 +146,32 @@ class PieChartTest {
                 }
                 onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals(value).isDisplayed()
             }
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun pieChart_withSelectedSliceIndex_displaysSelectedSliceDetails() =
+        runComposeUiTest {
+            // Arrange
+            val selectedSliceIndex = 1
+            val expectedTitle = dataSet.data.item.labels[selectedSliceIndex]
+            val expectedPercentage =
+                "${calculatePercentages(dataSet.data.item.points)[selectedSliceIndex]}%"
+
+            // Act
+            setContent {
+                PieChart(
+                    dataSet = dataSet,
+                    style = PieChartDefaults.style(),
+                    interactionEnabled = false,
+                    animateOnStart = false,
+                    selectedSliceIndex = selectedSliceIndex,
+                )
+            }
+
+            // Assert
+            onNodeWithTag(TestTags.PIE_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals(expectedTitle)
+            onNodeWithText(expectedPercentage).isDisplayed()
         }
 }

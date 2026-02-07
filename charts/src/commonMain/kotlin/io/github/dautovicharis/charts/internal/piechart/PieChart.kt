@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -38,6 +37,7 @@ import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.style.ChartViewStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
 import kotlinx.collections.immutable.ImmutableList
+import kotlin.math.min
 
 internal data class PieSlice(
     val startDeg: Float,
@@ -55,6 +55,7 @@ internal fun PieChart(
     chartStyle: ChartViewStyle,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedSliceIndex: Int = NO_SELECTION,
     onSliceTouched: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
@@ -84,10 +85,15 @@ internal fun PieChart(
 
     val slices = createPieSlices(animatables.map { it.value.toDouble() })
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
+    val effectiveSelectedIndex =
+        when (selectedSliceIndex) {
+            NO_SELECTION -> selectedIndex
+            else -> selectedSliceIndex
+        }
 
     val selectedSliceAnimation =
         animateFloatAsState(
-            targetValue = if (selectedIndex == NO_SELECTION) DEFAULT_SCALE else MAX_SCALE,
+            targetValue = if (effectiveSelectedIndex == NO_SELECTION) DEFAULT_SCALE else MAX_SCALE,
             animationSpec = tween(durationMillis = ANIMATION_DURATION),
             label = "sliceAnimation",
         )
@@ -167,12 +173,22 @@ internal fun PieChart(
                 .then(interactionModifier)
                 .drawWithCache {
                     onDrawBehind {
+                        val overflowInset = size.minDimension * (MAX_SCALE - DEFAULT_SCALE) / 2f
+                        val pieBounds =
+                            Rect(
+                                left = overflowInset,
+                                top = overflowInset,
+                                right = size.width - overflowInset,
+                                bottom = size.height - overflowInset,
+                            )
+                        val pieCenter = pieBounds.center
+                        val pieRadius = min(pieBounds.width, pieBounds.height) / 2f
                         val layerBounds = Rect(0f, 0f, size.width, size.height)
                         drawContext.canvas.saveLayer(layerBounds, Paint())
 
                         slices.forEachIndexed { i, slice ->
                             val scale =
-                                when (selectedIndex) {
+                                when (effectiveSelectedIndex) {
                                     NO_SELECTION -> slicesAnimations[i].value
                                     i -> selectedSliceAnimation.value
                                     else -> DEFAULT_SCALE
@@ -185,6 +201,8 @@ internal fun PieChart(
                                     sweepAngle = slice.sweepAngle,
                                     useCenter = true,
                                     style = Fill,
+                                    topLeft = pieBounds.topLeft,
+                                    size = pieBounds.size,
                                 )
                                 drawArc(
                                     color = style.borderColor,
@@ -192,23 +210,24 @@ internal fun PieChart(
                                     sweepAngle = slice.sweepAngle,
                                     useCenter = true,
                                     style = Stroke(width = style.borderWidth),
+                                    topLeft = pieBounds.topLeft,
+                                    size = pieBounds.size,
                                 )
                             }
                         }
 
                         if (donutHoleAnimation > 0f) {
-                            val totalRadius = size.width / 2
-                            val innerRadius = totalRadius * (donutHoleAnimation / 100f)
+                            val innerRadius = pieRadius * (donutHoleAnimation / 100f)
                             drawCircle(
                                 color = Color.Transparent,
                                 radius = innerRadius,
-                                center = Offset(totalRadius, totalRadius),
+                                center = pieCenter,
                                 blendMode = BlendMode.Clear,
                             )
                             drawCircle(
                                 color = style.borderColor,
                                 radius = innerRadius,
-                                center = Offset(totalRadius, totalRadius),
+                                center = pieCenter,
                                 style = Stroke(width = style.borderWidth),
                             )
                         }

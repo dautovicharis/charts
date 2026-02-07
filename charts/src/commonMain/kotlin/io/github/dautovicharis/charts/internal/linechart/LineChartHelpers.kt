@@ -4,11 +4,52 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.util.lerp
 
+internal const val LINE_CHART_BEZIER_TENSION = 0.95f
+
+internal data class CubicControlPoints(
+    val first: Offset,
+    val second: Offset,
+)
+
+internal fun cubicControlPointsForSegment(
+    points: List<Offset>,
+    segmentStartIndex: Int,
+    tension: Float = LINE_CHART_BEZIER_TENSION,
+): CubicControlPoints {
+    val p1 = points[segmentStartIndex]
+    val p2 = points[segmentStartIndex + 1]
+    val p0 =
+        when {
+            segmentStartIndex > 0 -> points[segmentStartIndex - 1]
+            else -> p1
+        }
+    val p3 =
+        when {
+            segmentStartIndex + 2 < points.size -> points[segmentStartIndex + 2]
+            else -> p2
+        }
+
+    val factor = tension / 6f
+    val control1 =
+        Offset(
+            x = p1.x + (p2.x - p0.x) * factor,
+            y = p1.y + (p2.y - p0.y) * factor,
+        )
+    val control2 =
+        Offset(
+            x = p2.x - (p3.x - p1.x) * factor,
+            y = p2.y - (p3.y - p1.y) * factor,
+        )
+
+    return CubicControlPoints(first = control1, second = control2)
+}
+
 internal fun findNearestPoint(
     touchX: Float,
     scaledValues: List<Float>,
     size: Size,
     bezier: Boolean,
+    bezierTension: Float = LINE_CHART_BEZIER_TENSION,
 ): Offset {
     if (scaledValues.isEmpty()) {
         return Offset(0f, 0f)
@@ -39,32 +80,38 @@ internal fun findNearestPoint(
         return Offset(clampedX, size.height - interpolatedY)
     }
 
-    val nextIndex = index + 1
-    val prevX = index * step
-    val currentX = nextIndex * step
-    val prevY = size.height - scaledValues[index]
-    val currentY = size.height - scaledValues[nextIndex]
-
-    val controlPointDiv = 2.2f
-    val controlX1 = prevX + (currentX - prevX) / controlPointDiv
-    val controlX2 = currentX - (currentX - prevX) / controlPointDiv
-
-    val targetX = clampedX.coerceIn(prevX, currentX)
+    val points =
+        List(scaledValues.size) { pointIndex ->
+            Offset(
+                x = pointIndex * step,
+                y = size.height - scaledValues[pointIndex],
+            )
+        }
+    val segmentStart = index.coerceIn(0, lastIndex - 1)
+    val startPoint = points[segmentStart]
+    val endPoint = points[segmentStart + 1]
+    val controls =
+        cubicControlPointsForSegment(
+            points = points,
+            segmentStartIndex = segmentStart,
+            tension = bezierTension,
+        )
+    val targetX = clampedX.coerceIn(startPoint.x, endPoint.x)
     val t =
         solveBezierTForX(
             targetX = targetX,
-            x0 = prevX,
-            x1 = controlX1,
-            x2 = controlX2,
-            x3 = currentX,
+            x0 = startPoint.x,
+            x1 = controls.first.x,
+            x2 = controls.second.x,
+            x3 = endPoint.x,
         )
     val y =
         cubicBezier(
             t = t,
-            p0 = prevY,
-            p1 = prevY,
-            p2 = currentY,
-            p3 = currentY,
+            p0 = startPoint.y,
+            p1 = controls.first.y,
+            p2 = controls.second.y,
+            p3 = endPoint.y,
         )
     return Offset(targetX, y)
 }

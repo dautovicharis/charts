@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
@@ -35,6 +35,7 @@ import kotlinx.collections.immutable.toImmutableList
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
  * @param interactionEnabled Enables touch interactions (tap/drag selection). Defaults to true.
  * @param animateOnStart Enables initial chart animations. Defaults to true.
+ * @param selectedSliceIndex Optional preselected slice index for deterministic rendering (e.g. screenshots).
  */
 @Composable
 fun PieChart(
@@ -42,6 +43,7 @@ fun PieChart(
     style: PieChartStyle = PieChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    selectedSliceIndex: Int = NO_SELECTION,
 ) {
     val pieChartColors =
         remember(
@@ -70,6 +72,7 @@ fun PieChart(
             pieChartColors = pieChartColors,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
+            selectedSliceIndex = selectedSliceIndex,
         )
     }
 }
@@ -81,14 +84,25 @@ private fun PieChartContent(
     pieChartColors: ImmutableList<Color>,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedSliceIndex: Int,
 ) {
-    var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
-
     val piePercentages =
         remember(dataSet.data.item.points) {
             calculatePercentages(dataSet.data.item.points)
         }
-    var selectedIndex by remember(dataSet) { mutableStateOf(NO_SELECTION) }
+    val forcedSelectedIndex =
+        selectedSliceIndex.takeIf { it in dataSet.data.item.points.indices } ?: NO_SELECTION
+    var selectedIndex by remember(dataSet) { mutableIntStateOf(NO_SELECTION) }
+    val effectiveSelectedIndex =
+        when (forcedSelectedIndex) {
+            NO_SELECTION -> selectedIndex
+            else -> forcedSelectedIndex
+        }
+    val title =
+        when (effectiveSelectedIndex) {
+            NO_SELECTION -> dataSet.data.label
+            else -> dataSet.data.item.labels[effectiveSelectedIndex]
+        }
 
     Chart(chartViewsStyle = style.chartViewStyle) {
         if (title.isNotBlank()) {
@@ -107,27 +121,23 @@ private fun PieChartContent(
             chartStyle = style.chartViewStyle,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
+            selectedSliceIndex = forcedSelectedIndex,
         ) { index ->
-            selectedIndex = index
-            title =
-                when (index) {
-                    NO_SELECTION -> dataSet.data.label
-                    else -> {
-                        dataSet.data.item.labels[index]
-                    }
-                }
+            if (forcedSelectedIndex == NO_SELECTION) {
+                selectedIndex = index
+            }
         }
 
         AnimatedVisibility(
-            visible = selectedIndex != NO_SELECTION,
+            visible = effectiveSelectedIndex != NO_SELECTION,
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            if (selectedIndex != NO_SELECTION) {
+            if (effectiveSelectedIndex != NO_SELECTION) {
                 Text(
                     modifier = style.chartViewStyle.modifierLegend.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "${piePercentages[selectedIndex]}%",
+                    text = "${piePercentages[effectiveSelectedIndex]}%",
                     style = style.chartViewStyle.styleTitle,
                 )
             }

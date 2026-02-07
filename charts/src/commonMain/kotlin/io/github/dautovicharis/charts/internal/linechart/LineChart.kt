@@ -1,15 +1,18 @@
 package io.github.dautovicharis.charts.internal.linechart
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableFloatState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,9 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathMeasure
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -37,6 +42,11 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
+private const val LINE_STROKE_WIDTH = 5f
+private const val MARKER_REVEAL_DURATION_MS = 260
+private const val MARKER_REVEAL_THRESHOLD = 0.999f
+private const val MARKER_REVEAL_START_SCALE = 0.7f
+
 @Composable
 internal fun LineChart(
     data: MultiChartData,
@@ -50,6 +60,7 @@ internal fun LineChart(
     var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
     val touchX = remember { mutableFloatStateOf(0f) }
     val dragging = remember { mutableStateOf(false) }
+    val reportedSelection = remember { mutableIntStateOf(NO_SELECTION) }
     val valueAnimationSpec = remember { AnimationSpec.lineChart() }
 
     val lineAnimation by animateFloatAsState(
@@ -57,11 +68,26 @@ internal fun LineChart(
         animationSpec = AnimationSpec.lineChart(),
         label = "lineAnimation",
     )
+    val markerRevealProgress by animateFloatAsState(
+        targetValue =
+            if (show && lineAnimation >= MARKER_REVEAL_THRESHOLD) {
+                ANIMATION_TARGET
+            } else {
+                0f
+            },
+        animationSpec =
+            tween(
+                durationMillis = MARKER_REVEAL_DURATION_MS,
+                easing = FastOutSlowInEasing,
+            ),
+        label = "lineMarkerReveal",
+    )
 
     val minMax = remember(data) { data.minMax() }
     val targetNormalized = remember(data, minMax) { data.normalizeByMinMax(minMax, 0f) }
     val pointsCount = data.getFirstPointsSize()
     val seriesCount = data.items.size
+    val bezierTension = LINE_CHART_BEZIER_TENSION
     val animatedValues =
         remember(seriesCount, pointsCount) {
             List(seriesCount) { seriesIndex ->
@@ -123,21 +149,49 @@ internal fun LineChart(
 
     val interactionModifier =
         if (interactionEnabled) {
-            Modifier.pointerInput(Unit) {
+            Modifier.pointerInput(pointsCount) {
                 detectHorizontalDragGestures(
                     onDragStart = { offset ->
                         dragging.value = true
                         touchX.floatValue = offset.x
+                        val selectedIndex =
+                            selectedIndexForTouch(
+                                touchX = offset.x,
+                                width = size.width.toFloat(),
+                                pointsCount = pointsCount,
+                            )
+                        if (reportedSelection.intValue != selectedIndex) {
+                            reportedSelection.intValue = selectedIndex
+                            onValueChanged(selectedIndex)
+                        }
                     },
                     onHorizontalDrag = { change, _ ->
                         touchX.floatValue = change.position.x
+                        val selectedIndex =
+                            selectedIndexForTouch(
+                                touchX = change.position.x,
+                                width = size.width.toFloat(),
+                                pointsCount = pointsCount,
+                            )
+                        if (reportedSelection.intValue != selectedIndex) {
+                            reportedSelection.intValue = selectedIndex
+                            onValueChanged(selectedIndex)
+                        }
                         change.consume()
                     },
                     onDragEnd = {
                         dragging.value = false
+                        if (reportedSelection.intValue != NO_SELECTION) {
+                            reportedSelection.intValue = NO_SELECTION
+                            onValueChanged(NO_SELECTION)
+                        }
                     },
                     onDragCancel = {
                         dragging.value = false
+                        if (reportedSelection.intValue != NO_SELECTION) {
+                            reportedSelection.intValue = NO_SELECTION
+                            onValueChanged(NO_SELECTION)
+                        }
                     },
                 )
             }
@@ -145,155 +199,143 @@ internal fun LineChart(
             Modifier
         }
 
-    Canvas(
+    Box(
         modifier =
             style.modifier
-                .testTag(TestTags.LINE_CHART)
                 .onGloballyPositioned {
                     show = true
+                },
+    ) {
+        Canvas(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .testTag(TestTags.LINE_CHART),
+            onDraw = {
+                data.items.forEachIndexed { index, _ ->
+                    val seriesValues = animatedValues.getOrNull(index).orEmpty()
+                    val scaledValues = seriesValues.map { value -> value.value * size.height }
+                    if (show) {
+                        drawChartPath(
+                            values = scaledValues,
+                            style = style,
+                            lineAnimationProgress = lineAnimation,
+                            markerRevealProgress = markerRevealProgress,
+                            bezierTension = bezierTension,
+                            lineColor = colors[index],
+                        )
+                    }
                 }
-                .then(interactionModifier),
-        onDraw = {
-            data.items.forEachIndexed { index, it ->
-                val seriesValues = animatedValues.getOrNull(index).orEmpty()
-                val scaledValues = seriesValues.map { value -> value.value * size.height }
-                if (show) {
-                    drawChartPath(
+            },
+        )
+
+        Canvas(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .then(interactionModifier),
+            onDraw = {
+                if (!dragging.value) return@Canvas
+                data.items.forEachIndexed { index, _ ->
+                    val seriesValues = animatedValues.getOrNull(index).orEmpty()
+                    val scaledValues = seriesValues.map { value -> value.value * size.height }
+                    drawDragMarker(
+                        touchX = touchX.floatValue,
                         values = scaledValues,
                         style = style,
-                        lineAnimationProgress = lineAnimation,
-                        dragging = dragging,
-                        touchX = touchX,
                         lineColor = colors[index],
-                        onValueChanged = onValueChanged,
+                        bezierTension = bezierTension,
                     )
                 }
-            }
-        },
-    )
+            },
+        )
+    }
 }
 
 private fun DrawScope.drawChartPath(
     values: List<Float>,
     style: LineChartStyle,
     lineAnimationProgress: Float,
-    dragging: MutableState<Boolean>,
-    touchX: MutableFloatState,
+    markerRevealProgress: Float,
+    bezierTension: Float,
     lineColor: Color,
-    onValueChanged: (Int) -> Unit = {},
 ) {
     val valuesSize = values.size
     val canvasWidth = size.width
     val canvasHeight = size.height
     val valuesLastIndex = valuesSize - 1
+    val stepX = canvasWidth / valuesLastIndex
 
     val path =
         Path().apply {
             val initX = 0f
-            val initY = size.height - values.first()
+            val initY = canvasHeight - values.first()
             moveTo(initX, initY)
 
-            for (i in 1 until valuesSize) {
-                val x = i * (canvasWidth / valuesLastIndex)
-                val y = canvasHeight - values[i]
-
-                val prevX = (i - 1) * (canvasWidth / valuesLastIndex)
-                val prevY = canvasHeight - values[i - 1]
-
-                when (style.bezier) {
-                    true ->
-                        drawBezier(
-                            prevX = prevX,
-                            prevY = prevY,
-                            currentX = x,
-                            currentY = y,
+            if (!style.bezier) {
+                for (i in 1 until valuesSize) {
+                    val x = i * stepX
+                    val y = canvasHeight - values[i]
+                    lineTo(x, y)
+                }
+            } else {
+                val points =
+                    List(valuesSize) { index ->
+                        Offset(
+                            x = index * stepX,
+                            y = canvasHeight - values[index],
                         )
-
-                    else -> lineTo(x, y)
+                    }
+                for (segmentStart in 0 until points.lastIndex) {
+                    val controls =
+                        cubicControlPointsForSegment(
+                            points = points,
+                            segmentStartIndex = segmentStart,
+                            tension = bezierTension,
+                        )
+                    val segmentEnd = points[segmentStart + 1]
+                    cubicTo(
+                        controls.first.x,
+                        controls.first.y,
+                        controls.second.x,
+                        controls.second.y,
+                        segmentEnd.x,
+                        segmentEnd.y,
+                    )
                 }
             }
         }
 
-    if (lineAnimationProgress == ANIMATION_TARGET) {
+    val lineStroke =
+        Stroke(
+            width = LINE_STROKE_WIDTH,
+            cap = StrokeCap.Round,
+            join = StrokeJoin.Round,
+        )
+
+    if (lineAnimationProgress >= ANIMATION_TARGET) {
         drawPath(
             path = path,
             color = lineColor,
-            style = Stroke(width = 5f),
+            style = lineStroke,
         )
     } else {
-        val pathMeasure =
-            PathMeasure().apply {
-                setPath(path, false)
-            }
-
-        val currentLength = lineAnimationProgress * pathMeasure.length
-        val partialPath =
-            Path().apply {
-                pathMeasure.getSegment(0f, currentLength, this, true)
-            }
-        drawPath(
-            path = partialPath,
-            color = lineColor,
-            style = Stroke(width = 5f),
-        )
+        val revealX = (canvasWidth * lineAnimationProgress).coerceIn(0f, canvasWidth)
+        // Reveal from left to right to keep perceived speed steady across steep curves.
+        clipRect(left = 0f, top = 0f, right = revealX + LINE_STROKE_WIDTH, bottom = canvasHeight) {
+            drawPath(
+                path = path,
+                color = lineColor,
+                style = lineStroke,
+            )
+        }
     }
-
-    tryDrawPoints(
-        touchX = touchX.floatValue,
-        values = values,
-        style = style,
-        dragging = dragging.value,
-        lineColor = lineColor,
-        lineAnimationProgress = lineAnimationProgress,
-        onValueChanged = onValueChanged,
-    )
-}
-
-private fun Path.drawBezier(
-    prevX: Float,
-    prevY: Float,
-    currentX: Float,
-    currentY: Float,
-) {
-    val controlPointDiv = 2.2f
-    val controlX1 = prevX + (currentX - prevX) / controlPointDiv
-    val controlX2 = currentX - (currentX - prevX) / controlPointDiv
-
-    cubicTo(
-        controlX1,
-        prevY,
-        controlX2,
-        currentY,
-        currentX,
-        currentY,
-    )
-}
-
-private fun DrawScope.tryDrawPoints(
-    touchX: Float,
-    values: List<Float>,
-    style: LineChartStyle,
-    dragging: Boolean,
-    lineColor: Color,
-    lineAnimationProgress: Float,
-    onValueChanged: (Int) -> Unit,
-) {
-    tryDrawDragPoints(
-        touchX = touchX,
-        values = values,
-        style = style,
-        dragging = dragging,
-        lineColor = lineColor,
-        onValueChanged = onValueChanged,
-    )
 
     tryDrawPathPoints(
         values = values,
         style = style,
         lineColor = lineColor,
-        dragging = dragging,
-        touchX = touchX,
-        lineAnimationProgress = lineAnimationProgress,
+        markerRevealProgress = markerRevealProgress,
     )
 }
 
@@ -301,22 +343,47 @@ private fun DrawScope.tryDrawPathPoints(
     values: List<Float>,
     style: LineChartStyle,
     lineColor: Color,
-    dragging: Boolean,
-    touchX: Float,
-    lineAnimationProgress: Float,
+    markerRevealProgress: Float,
 ) {
-    if (!style.pointVisible && !style.dragPointVisible) return
-
-    val selectedIndex =
-        (touchX / size.width * (values.size - 1))
-            .toInt()
-            .coerceIn(0, values.size - 1)
+    if (!style.pointVisible || values.size <= 1 || size.width <= 0f || markerRevealProgress <= 0f) return
 
     val pointColor =
         when (style.pointColorSameAsLine) {
             true -> lineColor
             else -> style.pointColor
         }
+    val progress = markerRevealProgress.coerceIn(0f, 1f)
+    val animatedColor = pointColor.copy(alpha = pointColor.alpha * progress)
+    val animatedRadius = style.pointSize * (MARKER_REVEAL_START_SCALE + (1f - MARKER_REVEAL_START_SCALE) * progress)
+
+    val stepX = size.width / (values.size - 1)
+    for (i in values.indices) {
+        val x = i * stepX
+        val y = size.height - values[i]
+        drawCircle(
+            color = animatedColor,
+            radius = animatedRadius,
+            center = Offset(x, y),
+        )
+    }
+}
+
+private fun DrawScope.drawDragMarker(
+    touchX: Float,
+    values: List<Float>,
+    style: LineChartStyle,
+    lineColor: Color,
+    bezierTension: Float,
+) {
+    if ((!style.dragPointVisible && !style.pointVisible) || values.size <= 1 || size.width <= 0f) return
+
+    val selectedIndex =
+        selectedIndexForTouch(
+            touchX = touchX,
+            width = size.width,
+            pointsCount = values.size,
+        )
+    if (selectedIndex == NO_SELECTION) return
 
     val dragPointColor =
         when (style.dragPointColorSameAsLine) {
@@ -324,68 +391,25 @@ private fun DrawScope.tryDrawPathPoints(
             else -> style.dragPointColor
         }
 
-    val stepX = size.width / (values.size - 1)
-    for (i in values.indices) {
-        if (lineAnimationProgress < ANIMATION_TARGET) continue
-
-        val x = i * stepX
-        val y = size.height - values[i]
-
-        // Determine circle radius based on dragging state
-        val radius =
-            if (selectedIndex == i && dragging) style.dragActivePointSize else style.pointSize
-
-        val color = if (selectedIndex == i && dragging) dragPointColor else pointColor
-
-        if (style.dragPointVisible && dragging) {
-            drawCircle(
-                color = color,
-                radius = radius,
-                center = Offset(x, y),
-            )
-        }
-
-        if (style.pointVisible) {
-            drawCircle(
-                color = color,
-                radius = radius,
-                center = Offset(x, y),
-            )
-        }
-    }
-}
-
-private fun DrawScope.tryDrawDragPoints(
-    touchX: Float,
-    values: List<Float>,
-    style: LineChartStyle,
-    dragging: Boolean,
-    lineColor: Color,
-    onValueChanged: (Int) -> Unit,
-) {
-    if (dragging) {
-        val selectedIndex =
-            (touchX / size.width * (values.size - 1))
-                .toInt()
-                .coerceIn(0, values.size - 1)
-        onValueChanged(selectedIndex)
-    } else {
-        onValueChanged(NO_SELECTION)
+    if (style.pointVisible) {
+        val stepX = size.width / (values.size - 1)
+        val selectedX = selectedIndex * stepX
+        val selectedY = size.height - values[selectedIndex]
+        drawCircle(
+            center = Offset(selectedX, selectedY),
+            radius = style.dragActivePointSize,
+            color = dragPointColor,
+        )
     }
 
-    if (style.dragPointVisible && dragging) {
-        val dragPointColor =
-            when (style.dragPointColorSameAsLine) {
-                true -> lineColor
-                else -> style.dragPointColor
-            }
-
+    if (style.dragPointVisible) {
         val nearestPoint =
             findNearestPoint(
                 touchX = touchX,
                 scaledValues = values,
                 size = size,
                 bezier = style.bezier,
+                bezierTension = bezierTension,
             )
 
         val draggingCircleOffset =
@@ -400,4 +424,15 @@ private fun DrawScope.tryDrawDragPoints(
             color = dragPointColor,
         )
     }
+}
+
+private fun selectedIndexForTouch(
+    touchX: Float,
+    width: Float,
+    pointsCount: Int,
+): Int {
+    if (pointsCount <= 1 || width <= 0f) return NO_SELECTION
+    return ((touchX / width) * (pointsCount - 1))
+        .toInt()
+        .coerceIn(0, pointsCount - 1)
 }

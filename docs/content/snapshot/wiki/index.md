@@ -15,12 +15,14 @@ Welcome to the Charts documentation! This library provides a simple way to creat
 ### ✨ Features
 - **Radar Chart**: Added a new radar chart component for multivariate data visualization ([#255](https://github.com/dautovicharis/Charts/pull/255))
 - **Chart Gallery**: Added a gallery to explore available chart types and examples ([#256](https://github.com/dautovicharis/Charts/pull/256))
+- **Pie Chart Preselection**: Added `selectedSliceIndex` to support deterministic selected-slice rendering for previews and screenshots ([#272](https://github.com/dautovicharis/Charts/pull/272))
 
 ### 🐛 Fixes
 - **Gesture Handling**: Improved touch and scroll interactions to avoid gesture conflicts ([#248](https://github.com/dautovicharis/Charts/pull/248))
 - **Line Chart Dragging**: Fixed drag behavior to keep selected points on the curve ([#247](https://github.com/dautovicharis/Charts/pull/247))
 - **Bar Chart Selection**: Fixed selection calculations related to bar spacing ([#250](https://github.com/dautovicharis/Charts/pull/250))
 - **Chart State Stability**: Improved chart state and data update consistency ([#252](https://github.com/dautovicharis/Charts/pull/252))
+- **Line Chart Rendering**: Improved bezier interpolation, reveal animation, and drag marker behavior for smoother visual feedback ([#272](https://github.com/dautovicharis/Charts/pull/272))
 
 ## Getting Started
 
