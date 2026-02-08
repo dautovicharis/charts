@@ -35,7 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 private val GalleryCardShape = RoundedCornerShape(24.dp)
 private val GalleryTwoColumnBreakpoint = 760.dp
-private const val GalleryGridColumns = 2
+private const val GALLERY_GRID_COLUMNS = 2
 
 @Composable
 fun ChartGallery(
@@ -66,7 +66,7 @@ fun ChartGallery(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-            val columns = if (maxWidth >= GalleryTwoColumnBreakpoint) GalleryGridColumns else 1
+            val columns = if (maxWidth >= GalleryTwoColumnBreakpoint) GALLERY_GRID_COLUMNS else 1
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items.chunked(columns).forEach { rowItems ->
