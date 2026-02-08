@@ -3,6 +3,7 @@ package io.github.dautovicharis.charts.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 private val GalleryCardShape = RoundedCornerShape(24.dp)
+private val GalleryTwoColumnBreakpoint = 760.dp
+private const val GalleryGridColumns = 2
 
 @Composable
 fun ChartGallery(
@@ -62,33 +65,54 @@ fun ChartGallery(
                 .padding(horizontal = 18.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        items.forEach { item ->
-            val accent = chartAccent(item.destination)
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            val columns = if (maxWidth >= GalleryTwoColumnBreakpoint) GalleryGridColumns else 1
 
-            ChartGalleryCard(
-                item = item,
-                accent = accent,
-                onBasic = {
-                    item.basicItem?.let(onSubmenuSelected)
-                },
-                onCustom = {
-                    item.customItem?.let(onSubmenuSelected)
-                },
-                basicPreview = {
-                    ChartPreview(
-                        destination = item.destination,
-                        isCustom = false,
-                        previews = state.previews,
-                    )
-                },
-                customPreview = {
-                    ChartPreview(
-                        destination = item.destination,
-                        isCustom = true,
-                        previews = state.previews,
-                    )
-                },
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                items.chunked(columns).forEach { rowItems ->
+                    val hasUnevenLastItem = columns > 1 && rowItems.size == 1
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        rowItems.forEach { item ->
+                            val accent = chartAccent(item.destination)
+
+                            ChartGalleryCard(
+                                item = item,
+                                accent = accent,
+                                onBasic = {
+                                    item.basicItem?.let(onSubmenuSelected)
+                                },
+                                onCustom = {
+                                    item.customItem?.let(onSubmenuSelected)
+                                },
+                                basicPreview = {
+                                    ChartPreview(
+                                        destination = item.destination,
+                                        isCustom = false,
+                                        previews = state.previews,
+                                    )
+                                },
+                                customPreview = {
+                                    ChartPreview(
+                                        destination = item.destination,
+                                        isCustom = true,
+                                        previews = state.previews,
+                                    )
+                                },
+                                modifier =
+                                    if (hasUnevenLastItem) {
+                                        Modifier.fillMaxWidth()
+                                    } else {
+                                        Modifier.weight(1f)
+                                    },
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         Box(
@@ -115,10 +139,11 @@ private fun ChartGalleryCard(
     onCustom: () -> Unit,
     basicPreview: @Composable () -> Unit,
     customPreview: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
         shape = GalleryCardShape,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column(
             modifier =

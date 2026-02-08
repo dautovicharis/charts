@@ -83,7 +83,7 @@ internal fun RadarChartImpl(
             )
 
             val series =
-                if (data.hasSingleItem()) {
+                if (!style.categoryLegendVisible || data.hasSingleItem()) {
                     persistentListOf()
                 } else {
                     data.items.map { it.label }.toImmutableList()

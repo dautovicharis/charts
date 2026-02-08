@@ -109,10 +109,10 @@ class RadarChartStyle internal constructor(
  */
 object RadarChartDefaults {
     @Composable
-    private fun defaultGridColor() = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+    private fun defaultGridColor() = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.22f)
 
     @Composable
-    private fun defaultAxisLineColor() = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+    private fun defaultAxisLineColor() = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
 
     @Composable
     private fun defaultAxisLabelColor() = MaterialTheme.colorScheme.onSurface

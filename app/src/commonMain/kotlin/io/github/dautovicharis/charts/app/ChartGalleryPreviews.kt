@@ -114,8 +114,6 @@ private fun PieChartPreview(
             PieChartDefaults.style(
                 pieColors = colors,
                 donutPercentage = 40f,
-                borderWidth = 5f,
-                borderColor = Color.White,
                 chartViewStyle = previewChartViewStyle(),
             )
         } else {
@@ -145,13 +143,7 @@ private fun LineChartPreview(
         if (isCustom) {
             LineChartDefaults.style(
                 lineColor = chartColors.seriesColor(1),
-                pointColor = chartColors.highlight,
-                pointSize = 9f,
                 bezier = false,
-                dragPointColor = chartColors.selection,
-                dragPointVisible = false,
-                dragPointSize = 8f,
-                dragActivePointSize = 15f,
                 chartViewStyle = previewChartViewStyle(),
             )
         } else {
@@ -185,11 +177,9 @@ private fun MultiLineChartPreview(
         if (isCustom) {
             LineChartDefaults.style(
                 lineColors = lineColors,
-                dragPointVisible = false,
-                pointVisible = true,
                 bezier = false,
+                pointVisible = false,
                 pointColor = chartColors.highlight,
-                dragPointColor = chartColors.selection,
                 chartViewStyle = previewChartViewStyle(),
             )
         } else {
@@ -252,8 +242,10 @@ private fun RadarChartPreview(
         }
     val previewSeries =
         remember(series, isCustom) {
-            if (!isCustom || series.size > 1) {
-                series
+            if (!isCustom) {
+                series.take(2)
+            } else if (series.size > 1) {
+                series.take(2)
             } else {
                 val baseValues =
                     series.firstOrNull()?.second
@@ -265,19 +257,13 @@ private fun RadarChartPreview(
                         categories.mapIndexed { index, _ -> baseValues.getOrElse(index) { 70f } }
                     }
                 val tiger = normalized.map { (it * 0.88f).coerceIn(30f, 100f) }
-                val octane = normalized.map { (it * 1.05f).coerceIn(30f, 100f) }
                 listOf(
                     "Falcon" to normalized,
                     "Tiger" to tiger,
-                    "Octane" to octane,
                 )
             }
         }
-    val chartColors = LocalChartColors.current
-    val lineColors =
-        remember(previewSeries, chartColors) {
-            chartColors.seriesColors(previewSeries.size)
-        }
+
     val dataSet =
         remember(previewSeries) {
             previewSeries.toMultiChartDataSet(
@@ -285,32 +271,14 @@ private fun RadarChartPreview(
                 categories = categories,
             )
         }
-    val style =
-        if (isCustom) {
-            RadarChartDefaults.style(
-                lineColors = lineColors,
-                lineWidth = 3.5f,
-                pointColor = chartColors.highlight,
-                pointSize = 7f,
-                gridColor = chartColors.gridLine,
-                gridSteps = 6,
-                gridLineWidth = 1.4f,
-                axisLineColor = chartColors.axisLine,
-                axisLineWidth = 1.2f,
-                axisLabelColor = chartColors.axisLabel,
-                fillAlpha = 0.2f,
-                categoryLegendVisible = false,
-                chartViewStyle = previewChartViewStyle(),
-            )
-        } else {
-            RadarChartDefaults.style(
-                chartViewStyle = previewChartViewStyle(),
-            )
-        }
 
     RadarChart(
         dataSet = dataSet,
-        style = style,
+        style =
+            RadarChartDefaults.style(
+                chartViewStyle = previewChartViewStyle(),
+                categoryLegendVisible = false,
+            ),
         interactionEnabled = false,
         animateOnStart = false,
     )
