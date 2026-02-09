@@ -11,6 +11,8 @@
 
 ## What's New in 2.2.0-SNAPSHOT
 
+- Added `StackedAreaChart` with absolute cumulative stacking for multi-series trend visualization.
+- Expanded demo gallery, screenshot coverage, and examples with stacked area basic/custom variants.
 
 ## Getting Started
 

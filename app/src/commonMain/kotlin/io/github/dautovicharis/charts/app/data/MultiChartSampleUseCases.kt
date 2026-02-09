@@ -28,6 +28,19 @@ interface StackedBarSampleUseCase {
     ): StackedBarSampleData
 }
 
+interface StackedAreaSampleUseCase {
+    fun initialStackedAreaSample(
+        title: String,
+        prefix: String,
+    ): StackedAreaSampleData
+
+    fun stackedAreaSample(
+        range: IntRange,
+        title: String,
+        prefix: String,
+    ): StackedAreaSampleData
+}
+
 interface RadarSampleUseCase {
     fun initialRadarSample(title: String): RadarSampleData
 

@@ -24,6 +24,8 @@ import io.github.dautovicharis.charts.style.PieChartDefaults
 import io.github.dautovicharis.charts.style.PieChartStyle
 import io.github.dautovicharis.charts.style.RadarChartDefaults
 import io.github.dautovicharis.charts.style.RadarChartStyle
+import io.github.dautovicharis.charts.style.StackedAreaChartDefaults
+import io.github.dautovicharis.charts.style.StackedAreaChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
@@ -64,6 +66,12 @@ internal fun screenshotLineStyle(): LineChartStyle =
 @Composable
 internal fun screenshotStackedStyle(): StackedBarChartStyle =
     StackedBarChartDefaults.style(
+        chartViewStyle = screenshotChartViewStyle(),
+    )
+
+@Composable
+internal fun screenshotStackedAreaStyle(): StackedAreaChartStyle =
+    StackedAreaChartDefaults.style(
         chartViewStyle = screenshotChartViewStyle(),
     )
 
@@ -135,6 +143,25 @@ internal fun stackedNoCategoriesData(): MultiChartDataSet =
         "Series A" to listOf(9f, 8f, 12f),
         "Series B" to listOf(6f, 5f, 7f),
         "Series C" to listOf(4f, 3f, 5f),
+    ).toMultiChartDataSet(
+        title = "No Categories",
+    )
+
+internal fun stackedAreaBasicData(): MultiChartDataSet =
+    listOf(
+        "North" to listOf(10f, 12f, 14f, 16f, 18f),
+        "South" to listOf(8f, 9f, 10f, 11f, 12f),
+        "East" to listOf(6f, 7f, 8f, 9f, 10f),
+    ).toMultiChartDataSet(
+        title = "Revenue Trend",
+        categories = listOf("Jan", "Feb", "Mar", "Apr", "May"),
+    )
+
+internal fun stackedAreaNoCategoriesData(): MultiChartDataSet =
+    listOf(
+        "Series A" to listOf(11f, 13f, 12f, 14f),
+        "Series B" to listOf(7f, 8f, 9f, 10f),
+        "Series C" to listOf(5f, 6f, 6f, 7f),
     ).toMultiChartDataSet(
         title = "No Categories",
     )

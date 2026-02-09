@@ -3,6 +3,7 @@ package io.github.dautovicharis.charts.unit.model
 import io.github.dautovicharis.charts.internal.common.model.ChartDataItem
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.common.model.normalizeBarValues
+import io.github.dautovicharis.charts.internal.common.model.normalizeStackedAreaValues
 import io.github.dautovicharis.charts.internal.common.model.normalizeStackedValues
 import io.github.dautovicharis.charts.internal.common.model.resolveBarRange
 import io.github.dautovicharis.charts.internal.common.model.toChartData
@@ -184,5 +185,72 @@ class NormalizationTest {
 
         // Assert
         assertContentEquals(expected = listOf(0f, 0f), actual = normalized)
+    }
+
+    @Test
+    fun normalizeStackedAreaValues_returnsCumulativeNormalizedBounds() {
+        // Arrange
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem("A", listOf(1.0f, 2.0f, 3.0f).toChartData()),
+                        ChartDataItem("B", listOf(2.0f, 1.0f, 1.0f).toChartData()),
+                    ),
+                title = "Title",
+            )
+
+        // Act
+        val normalized = data.normalizeStackedAreaValues()
+
+        // Assert
+        assertContentEquals(
+            expected = listOf(0.25f, 0.5f, 0.75f),
+            actual = normalized[0],
+        )
+        assertContentEquals(
+            expected = listOf(0.75f, 0.75f, 1f),
+            actual = normalized[1],
+        )
+    }
+
+    @Test
+    fun normalizeStackedAreaValues_whenAllZero_returnsZeros() {
+        // Arrange
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem("A", listOf(0.0f, 0.0f, 0.0f).toChartData()),
+                        ChartDataItem("B", listOf(0.0f, 0.0f, 0.0f).toChartData()),
+                    ),
+                title = "Title",
+            )
+
+        // Act
+        val normalized = data.normalizeStackedAreaValues()
+
+        // Assert
+        assertContentEquals(expected = listOf(0f, 0f, 0f), actual = normalized[0])
+        assertContentEquals(expected = listOf(0f, 0f, 0f), actual = normalized[1])
+    }
+
+    @Test
+    fun normalizeStackedAreaValues_withSingleSeries_scalesByGlobalMaxTotal() {
+        // Arrange
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem("A", listOf(4.0f, 8.0f).toChartData()),
+                    ),
+                title = "Title",
+            )
+
+        // Act
+        val normalized = data.normalizeStackedAreaValues()
+
+        // Assert
+        assertContentEquals(expected = listOf(0.5f, 1f), actual = normalized.first())
     }
 }

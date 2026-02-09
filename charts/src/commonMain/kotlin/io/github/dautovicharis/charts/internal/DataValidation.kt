@@ -4,6 +4,7 @@ import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_BAR
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_LINE
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_PIE
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_RADAR
+import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_STACKED_AREA
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_STACKED_BAR
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
@@ -11,6 +12,7 @@ import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.style.LineChartStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
 import io.github.dautovicharis.charts.style.RadarChartStyle
+import io.github.dautovicharis.charts.style.StackedAreaChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
 internal object ValidationErrors {
@@ -24,9 +26,12 @@ internal object ValidationErrors {
         "Data points size should be greater than or equal to %d."
     const val RULE_DATA_POINT_NOT_NUMBER: String =
         "Data point at index %d is not a valid number."
+    const val RULE_ITEM_POINT_NEGATIVE: String =
+        "Item at index %d has negative value at index %d."
 
     const val MIN_REQUIRED_PIE: Int = 2
     const val MIN_REQUIRED_LINE: Int = 2
+    const val MIN_REQUIRED_STACKED_AREA: Int = 2
     const val MIN_REQUIRED_STACKED_BAR: Int = 1
     const val MIN_REQUIRED_BAR: Int = 2
     const val MIN_REQUIRED_RADAR: Int = 3
@@ -89,6 +94,44 @@ internal fun validateBarData(
         colorsSize = colorsSize,
         expectedColorsSize = firstPointsSize,
     )
+}
+
+internal fun validateStackedAreaData(
+    data: MultiChartData,
+    style: StackedAreaChartStyle,
+): List<String> {
+    val firstPointsSize = data.items.first().item.points.size
+    val expectedColorsSize = data.items.size
+    val validationErrors =
+        validateChartData(
+            data = data,
+            pointsSize = firstPointsSize,
+            minRequiredPointsSize = MIN_REQUIRED_STACKED_AREA,
+            colorsSize = style.areaColors.size,
+            expectedColorsSize = expectedColorsSize,
+        ).toMutableList()
+
+    if (style.lineColors.isNotEmpty() && style.lineColors.size != expectedColorsSize) {
+        validationErrors +=
+            ValidationErrors.RULE_COLORS_SIZE_MISMATCH.format(
+                style.lineColors.size,
+                expectedColorsSize,
+            )
+    }
+
+    data.items.forEachIndexed { itemIndex, dataItem ->
+        dataItem.item.points.forEachIndexed { pointIndex, value ->
+            if (value < 0) {
+                validationErrors +=
+                    ValidationErrors.RULE_ITEM_POINT_NEGATIVE.format(
+                        itemIndex,
+                        pointIndex,
+                    )
+            }
+        }
+    }
+
+    return validationErrors
 }
 
 internal fun validateBarData(data: ChartData): List<String> {

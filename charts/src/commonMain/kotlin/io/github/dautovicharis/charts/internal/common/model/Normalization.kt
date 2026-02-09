@@ -76,3 +76,24 @@ internal fun MultiChartData.normalizeStackedValues(): List<Float> {
         (item.item.points.sum() / range).toFloat().coerceIn(0f, 1f)
     }
 }
+
+internal fun MultiChartData.normalizeStackedAreaValues(): List<List<Float>> {
+    if (items.isEmpty()) return emptyList()
+    val pointsCount = getFirstPointsSize()
+    if (pointsCount == 0) return items.map { emptyList() }
+
+    val maxStackedTotal =
+        (0 until pointsCount)
+            .maxOfOrNull { pointIndex ->
+                items.sumOf { it.item.points[pointIndex] }
+            } ?: 0.0
+    val range = if (maxStackedTotal == 0.0) 1.0 else maxStackedTotal
+    val runningTotals = DoubleArray(pointsCount)
+
+    return items.map { item ->
+        item.item.points.mapIndexed { pointIndex, value ->
+            runningTotals[pointIndex] += value
+            (runningTotals[pointIndex] / range).toFloat().coerceIn(0f, 1f)
+        }
+    }
+}

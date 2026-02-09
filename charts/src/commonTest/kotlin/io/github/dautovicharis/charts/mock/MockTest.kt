@@ -11,6 +11,7 @@ import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.style.ChartViewStyle
 import io.github.dautovicharis.charts.style.LineChartStyle
 import io.github.dautovicharis.charts.style.PieChartStyle
+import io.github.dautovicharis.charts.style.StackedAreaChartStyle
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 
 internal object MockTest {
@@ -119,6 +120,24 @@ internal object MockTest {
             barColors = barColors,
             barColor = Color.Red,
             space = Dp(10f),
+            chartViewStyle = mockChartViewStyle(),
+        )
+    }
+
+    fun mockStackedAreaChartStyle(
+        areaColors: List<Color> = colors,
+        lineColors: List<Color> = colors,
+    ): StackedAreaChartStyle {
+        return StackedAreaChartStyle(
+            modifier = Modifier.fillMaxSize(),
+            areaColor = Color.Red,
+            areaColors = areaColors,
+            fillAlpha = 0.35f,
+            lineVisible = true,
+            lineColor = Color.Red,
+            lineColors = lineColors,
+            lineWidth = 4f,
+            bezier = false,
             chartViewStyle = mockChartViewStyle(),
         )
     }
