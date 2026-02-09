@@ -1,7 +1,7 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.gradle.api.tasks.Sync
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
