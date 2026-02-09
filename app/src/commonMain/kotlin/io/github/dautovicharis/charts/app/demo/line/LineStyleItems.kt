@@ -9,7 +9,7 @@ import io.github.dautovicharis.charts.style.LineChartStyle
 object LineChartStyleItems {
     @Composable
     fun default(): StyleItems {
-        val style = LineChartDefaults.style()
+        val style = LineDemoStyle.default()
         return lineChartTableItems(style)
     }
 

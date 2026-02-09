@@ -18,6 +18,7 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.LineChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
 import io.github.dautovicharis.charts.app.ui.theme.seriesColors
 import io.github.dautovicharis.charts.style.LineChartDefaults
@@ -31,7 +32,9 @@ private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 object MultiLineDemoStyle {
     @Composable
     fun default(): LineChartStyle {
-        return LineChartDefaults.style(chartViewStyle = ChartViewDemoStyle.custom())
+        return LineChartDefaults.style(
+            chartViewStyle = ChartViewDemoStyle.custom(),
+        )
     }
 
     @Composable
@@ -50,7 +53,10 @@ object MultiLineDemoStyle {
 }
 
 @Composable
-fun MultiLineBasicDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
+fun MultiLineBasicDemo(
+    viewModel: MultiLineChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -69,6 +75,7 @@ fun MultiLineBasicDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = MultiLineStyleItems.default(),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -92,7 +99,10 @@ fun MultiLineBasicDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
 }
 
 @Composable
-fun MultiLineCustomDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
+fun MultiLineCustomDemo(
+    viewModel: MultiLineChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
@@ -113,6 +123,7 @@ fun MultiLineCustomDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = MultiLineStyleItems.custom(lineColors),
         onRefresh = viewModel::regenerateDataSet,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -130,7 +141,10 @@ fun MultiLineCustomDemo(viewModel: MultiLineChartViewModel = koinViewModel()) {
     ) {
         LineChart(
             dataSet = dataSet.dataSet,
-            style = MultiLineDemoStyle.custom(lineColors = lineColors),
+            style =
+                MultiLineDemoStyle.custom(
+                    lineColors = lineColors,
+                ),
         )
     }
 }

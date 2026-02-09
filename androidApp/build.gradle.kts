@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.Test
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -65,4 +67,12 @@ dependencies {
     screenshotTestImplementation(libs.compose.ui.tooling)
     screenshotTestImplementation(project(":charts"))
     screenshotTestImplementation(project(":app"))
+}
+
+tasks.withType<Test>().configureEach {
+    if (name.contains("ScreenshotTest")) {
+        // Screenshot rendering is memory-heavy; keep fork count low and heap high to avoid OOM.
+        maxParallelForks = 1
+        maxHeapSize = "3g"
+    }
 }

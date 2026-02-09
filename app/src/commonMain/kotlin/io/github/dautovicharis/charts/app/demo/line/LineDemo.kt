@@ -16,6 +16,7 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.LineChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
 import io.github.dautovicharis.charts.app.ui.theme.seriesColor
 import io.github.dautovicharis.charts.style.LineChartDefaults
@@ -30,7 +31,9 @@ private val LIVE_LINE_POINTS_RANGE = 9..9
 object LineDemoStyle {
     @Composable
     fun default(): LineChartStyle {
-        return LineChartDefaults.style(chartViewStyle = ChartViewDemoStyle.custom())
+        return LineChartDefaults.style(
+            chartViewStyle = ChartViewDemoStyle.custom(),
+        )
     }
 
     @Composable
@@ -51,7 +54,10 @@ object LineDemoStyle {
 }
 
 @Composable
-fun LineChartBasicDemo(viewModel: LineChartViewModel = koinViewModel()) {
+fun LineChartBasicDemo(
+    viewModel: LineChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -71,6 +77,7 @@ fun LineChartBasicDemo(viewModel: LineChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = LineChartStyleItems.default(),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -94,7 +101,10 @@ fun LineChartBasicDemo(viewModel: LineChartViewModel = koinViewModel()) {
 }
 
 @Composable
-fun LineChartCustomDemo(viewModel: LineChartViewModel = koinViewModel()) {
+fun LineChartCustomDemo(
+    viewModel: LineChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -114,6 +124,7 @@ fun LineChartCustomDemo(viewModel: LineChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = LineChartStyleItems.custom(),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,

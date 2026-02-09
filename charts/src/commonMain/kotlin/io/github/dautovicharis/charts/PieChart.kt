@@ -2,7 +2,6 @@ package io.github.dautovicharis.charts
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barstackedchart.generateColorShades
@@ -127,19 +127,21 @@ private fun PieChartContent(
                 Row(
                     modifier =
                         style.chartViewStyle.modifierTopTitle
-                            .fillMaxWidth()
                             .padding(end = style.chartViewStyle.innerPadding),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.spacedBy(style.chartViewStyle.innerPadding),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         modifier = Modifier.testTag(TestTags.CHART_TITLE),
                         text = selectedTitle,
                         style = style.chartViewStyle.styleTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = "${piePercentages[effectiveSelectedIndex]}%",
                         style = selectedPercentageStyle(style.chartViewStyle.styleTitle),
+                        maxLines = 1,
                     )
                 }
             } else {

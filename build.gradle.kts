@@ -25,6 +25,12 @@ tasks.register("chartsTest") {
     dependsOn(":androidApp:validateDebugScreenshotTest")
 }
 
+tasks.register("updateScreenshots") {
+    group = "Charts"
+    description = "Updates Android screenshot test baselines (debug variant)"
+    dependsOn(":androidApp:updateDebugScreenshotTest")
+}
+
 tasks.register("chartsCheck") {
     group = "Charts"
     description = "Build and tests for the charts project"
