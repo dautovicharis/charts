@@ -2,14 +2,14 @@
   <img src="/content/snapshot/wiki/assets/logo.png" alt="Charts Library Logo" style="max-width: 500px;">
 </div>
 
-# Charts SNAPSHOT
+# Charts 2.2.0-SNAPSHOT
 
 <div style="text-align: center; margin: 2rem 0;">
   <img src="/content/snapshot/wiki/assets/demo.png" alt="Charts Demo" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 </div>
 
 
-## What's New in SNAPSHOT
+## What's New in 2.2.0-SNAPSHOT
 
 
 ## Getting Started
