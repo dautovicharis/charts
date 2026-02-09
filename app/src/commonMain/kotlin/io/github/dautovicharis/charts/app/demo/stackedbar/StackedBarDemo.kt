@@ -16,6 +16,7 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.StackedBarChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 import kotlinx.coroutines.delay
@@ -34,7 +35,10 @@ object StackedBarDemoStyle {
 }
 
 @Composable
-fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) {
+fun StackedBarCustomDemo(
+    viewModel: StackedBarChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -54,6 +58,7 @@ fun StackedBarCustomDemo(viewModel: StackedBarChartViewModel = koinViewModel()) 
     ChartDemo(
         styleItems = StackedBarChartStyleItems.custom(),
         onRefresh = viewModel::regenerateDataSet,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,

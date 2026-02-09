@@ -16,6 +16,7 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import io.github.dautovicharis.charts.style.BarChartDefaults
 import io.github.dautovicharis.charts.style.BarChartStyle
 import kotlinx.coroutines.delay
@@ -40,7 +41,10 @@ object BarDemoStyle {
 }
 
 @Composable
-fun BarChartBasicDemo(viewModel: BarChartViewModel = koinViewModel()) {
+fun BarChartBasicDemo(
+    viewModel: BarChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -63,6 +67,7 @@ fun BarChartBasicDemo(viewModel: BarChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = BarChartStyleItems.default(),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,

@@ -28,6 +28,7 @@ import io.github.dautovicharis.charts.app.demo.pie.PieChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.radar.RadarChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.radar.RadarChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarCustomDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
@@ -172,6 +173,7 @@ fun Navigation(
     navController: NavHostController,
     menuState: MenuState,
     onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
+    onStyleItemsChanged: (StyleItems?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -186,43 +188,43 @@ fun Navigation(
             )
         }
         composable(ChartSubmenuItem.PieChartBasic.route) {
-            PieChartBasicDemo()
+            PieChartBasicDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.PieChartCustom.route) {
-            PieChartCustomDemo()
+            PieChartCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.LineChartBasic.route) {
-            LineChartBasicDemo()
+            LineChartBasicDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.LineChartCustom.route) {
-            LineChartCustomDemo()
+            LineChartCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.MultiLineChartBasic.route) {
-            MultiLineBasicDemo()
+            MultiLineBasicDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.MultiLineChartCustom.route) {
-            MultiLineCustomDemo()
+            MultiLineCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.BarChartBasic.route) {
-            BarChartBasicDemo()
+            BarChartBasicDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.StackedBarChartCustom.route) {
-            StackedBarCustomDemo()
+            StackedBarCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.RadarChartBasic.route) {
-            RadarChartBasicDemo()
+            RadarChartBasicDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.RadarChartCustom.route) {
-            RadarChartCustomDemo()
+            RadarChartCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
     }
 }

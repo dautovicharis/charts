@@ -18,6 +18,7 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.PieChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
 import io.github.dautovicharis.charts.app.ui.theme.seriesColors
 import io.github.dautovicharis.charts.style.PieChartDefaults
@@ -32,7 +33,9 @@ private val LIVE_PIE_POINTS_RANGE = 9..9
 object PieChartDemoStyle {
     @Composable
     fun default(): PieChartStyle {
-        return PieChartDefaults.style(chartViewStyle = ChartViewDemoStyle.custom())
+        return PieChartDefaults.style(
+            chartViewStyle = ChartViewDemoStyle.custom(),
+        )
     }
 
     @Composable
@@ -49,7 +52,10 @@ object PieChartDemoStyle {
 }
 
 @Composable
-fun PieChartBasicDemo(viewModel: PieChartViewModel = koinViewModel()) {
+fun PieChartBasicDemo(
+    viewModel: PieChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -69,6 +75,7 @@ fun PieChartBasicDemo(viewModel: PieChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = PieChartStyleItems.default(),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -92,7 +99,10 @@ fun PieChartBasicDemo(viewModel: PieChartViewModel = koinViewModel()) {
 }
 
 @Composable
-fun PieChartCustomDemo(viewModel: PieChartViewModel = koinViewModel()) {
+fun PieChartCustomDemo(
+    viewModel: PieChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
@@ -115,6 +125,7 @@ fun PieChartCustomDemo(viewModel: PieChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = PieChartStyleItems.custom(pieColors),
         onRefresh = viewModel::regenerateCustomDataSet,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -132,7 +143,10 @@ fun PieChartCustomDemo(viewModel: PieChartViewModel = koinViewModel()) {
     ) {
         PieChart(
             dataSet = dataSet.dataSet,
-            style = PieChartDemoStyle.custom(pieColors),
+            style =
+                PieChartDemoStyle.custom(
+                    pieColors = pieColors,
+                ),
         )
     }
 }

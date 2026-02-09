@@ -18,6 +18,7 @@ import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.RadarChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
 import io.github.dautovicharis.charts.app.ui.theme.seriesColors
 import io.github.dautovicharis.charts.style.RadarChartDefaults
@@ -57,7 +58,10 @@ object RadarDemoStyle {
 }
 
 @Composable
-fun RadarChartBasicDemo(viewModel: RadarChartViewModel = koinViewModel()) {
+fun RadarChartBasicDemo(
+    viewModel: RadarChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
 
@@ -76,6 +80,7 @@ fun RadarChartBasicDemo(viewModel: RadarChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = RadarChartStyleItems.default(),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -99,7 +104,10 @@ fun RadarChartBasicDemo(viewModel: RadarChartViewModel = koinViewModel()) {
 }
 
 @Composable
-fun RadarChartCustomDemo(viewModel: RadarChartViewModel = koinViewModel()) {
+fun RadarChartCustomDemo(
+    viewModel: RadarChartViewModel = koinViewModel(),
+    onStyleItemsChanged: (StyleItems?) -> Unit = {},
+) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val chartColors = LocalChartColors.current
@@ -127,6 +135,7 @@ fun RadarChartCustomDemo(viewModel: RadarChartViewModel = koinViewModel()) {
     ChartDemo(
         styleItems = RadarChartStyleItems.custom(lineColors),
         onRefresh = refresh,
+        onStyleItemsChanged = onStyleItemsChanged,
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -144,7 +153,7 @@ fun RadarChartCustomDemo(viewModel: RadarChartViewModel = koinViewModel()) {
     ) {
         RadarChart(
             dataSet = dataSet.customDataSet,
-            style = RadarDemoStyle.custom(lineColors),
+            style = RadarDemoStyle.custom(lineColors = lineColors),
         )
     }
 }

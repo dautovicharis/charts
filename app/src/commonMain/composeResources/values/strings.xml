@@ -12,6 +12,7 @@
     <string name="cd_hide_parameters">Hide parameters</string>
     <string name="cd_regenerate_chart">Regenerate chart</string>
     <string name="cd_refresh_data">Refresh data</string>
+    <string name="cd_open_style_details">Open style details</string>
     <string name="cd_play_live_updates">Start live updates</string>
     <string name="cd_pause_live_updates">Pause live updates</string>
     <string name="cd_select_theme">Select theme %1$d</string>
@@ -45,6 +46,8 @@
 
     <string name="chart_basic">Basic</string>
     <string name="chart_custom">Custom</string>
+    <string name="style_details_title">Style details</string>
+    <string name="cd_close_dialog">Close dialog</string>
 
     <string translatable="false" name="github_url">https://github.com/dautovicharis/Charts</string>
 
