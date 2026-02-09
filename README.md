@@ -34,7 +34,7 @@
 https://dautovicharis-github-io-charts.vercel.app/
 
 ## 🚀 Production Demo (JS)
-https://dautovicharis-github-io-charts.vercel.app/static/demo/2.1.0/index.htm
+https://dautovicharis-github-io-charts.vercel.app/static/demo/2.1.0/index.html
 
 ## 🚧 Snapshot Demo (JS)
 https://dautovicharis-github-io-charts.vercel.app/static/demo/snapshot/index.html
