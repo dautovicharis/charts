@@ -17,6 +17,8 @@ Welcome to the Charts documentation! This library provides a simple way to creat
 - **Chart Gallery**: Added a gallery to explore available chart types and examples ([#256](https://github.com/dautovicharis/Charts/pull/256))
 - **Pie Chart Preselection**: Added `selectedSliceIndex` to support deterministic selected-slice rendering for previews and screenshots ([#272](https://github.com/dautovicharis/Charts/pull/272))
 - **Responsive Gallery Layout**: Improved gallery cards with adaptive single/two-column rendering and updated previews for clearer radar comparisons
+- **Style Details Screen**: Added a style-details dialog in demos so chart style parameters can be reviewed directly from chart screens ([#276](https://github.com/dautovicharis/charts/pull/276))
+- **Tablet Screenshot Coverage**: Added tablet portrait/landscape screenshot previews and updated screenshot baselines across chart demos ([#276](https://github.com/dautovicharis/charts/pull/276))
 
 ### 🐛 Fixes
 - **Gesture Handling**: Improved touch and scroll interactions to avoid gesture conflicts ([#248](https://github.com/dautovicharis/Charts/pull/248))
@@ -25,6 +27,7 @@ Welcome to the Charts documentation! This library provides a simple way to creat
 - **Chart State Stability**: Improved chart state and data update consistency ([#252](https://github.com/dautovicharis/Charts/pull/252))
 - **Line Chart Rendering**: Improved bezier interpolation, reveal animation, and drag marker behavior for smoother visual feedback ([#272](https://github.com/dautovicharis/Charts/pull/272))
 - **Radar Chart Legends**: Fixed series legend visibility when `categoryLegendVisible` is disabled
+- **Pie Chart Title Handling**: Improved selected-title rendering to avoid truncation/overlap issues in constrained layouts ([#276](https://github.com/dautovicharis/charts/pull/276))
 
 ## Getting Started
 
