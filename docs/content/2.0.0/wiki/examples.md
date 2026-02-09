@@ -1,6 +1,5 @@
 # Code Examples
 
-## Basic Usage
 ### Pie Chart
 
 ```kotlin
@@ -115,7 +114,7 @@ private fun AddDefaultStackedBarChart() {
 
 ## Customizing Chart Styles
 
-Each chart type has a `Defaults.style()` method that allows you to customize its appearance:
+Use each chart's `*ChartDefaults.style(...)` factory to create a customized style:
 
 ### Pie Chart
 
@@ -131,7 +130,7 @@ private fun AddCustomPieChart() {
         donutPercentage = 40f,
         borderWidth = 6f,
         pieColors = pieColors,
-        chartViewStyle = ChartViewDemoStyle.custom(width = 200.dp)
+        chartViewStyle = ChartViewDefaults.style(width = 200.dp)
     )
 
     val dataSet = listOf(8, 23, 54, 32, 12, 37, 7, 23, 43)
@@ -163,7 +162,7 @@ private fun AddCustomLineChart() {
         dragPointVisible = false,
         dragPointSize = 8f,
         dragActivePointSize = 15f,
-        chartViewStyle = ChartViewDemoStyle.custom(width = 200.dp)
+        chartViewStyle = ChartViewDefaults.style(width = 200.dp)
     )
 
     val dataSet = listOf("10", "100", "20", "50", "150", "70", "10", "20", "40")
@@ -194,7 +193,7 @@ private fun AddCustomMultiLineChart() {
         pointVisible = true,
         pointColor = ColorPalette.DataColor.magenta,
         dragPointColor = deepPurple,
-        chartViewStyle = ChartViewDemoStyle.custom()
+        chartViewStyle = ChartViewDefaults.style()
     )
 
     val items = listOf(
@@ -227,7 +226,7 @@ private fun AddCustomBarChart() {
     val style = BarChartDefaults.style(
         barColor = ColorPalette.DataColor.deepPurple,
         space = 12.dp,
-        chartViewStyle = ChartViewDemoStyle.custom(width = 200.dp)
+        chartViewStyle = ChartViewDefaults.style(width = 200.dp)
     )
 
     BarChart(
@@ -251,7 +250,7 @@ private fun AddCustomStackedBarChart() {
     val colors = listOf(navyBlue, darkBlue, deepPurple)
     val style =  StackedBarChartDefaults.style(
         barColors = colors,
-        chartViewStyle = ChartViewDemoStyle.custom(width = 240.dp)
+        chartViewStyle = ChartViewDefaults.style(width = 240.dp)
     )
 
     val items = listOf(

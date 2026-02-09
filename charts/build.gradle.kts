@@ -1,5 +1,6 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
+import org.gradle.api.tasks.Sync
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -91,6 +92,11 @@ android {
 }
 
 dokka {
+    val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
+    val snapshotOutputDir = file(project.rootDir.resolve("docs/static/api/snapshot"))
+    val versionOutputDir = file(project.rootDir.resolve("docs/static/api/${Config.chartsVersion}"))
+    val primaryOutputDir = if (isSnapshotVersion) snapshotOutputDir else versionOutputDir
+
     dokkaSourceSets.commonMain {
         sourceLink {
             sourceRoots.setFrom(emptyList<File>())
@@ -104,7 +110,7 @@ dokka {
     }
 
     dokkaPublications.html {
-        outputDirectory.set(file(project.rootDir.resolve("docs/static/api/snapshot")))
+        outputDirectory.set(primaryOutputDir)
     }
 
     pluginsConfiguration {
@@ -112,6 +118,13 @@ dokka {
             version.set(Config.chartsVersion)
         }
     }
+}
+
+tasks.register<Sync>("syncDokkaSnapshot") {
+    dependsOn("dokkaGenerate")
+    onlyIf { !Config.chartsVersion.endsWith("-SNAPSHOT") }
+    from(file(project.rootDir.resolve("docs/static/api/${Config.chartsVersion}")))
+    into(file(project.rootDir.resolve("docs/static/api/snapshot")))
 }
 
 // https://github.com/Kotlin/dokka/issues/3988

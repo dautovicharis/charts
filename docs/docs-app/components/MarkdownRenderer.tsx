@@ -3,6 +3,7 @@
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { createHeadingSlugger } from '@/lib/anchors';
 
 interface MarkdownRendererProps {
   content: string;
@@ -79,6 +80,7 @@ function CodeBlock({ code, language }: CodeBlockProps) {
 function parseMarkdown(content: string): React.ReactNode[] {
   const lines = content.split('\n');
   const elements: React.ReactNode[] = [];
+  const makeSlug = createHeadingSlugger();
   let i = 0;
   let key = 0;
 
@@ -146,9 +148,11 @@ function parseMarkdown(content: string): React.ReactNode[] {
       const match = line.match(/^(#{1,6})\s+(.+)$/);
       if (match) {
         const level = match[1].length;
-        const text = parseInlineMarkdown(match[2]);
+        const rawText = match[2].trim().replace(/\s+#+\s*$/, '');
+        const text = parseInlineMarkdown(rawText);
+        const id = makeSlug(rawText);
         const HeadingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-        elements.push(React.createElement(HeadingTag, { key: key++ }, text));
+        elements.push(React.createElement(HeadingTag, { key: key++, id }, text));
         i++;
         continue;
       }

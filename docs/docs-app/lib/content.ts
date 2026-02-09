@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { DocPage, NavItem, PageFrontmatter } from './types';
+import { createHeadingSlugger } from './anchors';
 
 /**
  * Base path to wiki content
@@ -42,12 +43,23 @@ function getMarkdownFiles(dir: string): string[] {
     return [];
   }
   
+  const orderRank: Record<string, number> = {
+    index: 0,
+    'getting-started': 1,
+  };
+
   return fs.readdirSync(dir)
     .filter(file => /\.mdx?$/.test(file))
     .sort((a, b) => {
-      // index.md always first
-      if (a === 'index.md' || a === 'index.mdx') return -1;
-      if (b === 'index.md' || b === 'index.mdx') return 1;
+      const aSlug = a.replace(/\.mdx?$/, '');
+      const bSlug = b.replace(/\.mdx?$/, '');
+      const aRank = orderRank[aSlug] ?? Number.MAX_SAFE_INTEGER;
+      const bRank = orderRank[bSlug] ?? Number.MAX_SAFE_INTEGER;
+
+      if (aRank !== bRank) {
+        return aRank - bRank;
+      }
+
       return a.localeCompare(b);
     });
 }
@@ -62,25 +74,84 @@ export function getNavigation(versionId: string): NavItem[] {
   return files.map(file => {
     const slug = file.replace(/\.mdx?$/, '');
     const filePath = path.join(wikiPath, file);
+    const pagePath = `/${versionId}/wiki/${slug === 'index' ? '' : slug}`;
     
     // Read frontmatter to get custom title if available
     let title = filenameToTitle(file);
+    let markdownContent = '';
     try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const { data } = matter(content);
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      const { data, content } = matter(fileContent);
       if (data.title) {
         title = data.title;
       }
-    } catch (error) {
+      markdownContent = content;
+    } catch {
       // Use default title
     }
     
-    return {
+    const navItem: NavItem = {
       title,
       slug: slug === 'index' ? '' : slug,
-      path: `/${versionId}/wiki/${slug === 'index' ? '' : slug}`,
+      path: pagePath,
     };
+
+    if (slug === 'examples' && markdownContent) {
+      const children = extractExamplesChildren(markdownContent, pagePath);
+      if (children.length > 0) {
+        navItem.children = children;
+      }
+    }
+
+    return navItem;
   });
+}
+
+/**
+ * Build Examples submenu from headings:
+ * - include the first contiguous group of level-3 headings
+ * - include the first level-2 heading that appears after that group
+ */
+function extractExamplesChildren(content: string, pagePath: string): NavItem[] {
+  const children: NavItem[] = [];
+  const makeSlug = createHeadingSlugger();
+  let hasStartedPrimaryGroup = false;
+  let hasEndedPrimaryGroup = false;
+
+  for (const rawLine of content.split('\n')) {
+    const match = rawLine.match(/^(#{1,6})\s+(.+)$/);
+    if (!match) {
+      continue;
+    }
+
+    const level = match[1].length;
+    const title = match[2].trim().replace(/\s+#+\s*$/, '');
+    const anchor = makeSlug(title);
+
+    if (!hasStartedPrimaryGroup) {
+      if (level !== 3) {
+        continue;
+      }
+      hasStartedPrimaryGroup = true;
+      children.push({ title, slug: anchor, path: `${pagePath}#${anchor}` });
+      continue;
+    }
+
+    if (!hasEndedPrimaryGroup && level === 3) {
+      children.push({ title, slug: anchor, path: `${pagePath}#${anchor}` });
+      continue;
+    }
+
+    if (!hasEndedPrimaryGroup && level <= 2) {
+      hasEndedPrimaryGroup = true;
+      if (level === 2) {
+        children.push({ title, slug: anchor, path: `${pagePath}#${anchor}` });
+      }
+      break;
+    }
+  }
+
+  return children;
 }
 
 /**

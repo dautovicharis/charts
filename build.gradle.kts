@@ -44,23 +44,29 @@ tasks.register("chartsCheck") {
 
 tasks.register("generateJsDemo") {
     group = "Charts"
-    description = "Builds the JS app and copies necessary files to docs/static/demo/snapshot"
+    description = "Builds the JS app and copies files to docs/static/demo/snapshot (and docs/static/demo/<version> for stable releases)"
 
     dependsOn(getTasksByName("jsBrowserDistribution", true))
     doLast {
+        val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
         val buildDir = file("app/build/dist/js/productionExecutable")
-        val destinationDir = file("docs/static/demo/snapshot")
+        val snapshotDestinationDir = file("docs/static/demo/snapshot")
 
-        if (!destinationDir.exists()) {
-            destinationDir.mkdirs()
-        }
-
-        copy {
+        sync {
             from(buildDir)
-            into(destinationDir)
+            into(snapshotDestinationDir)
         }
 
-        println("✅JS Demo generated successfully!")
+        if (!isSnapshotVersion) {
+            val versionDestinationDir = file("docs/static/demo/${Config.chartsVersion}")
+            sync {
+                from(buildDir)
+                into(versionDestinationDir)
+            }
+            println("✅JS Demo generated successfully! Updated snapshot and ${Config.chartsVersion}.")
+        } else {
+            println("✅JS Demo generated successfully! Updated snapshot.")
+        }
     }
 }
 
@@ -69,6 +75,14 @@ tasks.register("generateDocs") {
     description = "Generate Dokka API docs and JS demo to docs/static/"
 
     dependsOn("charts:dokkaGenerate")
+    dependsOn("charts:syncDokkaSnapshot")
     dependsOn("generateJsDemo")
-    println("✅Documentation generated successfully to docs/static/!")
+    doLast {
+        val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
+        if (isSnapshotVersion) {
+            println("✅Documentation generated successfully to docs/static/ (updated snapshot)")
+        } else {
+            println("✅Documentation generated successfully to docs/static/ (updated snapshot and ${Config.chartsVersion})")
+        }
+    }
 }

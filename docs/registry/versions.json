@@ -10,6 +10,15 @@
       "notes": "Latest development snapshot"
     },
     {
+      "id": "2.1.0",
+      "label": "2.1.0",
+      "wikiRoot": "/docs/content/2.1.0/wiki",
+      "apiBase": "/docs/static/api/2.1.0",
+      "demoBase": "/docs/static/demo/2.1.0",
+      "releasedAt": "2026-02-09",
+      "notes": "Stable release with RadarChart, gallery improvements, and expanded docs tooling."
+    },
+    {
       "id": "2.0.1",
       "label": "2.0.1",
       "wikiRoot": "/docs/content/2.0.1/wiki",
