@@ -14,10 +14,12 @@ import chartsproject.app.generated.resources.ic_line_chart
 import chartsproject.app.generated.resources.ic_multi_line_chart
 import chartsproject.app.generated.resources.ic_pie_chart
 import chartsproject.app.generated.resources.ic_radar_chart
+import chartsproject.app.generated.resources.ic_stacked_bar_chart
 import chartsproject.app.generated.resources.line_chart
 import chartsproject.app.generated.resources.multi_line_chart
 import chartsproject.app.generated.resources.pie_chart
 import chartsproject.app.generated.resources.radar_chart
+import chartsproject.app.generated.resources.stacked_area_chart
 import io.github.dautovicharis.charts.app.demo.bar.BarChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.line.LineChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.line.LineChartCustomDemo
@@ -27,6 +29,8 @@ import io.github.dautovicharis.charts.app.demo.pie.PieChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.pie.PieChartCustomDemo
 import io.github.dautovicharis.charts.app.demo.radar.RadarChartBasicDemo
 import io.github.dautovicharis.charts.app.demo.radar.RadarChartCustomDemo
+import io.github.dautovicharis.charts.app.demo.stackedarea.StackedAreaBasicDemo
+import io.github.dautovicharis.charts.app.demo.stackedarea.StackedAreaCustomDemo
 import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarCustomDemo
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import org.jetbrains.compose.resources.DrawableResource
@@ -72,6 +76,19 @@ sealed class ChartSubmenuItem(
     data object MultiLineChartCustom :
         ChartSubmenuItem(
             route = "multiLineChartCustom",
+            title = Res.string.chart_custom,
+        )
+
+    // Stacked Area Chart
+    data object StackedAreaChartBasic :
+        ChartSubmenuItem(
+            route = "stackedAreaChartBasic",
+            title = Res.string.chart_basic,
+        )
+
+    data object StackedAreaChartCustom :
+        ChartSubmenuItem(
+            route = "stackedAreaChartCustom",
             title = Res.string.chart_custom,
         )
 
@@ -156,6 +173,17 @@ sealed class ChartDestination(
                 ),
         )
 
+    data object StackedAreaChartScreen :
+        ChartDestination(
+            icon = Res.drawable.ic_stacked_bar_chart,
+            title = Res.string.stacked_area_chart,
+            submenus =
+                listOf(
+                    ChartSubmenuItem.StackedAreaChartBasic,
+                    ChartSubmenuItem.StackedAreaChartCustom,
+                ),
+        )
+
     data object RadarChartScreen :
         ChartDestination(
             icon = Res.drawable.ic_radar_chart,
@@ -209,6 +237,14 @@ fun Navigation(
 
         composable(ChartSubmenuItem.MultiLineChartCustom.route) {
             MultiLineCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
+        }
+
+        composable(ChartSubmenuItem.StackedAreaChartBasic.route) {
+            StackedAreaBasicDemo(onStyleItemsChanged = onStyleItemsChanged)
+        }
+
+        composable(ChartSubmenuItem.StackedAreaChartCustom.route) {
+            StackedAreaCustomDemo(onStyleItemsChanged = onStyleItemsChanged)
         }
 
         composable(ChartSubmenuItem.BarChartBasic.route) {

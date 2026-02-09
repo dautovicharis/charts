@@ -22,6 +22,7 @@ import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.LineChart
 import io.github.dautovicharis.charts.PieChart
 import io.github.dautovicharis.charts.RadarChart
+import io.github.dautovicharis.charts.StackedAreaChart
 import io.github.dautovicharis.charts.StackedBarChart
 import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
 import io.github.dautovicharis.charts.app.ui.theme.seriesColor
@@ -34,6 +35,7 @@ import io.github.dautovicharis.charts.style.ChartViewStyle
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import io.github.dautovicharis.charts.style.PieChartDefaults
 import io.github.dautovicharis.charts.style.RadarChartDefaults
+import io.github.dautovicharis.charts.style.StackedAreaChartDefaults
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 
 private val PreviewShape = RoundedCornerShape(18.dp)
@@ -84,6 +86,8 @@ internal fun ChartPreview(
         is ChartDestination.LineChartScreen -> LineChartPreview(previews.lineValues, isCustom)
         is ChartDestination.MultiLineChartScreen ->
             MultiLineChartPreview(previews.multiLineSeries, isCustom)
+        is ChartDestination.StackedAreaChartScreen ->
+            StackedAreaChartPreview(previews.stackedAreaSeries, isCustom)
         is ChartDestination.BarChartScreen -> {
             if (isCustom) {
                 StackedBarChartPreview(previews.stackedSeries)
@@ -188,6 +192,43 @@ private fun MultiLineChartPreview(
             )
         }
     LineChart(
+        dataSet = dataSet,
+        style = style,
+        interactionEnabled = false,
+        animateOnStart = false,
+    )
+}
+
+@Composable
+private fun StackedAreaChartPreview(
+    series: List<Pair<String, List<Float>>>,
+    isCustom: Boolean,
+) {
+    val dataSet =
+        remember(series) {
+            series.toMultiChartDataSet(title = "")
+        }
+    val chartColors = LocalChartColors.current
+    val areaColors =
+        remember(series, chartColors) {
+            chartColors.seriesColors(series.size)
+        }
+    val style =
+        if (isCustom) {
+            StackedAreaChartDefaults.style(
+                areaColors = areaColors,
+                lineColors = areaColors,
+                fillAlpha = 0.3f,
+                lineWidth = 3f,
+                bezier = false,
+                chartViewStyle = previewChartViewStyle(),
+            )
+        } else {
+            StackedAreaChartDefaults.style(
+                chartViewStyle = previewChartViewStyle(),
+            )
+        }
+    StackedAreaChart(
         dataSet = dataSet,
         style = style,
         interactionEnabled = false,
@@ -307,13 +348,15 @@ internal fun chartAccent(item: ChartDestination): Color {
                 scheme.tertiary,
                 lerp(scheme.primary, scheme.secondary, 0.45f),
                 lerp(scheme.tertiary, scheme.primary, 0.45f),
+                lerp(scheme.secondary, scheme.tertiary, 0.45f),
             )
         }
     return when (item) {
         is ChartDestination.PieChartScreen -> accents[0]
         is ChartDestination.LineChartScreen -> accents[1]
         is ChartDestination.MultiLineChartScreen -> accents[2]
-        is ChartDestination.BarChartScreen -> accents[3]
-        is ChartDestination.RadarChartScreen -> accents[4]
+        is ChartDestination.StackedAreaChartScreen -> accents[3]
+        is ChartDestination.BarChartScreen -> accents[4]
+        is ChartDestination.RadarChartScreen -> accents[5]
     }
 }

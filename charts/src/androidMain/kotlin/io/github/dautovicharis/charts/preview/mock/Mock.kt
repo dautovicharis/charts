@@ -9,6 +9,7 @@ internal object Mock {
     private const val LINE_CHART_TITLE = "Line Chart"
     private const val BAR_CHART_TITLE = "Bar Chart"
     private const val STACKED_BAR_CHART_TITLE = "Stacked Bar Chart"
+    private const val STACKED_AREA_CHART_TITLE = "Stacked Area Chart"
     private const val PIE_CHART_TITLE = "Pie Chart"
 
     private val CATEGORIES = listOf("Jan", "Feb", "Mar")
@@ -82,6 +83,32 @@ internal object Mock {
             items = ITEMS,
             categories = CATEGORIES,
             title = LINE_CHART_TITLE,
+            prefix = PREFIX,
+        )
+    }
+
+    fun stackedAreaChart(): MultiChartDataSet {
+        return MultiChartDataSet(
+            items = ITEMS,
+            categories = CATEGORIES,
+            title = STACKED_AREA_CHART_TITLE,
+            prefix = PREFIX,
+        )
+    }
+
+    fun stackedAreaChartInvalid(): MultiChartDataSet {
+        val items =
+            listOf(
+                FIRST_ITEM_NAME to FloatData(FIRST_ITEM),
+                SECOND_ITEM_NAME to FloatData(SECOND_ITEM.dropLast(1)),
+                THIRD_ITEM_NAME to FloatData(THIRD_ITEM),
+                FOURTH_ITEM_NAME to FloatData(FOURTH_ITEM.dropLast(1)),
+            )
+
+        return MultiChartDataSet(
+            items = items,
+            categories = CATEGORIES.dropLast(1),
+            title = STACKED_AREA_CHART_TITLE,
             prefix = PREFIX,
         )
     }

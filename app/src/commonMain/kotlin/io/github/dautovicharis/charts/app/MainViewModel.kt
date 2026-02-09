@@ -37,6 +37,7 @@ class MainViewModel : ViewModel() {
                     ChartDestination.PieChartScreen,
                     ChartDestination.LineChartScreen,
                     ChartDestination.MultiLineChartScreen,
+                    ChartDestination.StackedAreaChartScreen,
                     ChartDestination.BarChartScreen,
                     ChartDestination.RadarChartScreen,
                 ),

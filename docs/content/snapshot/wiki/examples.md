@@ -91,6 +91,27 @@ private fun AddDefaultStackedBarChart() {
 }
 ```
 
+### Stacked Area Chart
+
+```kotlin
+@Composable
+private fun AddDefaultStackedAreaChart() {
+    val items = listOf(
+        "Cherry St." to listOf(16000.68f, 19000.34f, 24000.57f, 28000.57f),
+        "Strawberry Mall" to listOf(11000.68f, 15000.34f, 19000.57f, 23000f),
+        "Lime Av." to listOf(7000.87f, 9000.58f, 13000.81f, 15500.58f)
+    )
+
+    val dataSet = items.toMultiChartDataSet(
+        title = stringResource(R.string.stacked_area_chart),
+        prefix = "$",
+        categories = listOf("Jan", "Feb", "Mar", "Apr")
+    )
+
+    StackedAreaChart(dataSet)
+}
+```
+
 ### Radar Chart
 
 ```kotlin
@@ -248,6 +269,37 @@ private fun AddCustomStackedBarChart() {
     )
 
     StackedBarChart(dataSet = dataSet, style = style)
+}
+```
+
+### Stacked Area Chart
+
+```kotlin
+@Composable
+private fun AddCustomStackedAreaChart() {
+    val colors = listOf(navyBlue, darkBlue, deepPurple)
+    val style = StackedAreaChartDefaults.style(
+        areaColors = colors,
+        lineColors = colors,
+        fillAlpha = 0.3f,
+        lineWidth = 3f,
+        bezier = false,
+        chartViewStyle = ChartViewDefaults.style(width = 240.dp)
+    )
+
+    val items = listOf(
+        "Cherry St." to listOf(16000.68f, 19000.34f, 24000.57f, 28000.57f),
+        "Strawberry Mall" to listOf(11000.68f, 15000.34f, 19000.57f, 23000f),
+        "Lime Av." to listOf(7000.87f, 9000.58f, 13000.81f, 15500.58f)
+    )
+
+    val dataSet = items.toMultiChartDataSet(
+        title = stringResource(R.string.stacked_area_chart),
+        prefix = "$",
+        categories = listOf("Jan", "Feb", "Mar", "Apr")
+    )
+
+    StackedAreaChart(dataSet = dataSet, style = style)
 }
 ```
 

@@ -13,6 +13,12 @@ class DefaultChartPreviewUseCase : ChartPreviewUseCase {
             "Strawberry Mall" to listOf(6f, 12f, 10f, 14f, 9f),
             "Lime Av." to listOf(9f, 7f, 12f, 9f, 15f),
         )
+    private val previewStackedAreaSeries =
+        listOf(
+            "Series A" to listOf(14f, 18f, 16f, 20f, 22f),
+            "Series B" to listOf(9f, 11f, 10f, 12f, 13f),
+            "Series C" to listOf(6f, 8f, 7f, 9f, 10f),
+        )
     private val previewBarValues = listOf(18f, 32f, 26f, 48f, 36f, 28f, 54f)
     private val previewStackedSeries =
         listOf(
@@ -30,6 +36,7 @@ class DefaultChartPreviewUseCase : ChartPreviewUseCase {
             pieValues = previewPieValues,
             lineValues = previewLineValues,
             multiLineSeries = previewMultiLineSeries,
+            stackedAreaSeries = previewStackedAreaSeries,
             barValues = previewBarValues,
             stackedSeries = previewStackedSeries,
             radarSeries = previewRadarSeries,
@@ -59,6 +66,15 @@ class DefaultChartPreviewUseCase : ChartPreviewUseCase {
             label to
                 values.map { value ->
                     jitter(value, from = -5, until = 6, min = 6f, max = 22f)
+                }
+        }
+    }
+
+    override fun nextStackedAreaPreview(): List<Pair<String, List<Float>>> {
+        return previewStackedAreaSeries.map { (label, values) ->
+            label to
+                values.map { value ->
+                    jitter(value, from = -5, until = 6, min = 4f, max = 28f)
                 }
         }
     }

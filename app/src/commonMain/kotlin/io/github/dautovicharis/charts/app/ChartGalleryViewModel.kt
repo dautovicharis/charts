@@ -22,6 +22,7 @@ data class ChartGalleryPreviewState(
     val pieValues: List<Float>,
     val lineValues: List<Float>,
     val multiLineSeries: List<Pair<String, List<Float>>>,
+    val stackedAreaSeries: List<Pair<String, List<Float>>>,
     val barValues: List<Float>,
     val stackedSeries: List<Pair<String, List<Float>>>,
     val radarSeries: List<Pair<String, List<Float>>>,
@@ -106,6 +107,15 @@ class ChartGalleryViewModel(
                 }
                 launch {
                     previewLoop(
+                        baseIntervalMs = LIVE_PREVIEW_INTERVAL_MS + 300L,
+                        jitterMs = 450L,
+                        update = { previews ->
+                            previews.copy(stackedAreaSeries = previewUseCase.nextStackedAreaPreview())
+                        },
+                    )
+                }
+                launch {
+                    previewLoop(
                         baseIntervalMs = LIVE_PREVIEW_INTERVAL_MS + 500L,
                         jitterMs = 500L,
                         update = { previews ->
@@ -146,6 +156,7 @@ class ChartGalleryViewModel(
             is ChartDestination.PieChartScreen -> "Composition at a glance."
             is ChartDestination.LineChartScreen -> "Trends over time."
             is ChartDestination.MultiLineChartScreen -> "Compare multiple series."
+            is ChartDestination.StackedAreaChartScreen -> "Cumulative layers by category."
             is ChartDestination.BarChartScreen -> "Rank values quickly."
             is ChartDestination.RadarChartScreen -> "Live radial signals."
         }

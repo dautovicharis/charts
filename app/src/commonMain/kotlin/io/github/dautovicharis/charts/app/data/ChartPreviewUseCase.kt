@@ -13,6 +13,8 @@ interface ChartPreviewUseCase {
 
     fun nextMultiLinePreview(): List<Pair<String, List<Float>>>
 
+    fun nextStackedAreaPreview(): List<Pair<String, List<Float>>>
+
     fun nextStackedPreview(): List<Pair<String, List<Float>>>
 
     fun nextRadarPreview(): List<Pair<String, List<Float>>>
