@@ -1,30 +1,47 @@
 package io.github.dautovicharis.charts.app.demo.bar
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chartsproject.app.generated.resources.Res
+import chartsproject.app.generated.resources.bar_data_points
+import chartsproject.app.generated.resources.bar_data_points_range
 import chartsproject.app.generated.resources.cd_pause_live_updates
 import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
+import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
 import io.github.dautovicharis.charts.style.BarChartDefaults
 import io.github.dautovicharis.charts.style.BarChartStyle
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.roundToInt
 
 private const val LIVE_UPDATE_INTERVAL_MS = 2000L
-private val LIVE_BAR_POINTS_RANGE = 7..7
 
 object BarDemoStyle {
     @Composable
@@ -32,10 +49,18 @@ object BarDemoStyle {
         minValue: Float? = null,
         maxValue: Float? = null,
     ): BarChartStyle {
+        val chartColors = LocalChartColors.current
         return BarChartDefaults.style(
             chartViewStyle = ChartViewDemoStyle.custom(),
             minValue = minValue,
             maxValue = maxValue,
+            gridColor = chartColors.gridLine,
+            axisColor = chartColors.axisLine,
+            xAxisLabelColor = chartColors.axisLabel,
+            xAxisLabelTiltDegrees = 34f,
+            selectionLineVisible = true,
+            selectionLineColor = chartColors.selection,
+            selectionLineWidth = 2f,
         )
     }
 }
@@ -47,20 +72,31 @@ fun BarChartBasicDemo(
 ) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
+    val controlsState by viewModel.controlsState.collectAsStateWithLifecycle()
+    val range = controlsState.minValue..controlsState.maxValue
 
-    val refresh: () -> Unit = viewModel::regenerateDataSet
-    val liveRefresh: () -> Unit = {
-        viewModel.regenerateDataSet(range = 0..100, numOfPoints = LIVE_BAR_POINTS_RANGE)
+    val refresh: () -> Unit = {
+        viewModel.regenerateDataSet(
+            points = controlsState.points,
+            range = range,
+        )
     }
-    val liveStyle = BarDemoStyle.default(minValue = 0f, maxValue = 100f)
-    val defaultStyle = BarDemoStyle.default()
+    val chartStyle =
+        BarDemoStyle.default(
+            minValue = controlsState.minValue.toFloat(),
+            maxValue = controlsState.maxValue.toFloat(),
+        )
 
-    LaunchedEffect(isPlaying) {
+    LaunchedEffect(Unit) {
+        refresh()
+    }
+
+    LaunchedEffect(isPlaying, controlsState.points, controlsState.minValue, controlsState.maxValue) {
         if (!isPlaying) return@LaunchedEffect
-        liveRefresh()
+        refresh()
         while (true) {
             delay(LIVE_UPDATE_INTERVAL_MS)
-            liveRefresh()
+            refresh()
         }
     }
 
@@ -82,10 +118,76 @@ fun BarChartBasicDemo(
                 )
             }
         },
+        controlsContent = {
+            BarDataPointsControls(
+                points = controlsState.points,
+                minValue = controlsState.minValue,
+                maxValue = controlsState.maxValue,
+                onPointsChange = viewModel::updateDataPoints,
+                onRangeChange = viewModel::updateDataRange,
+            )
+        },
     ) {
-        BarChart(
-            dataSet,
-            style = if (isPlaying) liveStyle else defaultStyle,
+        key(controlsState.points, controlsState.minValue, controlsState.maxValue) {
+            BarChart(
+                dataSet,
+                style = chartStyle,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BarDataPointsControls(
+    points: Int,
+    minValue: Int,
+    maxValue: Int,
+    onPointsChange: (Int) -> Unit,
+    onRangeChange: (Int, Int) -> Unit,
+) {
+    val minPointsSupported = BarChartViewModel.MIN_SUPPORTED_POINTS.toFloat()
+    val maxPointsSupported = BarChartViewModel.MAX_SUPPORTED_POINTS.toFloat()
+    val minValueSupported = BarChartViewModel.MIN_SUPPORTED_VALUE.toFloat()
+    val maxValueSupported = BarChartViewModel.MAX_SUPPORTED_VALUE.toFloat()
+    var draftPoints by remember(points) { mutableFloatStateOf(points.toFloat()) }
+    var draftRange by remember(minValue, maxValue) { mutableStateOf(minValue.toFloat()..maxValue.toFloat()) }
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = stringResource(Res.string.bar_data_points, draftPoints.roundToInt()),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Slider(
+            value = draftPoints,
+            valueRange = minPointsSupported..maxPointsSupported,
+            onValueChange = { draftPoints = it },
+            onValueChangeFinished = { onPointsChange(draftPoints.roundToInt()) },
+        )
+        Text(
+            text =
+                stringResource(
+                    Res.string.bar_data_points_range,
+                    draftRange.start.roundToInt(),
+                    draftRange.endInclusive.roundToInt(),
+                ),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        RangeSlider(
+            value = draftRange,
+            valueRange = minValueSupported..maxValueSupported,
+            onValueChange = { draftRange = it },
+            onValueChangeFinished = {
+                onRangeChange(
+                    draftRange.start.roundToInt(),
+                    draftRange.endInclusive.roundToInt(),
+                )
+            },
         )
     }
 }

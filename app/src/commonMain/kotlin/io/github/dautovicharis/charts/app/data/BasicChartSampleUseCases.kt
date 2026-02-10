@@ -33,11 +33,9 @@ interface LineSampleUseCase {
 }
 
 interface BarSampleUseCase {
-    fun initialBarDataSet(title: String): ChartDataSet
-
     fun barDataSet(
-        range: IntRange,
-        numOfPoints: IntRange,
         title: String,
+        points: Int = 120,
+        range: IntRange = -100..100,
     ): ChartDataSet
 }

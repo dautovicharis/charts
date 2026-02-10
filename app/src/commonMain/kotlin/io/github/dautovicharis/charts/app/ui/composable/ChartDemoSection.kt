@@ -45,6 +45,7 @@ fun ChartDemoSection(
     modifier: Modifier = Modifier,
     buttonsVisibility: Boolean = true,
     extraButtons: @Composable RowScope.() -> Unit = {},
+    controlsContent: @Composable () -> Unit = {},
     chartContent: @Composable () -> Unit,
     onRefresh: () -> Unit,
 ) {
@@ -67,6 +68,8 @@ fun ChartDemoSection(
                 onRefresh = onRefresh,
             )
         }
+
+        controlsContent()
     }
 }
 

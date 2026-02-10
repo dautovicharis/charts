@@ -248,6 +248,8 @@ private fun BarChartPreview(values: List<Float>) {
             BarChartDefaults.style(
                 minValue = 0f,
                 maxValue = 100f,
+                xAxisLabelsVisible = false,
+                yAxisLabelsVisible = false,
                 chartViewStyle = previewChartViewStyle(),
             ),
         interactionEnabled = false,

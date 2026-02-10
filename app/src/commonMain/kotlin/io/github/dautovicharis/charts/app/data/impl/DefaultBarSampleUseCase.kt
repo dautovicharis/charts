@@ -5,19 +5,17 @@ import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.toChartDataSet
 
 class DefaultBarSampleUseCase : BarSampleUseCase {
-    private val barInitialValues = listOf(100f, 50f, 5f, 60f, -50f, 50f, 60f)
-
-    override fun initialBarDataSet(title: String): ChartDataSet {
-        return barInitialValues.toChartDataSet(title = title)
-    }
-
     override fun barDataSet(
-        range: IntRange,
-        numOfPoints: IntRange,
         title: String,
+        points: Int,
+        range: IntRange,
     ): ChartDataSet {
-        val points = numOfPoints.random()
-        val values = List(points) { range.random().toFloat() }
-        return values.toChartDataSet(title = title)
+        val safePoints = points.coerceAtLeast(2)
+        val values = List(safePoints) { range.random().toFloat() }
+        val labels = List(safePoints) { index -> (index + 1).toString() }
+        return values.toChartDataSet(
+            title = title,
+            labels = labels,
+        )
     }
 }

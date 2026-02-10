@@ -58,13 +58,16 @@ private fun AddDefaultMultiLineChart() {
 ```kotlin
 @Composable
 private fun AddDefaultBarChart() {
-    BarChart(
-        dataSet = listOf(100f, 50f, 5f, 60f, -50f, 50f, 60f)
-            .toChartDataSet(
-                title = stringResource(R.string.bar_chart),
-                prefix = "$"
-        )
+    val points = listOf(120f, 86f, 54f, 98f, -42f, 73f, 110f)
+    val labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+    val dataSet = points.toChartDataSet(
+        title = stringResource(R.string.bar_chart),
+        prefix = "$",
+        labels = labels
     )
+
+    BarChart(dataSet = dataSet)
 }
 ```
 
@@ -229,15 +232,27 @@ private fun AddCustomMultiLineChart() {
 ```kotlin
 @Composable
 private fun AddCustomBarChart() {
+    val labels = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct")
+    val dataSet = listOf(100f, 50f, 5f, 60f, 1f, 30f, 50f, 35f, 50f, -100f)
+        .toChartDataSet(
+            title = stringResource(R.string.bar_chart),
+            prefix = "$",
+            labels = labels
+        )
+
     val style = BarChartDefaults.style(
         barColor = ColorPalette.DataColor.deepPurple,
         space = 12.dp,
-        chartViewStyle = ChartViewDefaults.style(width = 200.dp)
+        minBarWidth = 12.dp,
+        xAxisLabelTiltDegrees = 34f,
+        xAxisLabelMaxCount = 6,
+        yAxisLabelCount = 6,
+        selectionLineWidth = 2f,
+        chartViewStyle = ChartViewDefaults.style(width = 220.dp)
     )
 
     BarChart(
-        dataSet = listOf(100f, 50f, 5f, 60f, 1f, 30f, 50f, 35f, 50f, -100f)
-            .toChartDataSet(title = stringResource(R.string.bar_chart)),
+        dataSet = dataSet,
         style = style
     )
 }
