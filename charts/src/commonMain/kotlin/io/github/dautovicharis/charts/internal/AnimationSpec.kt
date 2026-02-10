@@ -5,6 +5,9 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 
 internal object AnimationSpec {
+    private const val BAR_CASCADE_MAX_INDEX = 18
+    private const val BAR_CASCADE_STEP_DELAY_MS = 22
+
     private fun duration(
         index: Int,
         duration: Int = ANIMATION_DURATION,
@@ -27,11 +30,18 @@ internal object AnimationSpec {
             easing = FastOutSlowInEasing,
         )
 
-    fun barChart(index: Int) =
+    fun barChartSmooth() =
         TweenSpec<Float>(
-            durationMillis = duration(index = index),
+            durationMillis = ANIMATION_DURATION_BAR,
             delay = 0,
-            easing = LinearEasing,
+            easing = FastOutSlowInEasing,
+        )
+
+    fun barChartCascaded(index: Int) =
+        TweenSpec<Float>(
+            durationMillis = ANIMATION_DURATION_BAR,
+            delay = index.coerceIn(0, BAR_CASCADE_MAX_INDEX) * BAR_CASCADE_STEP_DELAY_MS,
+            easing = FastOutSlowInEasing,
         )
 
     fun stackedBar(index: Int) =

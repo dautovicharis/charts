@@ -20,8 +20,6 @@ data class ChartColors(
     val valueLabel: Color,
     val selection: Color,
     val highlight: Color,
-    val tooltipSurface: Color,
-    val tooltipOnSurface: Color,
 )
 
 val LocalChartColors =
@@ -63,8 +61,6 @@ val DarkChartColors =
         valueLabel = Color(0xFFF2F2FA),
         selection = DarkSeries[0],
         highlight = DarkSeries[5],
-        tooltipSurface = Color(0xFF17171E),
-        tooltipOnSurface = Color(0xFFF2F2FA),
     )
 
 val LightChartColors =
@@ -77,8 +73,6 @@ val LightChartColors =
         valueLabel = Color(0xFF121218),
         selection = LightSeries[0],
         highlight = LightSeries[5],
-        tooltipSurface = Color(0xFFF2F2FA),
-        tooltipOnSurface = Color(0xFF121218),
     )
 
 /**

@@ -1,14 +1,11 @@
 package io.github.dautovicharis.charts
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.testTag
 import io.github.dautovicharis.charts.internal.NO_SELECTION
-import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barchart.BarChart
 import io.github.dautovicharis.charts.internal.common.composable.Chart
 import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
@@ -23,7 +20,7 @@ import kotlinx.collections.immutable.toImmutableList
  *
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
- * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * @param interactionEnabled Enables touch interactions (tap selection and scroll/zoom). Defaults to true.
  * @param animateOnStart Enables initial chart animations. Defaults to true.
  */
 @Composable
@@ -61,18 +58,9 @@ private fun BarChartContent(
 ) {
     var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
     Chart(chartViewsStyle = style.chartViewStyle) {
-        if (title.isNotBlank()) {
-            Text(
-                modifier =
-                    style.chartViewStyle.modifierTopTitle
-                        .testTag(TestTags.CHART_TITLE),
-                text = title,
-                style = style.chartViewStyle.styleTitle,
-            )
-        }
-
         BarChart(
             chartData = dataSet.data.item,
+            title = title,
             style = style,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
@@ -80,8 +68,17 @@ private fun BarChartContent(
             title =
                 when (it) {
                     NO_SELECTION -> dataSet.data.label
-                    else -> dataSet.data.item.labels[it]
+                    else -> resolveSelectedBarTitle(dataSet, it)
                 }
         }
     }
+}
+
+private fun resolveSelectedBarTitle(
+    dataSet: ChartDataSet,
+    index: Int,
+): String {
+    val label = dataSet.data.item.labels.getOrNull(index).orEmpty().ifBlank { (index + 1).toString() }
+    val value = dataSet.data.item.points.getOrNull(index) ?: return label
+    return "$label: $value"
 }

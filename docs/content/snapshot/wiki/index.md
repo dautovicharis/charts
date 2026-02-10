@@ -13,6 +13,10 @@
 
 - Added `StackedAreaChart` with absolute cumulative stacking for multi-series trend visualization.
 - Expanded demo gallery, screenshot coverage, and examples with stacked area basic/custom variants.
+- Reworked `BarChart` rendering and interaction behavior for better dense-data handling.
+- Added automatic scroll/zoom mode for large bar datasets (50+ points), including pinch and double-tap zoom.
+- Expanded `BarChartDefaults.style(...)` with axis/grid/label and selection indicator customization.
+- Updated bar selection behavior to toggle on tap and show selected `label: value` in the chart title.
 
 ## Getting Started
 

@@ -71,7 +71,7 @@ internal fun StackedBarChart(
                     } else {
                         animatable.animateTo(
                             targetValue = target,
-                            animationSpec = AnimationSpec.barChart(0),
+                            animationSpec = AnimationSpec.stackedBar(0),
                         )
                     }
                 }
