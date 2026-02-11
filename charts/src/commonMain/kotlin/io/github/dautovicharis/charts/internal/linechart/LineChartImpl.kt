@@ -43,16 +43,20 @@ internal fun LineChartImpl(
         }
 
         val lineColors =
-            remember(data, style.lineColors, style.lineColor) {
+            remember(data, style.lineColors, style.lineColor, style.lineAlpha) {
                 if (data.hasSingleItem()) {
-                    persistentListOf(style.lineColor)
+                    persistentListOf(style.lineColor.copy(alpha = style.lineAlpha))
                 } else if (style.lineColors.isEmpty()) {
-                    generateColorShades(style.lineColor, data.items.size)
+                    generateColorShades(
+                        baseColor = style.lineColor.copy(alpha = style.lineAlpha),
+                        numberOfShades = data.items.size,
+                    )
                 } else {
-                    style.lineColors.toImmutableList()
+                    style.lineColors
+                        .map { color -> color.copy(alpha = style.lineAlpha) }
+                        .toImmutableList()
                 }
             }
-
         Chart(chartViewsStyle = style.chartViewStyle) {
             if (title.isNotBlank()) {
                 Text(

@@ -40,7 +40,7 @@ private const val GALLERY_GRID_COLUMNS = 2
 @Composable
 fun ChartGallery(
     menuState: MenuState,
-    onSubmenuSelected: (ChartSubmenuItem) -> Unit,
+    onChartSelected: (ChartDestination) -> Unit,
     versionLabel: String,
     modifier: Modifier = Modifier,
     viewModel: ChartGalleryViewModel = koinViewModel(),
@@ -77,28 +77,17 @@ fun ChartGallery(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         rowItems.forEach { item ->
-                            val accent = chartAccent(item.destination)
+                            val accent = MaterialTheme.colorScheme.primary
 
                             ChartGalleryCard(
                                 item = item,
                                 accent = accent,
-                                onBasic = {
-                                    item.basicItem?.let(onSubmenuSelected)
+                                onOpen = {
+                                    onChartSelected(item.destination)
                                 },
-                                onCustom = {
-                                    item.customItem?.let(onSubmenuSelected)
-                                },
-                                basicPreview = {
+                                preview = {
                                     ChartPreview(
                                         destination = item.destination,
-                                        isCustom = false,
-                                        previews = state.previews,
-                                    )
-                                },
-                                customPreview = {
-                                    ChartPreview(
-                                        destination = item.destination,
-                                        isCustom = true,
                                         previews = state.previews,
                                     )
                                 },
@@ -135,10 +124,8 @@ fun ChartGallery(
 private fun ChartGalleryCard(
     item: ChartGalleryItemUiState,
     accent: Color,
-    onBasic: () -> Unit,
-    onCustom: () -> Unit,
-    basicPreview: @Composable () -> Unit,
-    customPreview: @Composable () -> Unit,
+    onOpen: () -> Unit,
+    preview: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -191,25 +178,14 @@ private fun ChartGalleryCard(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ChartPreviewFrame(
                         accent = accent,
-                        onClick = onBasic,
+                        onClick = onOpen,
                     ) {
-                        basicPreview()
-                    }
-                }
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    ChartPreviewFrame(
-                        accent = accent,
-                        onClick = onCustom,
-                    ) {
-                        customPreview()
+                        preview()
                     }
                 }
             }

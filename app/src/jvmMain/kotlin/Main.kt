@@ -1,9 +1,11 @@
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import io.github.dautovicharis.charts.app.MainScreen
 import io.github.dautovicharis.charts.app.di.initKoin
+import io.github.dautovicharis.charts.app.ui.composable.LocalChartDemoMaxWidth
 
 fun main() =
     application {
@@ -13,6 +15,8 @@ fun main() =
             state = rememberWindowState(width = 600.dp, height = 800.dp),
             onCloseRequest = ::exitApplication,
         ) {
-            MainScreen()
+            CompositionLocalProvider(LocalChartDemoMaxWidth provides 300.dp) {
+                MainScreen()
+            }
         }
     }

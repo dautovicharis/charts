@@ -10,17 +10,19 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.style.ChartViewStyle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun Legend(
     chartViewsStyle: ChartViewStyle,
@@ -28,7 +30,11 @@ internal fun Legend(
     colors: ImmutableList<Color>,
     labels: ImmutableList<String> = persistentListOf(),
 ) {
-    FlowRow(
+    LegendItems(
+        items = legend,
+        colors = colors,
+        fallbackColor = MaterialTheme.colorScheme.primary,
+        itemPadding = chartViewsStyle.innerPadding,
         modifier =
             chartViewsStyle.modifierLegend.animateContentSize(
                 animationSpec =
@@ -37,32 +43,53 @@ internal fun Legend(
                         easing = LinearOutSlowInEasing,
                     ),
             ),
-    ) {
-        repeat(legend.size) { index ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        label = { index, legendItem -> legendLabel(legendItem = legendItem, labels = labels, index = index) },
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+internal fun LegendItems(
+    items: ImmutableList<String>,
+    colors: ImmutableList<Color>?,
+    fallbackColor: Color,
+    itemPadding: Dp,
+    modifier: Modifier = Modifier,
+    label: (index: Int, item: String) -> String = { _, item -> item },
+) {
+    FlowRow(modifier = modifier) {
+        items.forEachIndexed { index, item ->
+            val color = (colors?.getOrNull(index) ?: fallbackColor).copy(alpha = 1f)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier =
+                    Modifier.padding(
+                        end = itemPadding,
+                        bottom = itemPadding / 2f,
+                    ),
+            ) {
                 Box(
                     modifier =
                         Modifier
-                            .size(15.dp)
-                            .background(colors[index]),
+                            .size(10.dp)
+                            .background(color, shape = CircleShape),
                 )
 
-                val label =
-                    when (labels.isEmpty()) {
-                        true -> legend[index]
-                        else -> "${legend[index]} - ${labels[index]}"
-                    }
-
                 Text(
-                    text = label,
-                    color = colors[index],
-                    modifier =
-                        Modifier.padding(
-                            start = chartViewsStyle.innerPadding,
-                            end = chartViewsStyle.innerPadding,
-                        ),
+                    text = label(index, item),
+                    color = color,
+                    modifier = Modifier.padding(start = 6.dp),
                 )
             }
         }
     }
+}
+
+private fun legendLabel(
+    legendItem: String,
+    labels: ImmutableList<String>,
+    index: Int,
+): String {
+    if (labels.isEmpty()) return legendItem
+    return labels.getOrNull(index)?.let { "$legendItem - $it" } ?: legendItem
 }

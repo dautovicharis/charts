@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.LineChart
@@ -24,9 +22,6 @@ import io.github.dautovicharis.charts.PieChart
 import io.github.dautovicharis.charts.RadarChart
 import io.github.dautovicharis.charts.StackedAreaChart
 import io.github.dautovicharis.charts.StackedBarChart
-import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
-import io.github.dautovicharis.charts.app.ui.theme.seriesColor
-import io.github.dautovicharis.charts.app.ui.theme.seriesColors
 import io.github.dautovicharis.charts.model.toChartDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 import io.github.dautovicharis.charts.style.BarChartDefaults
@@ -78,159 +73,72 @@ internal fun ChartPreviewFrame(
 @Composable
 internal fun ChartPreview(
     destination: ChartDestination,
-    isCustom: Boolean,
     previews: ChartGalleryPreviewState,
 ) {
     when (destination) {
-        is ChartDestination.PieChartScreen -> PieChartPreview(previews.pieValues, isCustom)
-        is ChartDestination.LineChartScreen -> LineChartPreview(previews.lineValues, isCustom)
+        is ChartDestination.PieChartScreen -> PieChartPreview(previews.pieValues)
+        is ChartDestination.LineChartScreen -> LineChartPreview(previews.lineValues)
         is ChartDestination.MultiLineChartScreen ->
-            MultiLineChartPreview(previews.multiLineSeries, isCustom)
+            MultiLineChartPreview(previews.multiLineSeries)
         is ChartDestination.StackedAreaChartScreen ->
-            StackedAreaChartPreview(previews.stackedAreaSeries, isCustom)
-        is ChartDestination.BarChartScreen -> {
-            if (isCustom) {
-                StackedBarChartPreview(previews.stackedSeries)
-            } else {
-                BarChartPreview(previews.barValues)
-            }
-        }
-        is ChartDestination.RadarChartScreen -> RadarChartPreview(previews.radarSeries, isCustom)
+            StackedAreaChartPreview(previews.stackedAreaSeries)
+        is ChartDestination.BarChartScreen -> BarChartPreview(previews.barValues)
+        is ChartDestination.StackedBarChartScreen -> StackedBarChartPreview(previews.stackedSeries)
+        is ChartDestination.RadarChartScreen -> RadarChartPreview(previews.radarSeries)
     }
 }
 
 @Composable
-private fun PieChartPreview(
-    values: List<Float>,
-    isCustom: Boolean,
-) {
+private fun PieChartPreview(values: List<Float>) {
     val dataSet =
         remember(values) {
             values.toChartDataSet(title = "")
-        }
-    val chartColors = LocalChartColors.current
-    val colors =
-        remember(chartColors) {
-            chartColors.seriesColors(4)
-        }
-    val style =
-        if (isCustom) {
-            PieChartDefaults.style(
-                pieColors = colors,
-                donutPercentage = 40f,
-                chartViewStyle = previewChartViewStyle(),
-            )
-        } else {
-            PieChartDefaults.style(
-                chartViewStyle = previewChartViewStyle(),
-            )
         }
     PieChart(
         dataSet = dataSet,
-        style = style,
+        style = PieChartDefaults.style(chartViewStyle = previewChartViewStyle(), legendVisible = false),
         interactionEnabled = false,
         animateOnStart = false,
     )
 }
 
 @Composable
-private fun LineChartPreview(
-    values: List<Float>,
-    isCustom: Boolean,
-) {
+private fun LineChartPreview(values: List<Float>) {
     val dataSet =
         remember(values) {
             values.toChartDataSet(title = "")
         }
-    val chartColors = LocalChartColors.current
-    val style =
-        if (isCustom) {
-            LineChartDefaults.style(
-                lineColor = chartColors.seriesColor(1),
-                bezier = false,
-                chartViewStyle = previewChartViewStyle(),
-            )
-        } else {
-            LineChartDefaults.style(
-                chartViewStyle = previewChartViewStyle(),
-            )
-        }
     LineChart(
         dataSet = dataSet,
-        style = style,
+        style = LineChartDefaults.style(chartViewStyle = previewChartViewStyle()),
         interactionEnabled = false,
         animateOnStart = false,
     )
 }
 
 @Composable
-private fun MultiLineChartPreview(
-    series: List<Pair<String, List<Float>>>,
-    isCustom: Boolean,
-) {
+private fun MultiLineChartPreview(series: List<Pair<String, List<Float>>>) {
     val dataSet =
         remember(series) {
             series.toMultiChartDataSet(title = "")
         }
-    val chartColors = LocalChartColors.current
-    val lineColors =
-        remember(series, chartColors) {
-            chartColors.seriesColors(series.size)
-        }
-    val style =
-        if (isCustom) {
-            LineChartDefaults.style(
-                lineColors = lineColors,
-                bezier = false,
-                pointVisible = false,
-                pointColor = chartColors.highlight,
-                chartViewStyle = previewChartViewStyle(),
-            )
-        } else {
-            LineChartDefaults.style(
-                chartViewStyle = previewChartViewStyle(),
-            )
-        }
     LineChart(
         dataSet = dataSet,
-        style = style,
+        style = LineChartDefaults.style(chartViewStyle = previewChartViewStyle()),
         interactionEnabled = false,
         animateOnStart = false,
     )
 }
 
 @Composable
-private fun StackedAreaChartPreview(
-    series: List<Pair<String, List<Float>>>,
-    isCustom: Boolean,
-) {
+private fun StackedAreaChartPreview(series: List<Pair<String, List<Float>>>) {
     val dataSet =
         remember(series) {
             series.toMultiChartDataSet(title = "")
-        }
-    val chartColors = LocalChartColors.current
-    val areaColors =
-        remember(series, chartColors) {
-            chartColors.seriesColors(series.size)
-        }
-    val style =
-        if (isCustom) {
-            StackedAreaChartDefaults.style(
-                areaColors = areaColors,
-                lineColors = areaColors,
-                fillAlpha = 0.3f,
-                lineWidth = 3f,
-                bezier = false,
-                chartViewStyle = previewChartViewStyle(),
-            )
-        } else {
-            StackedAreaChartDefaults.style(
-                chartViewStyle = previewChartViewStyle(),
-            )
         }
     StackedAreaChart(
         dataSet = dataSet,
-        style = style,
+        style = StackedAreaChartDefaults.style(chartViewStyle = previewChartViewStyle()),
         interactionEnabled = false,
         animateOnStart = false,
     )
@@ -275,34 +183,26 @@ private fun StackedBarChartPreview(series: List<Pair<String, List<Float>>>) {
 }
 
 @Composable
-private fun RadarChartPreview(
-    series: List<Pair<String, List<Float>>>,
-    isCustom: Boolean,
-) {
+private fun RadarChartPreview(series: List<Pair<String, List<Float>>>) {
     val categories =
         remember {
-            listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck")
+            listOf(
+                "Performance",
+                "Reliability",
+                "Usability",
+                "Security",
+                "Scalability",
+                "Observability",
+            )
         }
+
     val previewSeries =
-        remember(series, isCustom) {
-            if (!isCustom) {
-                series.take(2)
-            } else if (series.size > 1) {
-                series.take(2)
+        remember(series) {
+            if (series.isNotEmpty()) {
+                series
             } else {
-                val baseValues =
-                    series.firstOrNull()?.second
-                        ?: listOf(78f, 62f, 90f, 55f, 70f, 80f)
-                val normalized =
-                    if (baseValues.size == categories.size) {
-                        baseValues
-                    } else {
-                        categories.mapIndexed { index, _ -> baseValues.getOrElse(index) { 70f } }
-                    }
-                val tiger = normalized.map { (it * 0.88f).coerceIn(30f, 100f) }
                 listOf(
-                    "Falcon" to normalized,
-                    "Tiger" to tiger,
+                    "Release 2.3" to listOf(86f, 82f, 78f, 89f, 84f, 77f),
                 )
             }
         }
@@ -337,28 +237,4 @@ private fun previewChartViewStyle(): ChartViewStyle {
         shadow = 0.dp,
         backgroundColor = Color.Transparent,
     )
-}
-
-@Composable
-internal fun chartAccent(item: ChartDestination): Color {
-    val scheme = MaterialTheme.colorScheme
-    val accents =
-        remember(scheme) {
-            listOf(
-                scheme.primary,
-                scheme.secondary,
-                scheme.tertiary,
-                lerp(scheme.primary, scheme.secondary, 0.45f),
-                lerp(scheme.tertiary, scheme.primary, 0.45f),
-                lerp(scheme.secondary, scheme.tertiary, 0.45f),
-            )
-        }
-    return when (item) {
-        is ChartDestination.PieChartScreen -> accents[0]
-        is ChartDestination.LineChartScreen -> accents[1]
-        is ChartDestination.MultiLineChartScreen -> accents[2]
-        is ChartDestination.StackedAreaChartScreen -> accents[3]
-        is ChartDestination.BarChartScreen -> accents[4]
-        is ChartDestination.RadarChartScreen -> accents[5]
-    }
 }

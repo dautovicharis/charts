@@ -8,29 +8,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
 import io.github.dautovicharis.charts.app.ui.theme.AppTheme
-import io.github.dautovicharis.charts.app.ui.theme.deepRed
-import io.github.dautovicharis.charts.model.ChartDataSet
-import io.github.dautovicharis.charts.model.MultiChartDataSet
-import io.github.dautovicharis.charts.model.toChartDataSet
-import io.github.dautovicharis.charts.model.toMultiChartDataSet
-import io.github.dautovicharis.charts.style.BarChartDefaults
-import io.github.dautovicharis.charts.style.BarChartStyle
-import io.github.dautovicharis.charts.style.ChartViewDefaults
-import io.github.dautovicharis.charts.style.ChartViewStyle
-import io.github.dautovicharis.charts.style.LineChartDefaults
-import io.github.dautovicharis.charts.style.LineChartStyle
-import io.github.dautovicharis.charts.style.PieChartDefaults
-import io.github.dautovicharis.charts.style.PieChartStyle
-import io.github.dautovicharis.charts.style.RadarChartDefaults
-import io.github.dautovicharis.charts.style.RadarChartStyle
-import io.github.dautovicharis.charts.style.StackedAreaChartDefaults
-import io.github.dautovicharis.charts.style.StackedAreaChartStyle
-import io.github.dautovicharis.charts.style.StackedBarChartDefaults
-import io.github.dautovicharis.charts.style.StackedBarChartStyle
+import io.github.dautovicharis.charts.app.ui.theme.docsSlate
 
-internal val ScreenshotTheme = deepRed
+internal val ScreenshotTheme = docsSlate
 internal const val SCREENSHOT_ANIMATE_ON_START = false
+internal val SCREENSHOT_PIE_SAMPLE_USE_CASE = DefaultPieSampleUseCase()
+internal val SCREENSHOT_LINE_SAMPLE_USE_CASE = DefaultLineSampleUseCase()
+internal val SCREENSHOT_MULTI_LINE_SAMPLE_USE_CASE = DefaultMultiLineSampleUseCase()
+internal val SCREENSHOT_BAR_SAMPLE_USE_CASE = DefaultBarSampleUseCase()
+internal val SCREENSHOT_STACKED_BAR_SAMPLE_USE_CASE = DefaultStackedBarSampleUseCase()
+internal val SCREENSHOT_STACKED_AREA_SAMPLE_USE_CASE = DefaultStackedAreaSampleUseCase()
+internal val SCREENSHOT_RADAR_SAMPLE_USE_CASE = DefaultRadarSampleUseCase()
 
 @Composable
 internal fun ScreenshotSurface(content: @Composable () -> Unit) {
@@ -47,158 +43,3 @@ internal fun ScreenshotSurface(content: @Composable () -> Unit) {
         }
     }
 }
-
-@Composable
-internal fun screenshotChartViewStyle(): ChartViewStyle = ChartViewDefaults.style()
-
-@Composable
-internal fun screenshotBarStyle(): BarChartStyle =
-    BarChartDefaults.style(
-        chartViewStyle = screenshotChartViewStyle(),
-    )
-
-@Composable
-internal fun screenshotLineStyle(): LineChartStyle =
-    LineChartDefaults.style(
-        chartViewStyle = screenshotChartViewStyle(),
-    )
-
-@Composable
-internal fun screenshotStackedStyle(): StackedBarChartStyle =
-    StackedBarChartDefaults.style(
-        chartViewStyle = screenshotChartViewStyle(),
-    )
-
-@Composable
-internal fun screenshotStackedAreaStyle(): StackedAreaChartStyle =
-    StackedAreaChartDefaults.style(
-        chartViewStyle = screenshotChartViewStyle(),
-    )
-
-@Composable
-internal fun screenshotPieStyle(): PieChartStyle =
-    PieChartDefaults.style(
-        chartViewStyle = screenshotChartViewStyle(),
-        donutPercentage = 0.45f,
-        legendVisible = true,
-    )
-
-@Composable
-internal fun screenshotRadarStyle(
-    categoryLegendVisible: Boolean = true,
-    categoryPinsVisible: Boolean = true,
-    axisLabelVisible: Boolean = false,
-    fillVisible: Boolean = true,
-): RadarChartStyle =
-    RadarChartDefaults.style(
-        chartViewStyle = screenshotChartViewStyle(),
-        gridSteps = 6,
-        fillAlpha = 0.2f,
-        categoryLegendVisible = categoryLegendVisible,
-        categoryPinsVisible = categoryPinsVisible,
-        axisLabelVisible = axisLabelVisible,
-        fillVisible = fillVisible,
-    )
-
-internal fun barBasicData(): ChartDataSet =
-    listOf(12f, 26f, 18f, 34f, 24f).toChartDataSet(
-        title = "Weekly Sales",
-        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri"),
-    )
-
-internal fun barNegativeData(): ChartDataSet =
-    listOf(-12f, 8f, 16f, -6f, 10f).toChartDataSet(
-        title = "Net Change",
-        labels = listOf("Q1", "Q2", "Q3", "Q4", "Q5"),
-    )
-
-internal fun lineSingleData(): ChartDataSet =
-    listOf(6f, 10f, 8f, 14f, 9f, 16f).toChartDataSet(
-        title = "Active Users",
-        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
-    )
-
-internal fun lineMultiData(): MultiChartDataSet =
-    listOf(
-        "Alpha" to listOf(8f, 12f, 10f, 14f, 11f, 16f),
-        "Beta" to listOf(6f, 9f, 7f, 11f, 8f, 12f),
-        "Gamma" to listOf(4f, 7f, 5f, 8f, 6f, 9f),
-    ).toMultiChartDataSet(
-        title = "Weekly Trends",
-        categories = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
-    )
-
-internal fun stackedBasicData(): MultiChartDataSet =
-    listOf(
-        "North" to listOf(10f, 12f, 14f, 16f),
-        "South" to listOf(8f, 9f, 10f, 11f),
-        "East" to listOf(6f, 7f, 8f, 9f),
-    ).toMultiChartDataSet(
-        title = "Regional Sales",
-        categories = listOf("Q1", "Q2", "Q3", "Q4"),
-    )
-
-internal fun stackedNoCategoriesData(): MultiChartDataSet =
-    listOf(
-        "Series A" to listOf(9f, 8f, 12f),
-        "Series B" to listOf(6f, 5f, 7f),
-        "Series C" to listOf(4f, 3f, 5f),
-    ).toMultiChartDataSet(
-        title = "No Categories",
-    )
-
-internal fun stackedAreaBasicData(): MultiChartDataSet =
-    listOf(
-        "North" to listOf(10f, 12f, 14f, 16f, 18f),
-        "South" to listOf(8f, 9f, 10f, 11f, 12f),
-        "East" to listOf(6f, 7f, 8f, 9f, 10f),
-    ).toMultiChartDataSet(
-        title = "Revenue Trend",
-        categories = listOf("Jan", "Feb", "Mar", "Apr", "May"),
-    )
-
-internal fun stackedAreaNoCategoriesData(): MultiChartDataSet =
-    listOf(
-        "Series A" to listOf(11f, 13f, 12f, 14f),
-        "Series B" to listOf(7f, 8f, 9f, 10f),
-        "Series C" to listOf(5f, 6f, 6f, 7f),
-    ).toMultiChartDataSet(
-        title = "No Categories",
-    )
-
-internal fun pieBasicData(): ChartDataSet =
-    listOf(38f, 24f, 16f, 12f, 10f).toChartDataSet(
-        title = "Market Share",
-        labels = listOf("Alpha", "Beta", "Gamma", "Delta", "Epsilon"),
-    )
-
-internal fun radarBasicData(): ChartDataSet =
-    listOf(72f, 58f, 90f, 64f, 77f, 85f).toChartDataSet(
-        title = "Performance",
-        labels = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck"),
-    )
-
-internal fun radarMultiData(): MultiChartDataSet =
-    listOf(
-        "Falcon" to listOf(78f, 62f, 90f, 55f, 70f, 80f),
-        "Tiger" to listOf(65f, 88f, 60f, 82f, 55f, 68f),
-        "Octane" to listOf(92f, 58f, 76f, 62f, 86f, 60f),
-    ).toMultiChartDataSet(
-        title = "Attributes",
-        categories = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck"),
-    )
-
-internal fun radarMultiNoCategoriesData(): MultiChartDataSet =
-    listOf(
-        "Falcon" to listOf(78f, 62f, 90f, 55f, 70f, 80f),
-        "Tiger" to listOf(65f, 88f, 60f, 82f, 55f, 68f),
-        "Octane" to listOf(92f, 58f, 76f, 62f, 86f, 60f),
-    ).toMultiChartDataSet(
-        title = "Attributes",
-    )
-
-internal fun radarEdgeData(): ChartDataSet =
-    listOf(25f, 40f, 100f, 30f, 60f, 45f).toChartDataSet(
-        title = "Edge Values",
-        labels = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck"),
-    )

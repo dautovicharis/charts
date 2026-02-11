@@ -48,6 +48,7 @@
     <string name="radar_chart">Radar</string>
 
     <string name="chart_basic">Basic</string>
+    <string name="chart_default">Default</string>
     <string name="chart_custom">Custom</string>
     <string name="style_details_title">Style details</string>
     <string name="cd_close_dialog">Close dialog</string>

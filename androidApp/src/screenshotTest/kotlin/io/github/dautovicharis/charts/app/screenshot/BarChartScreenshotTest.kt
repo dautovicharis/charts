@@ -3,21 +3,20 @@ package io.github.dautovicharis.charts.app.screenshot
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
 import io.github.dautovicharis.charts.BarChart
+import io.github.dautovicharis.charts.app.fixtures.ChartTestStyleFixtures
 import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_ANIMATE_ON_START
+import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_BAR_SAMPLE_USE_CASE
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotPreview
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotSurface
-import io.github.dautovicharis.charts.app.screenshot.shared.barBasicData
-import io.github.dautovicharis.charts.app.screenshot.shared.barNegativeData
-import io.github.dautovicharis.charts.app.screenshot.shared.screenshotBarStyle
+import io.github.dautovicharis.charts.style.ChartViewDefaults
 
 @PreviewTest
 @ScreenshotPreview
 @Composable
-fun BarChartBasicPreview() {
+fun BarChartDefaultPreview() {
     ScreenshotSurface {
         BarChart(
-            dataSet = barBasicData(),
-            style = screenshotBarStyle(),
+            dataSet = SCREENSHOT_BAR_SAMPLE_USE_CASE.initialBarDataSet(),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
         )
     }
@@ -26,11 +25,11 @@ fun BarChartBasicPreview() {
 @PreviewTest
 @ScreenshotPreview
 @Composable
-fun BarChartNegativePreview() {
+fun BarChartCustomPreview() {
     ScreenshotSurface {
         BarChart(
-            dataSet = barNegativeData(),
-            style = screenshotBarStyle(),
+            dataSet = SCREENSHOT_BAR_SAMPLE_USE_CASE.initialBarDataSet(),
+            style = ChartTestStyleFixtures.barCustomStyle(chartViewStyle = ChartViewDefaults.style()),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
         )
     }

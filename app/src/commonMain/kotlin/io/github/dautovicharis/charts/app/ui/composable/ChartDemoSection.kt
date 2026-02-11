@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
@@ -45,6 +46,7 @@ fun ChartDemoSection(
     modifier: Modifier = Modifier,
     buttonsVisibility: Boolean = true,
     extraButtons: @Composable RowScope.() -> Unit = {},
+    presetContent: @Composable () -> Unit = {},
     controlsContent: @Composable () -> Unit = {},
     chartContent: @Composable () -> Unit,
     onRefresh: () -> Unit,
@@ -59,6 +61,13 @@ fun ChartDemoSection(
                 .padding(contentPadding),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            presetContent()
+        }
+
         ChartPreviewSection(chartContent = chartContent, refreshKey = chartRefreshKey)
 
         if (buttonsVisibility) {
@@ -200,7 +209,9 @@ private fun ChartPreviewSection(
         horizontalArrangement = Arrangement.Center,
     ) {
         key(refreshKey) {
-            DrawerGestureLockContainer {
+            DrawerGestureLockContainer(
+                modifier = Modifier.widthIn(max = LocalChartDemoMaxWidth.current),
+            ) {
                 chartContent()
             }
         }

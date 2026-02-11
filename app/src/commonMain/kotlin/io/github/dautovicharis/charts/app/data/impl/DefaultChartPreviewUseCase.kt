@@ -5,30 +5,30 @@ import io.github.dautovicharis.charts.app.data.ChartPreviewUseCase
 import kotlin.random.Random
 
 class DefaultChartPreviewUseCase : ChartPreviewUseCase {
-    private val previewPieValues = listOf(35f, 20f, 15f, 30f)
-    private val previewLineValues = listOf(12f, 18f, 9f, 24f, 16f)
+    private val previewPieValues = listOf(32f, 21f, 24f, 14f, 9f)
+    private val previewLineValues = listOf(42f, 38f, 45f, 51f, 47f)
     private val previewMultiLineSeries =
         listOf(
-            "Cherry St." to listOf(10f, 14f, 8f, 18f, 12f),
-            "Strawberry Mall" to listOf(6f, 12f, 10f, 14f, 9f),
-            "Lime Av." to listOf(9f, 7f, 12f, 9f, 15f),
+            "Web Store" to listOf(12f, 14f, 13f, 16f, 18f),
+            "Mobile App" to listOf(9f, 11f, 12f, 14f, 15f),
+            "Partner Sales" to listOf(7f, 8f, 9f, 10f, 12f),
         )
     private val previewStackedAreaSeries =
         listOf(
-            "Series A" to listOf(14f, 18f, 16f, 20f, 22f),
-            "Series B" to listOf(9f, 11f, 10f, 12f, 13f),
-            "Series C" to listOf(6f, 8f, 7f, 9f, 10f),
+            "Free Plan" to listOf(18f, 20f, 22f, 24f, 26f),
+            "Standard Plan" to listOf(10f, 12f, 13f, 15f, 16f),
+            "Premium Plan" to listOf(6f, 7f, 8f, 9f, 10f),
         )
     private val previewBarValues = listOf(18f, 32f, 26f, 48f, 36f, 28f, 54f)
     private val previewStackedSeries =
         listOf(
-            "Q1" to listOf(20f, 14f, 10f),
-            "Q2" to listOf(14f, 18f, 12f),
-            "Q3" to listOf(16f, 12f, 18f),
+            "North America" to listOf(20f, 22f, 25f),
+            "Europe" to listOf(14f, 16f, 18f),
+            "Asia Pacific" to listOf(12f, 14f, 17f),
         )
     private val previewRadarSeries =
         listOf(
-            "Falcon" to listOf(78f, 62f, 90f, 55f, 70f, 80f),
+            "Release 2.3" to listOf(86f, 82f, 78f, 89f, 84f, 77f),
         )
 
     override fun previewSeed(): ChartGalleryPreviewState {

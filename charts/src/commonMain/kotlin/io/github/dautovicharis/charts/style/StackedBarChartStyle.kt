@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
  * Returns a BarChartStyle with the provided parameters or their default values.
  *
  * @param barColor The color to be used for the bars in the chart. Defaults to the primary color of the MaterialTheme.
+ * @param barAlpha The alpha value applied to rendered bar segments.
  * @param space The space between the bars in the chart. Defaults to 10.dp.
  * @param chartViewStyle The style to be applied to the chart view. Defaults to the default style of ChartViewDefaults.
  */
@@ -23,6 +24,7 @@ class StackedBarChartStyle internal constructor(
     internal val modifier: Modifier,
     internal val chartViewStyle: ChartViewStyle,
     val barColor: Color,
+    val barAlpha: Float,
     val space: Dp,
     val barColors: List<Color>,
 ) : Style {
@@ -32,6 +34,7 @@ class StackedBarChartStyle internal constructor(
     override fun getProperties(): List<Pair<String, Any>> {
         return listOf(
             StackedBarChartStyle::barColor.name to barColor,
+            StackedBarChartStyle::barAlpha.name to barAlpha,
             StackedBarChartStyle::space.name to space,
             StackedBarChartStyle::barColors.name to barColors,
         )
@@ -46,6 +49,7 @@ object StackedBarChartDefaults {
      * Returns a StackedBarChartStyle with the provided parameters or their default values.
      *
      * @param barColor The color to be used for the bars in the chart. Defaults to the primary color of the MaterialTheme.
+     * @param barAlpha The alpha value applied to rendered bar segments. Defaults to 0.4f in light theme and 0.6f in dark theme.
      * @param space The space between the bars in the chart. Defaults to 10.dp.
      * @param barColors The colors to be used for the bars in the chart. Defaults to an empty list.
      * @param chartViewStyle The style to be applied to the chart view. Defaults to the default style of ChartViewDefaults.
@@ -53,6 +57,7 @@ object StackedBarChartDefaults {
     @Composable
     fun style(
         barColor: Color = MaterialTheme.colorScheme.primary,
+        barAlpha: Float = defaultChartAlpha(),
         space: Dp = 10.dp,
         barColors: List<Color> = emptyList(),
         chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
@@ -67,6 +72,7 @@ object StackedBarChartDefaults {
         return StackedBarChartStyle(
             modifier = modifier,
             barColor = barColor,
+            barAlpha = barAlpha.coerceIn(0f, 1f),
             space = space,
             barColors = barColors,
             chartViewStyle = chartViewStyle,

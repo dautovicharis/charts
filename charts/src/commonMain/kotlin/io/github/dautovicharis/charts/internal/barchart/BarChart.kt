@@ -34,7 +34,7 @@ internal fun BarChart(
     animateOnStart: Boolean,
     onValueChanged: (Int) -> Unit = {},
 ) {
-    val barColor = style.barColor
+    val barColor = style.barColor.copy(alpha = style.barAlpha)
     val isPreview = LocalInspectionMode.current
     val dataSize = chartData.points.size
     val hasFixedRange = style.minValue != null || style.maxValue != null

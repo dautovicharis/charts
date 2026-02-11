@@ -1,56 +1,50 @@
 package io.github.dautovicharis.charts.app.data
 
 import io.github.dautovicharis.charts.model.ChartDataSet
+import io.github.dautovicharis.charts.model.MultiChartDataSet
 
 interface MultiLineSampleUseCase {
-    fun initialMultiLineSample(
-        title: String,
-        prefix: String,
-    ): MultiLineSampleData
+    fun initialMultiLineSample(): MultiLineSampleData
 
-    fun multiLineSample(
-        range: IntRange,
-        title: String,
-        prefix: String,
-    ): MultiLineSampleData
+    fun multiLineRefreshRange(): IntRange
+
+    fun multiLineSample(range: IntRange): MultiLineSampleData
 }
 
 interface StackedBarSampleUseCase {
-    fun initialStackedBarSample(
-        title: String,
-        prefix: String,
-    ): StackedBarSampleData
+    fun initialStackedBarSample(): StackedBarSampleData
 
-    fun stackedBarSample(
-        range: IntRange,
-        title: String,
-        prefix: String,
-    ): StackedBarSampleData
+    fun initialStackedBarNoCategoriesDataSet(): MultiChartDataSet
+
+    fun stackedBarRefreshRange(): IntRange
+
+    fun stackedBarSample(range: IntRange): StackedBarSampleData
 }
 
 interface StackedAreaSampleUseCase {
-    fun initialStackedAreaSample(
-        title: String,
-        prefix: String,
-    ): StackedAreaSampleData
+    fun initialStackedAreaSample(): StackedAreaSampleData
 
-    fun stackedAreaSample(
-        range: IntRange,
-        title: String,
-        prefix: String,
-    ): StackedAreaSampleData
+    fun initialStackedAreaNoCategoriesDataSet(): MultiChartDataSet
+
+    fun stackedAreaRefreshRange(): IntRange
+
+    fun stackedAreaSample(range: IntRange): StackedAreaSampleData
 }
 
 interface RadarSampleUseCase {
-    fun initialRadarSample(title: String): RadarSampleData
+    fun initialRadarSample(): RadarSampleData
 
-    fun radarBasicDataSet(
-        range: IntRange,
-        title: String,
-    ): ChartDataSet
+    fun initialRadarDefaultDataSet(): ChartDataSet
 
-    fun radarCustomSample(
-        range: IntRange,
-        title: String,
-    ): RadarCustomSampleData
+    fun initialRadarEdgeDataSet(): ChartDataSet
+
+    fun initialRadarMultiNoCategoriesDataSet(): MultiChartDataSet
+
+    fun radarRefreshRange(): IntRange
+
+    fun radarDefaultDataSet(range: IntRange): ChartDataSet
+
+    fun radarBasicDataSet(range: IntRange): MultiChartDataSet
+
+    fun radarCustomSample(range: IntRange): RadarCustomSampleData
 }

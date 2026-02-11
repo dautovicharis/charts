@@ -14,8 +14,6 @@ import kotlin.random.Random
 data class ChartGalleryItemUiState(
     val destination: ChartDestination,
     val subtitle: String,
-    val basicItem: ChartSubmenuItem?,
-    val customItem: ChartSubmenuItem?,
 )
 
 data class ChartGalleryPreviewState(
@@ -52,8 +50,6 @@ class ChartGalleryViewModel(
             ChartGalleryItemUiState(
                 destination = screen,
                 subtitle = subtitleFor(screen),
-                basicItem = screen.submenus.firstOrNull(),
-                customItem = screen.submenus.lastOrNull(),
             )
         }
     }
@@ -158,6 +154,7 @@ class ChartGalleryViewModel(
             is ChartDestination.MultiLineChartScreen -> "Compare multiple series."
             is ChartDestination.StackedAreaChartScreen -> "Cumulative layers by category."
             is ChartDestination.BarChartScreen -> "Rank values quickly."
+            is ChartDestination.StackedBarChartScreen -> "Segment composition by category."
             is ChartDestination.RadarChartScreen -> "Live radial signals."
         }
     }

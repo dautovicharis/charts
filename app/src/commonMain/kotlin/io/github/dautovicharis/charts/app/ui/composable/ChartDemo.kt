@@ -15,6 +15,7 @@ fun ChartDemo(
     modifier: Modifier = Modifier,
     onStyleItemsChanged: (StyleItems?) -> Unit = {},
     extraButtons: @Composable RowScope.() -> Unit = {},
+    presetContent: @Composable () -> Unit = {},
     controlsContent: @Composable () -> Unit = {},
     chartItem: @Composable () -> Unit,
 ) {
@@ -31,6 +32,7 @@ fun ChartDemo(
     ChartDemoSection(
         modifier = modifier.verticalScroll(rememberScrollState()),
         extraButtons = extraButtons,
+        presetContent = presetContent,
         controlsContent = controlsContent,
         onRefresh = onRefresh,
         chartContent = chartItem,

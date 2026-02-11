@@ -53,8 +53,9 @@ object ChartViewDefaults {
      * @param outerPadding The outer padding of the chart view. Defaults to 20.dp.
      * @param innerPadding The inner padding of the chart view. Defaults to 15.dp.
      * @param cornerRadius The corner radius of the chart view. Defaults to 20.dp.
-     * @param shadow The shadow of the chart view. Defaults to 15.dp.
-     * @param backgroundColor The background color of the chart view. Defaults to the surface color of the MaterialTheme.
+     * @param shadow The shadow of the chart view. Defaults to 2.dp.
+     * @param backgroundColor The background color of the chart view. Defaults to a subtle blend of
+     * surface and primaryContainer that adapts to dark mode.
      */
     @Composable
     fun style(
@@ -62,8 +63,8 @@ object ChartViewDefaults {
         outerPadding: Dp = 20.dp,
         innerPadding: Dp = 15.dp,
         cornerRadius: Dp = 20.dp,
-        shadow: Dp = 15.dp,
-        backgroundColor: Color = MaterialTheme.colorScheme.surface,
+        shadow: Dp = 1.dp,
+        backgroundColor: Color = defaultChartBackgroundColor(),
     ): ChartViewStyle {
         val modifierTitle: Modifier = Modifier.padding(top = innerPadding, start = innerPadding)
         val modifierLegend: Modifier =

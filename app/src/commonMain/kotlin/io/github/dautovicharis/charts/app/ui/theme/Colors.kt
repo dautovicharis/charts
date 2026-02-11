@@ -192,3 +192,40 @@ val citrusGrove =
                 onError = UiNeutrals.darkOnError,
             ),
     )
+
+val docsSlate =
+    Theme(
+        name = "Docs Slate",
+        light =
+            UiColors(
+                primary = Color(0xFF0E6BA8),
+                onPrimary = Color(0xFFFFFFFF),
+                primaryContainer = Color(0xFFD2E9FF),
+                secondary = Color(0xFF0E7490),
+                onSecondary = Color(0xFFFFFFFF),
+                tertiary = Color(0xFFB45309),
+                background = UiNeutrals.lightBackground,
+                onBackground = UiNeutrals.lightOnBackground,
+                surface = UiNeutrals.lightSurface,
+                onSurface = UiNeutrals.lightOnSurface,
+                surfaceVariant = UiNeutrals.lightSurfaceVariant,
+                error = UiNeutrals.lightError,
+                onError = UiNeutrals.lightOnError,
+            ),
+        dark =
+            UiColors(
+                primary = Color(0xFF7CC4FA),
+                onPrimary = Color(0xFF002B45),
+                primaryContainer = Color(0xFF004C76),
+                secondary = Color(0xFF67E8F9),
+                onSecondary = Color(0xFF002A33),
+                tertiary = Color(0xFFFDBA74),
+                background = UiNeutrals.darkBackground,
+                onBackground = UiNeutrals.darkOnBackground,
+                surface = UiNeutrals.darkSurface,
+                onSurface = UiNeutrals.darkOnSurface,
+                surfaceVariant = UiNeutrals.darkSurfaceVariant,
+                error = UiNeutrals.darkError,
+                onError = UiNeutrals.darkOnError,
+            ),
+    )

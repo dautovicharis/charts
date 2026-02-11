@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.util.lerp
 import io.github.dautovicharis.charts.internal.AnimationSpec
 import io.github.dautovicharis.charts.internal.DEFAULT_SCALE
-import io.github.dautovicharis.charts.internal.MAX_SCALE
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barchart.getSelectedIndex
@@ -33,6 +32,8 @@ import io.github.dautovicharis.charts.style.StackedBarChartStyle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+
+private const val STACKED_BAR_SELECTED_SCALE = 1.02f
 
 @Composable
 internal fun StackedBarChart(
@@ -150,7 +151,7 @@ private fun DrawScope.drawBars(
 
     data.items.forEachIndexed { index, item ->
         var topOffset = size.height
-        val selectedBarScale = if (index == selectedIndex) MAX_SCALE else DEFAULT_SCALE
+        val selectedBarScale = if (index == selectedIndex) STACKED_BAR_SELECTED_SCALE else DEFAULT_SCALE
         val barTotal = item.item.points.sum()
         item.item.points.forEachIndexed { dataIndex, value ->
             val segmentShare =

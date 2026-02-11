@@ -17,6 +17,7 @@ android {
         targetSdk = Config.targetSdk
         versionCode = Config.demoVersionCode
         versionName = Config.demoVersionName
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     packaging {
@@ -62,6 +63,16 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.koin.android)
     debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
+
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(project(":app"))
+    androidTestImplementation(project(":charts"))
+    androidTestImplementation(libs.compose.ui.tooling.preview)
+
     screenshotTestImplementation(libs.screenshot.validation.api)
     screenshotTestImplementation(libs.compose.ui.tooling.preview)
     screenshotTestImplementation(libs.compose.ui.tooling)

@@ -74,14 +74,19 @@ private fun StackedBarChartContent(
             dataSet,
             style.barColors,
             style.barColor,
+            style.barAlpha,
         ) {
             if (style.barColors.isEmpty()) {
-                generateColorShades(style.barColor, dataSet.data.getFirstPointsSize())
+                generateColorShades(
+                    baseColor = style.barColor.copy(alpha = style.barAlpha),
+                    numberOfShades = dataSet.data.getFirstPointsSize(),
+                )
             } else {
-                style.barColors.toImmutableList()
+                style.barColors
+                    .map { color -> color.copy(alpha = style.barAlpha) }
+                    .toImmutableList()
             }
         }
-
     Chart(chartViewsStyle = style.chartViewStyle) {
         if (title.isNotBlank()) {
             Text(

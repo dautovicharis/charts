@@ -1,12 +1,18 @@
 package io.github.dautovicharis.charts.app.demo.stackedbar
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.dautovicharis.charts.app.data.StackedBarSampleUseCase
 import io.github.dautovicharis.charts.model.MultiChartDataSet
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
+private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 
 data class StackedBarChartState(
     val dataSet: MultiChartDataSet,
@@ -16,17 +22,11 @@ data class StackedBarChartState(
 class StackedBarChartViewModel(
     private val stackedBarSampleUseCase: StackedBarSampleUseCase,
 ) : ViewModel() {
-    companion object {
-        private const val CHART_TITLE = "Stacked Bar Chart"
-        private const val PREFIX = "$"
-    }
+    private val refreshRange = stackedBarSampleUseCase.stackedBarRefreshRange()
 
     private val _dataSet =
         MutableStateFlow(
-            stackedBarSampleUseCase.initialStackedBarSample(
-                title = CHART_TITLE,
-                prefix = PREFIX,
-            ).let { sample ->
+            stackedBarSampleUseCase.initialStackedBarSample().let { sample ->
                 StackedBarChartState(
                     dataSet = sample.dataSet,
                     segmentKeys = sample.segmentKeys,
@@ -37,14 +37,10 @@ class StackedBarChartViewModel(
     val dataSet: StateFlow<StackedBarChartState> = _dataSet.asStateFlow()
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+    private var liveUpdatesJob: Job? = null
 
-    fun regenerateDataSet(range: IntRange = 100..1000) {
-        val sample =
-            stackedBarSampleUseCase.stackedBarSample(
-                range = range,
-                title = CHART_TITLE,
-                prefix = PREFIX,
-            )
+    fun regenerateDataSet(range: IntRange = refreshRange) {
+        val sample = stackedBarSampleUseCase.stackedBarSample(range = range)
         _dataSet.value =
             StackedBarChartState(
                 dataSet = sample.dataSet,
@@ -52,7 +48,39 @@ class StackedBarChartViewModel(
             )
     }
 
+    fun refresh() {
+        regenerateDataSet()
+    }
+
     fun togglePlaying() {
-        _isPlaying.update { !it }
+        val shouldPlay = !_isPlaying.value
+        _isPlaying.value = shouldPlay
+        if (shouldPlay) {
+            startLiveUpdates()
+        } else {
+            stopLiveUpdates()
+        }
+    }
+
+    override fun onCleared() {
+        stopLiveUpdates()
+        super.onCleared()
+    }
+
+    private fun startLiveUpdates() {
+        liveUpdatesJob?.cancel()
+        liveUpdatesJob =
+            viewModelScope.launch {
+                refresh()
+                while (isActive) {
+                    delay(LIVE_UPDATE_INTERVAL_MS)
+                    refresh()
+                }
+            }
+    }
+
+    private fun stopLiveUpdates() {
+        liveUpdatesJob?.cancel()
+        liveUpdatesJob = null
     }
 }

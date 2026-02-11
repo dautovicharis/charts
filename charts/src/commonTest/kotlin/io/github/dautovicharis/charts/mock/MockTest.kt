@@ -102,6 +102,7 @@ internal object MockTest {
             pointSize = 10f,
             pointVisible = true,
             lineColor = Color.Green,
+            lineAlpha = 1f,
             lineColors = lineColors,
             bezier = true,
             dragPointSize = 7f,
@@ -119,6 +120,7 @@ internal object MockTest {
             modifier = Modifier.fillMaxSize(),
             barColors = barColors,
             barColor = Color.Red,
+            barAlpha = 1f,
             space = Dp(10f),
             chartViewStyle = mockChartViewStyle(),
         )
@@ -147,6 +149,7 @@ internal object MockTest {
             modifier = Modifier.fillMaxSize(),
             barColors = barColors,
             barColor = Color.Red,
+            barAlpha = 1f,
             space = Dp(10f),
             chartViewStyle = mockChartViewStyle(),
         )
@@ -157,6 +160,7 @@ internal object MockTest {
             modifier = Modifier.fillMaxSize(),
             pieColors = pieColors,
             pieColor = Color.Red,
+            pieAlpha = 1f,
             donutPercentage = 0.5f,
             borderColor = Color.Black,
             borderWidth = 2f,

@@ -146,7 +146,7 @@ object RadarChartDefaults {
         lineColor: Color = MaterialTheme.colorScheme.primary,
         lineColors: List<Color> = emptyList(),
         lineWidth: Float = 3f,
-        fillAlpha: Float = 0.25f,
+        fillAlpha: Float = defaultChartAlpha(light = 0.25f, dark = 0.2f),
         fillVisible: Boolean = true,
         chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
     ): RadarChartStyle {

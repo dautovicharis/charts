@@ -3,36 +3,21 @@ package io.github.dautovicharis.charts.app.screenshot
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
 import io.github.dautovicharis.charts.RadarChart
+import io.github.dautovicharis.charts.app.fixtures.ChartTestStyleFixtures
 import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_ANIMATE_ON_START
+import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_RADAR_SAMPLE_USE_CASE
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotPreview
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotSurface
-import io.github.dautovicharis.charts.app.screenshot.shared.radarBasicData
-import io.github.dautovicharis.charts.app.screenshot.shared.radarEdgeData
-import io.github.dautovicharis.charts.app.screenshot.shared.radarMultiData
-import io.github.dautovicharis.charts.app.screenshot.shared.radarMultiNoCategoriesData
-import io.github.dautovicharis.charts.app.screenshot.shared.screenshotRadarStyle
+import io.github.dautovicharis.charts.style.ChartViewDefaults
+import io.github.dautovicharis.charts.style.RadarChartDefaults
 
 @PreviewTest
 @ScreenshotPreview
 @Composable
-fun RadarChartSinglePreview() {
+fun RadarChartDefaultPreview() {
     ScreenshotSurface {
         RadarChart(
-            dataSet = radarBasicData(),
-            style = screenshotRadarStyle(),
-            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
-        )
-    }
-}
-
-@PreviewTest
-@ScreenshotPreview
-@Composable
-fun RadarChartSingleHiddenCategoryLegendPreview() {
-    ScreenshotSurface {
-        RadarChart(
-            dataSet = radarBasicData(),
-            style = screenshotRadarStyle(categoryLegendVisible = false),
+            dataSet = SCREENSHOT_RADAR_SAMPLE_USE_CASE.initialRadarDefaultDataSet(),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
         )
     }
@@ -44,9 +29,10 @@ fun RadarChartSingleHiddenCategoryLegendPreview() {
 fun RadarChartSingleAxisLabelsPreview() {
     ScreenshotSurface {
         RadarChart(
-            dataSet = radarBasicData(),
+            dataSet = SCREENSHOT_RADAR_SAMPLE_USE_CASE.initialRadarDefaultDataSet(),
             style =
-                screenshotRadarStyle(
+                RadarChartDefaults.style(
+                    chartViewStyle = ChartViewDefaults.style(),
                     axisLabelVisible = true,
                     categoryLegendVisible = false,
                     categoryPinsVisible = false,
@@ -62,8 +48,7 @@ fun RadarChartSingleAxisLabelsPreview() {
 fun RadarChartSingleEdgePinsPreview() {
     ScreenshotSurface {
         RadarChart(
-            dataSet = radarEdgeData(),
-            style = screenshotRadarStyle(),
+            dataSet = SCREENSHOT_RADAR_SAMPLE_USE_CASE.initialRadarEdgeDataSet(),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
         )
     }
@@ -72,24 +57,16 @@ fun RadarChartSingleEdgePinsPreview() {
 @PreviewTest
 @ScreenshotPreview
 @Composable
-fun RadarChartMultiPreview() {
+fun RadarChartCustomPreview() {
     ScreenshotSurface {
+        val sample = SCREENSHOT_RADAR_SAMPLE_USE_CASE.initialRadarSample()
         RadarChart(
-            dataSet = radarMultiData(),
-            style = screenshotRadarStyle(),
-            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
-        )
-    }
-}
-
-@PreviewTest
-@ScreenshotPreview
-@Composable
-fun RadarChartMultiNoPinsPreview() {
-    ScreenshotSurface {
-        RadarChart(
-            dataSet = radarMultiData(),
-            style = screenshotRadarStyle(categoryPinsVisible = false),
+            dataSet = sample.customDataSet,
+            style =
+                ChartTestStyleFixtures.radarCustomStyle(
+                    chartViewStyle = ChartViewDefaults.style(),
+                    seriesKeys = sample.seriesKeys,
+                ),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
         )
     }
@@ -101,8 +78,7 @@ fun RadarChartMultiNoPinsPreview() {
 fun RadarChartMultiNoCategoriesPreview() {
     ScreenshotSurface {
         RadarChart(
-            dataSet = radarMultiNoCategoriesData(),
-            style = screenshotRadarStyle(),
+            dataSet = SCREENSHOT_RADAR_SAMPLE_USE_CASE.initialRadarMultiNoCategoriesDataSet(),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
         )
     }
