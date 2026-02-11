@@ -1,348 +1,472 @@
 # Code Examples
 
+## Default Preset
+
 ### Pie Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/pie_default.gif" alt="Pie Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddDefaultPieChart() {
-    val dataSet = listOf(8.0f, 23.0f, 54.0f, 32.0f, 12.0f, 37.0f, 7.0f, 23.0f, 43.0f)
-        .toChartDataSet(
-            title = stringResource(R.string.pie_chart),
-            postfix = " °C"
-        )
-    PieChart(dataSet)
+    val dataSet = listOf(32f, 21f, 24f, 14f, 9f).toChartDataSet(
+        title = "Household Energy",
+        postfix = "%",
+        labels = listOf("Heating", "Cooling", "Appliances", "Water Heating", "Lighting")
+    )
+
+    PieChart(
+        dataSet = dataSet,
+        style = PieChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### Line Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/line_default.gif" alt="Line Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddDefaultLineChart() {
-    val dataSet = listOf(
-        8f, 23f, 54f, 32f, 12f, 37f, 7f, 23f, 43f
-    ).toChartDataSet(
-        title = stringResource(R.string.line_chart)
+    val dataSet = listOf(42f, 38f, 45f, 51f, 47f, 54f, 49f).toChartDataSet(
+        title = "Daily Support Tickets",
+        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
     )
-    LineChart(dataSet)
+
+    LineChart(
+        dataSet = dataSet,
+        style = LineChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### MultiLine Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/multi_line_default.gif" alt="MultiLine Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddDefaultMultiLineChart() {
     val items = listOf(
-        "Cherry St." to listOf(26000.68f, 28000.34f, 32000.57f, 45000.57f),
-        "Strawberry Mall" to listOf(15261.68f, 17810.34f, 40000.57f, 85000f),
-        "Lime Av." to listOf(4000.87f, 5000.58f, 30245.81f, 135000.58f),
-        "Apple Rd." to listOf(1000.87f, 9000.58f, 16544.81f, 100444.87f)
+        "Web Store" to listOf(420f, 510f, 480f, 530f, 560f, 590f),
+        "Mobile App" to listOf(360f, 420f, 410f, 460f, 500f, 540f),
+        "Partner Sales" to listOf(280f, 320f, 340f, 360f, 390f, 420f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.line_chart),
+        title = "Weekly Revenue by Channel",
         prefix = "$",
-        categories = listOf("Jan", "Feb", "Mar", "Apr")
+        categories = listOf("Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6")
     )
 
-    LineChart(dataSet)
+    LineChart(
+        dataSet = dataSet,
+        style = LineChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### Bar Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/bar_default.gif" alt="Bar Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddDefaultBarChart() {
-    val points = listOf(120f, 86f, 54f, 98f, -42f, 73f, 110f)
-    val labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-
-    val dataSet = points.toChartDataSet(
-        title = stringResource(R.string.bar_chart),
-        prefix = "$",
-        labels = labels
+    val dataSet = listOf(45f, -12f, 38f, 27f, -19f, 42f, 31f).toChartDataSet(
+        title = "Daily Net Cash Flow",
+        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
     )
 
-    BarChart(dataSet = dataSet)
+    BarChart(
+        dataSet = dataSet,
+        style = BarChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### Stacked Bar Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/stacked_bar_default.gif" alt="Stacked Bar Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddDefaultStackedBarChart() {
     val items = listOf(
-        "Cherry St." to listOf(8261.68f, 8810.34f, 30000.57f),
-        "Strawberry Mall" to listOf(8261.68f, 8810.34f, 30000.57f),
-        "Lime Av." to listOf(1500.87f, 2765.58f, 33245.81f),
-        "Apple Rd." to listOf(5444.87f, 233.58f, 67544.81f)
+        "North America" to listOf(320f, 340f, 360f, 390f),
+        "Europe" to listOf(210f, 230f, 245f, 260f),
+        "Asia Pacific" to listOf(180f, 205f, 225f, 250f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.bar_chart),
+        title = "Quarterly Revenue by Region",
         prefix = "$",
-        categories = listOf("Jan", "Feb", "Mar")
+        categories = listOf("Q1", "Q2", "Q3", "Q4")
     )
 
-    StackedBarChart(dataSet)
+    StackedBarChart(
+        dataSet = dataSet,
+        style = StackedBarChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
 ### Stacked Area Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/stacked_area_default.gif" alt="Stacked Area Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddDefaultStackedAreaChart() {
     val items = listOf(
-        "Cherry St." to listOf(16000.68f, 19000.34f, 24000.57f, 28000.57f),
-        "Strawberry Mall" to listOf(11000.68f, 15000.34f, 19000.57f, 23000f),
-        "Lime Av." to listOf(7000.87f, 9000.58f, 13000.81f, 15500.58f)
+        "Free Plan" to listOf(620f, 650f, 690f, 720f, 760f, 800f),
+        "Standard Plan" to listOf(240f, 260f, 285f, 310f, 340f, 365f),
+        "Premium Plan" to listOf(90f, 95f, 105f, 118f, 130f, 142f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.stacked_area_chart),
-        prefix = "$",
-        categories = listOf("Jan", "Feb", "Mar", "Apr")
+        title = "Monthly Active Subscribers by Plan",
+        categories = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun")
     )
 
-    StackedAreaChart(dataSet)
+    StackedAreaChart(
+        dataSet = dataSet,
+        style = StackedAreaChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
 ### Radar Chart
 
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/radar_default.gif" alt="Radar Chart Default Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
 ```kotlin
 @Composable
 private fun AddDefaultRadarChart() {
-    val categories = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck")
+    val categories = listOf(
+        "Performance",
+        "Reliability",
+        "Usability",
+        "Security",
+        "Scalability",
+        "Observability"
+    )
 
-    val dataSet = listOf(78f, 62f, 90f, 55f, 70f, 80f)
-        .toChartDataSet(
-            title = stringResource(R.string.radar_chart),
-            labels = categories
-        )
+    val dataSet = listOf(84f, 79f, 76f, 88f, 82f, 74f).toChartDataSet(
+        title = "Platform Readiness Score",
+        labels = categories
+    )
 
-    RadarChart(dataSet)
+    RadarChart(
+        dataSet = dataSet,
+        style = RadarChartDefaults.style(),
+        animateOnStart = true
+    )
 }
 ```
 
-
-## Customizing Chart Styles
-
-Use each chart's `*ChartDefaults.style(...)` factory to create a customized style:
+## Custom Preset
 
 ### Pie Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/pie_custom.gif" alt="Pie Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddCustomPieChart() {
+    val dataSet = listOf(35f, 20f, 12f, 8f, 18f, 7f).toChartDataSet(
+        title = "Monthly Budget Allocation",
+        postfix = "%",
+        labels = listOf("Housing", "Food", "Transport", "Healthcare", "Savings", "Leisure")
+    )
+
     val pieColors = listOf(
-        navyBlue, darkBlue, deepPurple, magenta, darkPink, coral, orange, yellow
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.secondary,
+        MaterialTheme.colorScheme.tertiary,
+        MaterialTheme.colorScheme.error,
+        MaterialTheme.colorScheme.primaryContainer,
+        MaterialTheme.colorScheme.secondaryContainer
     )
 
     val style = PieChartDefaults.style(
-        borderColor = Color.White,
+        borderColor = MaterialTheme.colorScheme.surface,
         donutPercentage = 40f,
-        borderWidth = 6f,
-        pieColors = pieColors,
-        chartViewStyle = ChartViewDefaults.style(width = 200.dp)
+        borderWidth = 5f,
+        legendVisible = true,
+        pieColors = pieColors
     )
 
-    val dataSet = listOf(8, 23, 54, 32, 12, 37, 7, 23, 43)
-        .toChartDataSet(
-            title = stringResource(R.string.pie_chart),
-            postfix = " °C"
-        )
-
-    PieChart(dataSet = dataSet, style = style)
+    PieChart(
+        dataSet = dataSet,
+        style = style,
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### Line Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/line_custom.gif" alt="Line Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddCustomLineChart() {
-    val style = LineChartDefaults.style(
-        lineColor = ColorPalette.DataColor.deepPurple,
-        pointColor = ColorPalette.DataColor.magenta,
-        pointSize = 9f,
-        bezier = false,
-        dragPointColor = ColorPalette.DataColor.deepPurple,
-        dragPointVisible = false,
-        dragPointSize = 8f,
-        dragActivePointSize = 15f,
-        chartViewStyle = ChartViewDefaults.style(width = 200.dp)
+    val dataSet = listOf(42f, 38f, 45f, 51f, 47f, 54f, 49f).toChartDataSet(
+        title = "Daily Support Tickets",
+        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
     )
 
-    val dataSet = listOf("10", "100", "20", "50", "150", "70", "10", "20", "40")
-        .toChartDataSet(
-            title = stringResource(R.string.line_chart)
-        )
+    val style = LineChartDefaults.style(
+        lineColor = MaterialTheme.colorScheme.primary,
+        pointColor = MaterialTheme.colorScheme.tertiary,
+        pointSize = 9f,
+        bezier = false,
+        dragPointVisible = false,
+        dragPointColor = MaterialTheme.colorScheme.secondary,
+        dragPointSize = 8f,
+        dragActivePointSize = 15f
+    )
 
-    LineChart(dataSet = dataSet, style = style)
+    LineChart(
+        dataSet = dataSet,
+        style = style,
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### MultiLine Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/multi_line_custom.gif" alt="MultiLine Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddCustomMultiLineChart() {
-    val lineColors = listOf(
-        navyBlue, darkBlue, deepPurple, magenta
-    )
-    val style = LineChartDefaults.style(
-        lineColors = lineColors,
-        dragPointVisible = false,
-        pointVisible = true,
-        pointColor = ColorPalette.DataColor.magenta,
-        dragPointColor = deepPurple,
-        chartViewStyle = ChartViewDefaults.style()
-    )
-
     val items = listOf(
-        "Cherry St." to listOf(26000.68f, 28000.34f, 32000.57f, 45000.57f),
-        "Strawberry Mall" to listOf(15261.68f, 17810.34f, 40000.57f, 85000f),
-        "Lime Av." to listOf(4000.87f, 5000.58f, 30245.81f, 135000.58f),
-        "Apple Rd." to listOf(1000.87f, 9000.58f, 16544.81f, 100444.87f)
+        "Web Store" to listOf(420f, 510f, 480f, 530f, 560f, 590f),
+        "Mobile App" to listOf(360f, 420f, 410f, 460f, 500f, 540f),
+        "Partner Sales" to listOf(280f, 320f, 340f, 360f, 390f, 420f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.line_chart),
+        title = "Weekly Revenue by Channel",
         prefix = "$",
-        categories = listOf("Jan", "Feb", "Mar", "Apr")
+        categories = listOf("Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6")
     )
 
-    LineChart(dataSet = dataSet, style = style)
+    val style = LineChartDefaults.style(
+        lineColors = listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.tertiary
+        ),
+        bezier = false,
+        pointVisible = true,
+        dragPointVisible = false,
+        pointColor = MaterialTheme.colorScheme.tertiary,
+        dragPointColor = MaterialTheme.colorScheme.secondary
+    )
+
+    LineChart(
+        dataSet = dataSet,
+        style = style,
+        animateOnStart = true
+    )
 }
 ```
 
-
 ### Bar Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/bar_custom.gif" alt="Bar Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddCustomBarChart() {
-    val labels = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct")
-    val dataSet = listOf(100f, 50f, 5f, 60f, 1f, 30f, 50f, 35f, 50f, -100f)
-        .toChartDataSet(
-            title = stringResource(R.string.bar_chart),
-            prefix = "$",
-            labels = labels
-        )
+    val dataSet = listOf(45f, -12f, 38f, 27f, -19f, 42f, 31f).toChartDataSet(
+        title = "Daily Net Cash Flow",
+        labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    )
 
     val style = BarChartDefaults.style(
-        barColor = ColorPalette.DataColor.deepPurple,
-        space = 12.dp,
-        minBarWidth = 12.dp,
+        barColor = MaterialTheme.colorScheme.tertiary,
+        gridColor = MaterialTheme.colorScheme.outlineVariant,
+        axisColor = MaterialTheme.colorScheme.outline,
+        xAxisLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
         xAxisLabelTiltDegrees = 34f,
-        xAxisLabelMaxCount = 6,
-        yAxisLabelCount = 6,
-        selectionLineWidth = 2f,
-        chartViewStyle = ChartViewDefaults.style(width = 220.dp)
+        selectionLineVisible = true,
+        selectionLineColor = MaterialTheme.colorScheme.secondary,
+        selectionLineWidth = 2f
     )
 
     BarChart(
         dataSet = dataSet,
-        style = style
+        style = style,
+        animateOnStart = true
     )
 }
 ```
 
-
 ### Stacked Bar Chart
+
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/stacked_bar_custom.gif" alt="Stacked Bar Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
 
 ```kotlin
 @Composable
 private fun AddCustomStackedBarChart() {
-    val colors = listOf(navyBlue, darkBlue, deepPurple)
-    val style =  StackedBarChartDefaults.style(
-        barColors = colors,
-        chartViewStyle = ChartViewDefaults.style(width = 240.dp)
-    )
-
     val items = listOf(
-        "Cherry St." to listOf(8261.68f, 8810.34f, 30000.57f),
-        "Strawberry Mall" to listOf(8261.68f, 8810.34f, 30000.57f),
-        "Lime Av." to listOf(1500.87f, 2765.58f, 33245.81f),
-        "Apple Rd." to listOf(5444.87f, 233.58f, 67544.81f)
+        "North America" to listOf(320f, 340f, 360f, 390f),
+        "Europe" to listOf(210f, 230f, 245f, 260f),
+        "Asia Pacific" to listOf(180f, 205f, 225f, 250f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.stacked_bar_chart),
+        title = "Quarterly Revenue by Region",
         prefix = "$",
-        categories = listOf("Jan", "Feb", "Mar")
+        categories = listOf("Q1", "Q2", "Q3", "Q4")
     )
 
-    StackedBarChart(dataSet = dataSet, style = style)
+    val style = StackedBarChartDefaults.style(
+        barColors = listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.tertiary,
+            MaterialTheme.colorScheme.error
+        ),
+        space = 8.dp
+    )
+
+    StackedBarChart(
+        dataSet = dataSet,
+        style = style,
+        animateOnStart = true
+    )
 }
 ```
 
 ### Stacked Area Chart
 
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/stacked_area_custom.gif" alt="Stacked Area Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
 ```kotlin
 @Composable
 private fun AddCustomStackedAreaChart() {
-    val colors = listOf(navyBlue, darkBlue, deepPurple)
-    val style = StackedAreaChartDefaults.style(
-        areaColors = colors,
-        lineColors = colors,
-        fillAlpha = 0.3f,
-        lineWidth = 3f,
-        bezier = false,
-        chartViewStyle = ChartViewDefaults.style(width = 240.dp)
-    )
-
     val items = listOf(
-        "Cherry St." to listOf(16000.68f, 19000.34f, 24000.57f, 28000.57f),
-        "Strawberry Mall" to listOf(11000.68f, 15000.34f, 19000.57f, 23000f),
-        "Lime Av." to listOf(7000.87f, 9000.58f, 13000.81f, 15500.58f)
+        "Free Plan" to listOf(620f, 650f, 690f, 720f, 760f, 800f),
+        "Standard Plan" to listOf(240f, 260f, 285f, 310f, 340f, 365f),
+        "Premium Plan" to listOf(90f, 95f, 105f, 118f, 130f, 142f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.stacked_area_chart),
-        prefix = "$",
-        categories = listOf("Jan", "Feb", "Mar", "Apr")
+        title = "Monthly Active Subscribers by Plan",
+        categories = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun")
     )
 
-    StackedAreaChart(dataSet = dataSet, style = style)
+    val areaColors = listOf(
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.secondary,
+        MaterialTheme.colorScheme.tertiary
+    )
+    val style = StackedAreaChartDefaults.style(
+        areaColors = areaColors,
+        lineColors = areaColors,
+        fillAlpha = 0.3f,
+        lineVisible = true,
+        lineWidth = 3.5f,
+        bezier = false
+    )
+
+    StackedAreaChart(
+        dataSet = dataSet,
+        style = style,
+        animateOnStart = true
+    )
 }
 ```
 
 ### Radar Chart (Custom Style)
 
+<div style="text-align: center; margin: 1rem 0 1.25rem;">
+  <img src="/content/snapshot/wiki/assets/radar_custom.gif" alt="Radar Chart Custom Demo" style="max-width: 360px; width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
 ```kotlin
 @Composable
 private fun AddCustomRadarChart() {
-    val categories = listOf("Speed", "Strength", "Agility", "Stamina", "Skill", "Luck")
+    val categories = listOf(
+        "Performance",
+        "Reliability",
+        "Usability",
+        "Security",
+        "Scalability",
+        "Observability"
+    )
     val items = listOf(
-        "Falcon" to listOf(78f, 62f, 90f, 55f, 70f, 80f),
-        "Tiger" to listOf(65f, 88f, 60f, 82f, 55f, 68f)
+        "Android App" to listOf(88f, 81f, 79f, 90f, 83f, 76f),
+        "iOS App" to listOf(84f, 86f, 82f, 88f, 80f, 79f),
+        "Web App" to listOf(78f, 74f, 85f, 83f, 88f, 84f)
     )
 
     val dataSet = items.toMultiChartDataSet(
-        title = stringResource(R.string.radar_chart),
+        title = "Platform Readiness Score",
         categories = categories
     )
 
     val style = RadarChartDefaults.style(
-        lineWidth = 2.5f,
+        lineColors = listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.tertiary
+        ),
+        lineWidth = 3.5f,
+        pointColor = MaterialTheme.colorScheme.tertiary,
+        pointSize = 5f,
+        gridSteps = 6,
+        gridLineWidth = 1.4f,
+        axisLineColor = MaterialTheme.colorScheme.outline,
+        axisLineWidth = 1.2f,
+        axisLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
         fillAlpha = 0.2f,
-        axisLabelVisible = true,
-        categoryLegendVisible = true,
-        categoryPinsVisible = true,
-        chartViewStyle = ChartViewDefaults.style(width = 240.dp)
+        categoryLegendVisible = false
     )
 
-    RadarChart(dataSet = dataSet, style = style)
+    RadarChart(
+        dataSet = dataSet,
+        style = style,
+        animateOnStart = true
+    )
 }
 ```

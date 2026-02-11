@@ -14,7 +14,6 @@ import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
@@ -30,80 +29,45 @@ import chartsproject.app.generated.resources.bar_data_points_range
 import chartsproject.app.generated.resources.cd_pause_live_updates
 import chartsproject.app.generated.resources.cd_play_live_updates
 import io.github.dautovicharis.charts.BarChart
-import io.github.dautovicharis.charts.app.demo.ChartViewDemoStyle
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
+import io.github.dautovicharis.charts.app.ui.composable.ChartPreset
+import io.github.dautovicharis.charts.app.ui.composable.ChartPresetToggle
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
-import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
-import io.github.dautovicharis.charts.style.BarChartDefaults
-import io.github.dautovicharis.charts.style.BarChartStyle
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
-private const val LIVE_UPDATE_INTERVAL_MS = 2000L
-
-object BarDemoStyle {
-    @Composable
-    fun default(
-        minValue: Float? = null,
-        maxValue: Float? = null,
-    ): BarChartStyle {
-        val chartColors = LocalChartColors.current
-        return BarChartDefaults.style(
-            chartViewStyle = ChartViewDemoStyle.custom(),
-            minValue = minValue,
-            maxValue = maxValue,
-            gridColor = chartColors.gridLine,
-            axisColor = chartColors.axisLine,
-            xAxisLabelColor = chartColors.axisLabel,
-            xAxisLabelTiltDegrees = 34f,
-            selectionLineVisible = true,
-            selectionLineColor = chartColors.selection,
-            selectionLineWidth = 2f,
-        )
-    }
-}
-
 @Composable
-fun BarChartBasicDemo(
+fun BarChartDemo(
     viewModel: BarChartViewModel = koinViewModel(),
     onStyleItemsChanged: (StyleItems?) -> Unit = {},
 ) {
     val dataSet by viewModel.dataSet.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val controlsState by viewModel.controlsState.collectAsStateWithLifecycle()
-    val range = controlsState.minValue..controlsState.maxValue
+    var preset by remember { mutableStateOf(ChartPreset.Default) }
+    val refresh: () -> Unit = viewModel::refresh
 
-    val refresh: () -> Unit = {
-        viewModel.regenerateDataSet(
-            points = controlsState.points,
-            range = range,
-        )
-    }
-    val chartStyle =
-        BarDemoStyle.default(
-            minValue = controlsState.minValue.toFloat(),
-            maxValue = controlsState.maxValue.toFloat(),
-        )
-
-    LaunchedEffect(Unit) {
-        refresh()
-    }
-
-    LaunchedEffect(isPlaying, controlsState.points, controlsState.minValue, controlsState.maxValue) {
-        if (!isPlaying) return@LaunchedEffect
-        refresh()
-        while (true) {
-            delay(LIVE_UPDATE_INTERVAL_MS)
-            refresh()
+    val styleItems =
+        when (preset) {
+            ChartPreset.Default -> BarChartStyleItems.default()
+            ChartPreset.Custom ->
+                BarChartStyleItems.custom(
+                    minValue = controlsState.minValue.toFloat(),
+                    maxValue = controlsState.maxValue.toFloat(),
+                )
         }
-    }
 
     ChartDemo(
-        styleItems = BarChartStyleItems.default(),
+        styleItems = styleItems,
         onRefresh = refresh,
         onStyleItemsChanged = onStyleItemsChanged,
+        presetContent = {
+            ChartPresetToggle(
+                selectedPreset = preset,
+                onPresetSelected = { preset = it },
+            )
+        },
         extraButtons = {
             IconButton(
                 onClick = viewModel::togglePlaying,
@@ -128,11 +92,25 @@ fun BarChartBasicDemo(
             )
         },
     ) {
-        key(controlsState.points, controlsState.minValue, controlsState.maxValue) {
-            BarChart(
-                dataSet,
-                style = chartStyle,
-            )
+        key(controlsState.points, controlsState.minValue, controlsState.maxValue, preset) {
+            when (preset) {
+                ChartPreset.Default -> {
+                    BarChart(
+                        dataSet,
+                    )
+                }
+
+                ChartPreset.Custom -> {
+                    BarChart(
+                        dataSet = dataSet,
+                        style =
+                            BarChartStyleItems.customStyle(
+                                minValue = controlsState.minValue.toFloat(),
+                                maxValue = controlsState.maxValue.toFloat(),
+                            ),
+                    )
+                }
+            }
         }
     }
 }

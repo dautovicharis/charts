@@ -1,12 +1,16 @@
 package io.github.dautovicharis.charts.app.demo.bar
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.dautovicharis.charts.app.data.BarSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 data class BarChartControlsState(
     val points: Int,
@@ -18,36 +22,48 @@ class BarChartViewModel(
     private val barSampleUseCase: BarSampleUseCase,
 ) : ViewModel() {
     companion object {
-        private const val CHART_TITLE = "Bar Chart"
         const val MIN_SUPPORTED_POINTS = 10
         const val MAX_SUPPORTED_POINTS = 500
         const val MIN_SUPPORTED_VALUE = -500
         const val MAX_SUPPORTED_VALUE = 500
-        const val DEFAULT_POINTS = 120
-        const val DEFAULT_MIN_VALUE = -100
-        const val DEFAULT_MAX_VALUE = 100
+        private const val LIVE_UPDATE_INTERVAL_MS = 2000L
     }
+
+    private val defaultPoints =
+        barSampleUseCase
+            .barDefaultPoints()
+            .coerceIn(MIN_SUPPORTED_POINTS, MAX_SUPPORTED_POINTS)
+    private val defaultRange =
+        barSampleUseCase
+            .barDefaultRange()
+            .let { range ->
+                val safeStart = range.first.coerceIn(MIN_SUPPORTED_VALUE, MAX_SUPPORTED_VALUE)
+                val safeEnd = range.last.coerceIn(safeStart, MAX_SUPPORTED_VALUE)
+                safeStart..safeEnd
+            }
 
     private val _dataSet =
         MutableStateFlow(
-            barSampleUseCase.barDataSet(
-                title = CHART_TITLE,
-                points = DEFAULT_POINTS,
-            ),
+            barSampleUseCase.initialBarDataSet(),
         )
 
     val dataSet: StateFlow<ChartDataSet> = _dataSet.asStateFlow()
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+    private var liveUpdatesJob: Job? = null
     private val _controlsState =
         MutableStateFlow(
             BarChartControlsState(
-                points = DEFAULT_POINTS,
-                minValue = DEFAULT_MIN_VALUE,
-                maxValue = DEFAULT_MAX_VALUE,
+                points = defaultPoints,
+                minValue = defaultRange.first,
+                maxValue = defaultRange.last,
             ),
         )
     val controlsState: StateFlow<BarChartControlsState> = _controlsState.asStateFlow()
+
+    fun refresh() {
+        regenerateDataSet()
+    }
 
     fun regenerateDataSet(
         points: Int = _controlsState.value.points,
@@ -62,7 +78,6 @@ class BarChartViewModel(
         val safeRangeEnd = range.last.coerceIn(safeRangeStart, MAX_SUPPORTED_VALUE)
         _dataSet.value =
             barSampleUseCase.barDataSet(
-                title = CHART_TITLE,
                 points = safePoints,
                 range = safeRangeStart..safeRangeEnd,
             )
@@ -107,6 +122,34 @@ class BarChartViewModel(
     }
 
     fun togglePlaying() {
-        _isPlaying.update { !it }
+        val shouldPlay = !_isPlaying.value
+        _isPlaying.value = shouldPlay
+        if (shouldPlay) {
+            startLiveUpdates()
+        } else {
+            stopLiveUpdates()
+        }
+    }
+
+    override fun onCleared() {
+        stopLiveUpdates()
+        super.onCleared()
+    }
+
+    private fun startLiveUpdates() {
+        liveUpdatesJob?.cancel()
+        liveUpdatesJob =
+            viewModelScope.launch {
+                refresh()
+                while (isActive) {
+                    delay(LIVE_UPDATE_INTERVAL_MS)
+                    refresh()
+                }
+            }
+    }
+
+    private fun stopLiveUpdates() {
+        liveUpdatesJob?.cancel()
+        liveUpdatesJob = null
     }
 }

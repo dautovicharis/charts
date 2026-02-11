@@ -89,7 +89,6 @@ private fun StackedAreaChartContent(
                 style.lineColors.toImmutableList()
             }
         }
-
     Chart(chartViewsStyle = style.chartViewStyle) {
         if (title.isNotBlank()) {
             Text(

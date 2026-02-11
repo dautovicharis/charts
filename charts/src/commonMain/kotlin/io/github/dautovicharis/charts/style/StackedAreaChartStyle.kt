@@ -41,7 +41,7 @@ object StackedAreaChartDefaults {
     fun style(
         areaColor: Color = MaterialTheme.colorScheme.primary,
         areaColors: List<Color> = emptyList(),
-        fillAlpha: Float = 0.35f,
+        fillAlpha: Float = defaultChartAlpha(),
         lineVisible: Boolean = true,
         lineColor: Color = MaterialTheme.colorScheme.primary,
         lineColors: List<Color> = emptyList(),

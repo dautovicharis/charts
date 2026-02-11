@@ -57,12 +57,18 @@ fun PieChart(
         remember(
             style.pieColors,
             style.pieColor,
+            style.pieAlpha,
             dataSet.data.item.points.size,
         ) {
             if (style.pieColors.isEmpty()) {
-                generateColorShades(style.pieColor, dataSet.data.item.points.size)
+                generateColorShades(
+                    baseColor = style.pieColor.copy(alpha = style.pieAlpha),
+                    numberOfShades = dataSet.data.item.points.size,
+                )
             } else {
-                style.pieColors.toImmutableList()
+                style.pieColors
+                    .map { color -> color.copy(alpha = style.pieAlpha) }
+                    .toImmutableList()
             }
         }
 

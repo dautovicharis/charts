@@ -22,19 +22,56 @@
 
 <p align="center">
   <img
-    src="https://github.com/user-attachments/assets/4a52cd5b-1977-42d0-9851-d94e9b0979e0"
-    alt="Charts demo recording"
+    src="docs/content/snapshot/wiki/assets/demo.gif"
+    alt="Charts demo"
     width="1200"
   />
 </p>
 
 ---
 
-## 📚 Documentation
-https://dautovicharis-github-io-charts.vercel.app/
+## Get Started
 
-## 🚀 Production Demo (JS)
-https://dautovicharis-github-io-charts.vercel.app/static/demo/2.1.0/index.html
+Add Charts to `commonMain`:
 
-## 🚧 Snapshot Demo (JS)
-https://dautovicharis-github-io-charts.vercel.app/static/demo/snapshot/index.html
+```kotlin
+commonMain.dependencies {
+    implementation("io.github.dautovicharis:charts:<version>")
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+```
+
+Basic example:
+
+<img src="docs/content/snapshot/wiki/assets/line_default.gif" alt="Basic line chart example" height="236" align="right" style="margin-top: 28px;" />
+
+```kotlin
+@Composable
+fun BasicLineChart() {
+    val values = listOf(42f, 38f, 45f, 51f, 47f, 54f, 49f)
+    val labels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+    val dataSet = values.toChartDataSet(
+        title = "Daily Support Tickets",
+        labels = labels,
+    )
+
+    LineChart(dataSet)
+}
+```
+
+<br clear="right" />
+
+## Documentation
+https://charts.harisdautovic.com/
+
+## Production Demo (JS)
+https://charts.harisdautovic.com/static/demo/2.1.0/index.html
+
+## Snapshot Demo (JS)
+https://charts.harisdautovic.com/static/demo/snapshot/index.html

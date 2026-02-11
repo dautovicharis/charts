@@ -1,24 +1,32 @@
 package io.github.dautovicharis.charts.app.demo.radar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import io.github.dautovicharis.charts.app.fixtures.ChartTestStyleFixtures
 import io.github.dautovicharis.charts.app.ui.composable.ChartStyleItems
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
+import io.github.dautovicharis.charts.style.ChartViewDefaults
 import io.github.dautovicharis.charts.style.RadarChartDefaults
 
 object RadarChartStyleItems {
     @Composable
     fun default(): StyleItems {
         return ChartStyleItems(
-            currentStyle = RadarDemoStyle.default(),
+            currentStyle = RadarChartDefaults.style(),
             defaultStyle = RadarChartDefaults.style(),
         )
     }
 
     @Composable
-    fun custom(lineColors: List<Color>): StyleItems {
+    fun customStyle(seriesKeys: List<String>) =
+        ChartTestStyleFixtures.radarCustomStyle(
+            chartViewStyle = ChartViewDefaults.style(),
+            seriesKeys = seriesKeys,
+        )
+
+    @Composable
+    fun custom(seriesKeys: List<String>): StyleItems {
         return ChartStyleItems(
-            currentStyle = RadarDemoStyle.custom(lineColors = lineColors),
+            currentStyle = customStyle(seriesKeys),
             defaultStyle = RadarChartDefaults.style(),
         )
     }

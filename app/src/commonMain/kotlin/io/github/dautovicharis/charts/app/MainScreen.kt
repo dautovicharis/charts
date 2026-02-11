@@ -155,7 +155,7 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
                                     Navigation(
                                         navController = navController,
                                         menuState = menuState,
-                                        onSubmenuSelected = viewModel::onSubmenuSelected,
+                                        onChartSelected = viewModel::onChartSelected,
                                         onStyleItemsChanged = { styleItems ->
                                             currentStyleItems = styleItems
                                             if (styleItems == null) styleInfoDialogVisible = false
@@ -200,7 +200,7 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
                                         Navigation(
                                             navController = navController,
                                             menuState = menuState,
-                                            onSubmenuSelected = viewModel::onSubmenuSelected,
+                                            onChartSelected = viewModel::onChartSelected,
                                             onStyleItemsChanged = { styleItems ->
                                                 currentStyleItems = styleItems
                                                 if (styleItems == null) styleInfoDialogVisible = false
@@ -235,9 +235,9 @@ fun MainScreen(viewModel: MainViewModel = koinViewModel()) {
         }
     }
 
-    LaunchedEffect(menuState.selectedSubmenu) {
-        menuState.selectedSubmenu?.let {
-            viewModel.onSubmenuUnselected()
+    LaunchedEffect(menuState.selectedDestination) {
+        menuState.selectedDestination?.let {
+            viewModel.onChartUnselected()
             navController.navigate(it.route)
         }
     }
@@ -303,9 +303,7 @@ private fun MainScaffold(
 private fun List<ChartDestination>.topBarTitleByRoute(): Map<String, StringResource> =
     buildMap {
         this@topBarTitleByRoute.forEach { destination ->
-            destination.submenus.forEach { submenu ->
-                put(submenu.route, destination.title)
-            }
+            put(destination.route, destination.title)
         }
     }
 
@@ -354,7 +352,7 @@ private fun BoxScope.SettingsEdgeSwipeOpenZone(
 @Composable
 fun MainScreenContent(
     menuState: MenuState,
-    onSubmenuSelected: (selected: ChartSubmenuItem) -> Unit,
+    onChartSelected: (selected: ChartDestination) -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -362,7 +360,7 @@ fun MainScreenContent(
     ) {
         ChartGallery(
             menuState = menuState,
-            onSubmenuSelected = onSubmenuSelected,
+            onChartSelected = onChartSelected,
             versionLabel = "Charts: ${BuildConfig.CHARTS_VERSION}",
             modifier =
                 Modifier

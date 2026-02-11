@@ -1,6 +1,7 @@
 package io.github.dautovicharis.charts.internal.stackedareachart
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.runtime.Composable
@@ -16,12 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
+import io.github.dautovicharis.charts.internal.ANIMATION_TARGET
 import io.github.dautovicharis.charts.internal.AnimationSpec
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
+import io.github.dautovicharis.charts.internal.common.composable.rememberShowState
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.common.model.normalizeStackedAreaValues
 import io.github.dautovicharis.charts.internal.linechart.cubicControlPointsForSegment
@@ -41,9 +46,16 @@ internal fun StackedAreaChart(
     onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
+    var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
     val targetNormalized = remember(data) { data.normalizeStackedAreaValues() }
     val pointsCount = data.getFirstPointsSize()
     val seriesCount = data.items.size
+    val valueAnimationSpec = remember { AnimationSpec.lineChart() }
+    val revealProgress by animateFloatAsState(
+        targetValue = if (show) ANIMATION_TARGET else 0f,
+        animationSpec = AnimationSpec.lineChart(),
+        label = "stackedAreaReveal",
+    )
     val animatedValues =
         remember(seriesCount, pointsCount, isPreview, animateOnStart) {
             List(seriesCount) { seriesIndex ->
@@ -61,8 +73,28 @@ internal fun StackedAreaChart(
     val hasInitialized = remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
 
-    LaunchedEffect(targetNormalized) {
+    LaunchedEffect(show, targetNormalized) {
         if (pointsCount <= 0 || seriesCount == 0) return@LaunchedEffect
+        if (!show && !isPreview) {
+            animatedValues.forEach { series ->
+                series.forEach { animatable -> animatable.snapTo(0f) }
+            }
+            hasInitialized.value = false
+            return@LaunchedEffect
+        }
+
+        if (isPreview || !hasInitialized.value) {
+            animatedValues.forEachIndexed { seriesIndex, series ->
+                val targetSeries = targetNormalized.getOrNull(seriesIndex).orEmpty()
+                series.forEachIndexed { pointIndex, animatable ->
+                    val target = targetSeries.getOrNull(pointIndex) ?: 0f
+                    animatable.snapTo(target)
+                }
+            }
+            hasInitialized.value = true
+            return@LaunchedEffect
+        }
+
         coroutineScope {
             animatedValues.forEachIndexed { seriesIndex, series ->
                 val targetSeries = targetNormalized.getOrNull(seriesIndex).orEmpty()
@@ -75,7 +107,7 @@ internal fun StackedAreaChart(
                         } else {
                             animatable.animateTo(
                                 targetValue = target,
-                                animationSpec = AnimationSpec.lineChart(),
+                                animationSpec = valueAnimationSpec,
                             )
                         }
                     }
@@ -126,7 +158,8 @@ internal fun StackedAreaChart(
         modifier =
             style.modifier
                 .testTag(TestTags.STACKED_AREA_CHART)
-                .then(interactionModifier),
+                .then(interactionModifier)
+                .onGloballyPositioned { show = true },
     ) {
         val stackedUpperBounds =
             animatedValues.map { series ->
@@ -141,6 +174,7 @@ internal fun StackedAreaChart(
                 lowerSeries = lowerSeries,
                 fillColor = areaColors[index].copy(alpha = style.fillAlpha),
                 bezier = style.bezier,
+                revealProgress = revealProgress,
             )
             if (style.lineVisible && style.lineWidth > 0f) {
                 drawStackedAreaLine(
@@ -148,6 +182,7 @@ internal fun StackedAreaChart(
                     lineColor = lineColors[index],
                     lineWidth = style.lineWidth,
                     bezier = style.bezier,
+                    revealProgress = revealProgress,
                 )
             }
         }
@@ -159,6 +194,7 @@ private fun DrawScope.drawStackedAreaSeries(
     lowerSeries: List<Float>,
     fillColor: Color,
     bezier: Boolean,
+    revealProgress: Float,
 ) {
     if (upperSeries.size <= 1 || lowerSeries.size <= 1 || size.width <= 0f) return
 
@@ -181,10 +217,20 @@ private fun DrawScope.drawStackedAreaSeries(
             close()
         }
 
-    drawPath(
-        path = areaPath,
-        color = fillColor,
-    )
+    val revealX = (size.width * revealProgress).coerceIn(0f, size.width)
+    if (revealProgress >= ANIMATION_TARGET) {
+        drawPath(
+            path = areaPath,
+            color = fillColor,
+        )
+    } else {
+        clipRect(left = 0f, top = 0f, right = revealX, bottom = size.height) {
+            drawPath(
+                path = areaPath,
+                color = fillColor,
+            )
+        }
+    }
 }
 
 private fun DrawScope.drawStackedAreaLine(
@@ -192,6 +238,7 @@ private fun DrawScope.drawStackedAreaLine(
     lineColor: Color,
     lineWidth: Float,
     bezier: Boolean,
+    revealProgress: Float,
 ) {
     if (upperSeries.size <= 1 || size.width <= 0f) return
 
@@ -202,11 +249,22 @@ private fun DrawScope.drawStackedAreaLine(
             appendSeriesPath(points = linePoints, bezier = bezier)
         }
 
-    drawPath(
-        path = linePath,
-        color = lineColor,
-        style = Stroke(width = lineWidth),
-    )
+    val revealX = (size.width * revealProgress).coerceIn(0f, size.width)
+    if (revealProgress >= ANIMATION_TARGET) {
+        drawPath(
+            path = linePath,
+            color = lineColor,
+            style = Stroke(width = lineWidth),
+        )
+    } else {
+        clipRect(left = 0f, top = 0f, right = revealX + lineWidth, bottom = size.height) {
+            drawPath(
+                path = linePath,
+                color = lineColor,
+                style = Stroke(width = lineWidth),
+            )
+        }
+    }
 }
 
 private fun DrawScope.buildSeriesPoints(values: List<Float>): List<Offset> {

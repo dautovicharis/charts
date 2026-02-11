@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
  * @property pointVisible A boolean indicating whether the points on the line chart are visible.
  * @property pointSize The size of the points on the line chart.
  * @property lineColor The color of the line in the line chart.
+ * @property lineAlpha The alpha value applied to rendered line colors.
  * @property lineColors The colors of the lines in the line chart.
  * @property bezier A boolean indicating whether the line chart should be drawn with bezier curves.
  * @property dragPointSize The size of the drag point on the line chart.
@@ -37,6 +38,7 @@ class LineChartStyle internal constructor(
     val pointVisible: Boolean,
     val pointSize: Float,
     val lineColor: Color,
+    val lineAlpha: Float,
     val lineColors: List<Color>,
     val bezier: Boolean,
     val dragPointSize: Float,
@@ -53,6 +55,7 @@ class LineChartStyle internal constructor(
             LineChartStyle::pointVisible.name to pointVisible,
             LineChartStyle::pointSize.name to pointSize,
             LineChartStyle::lineColor.name to lineColor,
+            LineChartStyle::lineAlpha.name to lineAlpha,
             LineChartStyle::lineColors.name to lineColors,
             LineChartStyle::bezier.name to bezier,
             LineChartStyle::dragPointSize.name to dragPointSize,
@@ -86,6 +89,7 @@ object LineChartDefaults {
      * @param pointSize The size of the points on the line chart. Defaults to 10f.
      * @param pointVisible A boolean indicating whether the points on the line chart are visible. Defaults to true.
      * @param lineColor The color of the line in the line chart. Defaults to the primary color of the MaterialTheme.
+     * @param lineAlpha The alpha value applied to rendered line colors. Defaults to 0.4f in light theme and 0.6f in dark theme.
      * @param lineColors The colors of the lines in the line chart. Defaults to an empty list.
      * @param bezier A boolean indicating whether the line chart should be drawn with bezier curves. Defaults to true.
      * @param dragPointSize The size of the drag point on the line chart. Defaults to 7f.
@@ -100,6 +104,7 @@ object LineChartDefaults {
         pointSize: Float = 10f,
         pointVisible: Boolean = true,
         lineColor: Color = MaterialTheme.colorScheme.primary,
+        lineAlpha: Float = defaultChartAlpha(),
         lineColors: List<Color> = emptyList(),
         bezier: Boolean = true,
         dragPointSize: Float = 7f,
@@ -122,6 +127,7 @@ object LineChartDefaults {
             modifier = modifier,
             pointColor = pointColor,
             lineColor = lineColor,
+            lineAlpha = lineAlpha.coerceIn(0f, 1f),
             bezier = bezier,
             pointVisible = pointVisible,
             lineColors = lineColors,

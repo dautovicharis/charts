@@ -1,61 +1,66 @@
 package io.github.dautovicharis.charts.app.demo.radar
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.dautovicharis.charts.app.data.RadarSampleUseCase
+import io.github.dautovicharis.charts.app.ui.composable.ChartPreset
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.MultiChartDataSet
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
+private const val LIVE_UPDATE_INTERVAL_MS = 2000L
 
 data class RadarChartState(
     val basicDataSet: ChartDataSet,
     val customDataSet: MultiChartDataSet,
     val seriesKeys: List<String> = emptyList(),
+    val preset: ChartPreset = ChartPreset.Default,
 )
 
 class RadarChartViewModel(
     private val radarSampleUseCase: RadarSampleUseCase,
 ) : ViewModel() {
-    companion object {
-        private const val CHART_TITLE = "Radar Chart"
-    }
+    private val initialSample = radarSampleUseCase.initialRadarSample()
+    private val initialDefaultDataSet = radarSampleUseCase.initialRadarDefaultDataSet()
+    private val refreshRange = radarSampleUseCase.radarRefreshRange()
+    private var liveUpdatesJob: Job? = null
 
     private val _dataSet =
         MutableStateFlow(
-            radarSampleUseCase.initialRadarSample(
-                title = CHART_TITLE,
-            ).let { sample ->
-                RadarChartState(
-                    basicDataSet = sample.basicDataSet,
-                    customDataSet = sample.customDataSet,
-                    seriesKeys = sample.seriesKeys,
-                )
-            },
+            RadarChartState(
+                basicDataSet = initialDefaultDataSet,
+                customDataSet = initialSample.customDataSet,
+                seriesKeys = initialSample.seriesKeys,
+                preset = ChartPreset.Default,
+            ),
         )
 
     val dataSet: StateFlow<RadarChartState> = _dataSet.asStateFlow()
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
-    fun regenerateBasicDataSet(range: IntRange = 30..100) {
-        val dataSet =
-            radarSampleUseCase.radarBasicDataSet(
-                range = range,
-                title = CHART_TITLE,
-            )
+    fun onPresetSelected(preset: ChartPreset) {
+        if (preset == _dataSet.value.preset) return
+        _dataSet.update { it.copy(preset = preset) }
+        applyInitialPresetData(preset)
+    }
+
+    fun regenerateBasicDataSet(range: IntRange = refreshRange) {
+        val dataSet = radarSampleUseCase.radarDefaultDataSet(range = range)
         _dataSet.update {
             it.copy(basicDataSet = dataSet)
         }
     }
 
-    fun regenerateCustomDataSet(range: IntRange = 30..100) {
-        val sample =
-            radarSampleUseCase.radarCustomSample(
-                range = range,
-                title = CHART_TITLE,
-            )
+    fun regenerateCustomDataSet(range: IntRange = refreshRange) {
+        val sample = radarSampleUseCase.radarCustomSample(range = range)
         _dataSet.update {
             it.copy(
                 customDataSet = sample.dataSet,
@@ -64,7 +69,63 @@ class RadarChartViewModel(
         }
     }
 
+    fun refresh() {
+        when (_dataSet.value.preset) {
+            ChartPreset.Default -> regenerateBasicDataSet()
+            ChartPreset.Custom -> regenerateCustomDataSet()
+        }
+    }
+
+    private fun applyInitialPresetData(preset: ChartPreset) {
+        when (preset) {
+            ChartPreset.Default -> {
+                _dataSet.update {
+                    it.copy(
+                        basicDataSet = initialDefaultDataSet,
+                    )
+                }
+            }
+
+            ChartPreset.Custom -> {
+                _dataSet.update {
+                    it.copy(
+                        customDataSet = initialSample.customDataSet,
+                        seriesKeys = initialSample.seriesKeys,
+                    )
+                }
+            }
+        }
+    }
+
     fun togglePlaying() {
-        _isPlaying.update { !it }
+        val shouldPlay = !_isPlaying.value
+        _isPlaying.value = shouldPlay
+        if (shouldPlay) {
+            startLiveUpdates()
+        } else {
+            stopLiveUpdates()
+        }
+    }
+
+    override fun onCleared() {
+        stopLiveUpdates()
+        super.onCleared()
+    }
+
+    private fun startLiveUpdates() {
+        liveUpdatesJob?.cancel()
+        liveUpdatesJob =
+            viewModelScope.launch {
+                refresh()
+                while (isActive) {
+                    delay(LIVE_UPDATE_INTERVAL_MS)
+                    refresh()
+                }
+            }
+    }
+
+    private fun stopLiveUpdates() {
+        liveUpdatesJob?.cancel()
+        liveUpdatesJob = null
     }
 }

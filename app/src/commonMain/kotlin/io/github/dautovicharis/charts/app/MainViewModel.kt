@@ -6,6 +6,7 @@ import io.github.dautovicharis.charts.app.ui.theme.blueViolet
 import io.github.dautovicharis.charts.app.ui.theme.citrusGrove
 import io.github.dautovicharis.charts.app.ui.theme.deepOceanBlue
 import io.github.dautovicharis.charts.app.ui.theme.deepRed
+import io.github.dautovicharis.charts.app.ui.theme.docsSlate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.update
 
 data class MenuState(
     val menuItems: List<ChartDestination>,
-    val selectedSubmenu: ChartSubmenuItem? = null,
+    val selectedDestination: ChartDestination? = null,
 )
 
 enum class DarkModeSettings {
@@ -39,6 +40,7 @@ class MainViewModel : ViewModel() {
                     ChartDestination.MultiLineChartScreen,
                     ChartDestination.StackedAreaChartScreen,
                     ChartDestination.BarChartScreen,
+                    ChartDestination.StackedBarChartScreen,
                     ChartDestination.RadarChartScreen,
                 ),
             ),
@@ -55,8 +57,9 @@ class MainViewModel : ViewModel() {
                         blueViolet,
                         deepOceanBlue,
                         citrusGrove,
+                        docsSlate,
                     ),
-                selectedTheme = deepRed,
+                selectedTheme = docsSlate,
                 darkMode = DarkModeSettings.System,
                 useDynamicColors = false,
             ),
@@ -94,15 +97,15 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun onSubmenuSelected(submenu: ChartSubmenuItem) {
+    fun onChartSelected(destination: ChartDestination) {
         _menuState.update {
-            it.copy(selectedSubmenu = submenu)
+            it.copy(selectedDestination = destination)
         }
     }
 
-    fun onSubmenuUnselected() {
+    fun onChartUnselected() {
         _menuState.update {
-            it.copy(selectedSubmenu = null)
+            it.copy(selectedDestination = null)
         }
     }
 
