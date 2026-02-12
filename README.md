@@ -21,11 +21,8 @@
 </p>
 
 <p align="center">
-  <img
-    src="docs/content/snapshot/wiki/assets/demo.gif"
-    alt="Charts demo"
-    width="1200"
-  />
+<img width="1200" height="913" alt="Screenshot 2026-02-12 at 00 55 05" src="https://github.com/user-attachments/assets/b547a36f-d318-47ff-a7e1-f374e8b5eebb" />
+
 </p>
 
 ---
