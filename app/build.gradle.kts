@@ -59,6 +59,10 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
+
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+        }
     }
 }
 

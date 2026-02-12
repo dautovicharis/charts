@@ -1,4 +1,6 @@
 import org.gradle.api.tasks.testing.Test
+import java.io.File
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -6,6 +8,40 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.composeScreenshot)
 }
+
+val localSigningProperties =
+    Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use(::load)
+        }
+    }
+
+fun Project.readSigningProperty(name: String): String? {
+    val gradleProperty = providers.gradleProperty(name).orNull
+    if (!gradleProperty.isNullOrBlank()) return gradleProperty
+
+    val localProperty = localSigningProperties.getProperty(name)
+    return localProperty?.takeIf { it.isNotBlank() }
+}
+
+fun Project.resolveSigningFile(path: String): File {
+    val file = File(path)
+    return if (file.isAbsolute) file else rootProject.file(path)
+}
+
+val releaseStoreFilePath = project.readSigningProperty("ANDROID_RELEASE_STORE_FILE")
+val releaseStorePassword = project.readSigningProperty("ANDROID_RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = project.readSigningProperty("ANDROID_RELEASE_KEY_ALIAS")
+val releaseKeyPassword = project.readSigningProperty("ANDROID_RELEASE_KEY_PASSWORD")
+
+val hasReleaseSigningConfig =
+    listOf(
+        releaseStoreFilePath,
+        releaseStorePassword,
+        releaseKeyAlias,
+        releaseKeyPassword,
+    ).all { !it.isNullOrBlank() }
 
 android {
     namespace = Config.demoNamespace
@@ -26,12 +62,26 @@ android {
         }
     }
 
+    signingConfigs {
+        if (hasReleaseSigningConfig) {
+            create("release") {
+                storeFile = project.resolveSigningFile(checkNotNull(releaseStoreFilePath))
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
         }
         getByName("release") {
             isMinifyEnabled = true
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

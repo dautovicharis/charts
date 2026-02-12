@@ -100,7 +100,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           echo "Publishing release version: ${{ steps.version.outputs.release_version }}"
-          ./gradlew :charts:publish --no-daemon --no-build-cache --stacktrace
+          ./gradlew publishChartsModules --no-daemon --no-build-cache --stacktrace
 
       - name: Create Git Tag
         run: |
@@ -117,7 +117,45 @@ jobs:
         with:
           script: |
             const version = '${{ steps.version.outputs.release_version }}';
-            const message = `🎉 **Release Published Successfully!**\n\nVersion: \`${version}\`\n\n✅ Published to Maven Central\n✅ Git tag created\n\nTo use this release:\n\`\`\`kotlin\nimplementation("io.github.dautovicharis:charts:${version}")\n\`\`\`\n\n📚 [Documentation](https://dautovicharis.github.io/charts/)\n📦 [Maven Central](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/${version})`;
+            const message = [
+              '🎉 **Release Published Successfully!**',
+              '',
+              `Version: \`${version}\``,
+              '',
+              '✅ Published to Maven Central',
+              '✅ Git tag created',
+              '',
+              'Umbrella artifact:',
+              '```kotlin',
+              `implementation("io.github.dautovicharis:charts:${version}")`,
+              '```',
+              '',
+              'Modular artifacts:',
+              '```kotlin',
+              `implementation("io.github.dautovicharis:charts-core:${version}")`,
+              `implementation("io.github.dautovicharis:charts-line:${version}")`,
+              `implementation("io.github.dautovicharis:charts-pie:${version}")`,
+              `implementation("io.github.dautovicharis:charts-bar:${version}")`,
+              `implementation("io.github.dautovicharis:charts-stacked-bar:${version}")`,
+              `implementation("io.github.dautovicharis:charts-stacked-area:${version}")`,
+              `implementation("io.github.dautovicharis:charts-radar:${version}")`,
+              '```',
+              '',
+              'BOM alignment (for Gradle platforms):',
+              '```kotlin',
+              `implementation(platform("io.github.dautovicharis:charts-bom:${version}"))`,
+              'implementation("io.github.dautovicharis:charts-core")',
+              'implementation("io.github.dautovicharis:charts-line")',
+              'implementation("io.github.dautovicharis:charts-pie")',
+              'implementation("io.github.dautovicharis:charts-bar")',
+              'implementation("io.github.dautovicharis:charts-stacked-bar")',
+              'implementation("io.github.dautovicharis:charts-stacked-area")',
+              'implementation("io.github.dautovicharis:charts-radar")',
+              '```',
+              '',
+              '📚 [Documentation](https://dautovicharis.github.io/charts/)',
+              `📦 [Maven Central](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/${version})`,
+            ].join('\n');
 
             // Create a comment on the commit
             github.rest.repos.createCommitComment({
@@ -126,4 +164,3 @@ jobs:
               commit_sha: context.sha,
               body: message
             });
-

@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.build.config) apply false
     alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.mavenPublish) apply false
     alias(libs.plugins.ktlint) apply false
 }
 
@@ -18,11 +20,38 @@ subprojects {
     }
 }
 
+val chartsLibraryModules =
+    listOf(
+        ":charts-core",
+        ":charts-line",
+        ":charts-pie",
+        ":charts-bar",
+        ":charts-stacked-bar",
+        ":charts-stacked-area",
+        ":charts-radar",
+        ":charts",
+    )
+val chartsPublishableModules = chartsLibraryModules + ":charts-bom"
+
 tasks.register("chartsTest") {
     group = "Charts"
     description = "Relevant tests for the charts project"
     dependsOn("charts:jvmTest")
     dependsOn(":androidApp:validateDebugScreenshotTest")
+    dependsOn("chartsModulesTest")
+}
+
+tasks.register("chartsModulesTest") {
+    group = "Charts"
+    description = "Runs JVM tests for all modular chart artifacts and the umbrella module"
+    dependsOn(chartsLibraryModules.map { "$it:jvmTest" })
+    dependsOn("smokeLineCompile")
+}
+
+tasks.register("smokeLineCompile") {
+    group = "Charts"
+    description = "Smoke compile of a module that depends only on charts-line"
+    dependsOn(":smoke-line:compileKotlinJvm")
 }
 
 tasks.register("updateScreenshots") {
@@ -42,11 +71,26 @@ tasks.register("chartsCheck") {
     tasks.findByName("chartsTest")?.mustRunAfter("build")
 }
 
+tasks.register("publishChartsModules") {
+    group = "publishing"
+    description = "Publishes all charts modules and BOM to the configured Maven repository"
+    dependsOn(chartsPublishableModules.map { "$it:publish" })
+}
+
+tasks.register("publishChartsModulesToMavenLocal") {
+    group = "publishing"
+    description = "Publishes all charts modules and BOM to Maven Local"
+    dependsOn(chartsPublishableModules.map { "$it:publishToMavenLocal" })
+}
+
 tasks.register("generateJsDemo") {
     group = "Charts"
     description = "Builds the JS app and copies files to docs/static/demo/snapshot (and docs/static/demo/<version> for stable releases)"
 
-    dependsOn(getTasksByName("jsBrowserDistribution", true))
+    // Only the demo app distribution is needed for docs/static/demo.
+    // Depending on all jsBrowserDistribution tasks triggers unnecessary production JS builds
+    // in every module and can make generateDocs appear to hang.
+    dependsOn(":app:jsBrowserDistribution")
     doLast {
         val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
         val buildDir = file("app/build/dist/js/productionExecutable")
