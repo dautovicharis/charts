@@ -1,7 +1,6 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
 import org.gradle.api.tasks.Sync
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -14,39 +13,36 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-buildscript {
-    dependencies {
-        classpath(libs.dokka.versions)
-    }
-}
-
 kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
+
     androidTarget {
         publishLibraryVariants("release")
         compilerOptions {
-            jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.get()))
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(libs.versions.java.get()))
         }
     }
 
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
     js(IR) {
         browser()
         binaries.executable()
     }
+
     jvm()
 
     sourceSets {
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material3)
-            api(compose.ui)
-            implementation(compose.preview)
-            implementation(compose.components.resources)
-            implementation(libs.kotlinx.collections.immutable)
+            api(projects.chartsCore)
+            api(projects.chartsLine)
+            api(projects.chartsPie)
+            api(projects.chartsBar)
+            api(projects.chartsStackedBar)
+            api(projects.chartsStackedArea)
+            api(projects.chartsRadar)
         }
 
         commonTest.dependencies {
@@ -68,12 +64,12 @@ kotlin {
 }
 
 android {
+    namespace = Config.chartsNamespace
+    compileSdk = Config.compileSdk
+
     defaultConfig {
-        namespace = Config.chartsNamespace
-        compileSdk = Config.compileSdk
         minSdk = Config.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         consumerProguardFiles("proguard-rules.pro")
     }
 
@@ -81,15 +77,22 @@ android {
         compose = true
     }
 
-    kotlin {
-        jvmToolchain(libs.versions.java.get().toInt())
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
         targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
     }
 }
+
+private val apiSourceRoots =
+    listOf(
+        project.rootDir.resolve("charts-core/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+        project.rootDir.resolve("charts-line/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+        project.rootDir.resolve("charts-pie/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+        project.rootDir.resolve("charts-bar/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+        project.rootDir.resolve("charts-stacked-bar/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+        project.rootDir.resolve("charts-stacked-area/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+        project.rootDir.resolve("charts-radar/src/commonMain/kotlin/io/github/dautovicharis/charts"),
+    )
 
 dokka {
     val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
@@ -100,8 +103,8 @@ dokka {
     dokkaSourceSets.commonMain {
         sourceLink {
             sourceRoots.setFrom(emptyList<File>())
-            sourceRoots.from(file("src/commonMain/kotlin/io/github/dautovicharis/charts"))
-            remoteUrl("https://github.com/dautovicharis/charts/tree/${Config.chartsVersion}/charts")
+            apiSourceRoots.filter { it.exists() }.forEach { sourceRoots.from(it) }
+            remoteUrl("https://github.com/dautovicharis/charts/tree/${Config.chartsVersion}")
             remoteLineSuffix.set("#L")
         }
 
@@ -140,32 +143,11 @@ mavenPublishing {
     )
 
     pom {
-        name.set("Charts")
-        description.set("Charts made in JetpackCompose")
-        inceptionYear.set("2024")
-        url.set("https://github.com/dautovicharis/Charts")
-
-        licenses {
-            license {
-                name.set("MIT")
-                url.set("https://github.com/dautovicharis/Charts/blob/main/LICENSE")
-            }
-        }
-        developers {
-            developer {
-                id.set("dautovicharis")
-                name.set("Haris Dautović")
-                email.set("haris.dautovic.dev@gmail.com")
-            }
-        }
-        issueManagement {
-            system.set("GitHub")
-            url.set("https://github.com/dautovicharis/Charts/issues")
-        }
-        scm {
-            connection.set("https://github.com/dautovicharis/Charts.git")
-            url.set("https://github.com/dautovicharis/Charts")
-        }
+        ChartsPublishing.configurePom(
+            pom = this,
+            moduleName = "Charts",
+            moduleDescription = "Charts.",
+        )
     }
 }
 
