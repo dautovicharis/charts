@@ -19,6 +19,7 @@ string|cd_show_parameters|U2hvdyBwYXJhbWV0ZXJz
 string|chart_basic|QmFzaWM=
 string|chart_custom|Q3VzdG9t
 string|chart_default|RGVmYXVsdA==
+string|chart_timeline|VGltZWxpbmU=
 string|dark_mode_off|T2Zm
 string|dark_mode_on|T24=
 string|dark_mode_system|U3lzdGVt
@@ -37,9 +38,13 @@ string|drawer_title_github|R2l0SHVi
 string|github_url_content_description|R2l0SHViIHJlcG9zaXRvcnk=
 string|github_url|aHR0cHM6Ly9naXRodWIuY29tL2RhdXRvdmljaGFyaXMvQ2hhcnRz
 string|line_chart|TGluZQ==
+string|line_data_points_range|VmFsdWUgcmFuZ2U6ICUxJGQgLSAlMiRk
+string|line_data_points|RGF0YSBwb2ludHM6ICUxJGQ=
 string|multi_line_chart|TXVsdGkgTGluZQ==
 string|pie_chart|UGll
 string|radar_chart|UmFkYXI=
 string|stacked_area_chart|U3RhY2tlZCBBcmVh
 string|style_details_title|U3R5bGUgZGV0YWlscw==
 string|themes_content_description|U2VsZWN0ZWQgYXBwIHRoZW1l
+string|timeline_update_interval|VXBkYXRlIGludGVydmFsOiAlMSRkIG1z
+string|timeline_window_size|V2luZG93IHNpemU6ICUxJGQgcG9pbnRz

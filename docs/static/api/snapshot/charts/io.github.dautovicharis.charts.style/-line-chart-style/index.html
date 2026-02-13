@@ -109,14 +109,78 @@
   <div class="breadcrumbs"><a href="../../../index.html">charts</a><span class="delimiter">/</span><a href="../index.html">io.github.dautovicharis.charts.style</a><span class="delimiter">/</span><span class="current">LineChartStyle</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Line</span><wbr></wbr><span>Chart</span><wbr></wbr><span><span>Style</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">class </span><a href="index.html">LineChartStyle</a> : <a href="../-style/index.html">Style</a><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/dautovicharis/charts/tree/2.2.0-SNAPSHOT/charts/src/commonMain/kotlin/io/github/dautovicharis/charts/style/LineChartStyle.kt#L32">source</a>)</span></span></div><p class="paragraph">A class that defines the style for a Line Chart.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">class </span><a href="index.html">LineChartStyle</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifier<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>chartViewStyle<span class="token operator">: </span><a href="../-chart-view-style/index.html">ChartViewStyle</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dragPointColorSameAsLine<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pointColorSameAsLine<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pointColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pointVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>pointSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lineColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lineAlpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lineColors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>bezier<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dragPointSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dragPointVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dragActivePointSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dragPointColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>axisVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>axisColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>axisLineWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>yAxisLabelsVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>yAxisLabelColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>yAxisLabelSize<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/TextUnit.html">TextUnit</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>yAxisLabelCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>xAxisLabelsVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>xAxisLabelColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>xAxisLabelSize<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/TextUnit.html">TextUnit</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>xAxisLabelMaxCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>zoomControlsVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="../-style/index.html">Style</a></div><p class="paragraph">A class that defines the style for a Line Chart.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="-721577050%2FConstructors%2F-265993376" anchor-label="LineChartStyle" id="-721577050%2FConstructors%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-line-chart-style.html"><span>Line</span><wbr></wbr><span>Chart</span><wbr></wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-721577050%2FConstructors%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">modifier<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token punctuation">, </span></span><span class="parameter ">chartViewStyle<span class="token operator">: </span><a href="../-chart-view-style/index.html">ChartViewStyle</a><span class="token punctuation">, </span></span><span class="parameter ">dragPointColorSameAsLine<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">pointColorSameAsLine<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">pointColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">pointVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">pointSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">lineColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">lineAlpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">lineColors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">bezier<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">dragPointSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">dragPointVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">dragActivePointSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">dragPointColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">axisVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">axisColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">axisLineWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token punctuation">, </span></span><span class="parameter ">yAxisLabelsVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">yAxisLabelColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">yAxisLabelSize<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/TextUnit.html">TextUnit</a><span class="token punctuation">, </span></span><span class="parameter ">yAxisLabelCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">xAxisLabelsVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">xAxisLabelColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token punctuation">, </span></span><span class="parameter ">xAxisLabelSize<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/TextUnit.html">TextUnit</a><span class="token punctuation">, </span></span><span class="parameter ">xAxisLabelMaxCount<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">zoomControlsVisible<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div data-togglable="PROPERTY">
         <h2 class="tableheader">Properties</h2>
-        <div class="table"><a data-name="341293442%2FProperties%2F-265993376" anchor-label="bezier" id="341293442%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+        <div class="table"><a data-name="994159479%2FProperties%2F-265993376" anchor-label="axisColor" id="994159479%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="axis-color.html"><span>axis</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="994159479%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="axis-color.html">axisColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div><div class="brief "><p class="paragraph">The color of the axes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-4831992%2FProperties%2F-265993376" anchor-label="axisLineWidth" id="-4831992%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="axis-line-width.html"><span>axis</span><wbr></wbr><span>Line</span><wbr></wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-4831992%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="axis-line-width.html">axisLineWidth</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></div><div class="brief "><p class="paragraph">The stroke width of the axes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="263745032%2FProperties%2F-265993376" anchor-label="axisVisible" id="263745032%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="axis-visible.html"><span>axis</span><wbr></wbr><span><span>Visible</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="263745032%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="axis-visible.html">axisVisible</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether chart axes are shown.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="341293442%2FProperties%2F-265993376" anchor-label="bezier" id="341293442%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
@@ -127,6 +191,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="bezier.html">bezier</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">A boolean indicating whether the line chart should be drawn with bezier curves.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1976236915%2FProperties%2F-265993376" anchor-label="chartViewStyle" id="1976236915%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="chart-view-style.html"><span>chart</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1976236915%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="chart-view-style.html">chartViewStyle</a><span class="token operator">: </span><a href="../-chart-view-style/index.html">ChartViewStyle</a></div><div class="brief "><p class="paragraph">The style to be applied to the chart view.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -157,6 +236,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="drag-point-color.html">dragPointColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div><div class="brief "><p class="paragraph">The color of the drag point on the line chart.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-891716818%2FProperties%2F-265993376" anchor-label="dragPointColorSameAsLine" id="-891716818%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="drag-point-color-same-as-line.html"><span>drag</span><wbr></wbr><span>Point</span><wbr></wbr><span>Color</span><wbr></wbr><span>Same</span><wbr></wbr><span>As</span><wbr></wbr><span><span>Line</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-891716818%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="drag-point-color-same-as-line.html">dragPointColorSameAsLine</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">A boolean indicating whether the color of the drag point is the same as the line color.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -236,6 +330,21 @@
               </div>
             </div>
           </div>
+<a data-name="-2071397494%2FProperties%2F-265993376" anchor-label="modifier" id="-2071397494%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="modifier.html"><span><span>modifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2071397494%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="modifier.html">modifier</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a></div><div class="brief "><p class="paragraph">The modifier to be applied to the chart.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1601967826%2FProperties%2F-265993376" anchor-label="pointColor" id="-1601967826%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
           <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
             <div class="main-subrow keyValue ">
@@ -247,6 +356,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="point-color.html">pointColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div><div class="brief "><p class="paragraph">The color of the points on the line chart.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1770722818%2FProperties%2F-265993376" anchor-label="pointColorSameAsLine" id="1770722818%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="point-color-same-as-line.html"><span>point</span><wbr></wbr><span>Color</span><wbr></wbr><span>Same</span><wbr></wbr><span>As</span><wbr></wbr><span><span>Line</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1770722818%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="point-color-same-as-line.html">pointColorSameAsLine</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">A boolean indicating whether the color of the point is the same as the line color.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -277,6 +401,141 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="point-visible.html">pointVisible</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">A boolean indicating whether the points on the line chart are visible.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1308944273%2FProperties%2F-265993376" anchor-label="xAxisLabelColor" id="1308944273%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="x-axis-label-color.html"><span>x</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Label</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1308944273%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="x-axis-label-color.html">xAxisLabelColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div><div class="brief "><p class="paragraph">The color of X-axis labels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-380818725%2FProperties%2F-265993376" anchor-label="xAxisLabelMaxCount" id="-380818725%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="x-axis-label-max-count.html"><span>x</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Label</span><wbr></wbr><span>Max</span><wbr></wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-380818725%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="x-axis-label-max-count.html">xAxisLabelMaxCount</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Maximum number of X-axis labels to display.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-699395547%2FProperties%2F-265993376" anchor-label="xAxisLabelSize" id="-699395547%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="x-axis-label-size.html"><span>x</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Label</span><wbr></wbr><span><span>Size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-699395547%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="x-axis-label-size.html">xAxisLabelSize</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/TextUnit.html">TextUnit</a></div><div class="brief "><p class="paragraph">The text size of X-axis labels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1044111111%2FProperties%2F-265993376" anchor-label="xAxisLabelsVisible" id="1044111111%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="x-axis-labels-visible.html"><span>x</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Labels</span><wbr></wbr><span><span>Visible</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1044111111%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="x-axis-labels-visible.html">xAxisLabelsVisible</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether X-axis labels are shown.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1524443024%2FProperties%2F-265993376" anchor-label="yAxisLabelColor" id="-1524443024%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="y-axis-label-color.html"><span>y</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Label</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1524443024%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="y-axis-label-color.html">yAxisLabelColor</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a></div><div class="brief "><p class="paragraph">The color of Y-axis labels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-421679036%2FProperties%2F-265993376" anchor-label="yAxisLabelCount" id="-421679036%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="y-axis-label-count.html"><span>y</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Label</span><wbr></wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-421679036%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="y-axis-label-count.html">yAxisLabelCount</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Number of Y-axis labels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1622079130%2FProperties%2F-265993376" anchor-label="yAxisLabelSize" id="-1622079130%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="y-axis-label-size.html"><span>y</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Label</span><wbr></wbr><span><span>Size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1622079130%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="y-axis-label-size.html">yAxisLabelSize</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/TextUnit.html">TextUnit</a></div><div class="brief "><p class="paragraph">The text size of Y-axis labels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="595414472%2FProperties%2F-265993376" anchor-label="yAxisLabelsVisible" id="595414472%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="y-axis-labels-visible.html"><span>y</span><wbr></wbr><span>Axis</span><wbr></wbr><span>Labels</span><wbr></wbr><span><span>Visible</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="595414472%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="y-axis-labels-visible.html">yAxisLabelsVisible</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether Y-axis labels are shown.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="40449552%2FProperties%2F-265993376" anchor-label="zoomControlsVisible" id="40449552%2FProperties%2F-265993376" data-filterable-set=":charts/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":charts/commonMain" data-filterable-set=":charts/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="zoom-controls-visible.html"><span>zoom</span><wbr></wbr><span>Controls</span><wbr></wbr><span><span>Visible</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="40449552%2FProperties%2F-265993376"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":charts/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="zoom-controls-visible.html">zoomControlsVisible</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether dense-mode zoom controls are shown.</p></div></div></div>
                 </div>
               </div>
             </div>
