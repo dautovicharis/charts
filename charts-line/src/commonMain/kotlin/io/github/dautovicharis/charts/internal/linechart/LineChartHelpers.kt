@@ -3,8 +3,52 @@ package io.github.dautovicharis.charts.internal.linechart
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.util.lerp
+import io.github.dautovicharis.charts.internal.common.model.ChartDataItem
+import io.github.dautovicharis.charts.internal.common.model.MultiChartData
+import io.github.dautovicharis.charts.internal.common.model.toChartData
+import io.github.dautovicharis.charts.internal.common.density.aggregateLabelsByCenterValue as aggregateLabelsByCenterValueCore
+import io.github.dautovicharis.charts.internal.common.density.aggregatePointsByAverage as aggregatePointsByAverageCore
+import io.github.dautovicharis.charts.internal.common.density.bucketSizeForTarget as bucketSizeForTargetCore
+import io.github.dautovicharis.charts.internal.common.density.buildBucketRanges as buildBucketRangesCore
+import io.github.dautovicharis.charts.internal.common.density.shouldUseScrollableDensity as shouldUseScrollableDensityCore
 
 const val LINE_CHART_BEZIER_TENSION = 0.95f
+const val LINE_DENSE_THRESHOLD = 50
+
+fun shouldUseScrollableDensity(pointsCount: Int): Boolean {
+    return shouldUseScrollableDensityCore(
+        pointsCount = pointsCount,
+        threshold = LINE_DENSE_THRESHOLD,
+    )
+}
+
+fun aggregateForCompactDensity(
+    data: MultiChartData,
+    targetPoints: Int = LINE_DENSE_THRESHOLD,
+): MultiChartData {
+    if (targetPoints <= 1) return data
+    val sourcePointsCount = data.items.firstOrNull()?.item?.points?.size ?: return data
+    if (sourcePointsCount <= targetPoints) return data
+
+    val bucketSize = bucketSizeForTargetCore(totalPoints = sourcePointsCount, targetPoints = targetPoints)
+    val bucketRanges = buildBucketRangesCore(totalPoints = sourcePointsCount, bucketSize = bucketSize)
+    val aggregatedCategories = aggregateLabelsByCenterValueCore(data.categories, bucketRanges)
+    val aggregatedItems =
+        data.items.map { item ->
+            val aggregatedPoints = aggregatePointsByAverageCore(item.item.points, bucketRanges)
+            val aggregatedLabels = aggregateLabelsByCenterValueCore(item.item.labels, bucketRanges)
+            ChartDataItem(
+                label = item.label,
+                item = aggregatedPoints.toChartData(labels = aggregatedLabels),
+            )
+        }
+
+    return MultiChartData(
+        items = aggregatedItems,
+        categories = if (data.hasCategories()) aggregatedCategories else emptyList(),
+        title = data.title,
+    )
+}
 
 data class CubicControlPoints(
     val first: Offset,
@@ -15,6 +59,8 @@ fun cubicControlPointsForSegment(
     points: List<Offset>,
     segmentStartIndex: Int,
     tension: Float = LINE_CHART_BEZIER_TENSION,
+    minY: Float = Float.NEGATIVE_INFINITY,
+    maxY: Float = Float.POSITIVE_INFINITY,
 ): CubicControlPoints {
     val p1 = points[segmentStartIndex]
     val p2 = points[segmentStartIndex + 1]
@@ -30,15 +76,17 @@ fun cubicControlPointsForSegment(
         }
 
     val factor = tension / 6f
+    val lowerYBound = minY.coerceAtMost(maxY)
+    val upperYBound = maxY.coerceAtLeast(minY)
     val control1 =
         Offset(
             x = p1.x + (p2.x - p0.x) * factor,
-            y = p1.y + (p2.y - p0.y) * factor,
+            y = (p1.y + (p2.y - p0.y) * factor).coerceIn(lowerYBound, upperYBound),
         )
     val control2 =
         Offset(
             x = p2.x - (p3.x - p1.x) * factor,
-            y = p2.y - (p3.y - p1.y) * factor,
+            y = (p2.y - (p3.y - p1.y) * factor).coerceIn(lowerYBound, upperYBound),
         )
 
     return CubicControlPoints(first = control1, second = control2)
@@ -49,6 +97,7 @@ fun findNearestPoint(
     scaledValues: List<Float>,
     size: Size,
     bezier: Boolean,
+    verticalInset: Float = 0f,
     bezierTension: Float = LINE_CHART_BEZIER_TENSION,
 ): Offset {
     if (scaledValues.isEmpty()) {
@@ -57,7 +106,14 @@ fun findNearestPoint(
 
     val clampedX = touchX.coerceIn(0f, size.width)
     if (scaledValues.size == 1 || size.width == 0f) {
-        return Offset(clampedX, size.height - scaledValues.first())
+        return Offset(
+            clampedX,
+            mapScaledValueToCanvasY(
+                scaledValue = scaledValues.first(),
+                canvasHeight = size.height,
+                verticalInset = verticalInset,
+            ),
+        )
     }
 
     val lastIndex = scaledValues.size - 1
@@ -76,15 +132,27 @@ fun findNearestPoint(
             }
 
         val ratio = ((clampedX - (index * step)) / step).coerceIn(0f, 1f)
-        val interpolatedY = lerp(pointBefore, pointAfter, ratio)
-        return Offset(clampedX, size.height - interpolatedY)
+        val interpolatedScaled = lerp(pointBefore, pointAfter, ratio)
+        return Offset(
+            clampedX,
+            mapScaledValueToCanvasY(
+                scaledValue = interpolatedScaled,
+                canvasHeight = size.height,
+                verticalInset = verticalInset,
+            ),
+        )
     }
 
     val points =
         List(scaledValues.size) { pointIndex ->
             Offset(
                 x = pointIndex * step,
-                y = size.height - scaledValues[pointIndex],
+                y =
+                    mapScaledValueToCanvasY(
+                        scaledValue = scaledValues[pointIndex],
+                        canvasHeight = size.height,
+                        verticalInset = verticalInset,
+                    ),
             )
         }
     val segmentStart = index.coerceIn(0, lastIndex - 1)
@@ -95,6 +163,8 @@ fun findNearestPoint(
             points = points,
             segmentStartIndex = segmentStart,
             tension = bezierTension,
+            minY = verticalInset,
+            maxY = size.height - verticalInset,
         )
     val targetX = clampedX.coerceIn(startPoint.x, endPoint.x)
     val t =
@@ -114,6 +184,18 @@ fun findNearestPoint(
             p3 = endPoint.y,
         )
     return Offset(targetX, y)
+}
+
+fun mapScaledValueToCanvasY(
+    scaledValue: Float,
+    canvasHeight: Float,
+    verticalInset: Float = 0f,
+): Float {
+    if (canvasHeight <= 0f) return 0f
+    val safeInset = verticalInset.coerceIn(0f, canvasHeight / 2f)
+    val drawableHeight = (canvasHeight - (safeInset * 2f)).coerceAtLeast(0f)
+    val normalized = (scaledValue / canvasHeight).coerceIn(0f, 1f)
+    return safeInset + ((1f - normalized) * drawableHeight)
 }
 
 private fun solveBezierTForX(

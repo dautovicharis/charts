@@ -24,24 +24,22 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.dautovicharis.charts.internal.AXIS_LABEL_CHART_GAP
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.style.BarChartStyle
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 // X Axis label layout constants
-private val X_AXIS_LABEL_VERTICAL_PADDING: Dp = 10.dp
-private val X_AXIS_LABEL_HORIZONTAL_PADDING: Dp = 8.dp
-
-// Y Axis label layout constants
-private val Y_AXIS_CHART_GAP: Dp = 10.dp
+private const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
+private val X_AXIS_LABEL_EDGE_PADDING: Dp = 4.dp
 
 @Composable
 fun BarChartContent(
     chartData: ChartData,
     style: BarChartStyle,
     interactionEnabled: Boolean,
+    dragSelectionEnabled: Boolean,
     animatedValues: List<Animatable<Float, AnimationVector1D>>,
     barColor: Color,
     fixedMin: Double,
@@ -56,6 +54,8 @@ fun BarChartContent(
     zoomStep: Float,
     selectedIndex: Int,
     onToggleSelection: (Int) -> Unit,
+    onSelectIndex: (Int) -> Unit,
+    onClearSelection: () -> Unit,
     onZoomScaleChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -63,7 +63,7 @@ fun BarChartContent(
 
     BoxWithConstraints(modifier = modifier) {
         val density = LocalDensity.current
-        val xAxisTilt = style.xAxisLabelTiltDegrees.coerceIn(0f, 75f)
+        val xAxisTilt = FIXED_X_AXIS_LABEL_TILT_DEGREES
         val xAxisLabelSizePx = with(density) { style.xAxisLabelSize.toPx() }
         val xAxisLabelFootprintPx =
             remember(chartData.labels, dataSize, xAxisLabelSizePx, xAxisTilt) {
@@ -79,7 +79,7 @@ fun BarChartContent(
                 0.dp
             } else {
                 with(density) {
-                    (xAxisLabelFootprintPx.height + X_AXIS_LABEL_VERTICAL_PADDING.toPx()).toDp()
+                    (xAxisLabelFootprintPx.height + AXIS_LABEL_CHART_GAP.toPx()).toDp()
                 }
             }
         val chartHeight = (maxHeight - xAxisHeight).coerceAtLeast(0.dp)
@@ -102,7 +102,7 @@ fun BarChartContent(
             } else {
                 0f
             }
-        val yAxisGapPx = if (style.yAxisLabelsVisible) with(density) { Y_AXIS_CHART_GAP.toPx() } else 0f
+        val yAxisGapPx = if (style.yAxisLabelsVisible) with(density) { AXIS_LABEL_CHART_GAP.toPx() } else 0f
         val yAxisWidth = with(density) { yAxisWidthPx.toDp() }
         val plotStartPadding = with(density) { (yAxisWidthPx + yAxisGapPx).toDp() }
         val viewportWidthPx =
@@ -142,6 +142,19 @@ fun BarChartContent(
                 viewportWidthPx = viewportWidthPx,
                 chartHeightPx = chartHeightPx,
                 onTapIndex = onToggleSelection,
+            )
+
+        val fitDragModifier =
+            buildFitDragModifier(
+                interactionEnabled = interactionEnabled,
+                dragSelectionEnabled = dragSelectionEnabled,
+                isScrollable = isScrollable,
+                dataSize = dataSize,
+                spacingPx = spacingPx,
+                viewportWidthPx = viewportWidthPx,
+                chartHeightPx = chartHeightPx,
+                onDragIndex = onSelectIndex,
+                onDragFinished = onClearSelection,
             )
 
         val scrollTapModifier =
@@ -185,34 +198,33 @@ fun BarChartContent(
             } else {
                 0..<dataSize
             }
+        val xAxisEdgePaddingPx = with(density) { X_AXIS_LABEL_EDGE_PADDING.toPx() }
+        val labelSafeRange =
+            centeredLabelIndexRange(
+                dataSize = dataSize,
+                unitWidthPx = unitWidthPx,
+                viewportWidthPx = viewportWidthPx,
+                scrollOffsetPx = if (isScrollable) scrollOffsetPx else 0f,
+                firstCenterPx = barWidthPx / 2f,
+                labelWidthPx = xAxisLabelFootprintPx.width,
+                edgePaddingPx = xAxisEdgePaddingPx,
+            )
         val labelIndices =
             when {
                 dataSize <= 0 -> emptyList()
                 else -> {
-                    val maxVisibleLabels =
-                        min(
-                            style.xAxisLabelMaxCount,
-                            (
-                                viewportWidthPx /
-                                    (
-                                        xAxisLabelFootprintPx.width +
-                                            with(density) { X_AXIS_LABEL_HORIZONTAL_PADDING.toPx() }
-                                    )
-                            )
-                                .toInt()
-                                .coerceAtLeast(2),
-                        )
+                    val maxVisibleLabels = style.xAxisLabelMaxCount.coerceAtLeast(2)
                     if (isScrollable) {
                         scrollableLabelIndices(
                             dataSize = dataSize,
                             maxCount = maxVisibleLabels,
-                            visibleRange = visibleRange,
+                            visibleRange = labelSafeRange,
                         )
                     } else {
                         sampledLabelIndices(
                             dataSize = dataSize,
                             maxCount = maxVisibleLabels,
-                            visibleRange = visibleRange,
+                            visibleRange = labelSafeRange,
                         )
                     }
                 }
@@ -237,6 +249,7 @@ fun BarChartContent(
         val interactionModifier =
             Modifier
                 .then(fitTapModifier)
+                .then(fitDragModifier)
                 .then(scrollTapModifier)
                 .then(pinchModifier)
 

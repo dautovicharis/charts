@@ -1,18 +1,25 @@
 package io.github.dautovicharis.charts.internal.linechart
 
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import io.github.dautovicharis.charts.LineChartRenderMode
 import io.github.dautovicharis.charts.internal.NO_SELECTION
-import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barstackedchart.generateColorShades
 import io.github.dautovicharis.charts.internal.common.composable.Chart
 import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
 import io.github.dautovicharis.charts.internal.common.composable.Legend
+import io.github.dautovicharis.charts.internal.common.composable.rememberDenseExpandedState
+import io.github.dautovicharis.charts.internal.common.composable.rememberZoomScaleState
+import io.github.dautovicharis.charts.internal.common.composable.zoomInScale
+import io.github.dautovicharis.charts.internal.common.composable.zoomOutScale
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.validateLineData
 import io.github.dautovicharis.charts.style.LineChartDefaults
@@ -21,12 +28,18 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+private const val LINE_ZOOM_MIN = 1f
+private const val LINE_ZOOM_MAX = 4f
+private const val LINE_ZOOM_STEP = 1.25f
+
 @Composable
 fun LineChartImpl(
     data: MultiChartData,
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    renderMode: LineChartRenderMode = LineChartRenderMode.Morph,
+    animationDurationMillis: Int = 420,
 ) {
     val errors =
         remember(data, style) {
@@ -41,15 +54,39 @@ fun LineChartImpl(
         var labels by remember(data) {
             mutableStateOf<ImmutableList<String>>(persistentListOf())
         }
-
+        val isTimelineMode = renderMode == LineChartRenderMode.Timeline
+        val sourcePointsCount = remember(data) { data.getFirstPointsSize() }
+        val isDenseMorphData =
+            remember(renderMode, sourcePointsCount) {
+                renderMode == LineChartRenderMode.Morph && shouldUseScrollableDensity(sourcePointsCount)
+            }
+        var denseExpanded by rememberDenseExpandedState(isDenseModeAvailable = isDenseMorphData)
+        val compactDenseMode = isDenseMorphData && !denseExpanded
+        val renderData =
+            remember(data, compactDenseMode) {
+                if (compactDenseMode) {
+                    aggregateForCompactDensity(data)
+                } else {
+                    data
+                }
+            }
+        val isDenseMorphMode = isDenseMorphData && denseExpanded
+        val scrollState = rememberScrollState()
+        var zoomScale by
+            rememberZoomScaleState(
+                isZoomActive = isDenseMorphMode,
+                minZoom = LINE_ZOOM_MIN,
+                maxZoom = LINE_ZOOM_MAX,
+                initialZoom = LINE_ZOOM_MIN,
+            )
         val lineColors =
-            remember(data, style.lineColors, style.lineColor, style.lineAlpha) {
-                if (data.hasSingleItem()) {
+            remember(renderData, style.lineColors, style.lineColor, style.lineAlpha) {
+                if (renderData.hasSingleItem()) {
                     persistentListOf(style.lineColor.copy(alpha = style.lineAlpha))
                 } else if (style.lineColors.isEmpty()) {
                     generateColorShades(
                         baseColor = style.lineColor.copy(alpha = style.lineAlpha),
-                        numberOfShades = data.items.size,
+                        numberOfShades = renderData.items.size,
                     )
                 } else {
                     style.lineColors
@@ -57,39 +94,66 @@ fun LineChartImpl(
                         .toImmutableList()
                 }
             }
+        val showCompactToggle = isDenseMorphData
+        val showZoomControlsInHeader = isDenseMorphMode && style.zoomControlsVisible
+        val showHeader = title.isNotBlank() || showCompactToggle || showZoomControlsInHeader
         Chart(chartViewsStyle = style.chartViewStyle) {
-            if (title.isNotBlank()) {
-                Text(
+            if (showHeader) {
+                LineChartHeader(
+                    title = title,
+                    style = style,
+                    showDensityToggle = showCompactToggle,
+                    denseExpanded = denseExpanded,
+                    onToggleDensity = { denseExpanded = !denseExpanded },
+                    showZoomControls = showZoomControlsInHeader,
+                    zoomScale = zoomScale,
+                    minZoom = LINE_ZOOM_MIN,
+                    maxZoom = LINE_ZOOM_MAX,
+                    onZoomOut = {
+                        zoomScale = zoomOutScale(zoomScale, LINE_ZOOM_STEP, LINE_ZOOM_MIN, LINE_ZOOM_MAX)
+                    },
+                    onZoomIn = {
+                        zoomScale = zoomInScale(zoomScale, LINE_ZOOM_STEP, LINE_ZOOM_MIN, LINE_ZOOM_MAX)
+                    },
                     modifier =
-                        style.chartViewStyle.modifierTopTitle
-                            .testTag(TestTags.CHART_TITLE),
-                    text = title,
-                    style = style.chartViewStyle.styleTitle,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = style.chartViewStyle.innerPadding,
+                                start = style.chartViewStyle.innerPadding,
+                                end = style.chartViewStyle.innerPadding,
+                                bottom = if (showZoomControlsInHeader) style.chartViewStyle.innerPadding else 0.dp,
+                            ),
                 )
             }
 
             LineChart(
-                data = data,
+                data = renderData,
                 style = style,
                 colors = lineColors,
                 interactionEnabled = interactionEnabled,
                 animateOnStart = animateOnStart,
+                renderMode = renderMode,
+                animationDurationMillis = animationDurationMillis,
+                isDenseMorphMode = isDenseMorphMode,
+                scrollState = scrollState,
+                zoomScale = zoomScale,
             ) { selectedIndex ->
-                title = data.getLabel(selectedIndex)
+                title = renderData.getLabel(selectedIndex)
 
-                if (data.hasCategories()) {
+                if (!isTimelineMode && renderData.hasCategories()) {
                     labels =
                         when (selectedIndex) {
                             NO_SELECTION -> persistentListOf()
-                            else -> data.items.map { it.item.labels[selectedIndex] }.toImmutableList()
+                            else -> renderData.items.map { it.item.labels[selectedIndex] }.toImmutableList()
                         }
                 }
             }
 
-            if (data.hasCategories()) {
+            if (renderData.hasCategories() || isTimelineMode) {
                 Legend(
                     chartViewsStyle = style.chartViewStyle,
-                    legend = data.items.map { it.label }.toImmutableList(),
+                    legend = renderData.items.map { it.label }.toImmutableList(),
                     colors = lineColors,
                     labels = labels,
                 )

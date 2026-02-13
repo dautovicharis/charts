@@ -2,14 +2,75 @@ package io.github.dautovicharis.charts.unit.helpers
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import io.github.dautovicharis.charts.internal.common.model.ChartDataItem
+import io.github.dautovicharis.charts.internal.common.model.MultiChartData
+import io.github.dautovicharis.charts.internal.common.model.toChartData
+import io.github.dautovicharis.charts.internal.linechart.aggregateForCompactDensity
+import io.github.dautovicharis.charts.internal.linechart.buildLineXAxisTicks
+import io.github.dautovicharis.charts.internal.linechart.buildLineYAxisTicks
 import io.github.dautovicharis.charts.internal.linechart.cubicControlPointsForSegment
 import io.github.dautovicharis.charts.internal.linechart.findNearestPoint
+import io.github.dautovicharis.charts.internal.linechart.resolveLineXAxisLabels
 import io.github.dautovicharis.charts.internal.linechart.scaleValues
+import io.github.dautovicharis.charts.internal.linechart.shouldUseScrollableDensity
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class LineChartHelpersTest {
+    @Test
+    fun shouldUseScrollableDensity_resolvesFromThreshold() {
+        assertEquals(expected = false, actual = shouldUseScrollableDensity(pointsCount = 49))
+        assertEquals(expected = true, actual = shouldUseScrollableDensity(pointsCount = 50))
+    }
+
+    @Test
+    fun aggregateForCompactDensity_aboveThreshold_reducesPointCount() {
+        val sourcePoints = List(120) { index -> (index + 1).toDouble() }
+        val sourceLabels = List(120) { index -> "P${index + 1}" }
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem(
+                            label = "Series",
+                            item = sourcePoints.toChartData(labels = sourceLabels),
+                        ),
+                    ),
+                title = "Dense",
+            )
+
+        val aggregated = aggregateForCompactDensity(data)
+        val aggregatedPoints = aggregated.items.first().item.points
+        val aggregatedLabels = aggregated.items.first().item.labels
+
+        assertTrue(aggregatedPoints.size < sourcePoints.size)
+        assertEquals(expected = 40, actual = aggregatedPoints.size)
+        assertEquals(expected = "P2", actual = aggregatedLabels.first())
+        assertEquals(expected = "P119", actual = aggregatedLabels.last())
+        assertEquals(expected = 2.0, actual = aggregatedPoints.first())
+    }
+
+    @Test
+    fun aggregateForCompactDensity_belowThreshold_returnsOriginalData() {
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem(
+                            label = "Series",
+                            item = List(20) { index -> index.toDouble() }.toChartData(labels = List(20) { "L$it" }),
+                        ),
+                    ),
+                title = "Small",
+            )
+
+        val aggregated = aggregateForCompactDensity(data)
+
+        assertSame(data, aggregated)
+    }
+
     @Test
     fun cubicControlPointsForSegment_middleSegment_correctControlPointsReturned() {
         // Arrange
@@ -62,6 +123,35 @@ class LineChartHelpersTest {
     }
 
     @Test
+    fun cubicControlPointsForSegment_yBoundsProvided_controlPointsAreClamped() {
+        // Arrange
+        val points =
+            listOf(
+                Offset(0f, 100f),
+                Offset(10f, 20f),
+                Offset(20f, 10f),
+                Offset(30f, -100f),
+            )
+        val segmentStartIndex = 1
+
+        // Act
+        val controls =
+            cubicControlPointsForSegment(
+                points = points,
+                segmentStartIndex = segmentStartIndex,
+                minY = 10f,
+                maxY = 25f,
+            )
+
+        // Assert
+        val tolerance = 0.0001f
+        assertEquals(13.166667f, controls.first.x, tolerance)
+        assertEquals(10f, controls.first.y, tolerance)
+        assertEquals(16.833334f, controls.second.x, tolerance)
+        assertEquals(25f, controls.second.y, tolerance)
+    }
+
+    @Test
     fun findNearestPoint_validInput_correctOffsetReturned() {
         // Arrange
         val testCases =
@@ -109,5 +199,126 @@ class LineChartHelpersTest {
             // Assert
             assertTrue { scaledValues == entry.value }
         }
+    }
+
+    @Test
+    fun resolveLineXAxisLabels_singleSeries_returnsItemLabels() {
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem(
+                            label = "Series",
+                            item = listOf(10f, 20f, 30f).toChartData(labels = listOf("A", "B", "C")),
+                        ),
+                    ),
+                title = "Single",
+            )
+
+        val labels = resolveLineXAxisLabels(data)
+
+        assertEquals(listOf("A", "B", "C"), labels)
+    }
+
+    @Test
+    fun resolveLineXAxisLabels_multiSeriesWithCategories_prefersCategories() {
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem(
+                            label = "Series 1",
+                            item = listOf(1f, 2f, 3f).toChartData(labels = listOf("v1", "v2", "v3")),
+                        ),
+                        ChartDataItem(
+                            label = "Series 2",
+                            item = listOf(4f, 5f, 6f).toChartData(labels = listOf("w1", "w2", "w3")),
+                        ),
+                    ),
+                categories = listOf("Jan", "Feb", "Mar"),
+                title = "Multi",
+            )
+
+        val labels = resolveLineXAxisLabels(data)
+
+        assertEquals(listOf("Jan", "Feb", "Mar"), labels)
+    }
+
+    @Test
+    fun resolveLineXAxisLabels_multiSeriesWithoutCategories_returnsEmpty() {
+        val data =
+            MultiChartData(
+                items =
+                    listOf(
+                        ChartDataItem(
+                            label = "Series 1",
+                            item = listOf(1f, 2f, 3f).toChartData(labels = listOf("v1", "v2", "v3")),
+                        ),
+                        ChartDataItem(
+                            label = "Series 2",
+                            item = listOf(4f, 5f, 6f).toChartData(labels = listOf("w1", "w2", "w3")),
+                        ),
+                    ),
+                title = "Multi",
+            )
+
+        val labels = resolveLineXAxisLabels(data)
+
+        assertTrue(labels.isEmpty())
+    }
+
+    @Test
+    fun buildLineXAxisTicks_spreadsCentersAcrossPlotWidth() {
+        val ticks =
+            buildLineXAxisTicks(
+                labels = listOf("A", "B", "C", "D"),
+                labelIndices = listOf(0, 2, 3),
+                pointsCount = 4,
+                stepX = 100f,
+            )
+
+        assertEquals(expected = 3, actual = ticks.size)
+        assertEquals(expected = "A", actual = ticks[0].label)
+        assertEquals(expected = 0f, actual = ticks[0].centerX)
+        assertEquals(expected = "C", actual = ticks[1].label)
+        assertEquals(expected = 200f, actual = ticks[1].centerX)
+        assertEquals(expected = "D", actual = ticks[2].label)
+        assertEquals(expected = 300f, actual = ticks[2].centerX)
+    }
+
+    @Test
+    fun buildLineXAxisTicks_appliesScrollOffsetForViewportPositions() {
+        val ticks =
+            buildLineXAxisTicks(
+                labels = listOf("A", "B", "C", "D"),
+                labelIndices = listOf(1, 3),
+                pointsCount = 4,
+                stepX = 100f,
+                scrollOffsetPx = 50f,
+            )
+
+        assertEquals(expected = 2, actual = ticks.size)
+        assertEquals(expected = "B", actual = ticks[0].label)
+        assertEquals(expected = 50f, actual = ticks[0].centerX)
+        assertEquals(expected = "D", actual = ticks[1].label)
+        assertEquals(expected = 250f, actual = ticks[1].centerX)
+    }
+
+    @Test
+    fun buildLineYAxisTicks_appliesInsetToFirstAndLastTick() {
+        val ticks =
+            buildLineYAxisTicks(
+                minValue = 0.0,
+                maxValue = 100.0,
+                labelCount = 5,
+                plotHeightPx = 200f,
+                verticalInsetPx = 10f,
+            )
+
+        assertEquals(expected = 5, actual = ticks.size)
+        assertEquals(expected = "100", actual = ticks.first().label)
+        assertEquals(expected = "0", actual = ticks.last().label)
+        assertEquals(expected = 10f, actual = ticks.first().centerY)
+        assertEquals(expected = 190f, actual = ticks.last().centerY)
     }
 }

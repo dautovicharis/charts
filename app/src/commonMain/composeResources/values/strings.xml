@@ -18,6 +18,10 @@
     <string name="cd_select_theme">Select theme %1$d</string>
     <string name="bar_data_points">Data points: %1$d</string>
     <string name="bar_data_points_range">Value range: %1$d - %2$d</string>
+    <string name="line_data_points">Data points: %1$d</string>
+    <string name="line_data_points_range">Value range: %1$d - %2$d</string>
+    <string name="timeline_update_interval">Update interval: %1$d ms</string>
+    <string name="timeline_window_size">Window size: %1$d points</string>
 
     <!-- Drawer -->
     <string name="drawer_header_title">Settings</string>
@@ -49,6 +53,7 @@
 
     <string name="chart_basic">Basic</string>
     <string name="chart_default">Default</string>
+    <string name="chart_timeline">Timeline</string>
     <string name="chart_custom">Custom</string>
     <string name="style_details_title">Style details</string>
     <string name="cd_close_dialog">Close dialog</string>

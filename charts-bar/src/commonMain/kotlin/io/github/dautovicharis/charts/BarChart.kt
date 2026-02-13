@@ -1,11 +1,7 @@
 package io.github.dautovicharis.charts
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.barchart.BarChart
 import io.github.dautovicharis.charts.internal.common.composable.Chart
 import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
@@ -56,29 +52,13 @@ private fun BarChartContent(
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
 ) {
-    var title by remember(dataSet) { mutableStateOf(dataSet.data.label) }
     Chart(chartViewsStyle = style.chartViewStyle) {
         BarChart(
             chartData = dataSet.data.item,
-            title = title,
+            title = dataSet.data.label,
             style = style,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
-        ) {
-            title =
-                when (it) {
-                    NO_SELECTION -> dataSet.data.label
-                    else -> resolveSelectedBarTitle(dataSet, it)
-                }
-        }
+        )
     }
-}
-
-private fun resolveSelectedBarTitle(
-    dataSet: ChartDataSet,
-    index: Int,
-): String {
-    val label = dataSet.data.item.labels.getOrNull(index).orEmpty().ifBlank { (index + 1).toString() }
-    val value = dataSet.data.item.points.getOrNull(index) ?: return label
-    return "$label: $value"
 }

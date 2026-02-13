@@ -1,21 +1,27 @@
 package io.github.dautovicharis.charts.internal.barchart
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.internal.NO_SELECTION
+import io.github.dautovicharis.charts.internal.common.composable.rememberDenseExpandedState
+import io.github.dautovicharis.charts.internal.common.composable.rememberZoomScaleState
+import io.github.dautovicharis.charts.internal.common.composable.zoomInScale
+import io.github.dautovicharis.charts.internal.common.composable.zoomOutScale
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.internal.common.model.normalizeBarValues
 import io.github.dautovicharis.charts.internal.common.model.resolveBarRange
@@ -24,6 +30,7 @@ import io.github.dautovicharis.charts.style.BarChartStyle
 private const val ZOOM_MIN = 1f
 private const val ZOOM_MAX = 4f
 private const val ZOOM_STEP = 1.25f
+private val Y_AXIS_CHART_GAP: Dp = 10.dp
 
 @Composable
 fun BarChart(
@@ -36,112 +43,195 @@ fun BarChart(
 ) {
     val barColor = style.barColor.copy(alpha = style.barAlpha)
     val isPreview = LocalInspectionMode.current
-    val dataSize = chartData.points.size
-    val hasFixedRange = style.minValue != null || style.maxValue != null
-    val (fixedMin, fixedMax) =
-        remember(chartData, style) {
-            chartData.resolveBarRange(style.minValue, style.maxValue)
-        }
-    val targetNormalized =
-        remember(chartData, fixedMin, fixedMax, hasFixedRange) {
-            chartData.normalizeBarValues(fixedMin, fixedMax, hasFixedRange)
-        }
-    val animatedValues =
-        rememberBarChartAnimatedValues(
-            chartData = chartData,
-            targetNormalized = targetNormalized,
-            isPreview = isPreview,
-            animateOnStart = animateOnStart,
-        )
-
-    val spacingPx = with(LocalDensity.current) { style.space.toPx() }
-    val minBarWidthPx = with(LocalDensity.current) { style.minBarWidth.toPx() }
-    val isScrollable =
-        remember(dataSize) {
-            shouldUseScrollableDensity(
-                pointsCount = dataSize,
-            )
-        }
-    val scrollState = rememberScrollState()
-    val zoomMin = ZOOM_MIN
-    val zoomMax = ZOOM_MAX
-    val zoomStep = ZOOM_STEP
-    var zoomScale by remember { mutableFloatStateOf(1f) }
-    var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
-
-    LaunchedEffect(isScrollable, zoomMin, zoomMax) {
-        zoomScale =
-            when {
-                !isScrollable -> 1f
-                else -> zoomScale.coerceIn(zoomMin, zoomMax)
+    val sourceDataSize = chartData.points.size
+    BoxWithConstraints(modifier = style.modifier) {
+        val density = LocalDensity.current
+        val spacingPx = with(density) { style.space.toPx() }
+        val minBarWidthPx = with(density) { style.minBarWidth.toPx() }
+        val (sourceFixedMin, sourceFixedMax) =
+            remember(chartData, style.minValue, style.maxValue) {
+                chartData.resolveBarRange(style.minValue, style.maxValue)
             }
-    }
+        val yAxisTicks =
+            remember(sourceFixedMin, sourceFixedMax, style.yAxisLabelCount) {
+                buildYAxisTicks(
+                    minValue = sourceFixedMin,
+                    maxValue = sourceFixedMax,
+                    labelCount = style.yAxisLabelCount,
+                    chartHeightPx = 1f,
+                )
+            }
+        val yAxisWidthPx =
+            if (style.yAxisLabelsVisible) {
+                estimateYAxisLabelWidthPx(
+                    ticks = yAxisTicks,
+                    fontSizePx = with(density) { style.yAxisLabelSize.toPx() },
+                )
+            } else {
+                0f
+            }
+        val yAxisGapPx = if (style.yAxisLabelsVisible) with(density) { Y_AXIS_CHART_GAP.toPx() } else 0f
+        val viewportWidthPx = (constraints.maxWidth.toFloat() - yAxisWidthPx - yAxisGapPx).coerceAtLeast(1f)
+        val maxFitBars =
+            remember(viewportWidthPx, spacingPx, minBarWidthPx) {
+                maxBarsThatFit(
+                    viewportWidthPx = viewportWidthPx,
+                    spacingPx = spacingPx,
+                    minBarWidthPx = minBarWidthPx,
+                )
+            }
+        val isDenseData =
+            remember(sourceDataSize, maxFitBars) {
+                sourceDataSize > maxFitBars
+            }
+        var denseExpanded by rememberDenseExpandedState(isDenseModeAvailable = isDenseData)
+        val compactDenseMode = isDenseData && !denseExpanded
+        val renderData =
+            remember(chartData, compactDenseMode, maxFitBars) {
+                if (compactDenseMode) {
+                    aggregateForCompactDensity(
+                        data = chartData,
+                        targetPoints = maxFitBars,
+                    )
+                } else {
+                    chartData
+                }
+            }
+        val dataSize = renderData.points.size
+        val hasFixedRange = style.minValue != null || style.maxValue != null
+        val (fixedMin, fixedMax) =
+            remember(renderData, style) {
+                renderData.resolveBarRange(style.minValue, style.maxValue)
+            }
+        val targetNormalized =
+            remember(renderData, fixedMin, fixedMax, hasFixedRange) {
+                renderData.normalizeBarValues(fixedMin, fixedMax, hasFixedRange)
+            }
+        val animatedValues =
+            rememberBarChartAnimatedValues(
+                chartData = renderData,
+                targetNormalized = targetNormalized,
+                isPreview = isPreview,
+                animateOnStart = animateOnStart,
+            )
 
-    LaunchedEffect(dataSize) {
-        if (selectedIndex !in 0 until dataSize) {
-            selectedIndex = NO_SELECTION
-            onValueChanged(NO_SELECTION)
-        }
-    }
-
-    val showZoomControlsInHeader = isScrollable && style.zoomControlsVisible
-    val showHeader = title.isNotBlank() || showZoomControlsInHeader
-
-    val onToggleSelection: (Int) -> Unit = { index ->
-        if (selectedIndex == index) {
-            selectedIndex = NO_SELECTION
-            onValueChanged(NO_SELECTION)
-        } else {
-            selectedIndex = index
-            onValueChanged(index)
-        }
-    }
-
-    Column(modifier = style.modifier) {
-        if (showHeader) {
-            BarChartHeader(
-                title = title,
-                style = style,
-                showZoomControls = showZoomControlsInHeader,
-                zoomScale = zoomScale,
+        val isScrollable = isDenseData && denseExpanded
+        val scrollState = rememberScrollState()
+        val zoomMin = ZOOM_MIN
+        val zoomMax = ZOOM_MAX
+        val zoomStep = ZOOM_STEP
+        var zoomScale by
+            rememberZoomScaleState(
+                isZoomActive = isScrollable,
                 minZoom = zoomMin,
                 maxZoom = zoomMax,
-                onZoomOut = {
-                    zoomScale = (zoomScale / zoomStep).coerceIn(zoomMin, zoomMax)
-                },
-                onZoomIn = {
-                    zoomScale = (zoomScale * zoomStep).coerceIn(zoomMin, zoomMax)
-                },
-                modifier = Modifier.fillMaxWidth(),
+                initialZoom = zoomMin,
             )
+        var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
+
+        LaunchedEffect(dataSize) {
+            if (selectedIndex !in 0 until dataSize) {
+                selectedIndex = NO_SELECTION
+                onValueChanged(NO_SELECTION)
+            }
         }
 
-        BarChartContent(
-            chartData = chartData,
-            style = style,
-            interactionEnabled = interactionEnabled,
-            animatedValues = animatedValues,
-            barColor = barColor,
-            fixedMin = fixedMin,
-            fixedMax = fixedMax,
-            isScrollable = isScrollable,
-            spacingPx = spacingPx,
-            minBarWidthPx = minBarWidthPx,
-            scrollState = scrollState,
-            zoomScale = zoomScale,
-            zoomMin = zoomMin,
-            zoomMax = zoomMax,
-            zoomStep = zoomStep,
-            selectedIndex = selectedIndex,
-            onToggleSelection = onToggleSelection,
-            onZoomScaleChange = { updatedScale ->
-                zoomScale = updatedScale
-            },
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(top = if (showHeader) style.chartViewStyle.innerPadding else 0.dp),
-        )
+        LaunchedEffect(renderData) {
+            if (selectedIndex != NO_SELECTION) {
+                selectedIndex = NO_SELECTION
+                onValueChanged(NO_SELECTION)
+            }
+        }
+
+        val resolvedTitle =
+            remember(title, renderData, selectedIndex) {
+                when (selectedIndex) {
+                    NO_SELECTION -> title
+                    else -> resolveSelectedBarTitle(chartData = renderData, index = selectedIndex)
+                }
+            }
+
+        val onSelectIndex: (Int) -> Unit = { index ->
+            val resolvedIndex = if (index in 0 until dataSize) index else NO_SELECTION
+            if (selectedIndex != resolvedIndex) {
+                selectedIndex = resolvedIndex
+                onValueChanged(resolvedIndex)
+            }
+        }
+
+        val showZoomControlsInHeader = isScrollable && style.zoomControlsVisible
+        val showCompactToggle = isDenseData
+        val showHeader = resolvedTitle.isNotBlank() || showCompactToggle || showZoomControlsInHeader
+
+        val onToggleSelection: (Int) -> Unit = { index ->
+            if (selectedIndex == index && selectedIndex != NO_SELECTION) {
+                onSelectIndex(NO_SELECTION)
+            } else {
+                onSelectIndex(index)
+            }
+        }
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (showHeader) {
+                BarChartHeader(
+                    title = resolvedTitle,
+                    style = style,
+                    showDensityToggle = showCompactToggle,
+                    denseExpanded = denseExpanded,
+                    onToggleDensity = { denseExpanded = !denseExpanded },
+                    showZoomControls = showZoomControlsInHeader,
+                    zoomScale = zoomScale,
+                    minZoom = zoomMin,
+                    maxZoom = zoomMax,
+                    onZoomOut = {
+                        zoomScale = zoomOutScale(zoomScale, zoomStep, zoomMin, zoomMax)
+                    },
+                    onZoomIn = {
+                        zoomScale = zoomInScale(zoomScale, zoomStep, zoomMin, zoomMax)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            BarChartContent(
+                chartData = renderData,
+                style = style,
+                interactionEnabled = interactionEnabled,
+                dragSelectionEnabled = !isScrollable,
+                animatedValues = animatedValues,
+                barColor = barColor,
+                fixedMin = fixedMin,
+                fixedMax = fixedMax,
+                isScrollable = isScrollable,
+                spacingPx = spacingPx,
+                minBarWidthPx = minBarWidthPx,
+                scrollState = scrollState,
+                zoomScale = zoomScale,
+                zoomMin = zoomMin,
+                zoomMax = zoomMax,
+                zoomStep = zoomStep,
+                selectedIndex = selectedIndex,
+                onToggleSelection = onToggleSelection,
+                onSelectIndex = onSelectIndex,
+                onClearSelection = { onSelectIndex(NO_SELECTION) },
+                onZoomScaleChange = { updatedScale ->
+                    zoomScale = updatedScale
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = if (showHeader) style.chartViewStyle.innerPadding else 0.dp),
+            )
+        }
     }
+}
+
+private fun resolveSelectedBarTitle(
+    chartData: ChartData,
+    index: Int,
+): String {
+    val label = chartData.labels.getOrNull(index).orEmpty().ifBlank { (index + 1).toString() }
+    val value = chartData.points.getOrNull(index) ?: return label
+    return "$label: $value"
 }

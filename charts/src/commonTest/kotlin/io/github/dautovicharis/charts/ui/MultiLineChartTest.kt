@@ -1,12 +1,16 @@
 package io.github.dautovicharis.charts.ui
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.runComposeUiTest
 import io.github.dautovicharis.charts.LineChart
+import io.github.dautovicharis.charts.LineChartRenderMode
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.ValidationErrors.RULE_COLORS_SIZE_MISMATCH
 import io.github.dautovicharis.charts.internal.ValidationErrors.RULE_ITEM_POINTS_SIZE
@@ -14,6 +18,7 @@ import io.github.dautovicharis.charts.internal.format
 import io.github.dautovicharis.charts.mock.MockTest.colors
 import io.github.dautovicharis.charts.mock.MockTest.invalidMultiDataSet
 import io.github.dautovicharis.charts.mock.MockTest.multiDataSet
+import io.github.dautovicharis.charts.model.toMultiChartDataSet
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import kotlin.test.Test
 
@@ -35,6 +40,81 @@ class MultiLineChartTest {
             onNodeWithTag(TestTags.CHART_TITLE)
                 .assertTextEquals(expectedTitle)
                 .isDisplayed()
+            onNodeWithTag(TestTags.LINE_CHART_X_AXIS_LABELS).isDisplayed()
+            onNodeWithTag(TestTags.LINE_CHART_Y_AXIS_LABELS).isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun multiLineChart_withTimelineRenderMode_displaysChart() =
+        runComposeUiTest {
+            // Arrange
+            val expectedTitle = multiDataSet.data.title
+            val expectedCurrentValueItem1 = "Item 1 - 45000.57"
+
+            // Act
+            setContent {
+                LineChart(
+                    dataSet = multiDataSet,
+                    renderMode = LineChartRenderMode.Timeline,
+                )
+            }
+
+            // Assert
+            onNodeWithTag(TestTags.LINE_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+            onAllNodesWithText(expectedCurrentValueItem1).assertCountEquals(0)
+            onNodeWithTag(TestTags.LINE_CHART_X_AXIS_LABELS).isDisplayed()
+            onNodeWithTag(TestTags.LINE_CHART_Y_AXIS_LABELS).isDisplayed()
+            onAllNodesWithTag(TestTags.LINE_CHART_ZOOM_OUT).assertCountEquals(0)
+            onAllNodesWithTag(TestTags.LINE_CHART_ZOOM_IN).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun multiLineChart_withLargeDatasetInMorphMode_showsCompactToggleByDefault() =
+        runComposeUiTest {
+            val points = 120
+            val categories = List(points) { index -> "P${index + 1}" }
+            val dataSet =
+                listOf(
+                    "Item 1" to List(points) { index -> (index % 40).toFloat() },
+                    "Item 2" to List(points) { index -> ((index % 40) + 10).toFloat() },
+                ).toMultiChartDataSet(
+                    title = "Dense Multi",
+                    categories = categories,
+                )
+
+            setContent {
+                LineChart(dataSet = dataSet)
+            }
+
+            onNodeWithTag(TestTags.LINE_CHART).isDisplayed()
+            onNodeWithTag(TestTags.LINE_CHART_DENSE_EXPAND).isDisplayed()
+            onAllNodesWithTag(TestTags.LINE_CHART_ZOOM_OUT).assertCountEquals(0)
+            onAllNodesWithTag(TestTags.LINE_CHART_ZOOM_IN).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun multiLineChart_withoutCategories_hidesXAxisLayerAndShowsYAxisLayer() =
+        runComposeUiTest {
+            val dataSet =
+                listOf(
+                    "Item 1" to listOf(10f, 20f, 30f, 40f),
+                    "Item 2" to listOf(5f, 15f, 25f, 35f),
+                ).toMultiChartDataSet(
+                    title = "No Categories",
+                )
+
+            setContent {
+                LineChart(dataSet = dataSet)
+            }
+
+            onAllNodesWithTag(TestTags.LINE_CHART_X_AXIS_LABELS).assertCountEquals(0)
+            onNodeWithTag(TestTags.LINE_CHART_Y_AXIS_LABELS).isDisplayed()
         }
 
     @OptIn(ExperimentalTestApi::class)

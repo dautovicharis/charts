@@ -76,24 +76,6 @@ class ChartGalleryViewModel(
                 }
                 launch {
                     previewLoop(
-                        baseIntervalMs = LIVE_PREVIEW_INTERVAL_MS + 350L,
-                        jitterMs = 450L,
-                        update = { previews ->
-                            previews.copy(lineValues = previewUseCase.nextLinePreview(previews.lineValues))
-                        },
-                    )
-                }
-                launch {
-                    previewLoop(
-                        baseIntervalMs = LIVE_PREVIEW_INTERVAL_MS + 700L,
-                        jitterMs = 500L,
-                        update = { previews ->
-                            previews.copy(multiLineSeries = previewUseCase.nextMultiLinePreview())
-                        },
-                    )
-                }
-                launch {
-                    previewLoop(
                         baseIntervalMs = LIVE_PREVIEW_INTERVAL_MS + 150L,
                         jitterMs = 400L,
                         update = { previews ->

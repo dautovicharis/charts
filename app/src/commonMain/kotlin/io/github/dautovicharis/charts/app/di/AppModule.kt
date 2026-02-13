@@ -5,6 +5,7 @@ import io.github.dautovicharis.charts.app.MainViewModel
 import io.github.dautovicharis.charts.app.data.BarSampleUseCase
 import io.github.dautovicharis.charts.app.data.ChartPreviewUseCase
 import io.github.dautovicharis.charts.app.data.LineSampleUseCase
+import io.github.dautovicharis.charts.app.data.LiveLatencyTimelineUseCase
 import io.github.dautovicharis.charts.app.data.MultiLineSampleUseCase
 import io.github.dautovicharis.charts.app.data.PieSampleUseCase
 import io.github.dautovicharis.charts.app.data.RadarSampleUseCase
@@ -13,6 +14,7 @@ import io.github.dautovicharis.charts.app.data.StackedBarSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultChartPreviewUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
+import io.github.dautovicharis.charts.app.data.impl.DefaultLiveLatencyTimelineUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
@@ -31,6 +33,7 @@ import org.koin.dsl.module
 val appModule =
     module {
         single<ChartPreviewUseCase> { DefaultChartPreviewUseCase() }
+        single<LiveLatencyTimelineUseCase> { DefaultLiveLatencyTimelineUseCase() }
         single<PieSampleUseCase> { DefaultPieSampleUseCase() }
         single<LineSampleUseCase> { DefaultLineSampleUseCase() }
         single<MultiLineSampleUseCase> { DefaultMultiLineSampleUseCase() }

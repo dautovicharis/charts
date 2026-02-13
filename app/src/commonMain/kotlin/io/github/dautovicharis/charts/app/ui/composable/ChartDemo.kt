@@ -13,6 +13,7 @@ fun ChartDemo(
     styleItems: StyleItems,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
+    refreshVisible: Boolean = true,
     onStyleItemsChanged: (StyleItems?) -> Unit = {},
     extraButtons: @Composable RowScope.() -> Unit = {},
     presetContent: @Composable () -> Unit = {},
@@ -35,6 +36,7 @@ fun ChartDemo(
         presetContent = presetContent,
         controlsContent = controlsContent,
         onRefresh = onRefresh,
+        refreshVisible = refreshVisible,
         chartContent = chartItem,
     )
 }

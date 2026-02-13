@@ -44,7 +44,10 @@ class BarChartViewModel(
 
     private val _dataSet =
         MutableStateFlow(
-            barSampleUseCase.initialBarDataSet(),
+            barSampleUseCase.barDataSet(
+                points = defaultPoints,
+                range = defaultRange,
+            ),
         )
 
     val dataSet: StateFlow<ChartDataSet> = _dataSet.asStateFlow()

@@ -80,6 +80,8 @@ class BarChartEdgeInteractionTest {
                 BarChart(dataSet = dataSet)
             }
 
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
+
             tapChartAt(x = 24f)
             waitUntil(timeoutMillis = 3_000L) {
                 currentTitle() != dataSet.data.label

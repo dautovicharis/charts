@@ -45,6 +45,7 @@ private val StyleDetailsDefaultColumns = listOf("Parameter", "Value")
 fun ChartDemoSection(
     modifier: Modifier = Modifier,
     buttonsVisibility: Boolean = true,
+    refreshVisible: Boolean = true,
     extraButtons: @Composable RowScope.() -> Unit = {},
     presetContent: @Composable () -> Unit = {},
     controlsContent: @Composable () -> Unit = {},
@@ -75,6 +76,7 @@ fun ChartDemoSection(
                 onRegenerateChart = { chartRefreshKey += 1 },
                 extraButtons = extraButtons,
                 onRefresh = onRefresh,
+                refreshVisible = refreshVisible,
             )
         }
 
@@ -223,6 +225,7 @@ private fun ChartActionRow(
     onRegenerateChart: () -> Unit,
     extraButtons: @Composable RowScope.() -> Unit,
     onRefresh: () -> Unit,
+    refreshVisible: Boolean,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -240,12 +243,14 @@ private fun ChartActionRow(
 
         extraButtons()
 
-        IconButton(onClick = onRefresh) {
-            Icon(
-                imageVector = Icons.Filled.Refresh,
-                tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = stringResource(Res.string.cd_refresh_data),
-            )
+        if (refreshVisible) {
+            IconButton(onClick = onRefresh) {
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    contentDescription = stringResource(Res.string.cd_refresh_data),
+                )
+            }
         }
     }
 }
