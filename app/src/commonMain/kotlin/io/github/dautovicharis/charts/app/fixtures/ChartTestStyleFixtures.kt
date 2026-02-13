@@ -91,7 +91,6 @@ object ChartTestStyleFixtures {
             gridColor = chartColors.gridLine,
             axisColor = chartColors.axisLine,
             xAxisLabelColor = chartColors.axisLabel,
-            xAxisLabelTiltDegrees = 34f,
             selectionLineVisible = true,
             selectionLineColor = chartColors.selection,
             selectionLineWidth = 2f,

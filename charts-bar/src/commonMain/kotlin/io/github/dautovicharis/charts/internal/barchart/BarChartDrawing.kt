@@ -49,6 +49,12 @@ fun DrawScope.drawBars(
     if (style.axisVisible) {
         drawLine(
             color = style.axisColor,
+            start = Offset(0f, 0f),
+            end = Offset(0f, size.height),
+            strokeWidth = style.axisLineWidth,
+        )
+        drawLine(
+            color = style.axisColor,
             start = Offset(0f, clampedBaselineY),
             end = Offset(size.width, clampedBaselineY),
             strokeWidth = style.axisLineWidth,

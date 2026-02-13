@@ -10,6 +10,7 @@ import io.github.dautovicharis.charts.internal.barchart.estimateYAxisLabelWidthP
 import io.github.dautovicharis.charts.internal.barchart.formatAxisValue
 import io.github.dautovicharis.charts.internal.barchart.getSelectedIndex
 import io.github.dautovicharis.charts.internal.barchart.getSelectedIndexForContentX
+import io.github.dautovicharis.charts.internal.barchart.maxBarsThatFit
 import io.github.dautovicharis.charts.internal.barchart.sampledLabelIndices
 import io.github.dautovicharis.charts.internal.barchart.scrollableLabelIndices
 import io.github.dautovicharis.charts.internal.barchart.shouldUseScrollableDensity
@@ -96,6 +97,42 @@ class BarChartHelpersTest {
         val unit = unitWidth(barWidthPx = barWidth, spacingPx = spacing)
         val width = contentWidth(dataSize = 5, unitWidthPx = unit, spacingPx = spacing)
         assertEquals(expected = 48f, actual = width)
+    }
+
+    @Test
+    fun maxBarsThatFit_calculatesCapacityFromMinBarWidthAndSpacing() {
+        val capacity =
+            maxBarsThatFit(
+                viewportWidthPx = 200f,
+                spacingPx = 10f,
+                minBarWidthPx = 8f,
+            )
+
+        assertEquals(expected = 11, actual = capacity)
+    }
+
+    @Test
+    fun maxBarsThatFit_returnsAtLeastOneForTinyViewport() {
+        val capacity =
+            maxBarsThatFit(
+                viewportWidthPx = 0f,
+                spacingPx = 10f,
+                minBarWidthPx = 8f,
+            )
+
+        assertEquals(expected = 1, actual = capacity)
+    }
+
+    @Test
+    fun maxBarsThatFit_clampsNegativeSpacingToZero() {
+        val capacity =
+            maxBarsThatFit(
+                viewportWidthPx = 200f,
+                spacingPx = -10f,
+                minBarWidthPx = 8f,
+            )
+
+        assertEquals(expected = 25, actual = capacity)
     }
 
     @Test

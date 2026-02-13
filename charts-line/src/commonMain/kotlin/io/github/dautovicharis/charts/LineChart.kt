@@ -15,7 +15,12 @@ import io.github.dautovicharis.charts.style.LineChartStyle
  * @param dataSet The data set to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
  * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * Ignored when [renderMode] is [LineChartRenderMode.Timeline].
  * @param animateOnStart Enables initial chart animations. Defaults to true.
+ * @param renderMode Chart transition mode. Defaults to [LineChartRenderMode.Morph].
+ * @param animationDurationMillis Timeline transition duration. Used only when [renderMode]
+ * is [LineChartRenderMode.Timeline].
+ * Dense zoom/scroll style settings are applied in morph mode and ignored in timeline mode.
  */
 @Composable
 fun LineChart(
@@ -23,6 +28,8 @@ fun LineChart(
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    renderMode: LineChartRenderMode = LineChartRenderMode.Morph,
+    animationDurationMillis: Int = 420,
 ) {
     val data =
         remember(dataSet) {
@@ -36,6 +43,8 @@ fun LineChart(
         style = style,
         interactionEnabled = interactionEnabled,
         animateOnStart = animateOnStart,
+        renderMode = renderMode,
+        animationDurationMillis = animationDurationMillis,
     )
 }
 
@@ -45,7 +54,12 @@ fun LineChart(
  * @param dataSet The data sets to be displayed in the chart.
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
  * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
+ * Ignored when [renderMode] is [LineChartRenderMode.Timeline].
  * @param animateOnStart Enables initial chart animations. Defaults to true.
+ * @param renderMode Chart transition mode. Defaults to [LineChartRenderMode.Morph].
+ * @param animationDurationMillis Timeline transition duration. Used only when [renderMode]
+ * is [LineChartRenderMode.Timeline].
+ * Dense zoom/scroll style settings are applied in morph mode and ignored in timeline mode.
  */
 @Composable
 fun LineChart(
@@ -53,11 +67,15 @@ fun LineChart(
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    renderMode: LineChartRenderMode = LineChartRenderMode.Morph,
+    animationDurationMillis: Int = 420,
 ) {
     LineChartImpl(
         data = dataSet.data,
         style = style,
         interactionEnabled = interactionEnabled,
         animateOnStart = animateOnStart,
+        renderMode = renderMode,
+        animationDurationMillis = animationDurationMillis,
     )
 }

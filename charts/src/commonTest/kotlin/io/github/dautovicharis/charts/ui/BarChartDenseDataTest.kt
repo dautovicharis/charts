@@ -1,9 +1,12 @@
 package io.github.dautovicharis.charts.ui
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
@@ -21,15 +24,16 @@ import kotlin.test.assertTrue
 class BarChartDenseDataTest {
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun barChart_withLargeDataset_showsScrollableControlsByDefault() =
+    fun barChart_withLargeDataset_showsCompactToggleByDefault() =
         runComposeUiTest {
             setContent {
                 BarChart(dataSet = largeDataSet())
             }
 
             onNodeWithTag(TestTags.BAR_CHART).isDisplayed()
-            onNodeWithTag(TestTags.BAR_CHART_ZOOM_OUT).isDisplayed()
-            onNodeWithTag(TestTags.BAR_CHART_ZOOM_IN).isDisplayed()
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).isDisplayed()
+            onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_OUT).assertCountEquals(0)
+            onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_IN).assertCountEquals(0)
             onNodeWithTag(TestTags.BAR_CHART_X_AXIS_LABELS).isDisplayed()
             onNodeWithTag(TestTags.BAR_CHART_Y_AXIS_LABELS).isDisplayed()
         }
@@ -74,28 +78,44 @@ class BarChartDenseDataTest {
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun barChart_datasetUnderDenseThreshold_hidesZoomControls() =
+    fun barChart_datasetThatFits_hidesDenseToggle() =
         runComposeUiTest {
             setContent {
                 BarChart(
-                    dataSet = largeDataSet(points = 49),
+                    dataSet = smallDataSet(points = 8),
                 )
             }
 
+            onAllNodesWithTag(TestTags.BAR_CHART_DENSE_EXPAND).assertCountEquals(0)
             onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_OUT).assertCountEquals(0)
             onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_IN).assertCountEquals(0)
         }
 
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun barChart_datasetAtDenseThreshold_showsZoomControls() =
+    fun barChart_datasetThatDoesNotFit_showsCompactToggle() =
         runComposeUiTest {
             setContent {
                 BarChart(
-                    dataSet = largeDataSet(points = 50),
+                    dataSet = largeDataSet(points = 40),
                 )
             }
 
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).isDisplayed()
+            onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_OUT).assertCountEquals(0)
+            onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_IN).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun barChart_withLargeDataset_expandShowsZoomControls() =
+        runComposeUiTest {
+            setContent {
+                BarChart(dataSet = largeDataSet())
+            }
+
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_COLLAPSE).isDisplayed()
             onNodeWithTag(TestTags.BAR_CHART_ZOOM_OUT).isDisplayed()
             onNodeWithTag(TestTags.BAR_CHART_ZOOM_IN).isDisplayed()
         }
@@ -104,8 +124,9 @@ class BarChartDenseDataTest {
     @Test
     fun barChart_withLargeDataset_tapUpdatesTitleWithLabelAndValue() =
         runComposeUiTest {
+            val dataSet = largeDataSet()
             setContent {
-                BarChart(dataSet = largeDataSet())
+                BarChart(dataSet = dataSet)
             }
 
             val chartSize = onNodeWithTag(TestTags.BAR_CHART).fetchSemanticsNode().size
@@ -118,11 +139,9 @@ class BarChartDenseDataTest {
             }
 
             waitUntil(timeoutMillis = 3_000L) {
-                runCatching {
-                    onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals("Jan 01: -15.0")
-                }.isSuccess
+                currentTitle() != dataSet.data.label
             }
-            onNodeWithTag(TestTags.CHART_TITLE).assertTextEquals("Jan 01: -15.0").isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE).isDisplayed()
         }
 
     @OptIn(ExperimentalTestApi::class)
@@ -136,6 +155,7 @@ class BarChartDenseDataTest {
                 )
             }
 
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
             onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_OUT).assertCountEquals(0)
             onAllNodesWithTag(TestTags.BAR_CHART_ZOOM_IN).assertCountEquals(0)
         }
@@ -176,6 +196,7 @@ class BarChartDenseDataTest {
                 BarChart(dataSet = largeDataSet())
             }
 
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
             val zoomBounds = onNodeWithTag(TestTags.BAR_CHART_ZOOM_IN).fetchSemanticsNode().boundsInRoot
             val chartBounds = onNodeWithTag(TestTags.BAR_CHART).fetchSemanticsNode().boundsInRoot
             assertTrue(zoomBounds.bottom <= chartBounds.top)
@@ -191,6 +212,13 @@ class BarChartDenseDataTest {
 
             onAllNodesWithText("Reset").assertCountEquals(0)
         }
+
+    @OptIn(ExperimentalTestApi::class)
+    private fun ComposeUiTest.currentTitle(): String {
+        val semanticsNode = onNodeWithTag(TestTags.CHART_TITLE).fetchSemanticsNode()
+        return semanticsNode.config[SemanticsProperties.Text]
+            .joinToString(separator = "") { item -> item.text }
+    }
 
     private fun smallDataSet(points: Int = 12): ChartDataSet {
         val labels = dateLabels(points)

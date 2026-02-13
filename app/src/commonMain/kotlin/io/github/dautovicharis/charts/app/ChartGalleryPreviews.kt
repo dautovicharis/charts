@@ -110,9 +110,14 @@ private fun LineChartPreview(values: List<Float>) {
         }
     LineChart(
         dataSet = dataSet,
-        style = LineChartDefaults.style(chartViewStyle = previewChartViewStyle()),
+        style =
+            LineChartDefaults.style(
+                chartViewStyle = previewChartViewStyle(),
+                xAxisLabelsVisible = false,
+                yAxisLabelsVisible = false,
+            ),
         interactionEnabled = false,
-        animateOnStart = false,
+        animateOnStart = true,
     )
 }
 
@@ -124,9 +129,14 @@ private fun MultiLineChartPreview(series: List<Pair<String, List<Float>>>) {
         }
     LineChart(
         dataSet = dataSet,
-        style = LineChartDefaults.style(chartViewStyle = previewChartViewStyle()),
+        style =
+            LineChartDefaults.style(
+                chartViewStyle = previewChartViewStyle(),
+                xAxisLabelsVisible = false,
+                yAxisLabelsVisible = false,
+            ),
         interactionEnabled = false,
-        animateOnStart = false,
+        animateOnStart = true,
     )
 }
 

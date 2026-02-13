@@ -322,7 +322,6 @@ private fun AddCustomBarChart() {
         gridColor = MaterialTheme.colorScheme.outlineVariant,
         axisColor = MaterialTheme.colorScheme.outline,
         xAxisLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        xAxisLabelTiltDegrees = 34f,
         selectionLineVisible = true,
         selectionLineColor = MaterialTheme.colorScheme.secondary,
         selectionLineWidth = 2f

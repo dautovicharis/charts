@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import io.github.dautovicharis.charts.internal.common.model.ChartDataType.FloatData
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.MultiChartDataSet
@@ -111,6 +112,18 @@ internal object MockTest {
             dragPointColor = Color.Red,
             dragPointColorSameAsLine = true,
             pointColorSameAsLine = true,
+            axisVisible = true,
+            axisColor = Color.Gray,
+            axisLineWidth = 1f,
+            yAxisLabelsVisible = true,
+            yAxisLabelColor = Color.Gray,
+            yAxisLabelSize = 11.sp,
+            yAxisLabelCount = 5,
+            xAxisLabelsVisible = true,
+            xAxisLabelColor = Color.Gray,
+            xAxisLabelSize = 11.sp,
+            xAxisLabelMaxCount = 6,
+            zoomControlsVisible = true,
             chartViewStyle = mockChartViewStyle(),
         )
     }

@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
  * @property gridSteps Number of horizontal grid intervals.
  * @property gridColor The color of grid lines.
  * @property gridLineWidth The stroke width of grid lines.
- * @property axisVisible Whether chart axes are shown.
+ * @property axisVisible Whether the left Y-axis line and horizontal baseline are shown.
  * @property axisColor The color of the axes.
  * @property axisLineWidth The stroke width of the axes.
  * @property yAxisLabelsVisible Whether Y-axis labels are shown.
@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.sp
  * @property xAxisLabelsVisible Whether X-axis labels are shown.
  * @property xAxisLabelColor The color of X-axis labels.
  * @property xAxisLabelSize The text size of X-axis labels.
- * @property xAxisLabelTiltDegrees The tilt angle in degrees for X-axis labels.
  * @property xAxisLabelMaxCount Maximum number of X-axis labels to display.
  * @property selectionLineVisible Whether the selected bar indicator line is shown.
  * @property selectionLineColor The color of the selected bar indicator line.
@@ -70,7 +69,6 @@ class BarChartStyle(
     val xAxisLabelsVisible: Boolean,
     val xAxisLabelColor: Color,
     val xAxisLabelSize: TextUnit,
-    val xAxisLabelTiltDegrees: Float,
     val xAxisLabelMaxCount: Int,
     val selectionLineVisible: Boolean,
     val selectionLineColor: Color,
@@ -102,7 +100,6 @@ class BarChartStyle(
             BarChartStyle::xAxisLabelsVisible.name to xAxisLabelsVisible,
             BarChartStyle::xAxisLabelColor.name to xAxisLabelColor,
             BarChartStyle::xAxisLabelSize.name to xAxisLabelSize,
-            BarChartStyle::xAxisLabelTiltDegrees.name to xAxisLabelTiltDegrees,
             BarChartStyle::xAxisLabelMaxCount.name to xAxisLabelMaxCount,
             BarChartStyle::selectionLineVisible.name to selectionLineVisible,
             BarChartStyle::selectionLineColor.name to selectionLineColor,
@@ -138,19 +135,18 @@ object BarChartDefaults {
      * @param space The space between the bars in the chart. Defaults to 10.dp.
      * @param minValue Optional fixed minimum value for the chart scale. Defaults to null.
      * @param maxValue Optional fixed maximum value for the chart scale. Defaults to null.
-     * @param minBarWidth The minimum width of each bar. Defaults to 8.dp.
+     * @param minBarWidth The minimum width of each bar. Defaults to 10.dp.
      * @param zoomControlsVisible Whether zoom controls are shown. Defaults to true.
      * @param gridVisible Whether horizontal grid lines are shown. Defaults to true.
      * @param gridSteps Number of horizontal grid intervals. Defaults to 4.
      * @param gridColor The color of grid lines. Defaults to a theme-based onSurface variant.
      * @param gridLineWidth The stroke width of grid lines. Defaults to 1f.
-     * @param axisVisible Whether chart axes are shown. Defaults to true.
+     * @param axisVisible Whether the left Y-axis line and horizontal baseline are shown. Defaults to true.
      * @param axisColor The color of the axes. Defaults to a theme-based onSurface variant.
      * @param axisLineWidth The stroke width of the axes. Defaults to 1f.
      * @param xAxisLabelsVisible Whether X-axis labels are shown. Defaults to true.
      * @param xAxisLabelColor The color of X-axis labels. Defaults to a theme-based onSurface variant.
      * @param xAxisLabelSize The text size of X-axis labels. Defaults to 11.sp.
-     * @param xAxisLabelTiltDegrees The tilt angle in degrees for X-axis labels. Defaults to 0f.
      * @param xAxisLabelMaxCount Maximum number of X-axis labels to display. Defaults to 6.
      * @param selectionLineVisible Whether the selected bar indicator line is shown. Defaults to true.
      * @param selectionLineColor The color of the selected bar indicator line. Defaults to a theme-based primary variant.
@@ -168,7 +164,7 @@ object BarChartDefaults {
         space: Dp = 10.dp,
         minValue: Float? = null,
         maxValue: Float? = null,
-        minBarWidth: Dp = 8.dp,
+        minBarWidth: Dp = 10.dp,
         zoomControlsVisible: Boolean = true,
         gridVisible: Boolean = true,
         gridSteps: Int = 4,
@@ -180,7 +176,6 @@ object BarChartDefaults {
         xAxisLabelsVisible: Boolean = true,
         xAxisLabelColor: Color = defaultXAxisLabelColor(),
         xAxisLabelSize: TextUnit = 11.sp,
-        xAxisLabelTiltDegrees: Float = 0f,
         xAxisLabelMaxCount: Int = 6,
         selectionLineVisible: Boolean = true,
         selectionLineColor: Color = defaultSelectionLineColor(),
@@ -221,7 +216,6 @@ object BarChartDefaults {
             xAxisLabelsVisible = xAxisLabelsVisible,
             xAxisLabelColor = xAxisLabelColor,
             xAxisLabelSize = xAxisLabelSize,
-            xAxisLabelTiltDegrees = xAxisLabelTiltDegrees,
             xAxisLabelMaxCount = xAxisLabelMaxCount,
             selectionLineVisible = selectionLineVisible,
             selectionLineColor = selectionLineColor,
