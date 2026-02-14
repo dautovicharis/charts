@@ -1,10 +1,14 @@
 package io.github.dautovicharis.charts.ui
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
 import io.github.dautovicharis.charts.StackedBarChart
 import io.github.dautovicharis.charts.internal.TestTags
@@ -14,6 +18,7 @@ import io.github.dautovicharis.charts.internal.format
 import io.github.dautovicharis.charts.mock.MockTest.colors
 import io.github.dautovicharis.charts.mock.MockTest.invalidMultiDataSet
 import io.github.dautovicharis.charts.mock.MockTest.multiDataSet
+import io.github.dautovicharis.charts.model.toMultiChartDataSet
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import kotlin.test.Test
 
@@ -35,6 +40,8 @@ class StackedBarChartTest {
             onNodeWithTag(TestTags.CHART_TITLE)
                 .assertTextEquals(expectedTitle)
                 .isDisplayed()
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_X_AXIS_LABELS).isDisplayed()
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_Y_AXIS_LABELS).isDisplayed()
         }
 
     @OptIn(ExperimentalTestApi::class)
@@ -123,4 +130,96 @@ class StackedBarChartTest {
                 .assertTextEquals(expectedTitle)
                 .isDisplayed()
         }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withXAxisLabelsHidden_doesNotRenderXAxisLayer() =
+        runComposeUiTest {
+            setContent {
+                StackedBarChart(
+                    dataSet = multiDataSet,
+                    style = StackedBarChartDefaults.style(xAxisLabelsVisible = false),
+                )
+            }
+
+            onAllNodesWithTag(TestTags.STACKED_BAR_CHART_X_AXIS_LABELS).assertCountEquals(0)
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_Y_AXIS_LABELS).isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withYAxisLabelsHidden_doesNotRenderYAxisLayer() =
+        runComposeUiTest {
+            setContent {
+                StackedBarChart(
+                    dataSet = multiDataSet,
+                    style = StackedBarChartDefaults.style(yAxisLabelsVisible = false),
+                )
+            }
+
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_X_AXIS_LABELS).isDisplayed()
+            onAllNodesWithTag(TestTags.STACKED_BAR_CHART_Y_AXIS_LABELS).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withLargeDataset_showsCompactToggleByDefault() =
+        runComposeUiTest {
+            setContent {
+                StackedBarChart(
+                    dataSet = denseStackedBarDataSet(),
+                )
+            }
+
+            onNodeWithTag(TestTags.STACKED_BAR_CHART).isDisplayed()
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_DENSE_EXPAND).isDisplayed()
+            onAllNodesWithTag(TestTags.STACKED_BAR_CHART_ZOOM_OUT).assertCountEquals(0)
+            onAllNodesWithTag(TestTags.STACKED_BAR_CHART_ZOOM_IN).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withLargeDataset_expandShowsZoomControls() =
+        runComposeUiTest {
+            setContent {
+                StackedBarChart(
+                    dataSet = denseStackedBarDataSet(),
+                )
+            }
+
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_DENSE_COLLAPSE).isDisplayed()
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_ZOOM_OUT).isDisplayed()
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_ZOOM_IN).isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withZoomControlsHidden_doesNotRenderZoomButtons() =
+        runComposeUiTest {
+            setContent {
+                StackedBarChart(
+                    dataSet = denseStackedBarDataSet(),
+                    style = StackedBarChartDefaults.style(zoomControlsVisible = false),
+                )
+            }
+
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
+            onAllNodesWithTag(TestTags.STACKED_BAR_CHART_ZOOM_OUT).assertCountEquals(0)
+            onAllNodesWithTag(TestTags.STACKED_BAR_CHART_ZOOM_IN).assertCountEquals(0)
+        }
+
+    private fun denseStackedBarDataSet(bars: Int = 120) =
+        List(bars) { index ->
+            "Bar ${index + 1}" to
+                listOf(
+                    50f + (index % 9),
+                    30f + (index % 7),
+                    20f + (index % 5),
+                    10f + (index % 3),
+                )
+        }.toMultiChartDataSet(
+            title = "Dense Stacked Bar",
+            categories = listOf("S1", "S2", "S3", "S4"),
+        )
 }

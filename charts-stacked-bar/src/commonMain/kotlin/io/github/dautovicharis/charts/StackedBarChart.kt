@@ -1,15 +1,12 @@
 package io.github.dautovicharis.charts
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.testTag
 import io.github.dautovicharis.charts.internal.NO_SELECTION
-import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.internal.barstackedchart.StackedBarChart
 import io.github.dautovicharis.charts.internal.barstackedchart.generateColorShades
 import io.github.dautovicharis.charts.internal.common.composable.Chart
@@ -111,18 +108,9 @@ private fun StackedBarChartContent(
             }
         }
     Chart(chartViewsStyle = style.chartViewStyle) {
-        if (title.isNotBlank()) {
-            Text(
-                modifier =
-                    style.chartViewStyle.modifierTopTitle
-                        .testTag(TestTags.CHART_TITLE),
-                text = title,
-                style = style.chartViewStyle.styleTitle,
-            )
-        }
-
         StackedBarChart(
             data = dataSet.data,
+            title = title,
             style = style,
             colors = colors,
             interactionEnabled = interactionEnabled,
