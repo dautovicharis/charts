@@ -1,6 +1,7 @@
 package io.github.dautovicharis.charts.ui
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -13,12 +14,14 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.test.swipeLeft
 import io.github.dautovicharis.charts.BarChart
 import io.github.dautovicharis.charts.internal.TestTags
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.toChartDataSet
 import io.github.dautovicharis.charts.style.BarChartDefaults
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class BarChartDenseDataTest {
@@ -214,10 +217,76 @@ class BarChartDenseDataTest {
         }
 
     @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun barChart_denseExpanded_smallScrollDelta_keepsXAxisLabelCadenceStable() =
+        runComposeUiTest {
+            setContent {
+                BarChart(dataSet = numericLargeDataSet())
+            }
+
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_EXPAND).performTouchInput { click() }
+            onNodeWithTag(TestTags.BAR_CHART_DENSE_COLLAPSE).isDisplayed()
+
+            onNodeWithTag(TestTags.BAR_CHART).performTouchInput {
+                swipeLeft()
+                swipeLeft()
+            }
+            waitForIdle()
+            val beforeLabels = visibleBarXAxisNumericLabels()
+
+            val chartSize = onNodeWithTag(TestTags.BAR_CHART).fetchSemanticsNode().size
+            val startX = (chartSize.width * 0.7f).coerceIn(2f, (chartSize.width - 2).toFloat())
+            val centerY = (chartSize.height / 2f).coerceIn(2f, (chartSize.height - 2).toFloat())
+            onNodeWithTag(TestTags.BAR_CHART).performTouchInput {
+                down(Offset(x = startX, y = centerY))
+                moveBy(Offset(x = -24f, y = 0f))
+                up()
+            }
+            waitForIdle()
+            val afterLabels = visibleBarXAxisNumericLabels()
+
+            assertTrue(beforeLabels.isNotEmpty())
+            assertTrue(afterLabels.isNotEmpty())
+            assertTrue(beforeLabels.zipWithNext { previous, next -> next > previous }.all { it })
+            assertTrue(afterLabels.zipWithNext { previous, next -> next > previous }.all { it })
+            assertEquals(beforeLabels.size, afterLabels.size)
+
+            if (beforeLabels.size >= 2 && afterLabels.size >= 2) {
+                val beforeStride = beforeLabels[1] - beforeLabels[0]
+                val afterStride = afterLabels[1] - afterLabels[0]
+                assertEquals(beforeStride, afterStride)
+            }
+        }
+
+    @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.currentTitle(): String {
         val semanticsNode = onNodeWithTag(TestTags.CHART_TITLE).fetchSemanticsNode()
         return semanticsNode.config[SemanticsProperties.Text]
             .joinToString(separator = "") { item -> item.text }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    private fun ComposeUiTest.visibleBarXAxisNumericLabels(): List<Int> {
+        val axisNode = onNodeWithTag(TestTags.BAR_CHART_X_AXIS_LABELS).fetchSemanticsNode()
+        return collectSemanticsTexts(axisNode)
+            .mapNotNull { text -> text.trim().toIntOrNull() }
+            .distinct()
+            .sorted()
+    }
+
+    private fun collectSemanticsTexts(node: SemanticsNode): List<String> {
+        val ownText =
+            runCatching {
+                node.config[SemanticsProperties.Text]
+                    .joinToString(separator = "") { item -> item.text }
+                    .trim()
+            }.getOrDefault("")
+        val childrenTexts = node.children.flatMap(::collectSemanticsTexts)
+        return if (ownText.isNotEmpty()) {
+            listOf(ownText) + childrenTexts
+        } else {
+            childrenTexts
+        }
     }
 
     private fun smallDataSet(points: Int = 12): ChartDataSet {
@@ -234,6 +303,15 @@ class BarChartDenseDataTest {
         val values = values(points)
         return values.toChartDataSet(
             title = "Large Bar Chart",
+            labels = labels,
+        )
+    }
+
+    private fun numericLargeDataSet(points: Int = 120): ChartDataSet {
+        val labels = List(points) { index -> (index + 1).toString() }
+        val values = values(points)
+        return values.toChartDataSet(
+            title = "Numeric Large Bar Chart",
             labels = labels,
         )
     }

@@ -33,19 +33,16 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import io.github.dautovicharis.charts.internal.AXIS_LABEL_CHART_GAP
 import io.github.dautovicharis.charts.internal.AnimationSpec
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
-import io.github.dautovicharis.charts.internal.common.axis.centeredLabelIndexRange
+import io.github.dautovicharis.charts.internal.common.axis.AxisXPlanRequest
 import io.github.dautovicharis.charts.internal.common.axis.estimateXAxisLabelFootprintPx
 import io.github.dautovicharis.charts.internal.common.axis.estimateYAxisLabelWidthPx
-import io.github.dautovicharis.charts.internal.common.axis.sampledLabelIndices
-import io.github.dautovicharis.charts.internal.common.axis.scrollableLabelIndices
-import io.github.dautovicharis.charts.internal.common.axis.visibleIndexRange
+import io.github.dautovicharis.charts.internal.common.axis.planAxisXLabels
 import io.github.dautovicharis.charts.internal.common.composable.rememberDenseExpandedState
 import io.github.dautovicharis.charts.internal.common.composable.rememberZoomScaleState
 import io.github.dautovicharis.charts.internal.common.composable.zoomInScale
@@ -62,9 +59,6 @@ private const val ZOOM_MIN = 1f
 private const val ZOOM_MAX = 4f
 private const val ZOOM_STEP = 1.25f
 private const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
-private const val MIN_AXIS_LABELS_IN_PREFERRED_RANGE = 2
-private const val X_AXIS_LABEL_MIN_SPACING_FACTOR = 1.15f
-private val X_AXIS_LABEL_EDGE_PADDING: Dp = 4.dp
 
 @Composable
 fun StackedBarChart(
@@ -450,71 +444,39 @@ private fun StackedBarChartContent(
                 setZoomScale = onZoomScaleChange,
             )
 
-        val visibleRange =
-            if (isScrollable) {
-                visibleIndexRange(
-                    dataSize = dataSize,
-                    viewportWidthPx = viewportWidthPx,
-                    scrollOffsetPx = scrollOffsetPx,
-                    unitWidthPx = unitWidthPx,
+        val xAxisPlan =
+            remember(
+                dataSize,
+                style.xAxisLabelMaxCount,
+                isScrollable,
+                unitWidthPx,
+                viewportWidthPx,
+                scrollOffsetPx,
+                barWidthPx,
+                xAxisLabelFootprintPx.width,
+            ) {
+                planAxisXLabels(
+                    request =
+                        AxisXPlanRequest(
+                            dataSize = dataSize,
+                            requestedMaxLabelCount = style.xAxisLabelMaxCount,
+                            isScrollable = isScrollable,
+                            unitWidthPx = unitWidthPx,
+                            viewportWidthPx = viewportWidthPx,
+                            scrollOffsetPx = scrollOffsetPx,
+                            firstCenterPx = barWidthPx / 2f,
+                            labelWidthPx = xAxisLabelFootprintPx.width,
+                        ),
                 )
-            } else {
-                0..<dataSize
             }
+        val visibleRange = xAxisPlan.visibleRange
         val selectedCenterXContent =
             if (selectedIndex in 0 until dataSize) {
                 selectedIndex * unitWidthPx + barWidthPx / 2f
             } else {
                 Float.NaN
             }
-
-        val xAxisEdgePaddingPx = with(density) { X_AXIS_LABEL_EDGE_PADDING.toPx() }
-        val labelSafeRange =
-            centeredLabelIndexRange(
-                dataSize = dataSize,
-                unitWidthPx = unitWidthPx,
-                viewportWidthPx = viewportWidthPx,
-                scrollOffsetPx = if (isScrollable) scrollOffsetPx else 0f,
-                firstCenterPx = barWidthPx / 2f,
-                labelWidthPx = xAxisLabelFootprintPx.width,
-                edgePaddingPx = xAxisEdgePaddingPx,
-            )
-        val labelRange =
-            remember(dataSize, labelSafeRange, visibleRange) {
-                resolveLabelRangeWithFallback(
-                    dataSize = dataSize,
-                    preferredRange = labelSafeRange,
-                    fallbackRange = visibleRange,
-                )
-            }
-        val maxVisibleLabels =
-            remember(style.xAxisLabelMaxCount, labelRange, unitWidthPx, xAxisLabelFootprintPx.width) {
-                resolveMaxXAxisLabelCount(
-                    requestedMaxCount = style.xAxisLabelMaxCount,
-                    visibleRange = labelRange,
-                    unitWidthPx = unitWidthPx,
-                    labelWidthPx = xAxisLabelFootprintPx.width,
-                )
-            }
-        val labelIndices =
-            when {
-                dataSize <= 0 || labelRange.isEmpty() -> emptyList()
-                else -> {
-                    if (isScrollable) {
-                        scrollableLabelIndices(
-                            dataSize = dataSize,
-                            maxCount = maxVisibleLabels.coerceAtLeast(2),
-                            visibleRange = labelRange,
-                        )
-                    } else {
-                        sampledLabelIndices(
-                            dataSize = dataSize,
-                            maxCount = maxVisibleLabels.coerceAtLeast(2),
-                            visibleRange = labelRange,
-                        )
-                    }
-                }
-            }
+        val labelIndices = xAxisPlan.labelIndices
         val xAxisTicks =
             remember(labels, labelIndices, barWidthPx, unitWidthPx, scrollOffsetPx) {
                 buildStackedBarXAxisTicks(
@@ -677,46 +639,3 @@ fun stackedSegmentHeight(
     chartHeight: Float,
     progress: Float,
 ): Float = lerp(0f, segmentShare * chartHeight, progress)
-
-private fun resolveLabelRangeWithFallback(
-    dataSize: Int,
-    preferredRange: IntRange,
-    fallbackRange: IntRange,
-): IntRange {
-    if (dataSize <= 0) return IntRange.EMPTY
-    val clampedPreferred = preferredRange.clampToDataSize(dataSize)
-    val clampedFallback = fallbackRange.clampToDataSize(dataSize)
-    return when {
-        rangeCount(clampedPreferred) >= MIN_AXIS_LABELS_IN_PREFERRED_RANGE -> clampedPreferred
-        rangeCount(clampedFallback) >= MIN_AXIS_LABELS_IN_PREFERRED_RANGE -> clampedFallback
-        else -> clampedPreferred
-    }
-}
-
-private fun resolveMaxXAxisLabelCount(
-    requestedMaxCount: Int,
-    visibleRange: IntRange,
-    unitWidthPx: Float,
-    labelWidthPx: Float,
-): Int {
-    val labelsInRange = rangeCount(visibleRange)
-    if (labelsInRange <= 0) return 0
-    if (labelsInRange == 1) return 1
-
-    val requested = requestedMaxCount.coerceAtLeast(2).coerceAtMost(labelsInRange)
-    val safeUnitWidth = unitWidthPx.coerceAtLeast(1f)
-    val safeLabelWidth = labelWidthPx.coerceAtLeast(1f)
-    val requiredSpacingPx = (safeLabelWidth * X_AXIS_LABEL_MIN_SPACING_FACTOR).coerceAtLeast(1f)
-    val spanPx = (labelsInRange - 1) * safeUnitWidth
-    val fitCount = (spanPx / requiredSpacingPx).toInt() + 1
-    return fitCount.coerceIn(2, requested)
-}
-
-private fun IntRange.clampToDataSize(dataSize: Int): IntRange {
-    if (isEmpty() || dataSize <= 0) return IntRange.EMPTY
-    val start = first.coerceIn(0, dataSize - 1)
-    val end = last.coerceIn(start, dataSize - 1)
-    return start..end
-}
-
-private fun rangeCount(range: IntRange): Int = if (range.isEmpty()) 0 else range.last - range.first + 1

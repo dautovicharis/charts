@@ -33,7 +33,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.LineChartRenderMode
 import io.github.dautovicharis.charts.internal.ANIMATION_TARGET
@@ -41,13 +40,11 @@ import io.github.dautovicharis.charts.internal.AXIS_LABEL_CHART_GAP
 import io.github.dautovicharis.charts.internal.AnimationSpec
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
+import io.github.dautovicharis.charts.internal.common.axis.AxisXPlanRequest
 import io.github.dautovicharis.charts.internal.common.axis.baselineYForRange
-import io.github.dautovicharis.charts.internal.common.axis.centeredLabelIndexRange
 import io.github.dautovicharis.charts.internal.common.axis.estimateXAxisLabelFootprintPx
 import io.github.dautovicharis.charts.internal.common.axis.estimateYAxisLabelWidthPx
-import io.github.dautovicharis.charts.internal.common.axis.sampledLabelIndices
-import io.github.dautovicharis.charts.internal.common.axis.scrollableLabelIndices
-import io.github.dautovicharis.charts.internal.common.axis.visibleIndexRange
+import io.github.dautovicharis.charts.internal.common.axis.planAxisXLabels
 import io.github.dautovicharis.charts.internal.common.composable.rememberShowState
 import io.github.dautovicharis.charts.internal.common.interaction.buildHorizontalDragGestureModifier
 import io.github.dautovicharis.charts.internal.common.interaction.buildTapGestureModifier
@@ -69,7 +66,6 @@ internal const val MIN_TIMELINE_DURATION_MS = 1
 internal const val LINE_VERTICAL_SAFE_INSET = (LINE_STROKE_WIDTH / 2f) + 1f
 internal const val LINE_DENSE_MIN_STEP_PX = 12f
 internal const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
-internal val X_AXIS_LABEL_EDGE_PADDING: Dp = 4.dp
 
 internal data class TimelineTransitionData(
     val previousSeries: List<List<Double>>,
@@ -480,77 +476,41 @@ internal fun LineChartContent(
             }
         }
 
-        val visibleRange =
-            if (denseMorphEnabled) {
-                visibleIndexRange(
-                    dataSize = pointsCount,
-                    viewportWidthPx = plotViewportWidthPx,
-                    scrollOffsetPx = scrollOffsetPx,
-                    unitWidthPx = denseStepX.coerceAtLeast(1f),
-                )
-            } else {
-                0..<pointsCount
-            }
-        val xAxisEdgePaddingPx = with(density) { X_AXIS_LABEL_EDGE_PADDING.toPx() }
-        val xAxisLabelSafeRange =
+        val xAxisPlan =
             remember(
                 pointsCount,
-                showXAxisLabelsCandidate,
+                style.xAxisLabelMaxCount,
                 denseMorphEnabled,
                 fitStepX,
                 denseStepX,
                 plotViewportWidthPx,
                 scrollOffsetPx,
                 xAxisLabelFootprintPx.width,
-                xAxisEdgePaddingPx,
             ) {
-                if (!showXAxisLabelsCandidate || pointsCount <= 0) {
-                    IntRange.EMPTY
-                } else {
-                    centeredLabelIndexRange(
-                        dataSize = pointsCount,
-                        unitWidthPx =
-                            if (denseMorphEnabled) {
-                                denseStepX.coerceAtLeast(
-                                    1f,
-                                )
-                            } else {
-                                fitStepX.coerceAtLeast(1f)
-                            },
-                        viewportWidthPx = plotViewportWidthPx,
-                        scrollOffsetPx = if (denseMorphEnabled) scrollOffsetPx else 0f,
-                        firstCenterPx = 0f,
-                        labelWidthPx = xAxisLabelFootprintPx.width,
-                        edgePaddingPx = xAxisEdgePaddingPx,
-                    )
-                }
+                planAxisXLabels(
+                    request =
+                        AxisXPlanRequest(
+                            dataSize = pointsCount,
+                            requestedMaxLabelCount = style.xAxisLabelMaxCount,
+                            isScrollable = denseMorphEnabled,
+                            unitWidthPx =
+                                if (denseMorphEnabled) {
+                                    denseStepX.coerceAtLeast(1f)
+                                } else {
+                                    fitStepX.coerceAtLeast(1f)
+                                },
+                            viewportWidthPx = plotViewportWidthPx,
+                            scrollOffsetPx = scrollOffsetPx,
+                            firstCenterPx = 0f,
+                            labelWidthPx = xAxisLabelFootprintPx.width,
+                        ),
+                )
             }
         val xAxisLabelIndices =
-            remember(
-                pointsCount,
-                showXAxisLabelsCandidate,
-                style.xAxisLabelMaxCount,
-                denseMorphEnabled,
-                xAxisLabelSafeRange,
-            ) {
-                if (!showXAxisLabelsCandidate || pointsCount <= 0) {
-                    emptyList()
-                } else {
-                    val maxVisibleLabels = style.xAxisLabelMaxCount.coerceAtLeast(2)
-                    if (denseMorphEnabled) {
-                        scrollableLabelIndices(
-                            dataSize = pointsCount,
-                            maxCount = maxVisibleLabels,
-                            visibleRange = xAxisLabelSafeRange,
-                        )
-                    } else {
-                        sampledLabelIndices(
-                            dataSize = pointsCount,
-                            maxCount = maxVisibleLabels,
-                            visibleRange = xAxisLabelSafeRange,
-                        )
-                    }
-                }
+            if (showXAxisLabelsCandidate) {
+                xAxisPlan.labelIndices
+            } else {
+                emptyList()
             }
         val showXAxisLabels = showXAxisLabelsCandidate && xAxisLabelIndices.isNotEmpty()
         val xAxisTicks =

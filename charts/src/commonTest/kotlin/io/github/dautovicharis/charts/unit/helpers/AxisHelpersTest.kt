@@ -3,6 +3,7 @@ package io.github.dautovicharis.charts.unit.helpers
 import io.github.dautovicharis.charts.internal.common.axis.buildNumericYAxisTicks
 import io.github.dautovicharis.charts.internal.common.axis.centeredLabelIndexRange
 import io.github.dautovicharis.charts.internal.common.axis.sampledLabelIndices
+import io.github.dautovicharis.charts.internal.common.axis.scrollableLabelIndices
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -90,5 +91,65 @@ class AxisHelpersTest {
             )
 
         assertTrue(sampled.isEmpty())
+    }
+
+    @Test
+    fun scrollableLabelIndices_adjacentVisibleWindows_keepStableStride() {
+        val compactWindow =
+            scrollableLabelIndices(
+                dataSize = 120,
+                maxCount = 6,
+                visibleRange = 20..31,
+            )
+        val expandedWindow =
+            scrollableLabelIndices(
+                dataSize = 120,
+                maxCount = 6,
+                visibleRange = 20..32,
+            )
+
+        val compactStep = compactWindow.zipWithNext().first().second - compactWindow.first()
+        val expandedStep = expandedWindow.zipWithNext().first().second - expandedWindow.first()
+
+        assertEquals(expected = 2, actual = compactStep)
+        assertEquals(expected = 2, actual = expandedStep)
+    }
+
+    @Test
+    fun scrollableLabelIndices_withStableVisibleCount_preventsStrideFlip() {
+        val firstWindow =
+            scrollableLabelIndices(
+                dataSize = 200,
+                maxCount = 3,
+                visibleRange = 109..115,
+                stableVisibleCount = 7,
+            )
+        val secondWindow =
+            scrollableLabelIndices(
+                dataSize = 200,
+                maxCount = 3,
+                visibleRange = 109..116,
+                stableVisibleCount = 7,
+            )
+
+        val firstStep = firstWindow.zipWithNext().first().second - firstWindow.first()
+        val secondStep = secondWindow.zipWithNext().first().second - secondWindow.first()
+
+        assertEquals(expected = 2, actual = firstStep)
+        assertEquals(expected = 2, actual = secondStep)
+    }
+
+    @Test
+    fun scrollableLabelIndices_nearRightWindow_doesNotInjectDatasetLastEdge() {
+        val indices =
+            scrollableLabelIndices(
+                dataSize = 274,
+                maxCount = 6,
+                visibleRange = 259..271,
+                stableVisibleCount = 16,
+            )
+
+        assertTrue(indices.isNotEmpty())
+        assertTrue(273 !in indices)
     }
 }

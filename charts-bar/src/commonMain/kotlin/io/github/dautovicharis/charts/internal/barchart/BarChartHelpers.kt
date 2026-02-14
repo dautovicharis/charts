@@ -3,6 +3,8 @@ package io.github.dautovicharis.charts.internal.barchart
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 import io.github.dautovicharis.charts.internal.common.axis.AxisLabelFootprintPx
+import io.github.dautovicharis.charts.internal.common.axis.AxisXPlanRequest
+import io.github.dautovicharis.charts.internal.common.axis.AxisXPlanResult
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 import io.github.dautovicharis.charts.internal.common.model.toChartData
 import kotlin.math.max
@@ -10,6 +12,7 @@ import io.github.dautovicharis.charts.internal.common.axis.baselineYForRange as 
 import io.github.dautovicharis.charts.internal.common.axis.centeredLabelIndexRange as centeredLabelIndexRangeCore
 import io.github.dautovicharis.charts.internal.common.axis.estimateXAxisLabelFootprintPx as estimateXAxisLabelFootprintPxCore
 import io.github.dautovicharis.charts.internal.common.axis.estimateYAxisLabelWidthPx as estimateYAxisLabelWidthPxCore
+import io.github.dautovicharis.charts.internal.common.axis.planAxisXLabels as planAxisXLabelsCore
 import io.github.dautovicharis.charts.internal.common.axis.resolveAxisLabel as resolveAxisLabelCore
 import io.github.dautovicharis.charts.internal.common.axis.sampledLabelIndices as sampledLabelIndicesCore
 import io.github.dautovicharis.charts.internal.common.axis.scrollableLabelIndices as scrollableLabelIndicesCore
@@ -188,3 +191,5 @@ fun centeredLabelIndexRange(
         labelWidthPx = labelWidthPx,
         edgePaddingPx = edgePaddingPx,
     )
+
+fun planAxisXLabels(request: AxisXPlanRequest): AxisXPlanResult = planAxisXLabelsCore(request)

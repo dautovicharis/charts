@@ -75,6 +75,7 @@ fun AxisXLabelsLayout(
                 if (tick.centerX < 0f || tick.centerX > constraints.maxWidth.toFloat()) return@forEachIndexed
 
                 val rawX = (tick.centerX - placeable.width / 2f).roundToInt()
+                if (rawX + placeable.width <= 0 || rawX >= constraints.maxWidth) return@forEachIndexed
                 val y = (constraints.maxHeight - placeable.height).coerceAtLeast(0)
                 placeable.place(rawX, y)
             }

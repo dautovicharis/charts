@@ -147,6 +147,7 @@ fun scrollableLabelIndices(
     dataSize: Int,
     maxCount: Int,
     visibleRange: IntRange,
+    stableVisibleCount: Int? = null,
 ): List<Int> {
     if (dataSize <= 0 || visibleRange.isEmpty()) return emptyList()
 
@@ -154,7 +155,15 @@ fun scrollableLabelIndices(
     val end = visibleRange.last.coerceIn(start, dataSize - 1)
     val safeMaxCount = maxCount.coerceAtLeast(2)
     val visibleCount = end - start + 1
-    val stride = ceil(visibleCount.toFloat() / safeMaxCount.toFloat()).toInt().coerceAtLeast(1)
+    val effectiveVisibleCount =
+        stableVisibleCount
+            ?.takeIf { count -> count > 0 }
+            ?.coerceIn(1, dataSize)
+            ?: visibleCount
+    val stride =
+        ceil(((effectiveVisibleCount - 1).coerceAtLeast(1)).toFloat() / safeMaxCount.toFloat())
+            .toInt()
+            .coerceAtLeast(1)
 
     val firstIndex = (((start - stride).coerceAtLeast(0)) / stride) * stride
     val lastIndex = (end + stride).coerceAtMost(dataSize - 1)
@@ -169,7 +178,13 @@ fun scrollableLabelIndices(
     if (start == 0 && indices.firstOrNull() != 0) indices.add(0, 0)
     if (end == dataSize - 1 && indices.lastOrNull() != dataSize - 1) indices.add(dataSize - 1)
 
-    return indices.distinct()
+    // Keep global scroll cadence, but avoid forcing dataset edge labels when the
+    // current visible window does not include those edges.
+    return indices
+        .distinct()
+        .filterNot { index ->
+            (index == 0 && start > 0) || (index == dataSize - 1 && end < dataSize - 1)
+        }
 }
 
 @InternalChartsApi

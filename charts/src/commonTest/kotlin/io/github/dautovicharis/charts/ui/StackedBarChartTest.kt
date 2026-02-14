@@ -21,6 +21,7 @@ import io.github.dautovicharis.charts.mock.MockTest.multiDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class StackedBarChartTest {
     @OptIn(ExperimentalTestApi::class)
@@ -198,6 +199,62 @@ class StackedBarChartTest {
             onNodeWithTag(TestTags.STACKED_BAR_CHART_DENSE_COLLAPSE).isDisplayed()
             onNodeWithTag(TestTags.STACKED_BAR_CHART_ZOOM_OUT).isDisplayed()
             onNodeWithTag(TestTags.STACKED_BAR_CHART_ZOOM_IN).isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withThreeItems_displaysAllXAxisLabels() =
+        runComposeUiTest {
+            val dataSet =
+                listOf(
+                    "North America" to listOf(320f, 340f, 360f, 390f),
+                    "Europe" to listOf(260f, 280f, 240f, 260f),
+                    "Asia Pacific" to listOf(220f, 210f, 230f, 250f),
+                ).toMultiChartDataSet(
+                    title = "Quarterly Revenue by Region",
+                    categories = listOf("Q1", "Q2", "Q3", "Q4"),
+                )
+
+            setContent {
+                StackedBarChart(
+                    dataSet = dataSet,
+                )
+            }
+
+            onNodeWithTag(TestTags.STACKED_BAR_CHART_X_AXIS_LABELS).isDisplayed()
+            onNodeWithText("North America").isDisplayed()
+            onNodeWithText("Europe").isDisplayed()
+            onNodeWithText("Asia Pacific").isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_lastXAxisLabel_hasRightEdgePadding() =
+        runComposeUiTest {
+            val dataSet =
+                listOf(
+                    "Region 1" to listOf(320f, 340f, 360f, 390f),
+                    "Region 2" to listOf(260f, 280f, 240f, 260f),
+                    "Region 3" to listOf(220f, 210f, 230f, 250f),
+                    "Region 4" to listOf(210f, 220f, 240f, 260f),
+                ).toMultiChartDataSet(
+                    title = "Quarterly Revenue by Region",
+                    categories = listOf("Q1", "Q2", "Q3", "Q4"),
+                )
+
+            setContent {
+                StackedBarChart(
+                    dataSet = dataSet,
+                )
+            }
+
+            val axisBounds =
+                onNodeWithTag(TestTags.STACKED_BAR_CHART_X_AXIS_LABELS)
+                    .fetchSemanticsNode()
+                    .boundsInRoot
+            val lastLabelBounds = onNodeWithText("Region 4").fetchSemanticsNode().boundsInRoot
+
+            assertTrue(lastLabelBounds.right <= axisBounds.right - 1f)
         }
 
     @OptIn(ExperimentalTestApi::class)

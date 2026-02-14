@@ -35,19 +35,16 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.internal.ANIMATION_TARGET
 import io.github.dautovicharis.charts.internal.AXIS_LABEL_CHART_GAP
 import io.github.dautovicharis.charts.internal.AnimationSpec
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
-import io.github.dautovicharis.charts.internal.common.axis.centeredLabelIndexRange
+import io.github.dautovicharis.charts.internal.common.axis.AxisXPlanRequest
 import io.github.dautovicharis.charts.internal.common.axis.estimateXAxisLabelFootprintPx
 import io.github.dautovicharis.charts.internal.common.axis.estimateYAxisLabelWidthPx
-import io.github.dautovicharis.charts.internal.common.axis.sampledLabelIndices
-import io.github.dautovicharis.charts.internal.common.axis.scrollableLabelIndices
-import io.github.dautovicharis.charts.internal.common.axis.visibleIndexRange
+import io.github.dautovicharis.charts.internal.common.axis.planAxisXLabels
 import io.github.dautovicharis.charts.internal.common.composable.rememberDenseExpandedState
 import io.github.dautovicharis.charts.internal.common.composable.rememberShowState
 import io.github.dautovicharis.charts.internal.common.composable.rememberZoomScaleState
@@ -69,7 +66,6 @@ private const val ZOOM_MIN = 1f
 private const val ZOOM_MAX = 4f
 private const val ZOOM_STEP = 1.25f
 private const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
-private val X_AXIS_LABEL_EDGE_PADDING: Dp = 4.dp
 
 @Composable
 fun StackedAreaChart(
@@ -422,70 +418,44 @@ private fun StackedAreaChartContent(
             }
         }
 
-        val visibleRange =
-            if (isScrollable) {
-                visibleIndexRange(
-                    dataSize = pointsCount,
-                    viewportWidthPx = plotViewportWidthPx,
-                    scrollOffsetPx = scrollOffsetPx,
-                    unitWidthPx = denseStepX.coerceAtLeast(1f),
-                )
-            } else {
-                0..<pointsCount
-            }
-        val xAxisEdgePaddingPx = with(density) { X_AXIS_LABEL_EDGE_PADDING.toPx() }
-        val xAxisLabelSafeRange =
+        val xAxisPlan =
             remember(
                 pointsCount,
-                showXAxisLabelsCandidate,
+                style.xAxisLabelMaxCount,
                 isScrollable,
                 fitStepX,
                 denseStepX,
                 plotViewportWidthPx,
                 scrollOffsetPx,
                 xAxisLabelFootprintPx.width,
-                xAxisEdgePaddingPx,
             ) {
-                if (!showXAxisLabelsCandidate || pointsCount <= 0) {
-                    IntRange.EMPTY
-                } else {
-                    centeredLabelIndexRange(
-                        dataSize = pointsCount,
-                        unitWidthPx = if (isScrollable) denseStepX.coerceAtLeast(1f) else fitStepX.coerceAtLeast(1f),
-                        viewportWidthPx = plotViewportWidthPx,
-                        scrollOffsetPx = if (isScrollable) scrollOffsetPx else 0f,
-                        firstCenterPx = 0f,
-                        labelWidthPx = xAxisLabelFootprintPx.width,
-                        edgePaddingPx = xAxisEdgePaddingPx,
-                    )
-                }
+                planAxisXLabels(
+                    request =
+                        AxisXPlanRequest(
+                            dataSize = pointsCount,
+                            requestedMaxLabelCount = style.xAxisLabelMaxCount,
+                            isScrollable = isScrollable,
+                            unitWidthPx =
+                                if (isScrollable) {
+                                    denseStepX.coerceAtLeast(
+                                        1f,
+                                    )
+                                } else {
+                                    fitStepX.coerceAtLeast(1f)
+                                },
+                            viewportWidthPx = plotViewportWidthPx,
+                            scrollOffsetPx = scrollOffsetPx,
+                            firstCenterPx = 0f,
+                            labelWidthPx = xAxisLabelFootprintPx.width,
+                        ),
+                )
             }
+        val visibleRange = xAxisPlan.visibleRange
         val xAxisLabelIndices =
-            remember(
-                pointsCount,
-                showXAxisLabelsCandidate,
-                style.xAxisLabelMaxCount,
-                isScrollable,
-                xAxisLabelSafeRange,
-            ) {
-                if (!showXAxisLabelsCandidate || pointsCount <= 0) {
-                    emptyList()
-                } else {
-                    val maxVisibleLabels = style.xAxisLabelMaxCount.coerceAtLeast(2)
-                    if (isScrollable) {
-                        scrollableLabelIndices(
-                            dataSize = pointsCount,
-                            maxCount = maxVisibleLabels,
-                            visibleRange = xAxisLabelSafeRange,
-                        )
-                    } else {
-                        sampledLabelIndices(
-                            dataSize = pointsCount,
-                            maxCount = maxVisibleLabels,
-                            visibleRange = xAxisLabelSafeRange,
-                        )
-                    }
-                }
+            if (showXAxisLabelsCandidate) {
+                xAxisPlan.labelIndices
+            } else {
+                emptyList()
             }
         val showXAxisLabels = showXAxisLabelsCandidate && xAxisLabelIndices.isNotEmpty()
         val xAxisTicks =
@@ -633,8 +603,14 @@ private fun StackedAreaChartContent(
                                 visibleRange.isEmpty() -> 0 until pointsCount
                                 else -> visibleRange
                             }
-                        val rangeStart = clampedVisibleRange.first.coerceAtLeast(0)
-                        val rangeEnd = clampedVisibleRange.last.coerceAtMost(pointsCount - 1)
+                        // Area segments connect adjacent points, so include one-point overscan
+                        // to avoid visible truncation/gaps at viewport edges while scrolling/zooming.
+                        val rangeStart =
+                            (clampedVisibleRange.first - 1)
+                                .coerceAtLeast(0)
+                        val rangeEnd =
+                            (clampedVisibleRange.last + 1)
+                                .coerceAtMost(pointsCount - 1)
 
                         stackedUpperBounds.forEachIndexed { index, upperSeries ->
                             val lowerSeries = stackedUpperBounds.getOrNull(index - 1) ?: emptyLower
