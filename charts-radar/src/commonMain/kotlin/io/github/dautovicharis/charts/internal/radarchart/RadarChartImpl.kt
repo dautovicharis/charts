@@ -63,9 +63,10 @@ fun RadarChartImpl(
         LaunchedEffect(forcedSelectedIndex, data) {
             if (hasForcedSelection) {
                 title = data.getLabel(forcedSelectedIndex)
-                seriesLabels = data.items.map {
-                    it.item.labels.getOrNull(forcedSelectedIndex).orEmpty()
-                }.toImmutableList()
+                seriesLabels =
+                    data.items.map {
+                        it.item.labels.getOrNull(forcedSelectedIndex).orEmpty()
+                    }.toImmutableList()
             }
         }
 

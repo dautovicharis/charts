@@ -83,11 +83,12 @@ private fun StackedBarChartContent(
     LaunchedEffect(forcedSelectedIndex, dataSet) {
         if (hasForcedSelection) {
             title = dataSet.data.items[forcedSelectedIndex].label
-            labels = if (dataSet.data.hasCategories()) {
-                dataSet.data.items[forcedSelectedIndex].item.labels
-            } else {
-                persistentListOf()
-            }
+            labels =
+                if (dataSet.data.hasCategories()) {
+                    dataSet.data.items[forcedSelectedIndex].item.labels
+                } else {
+                    persistentListOf()
+                }
         }
     }
 

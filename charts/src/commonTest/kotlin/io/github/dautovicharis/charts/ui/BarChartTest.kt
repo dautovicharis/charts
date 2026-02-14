@@ -54,6 +54,7 @@ class BarChartTest {
             onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
             onNodeWithText("${expectedError}\n").isDisplayed()
         }
+
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun barChart_withSelectedBarIndex_displaysSelectedBarDetails() =

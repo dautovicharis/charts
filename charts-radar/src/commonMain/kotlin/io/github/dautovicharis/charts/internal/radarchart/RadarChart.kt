@@ -81,7 +81,6 @@ fun RadarChart(
         val widthPx = with(density) { maxWidth.toPx() }
         val heightPx = with(density) { maxHeight.toPx() }
 
-
         val minMax = remember(data) { data.minMax() }
         val targetNormalized = remember(data, minMax) { data.normalizeByMinMax(minMax, 1f) }
         val initialValues =

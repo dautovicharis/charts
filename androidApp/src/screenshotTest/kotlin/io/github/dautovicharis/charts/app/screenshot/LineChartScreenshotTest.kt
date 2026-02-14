@@ -9,8 +9,8 @@ import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_LINE_SAMP
 import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_MULTI_LINE_SAMPLE_USE_CASE
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotPreview
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotSurface
-import io.github.dautovicharis.charts.style.ChartViewDefaults
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
+import io.github.dautovicharis.charts.style.ChartViewDefaults
 
 private const val MULTI_LINE_SELECTION_INDEX = 4
 

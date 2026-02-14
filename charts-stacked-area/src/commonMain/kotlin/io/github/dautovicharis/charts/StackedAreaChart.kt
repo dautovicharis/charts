@@ -83,11 +83,12 @@ private fun StackedAreaChartContent(
     LaunchedEffect(forcedSelectedIndex, dataSet) {
         if (hasForcedSelection) {
             title = dataSet.data.getLabel(forcedSelectedIndex)
-            labels = if (dataSet.data.hasCategories()) {
-                dataSet.data.items.map { it.item.labels[forcedSelectedIndex] }.toImmutableList()
-            } else {
-                persistentListOf()
-            }
+            labels =
+                if (dataSet.data.hasCategories()) {
+                    dataSet.data.items.map { it.item.labels[forcedSelectedIndex] }.toImmutableList()
+                } else {
+                    persistentListOf()
+                }
         }
     }
 
