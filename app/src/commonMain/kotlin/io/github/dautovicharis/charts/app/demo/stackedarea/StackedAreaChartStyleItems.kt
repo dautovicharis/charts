@@ -10,8 +10,8 @@ import io.github.dautovicharis.charts.style.StackedAreaChartDefaults
 
 object StackedAreaChartStyleItems {
     @Composable
-    fun custom(): StyleItems {
-        return ChartStyleItems(
+    fun custom(): StyleItems =
+        ChartStyleItems(
             currentStyle =
                 ChartTestStyleFixtures.stackedAreaCustomStyle(
                     chartViewStyle = ChartViewDefaults.style(),
@@ -19,7 +19,6 @@ object StackedAreaChartStyleItems {
                 ),
             defaultStyle = StackedAreaChartDefaults.style(),
         )
-    }
 
     @Composable
     fun customStyle(areaColors: List<Color>) =
@@ -29,10 +28,9 @@ object StackedAreaChartStyleItems {
         )
 
     @Composable
-    fun custom(areaColors: List<Color>): StyleItems {
-        return ChartStyleItems(
+    fun custom(areaColors: List<Color>): StyleItems =
+        ChartStyleItems(
             currentStyle = customStyle(areaColors),
             defaultStyle = StackedAreaChartDefaults.style(),
         )
-    }
 }

@@ -31,8 +31,8 @@ class DefaultChartPreviewUseCase : ChartPreviewUseCase {
             "Release 2.3" to listOf(86f, 82f, 78f, 89f, 84f, 77f),
         )
 
-    override fun previewSeed(): ChartGalleryPreviewState {
-        return ChartGalleryPreviewState(
+    override fun previewSeed(): ChartGalleryPreviewState =
+        ChartGalleryPreviewState(
             pieValues = previewPieValues,
             lineValues = previewLineValues,
             multiLineSeries = previewMultiLineSeries,
@@ -41,61 +41,53 @@ class DefaultChartPreviewUseCase : ChartPreviewUseCase {
             stackedSeries = previewStackedSeries,
             radarSeries = previewRadarSeries,
         )
-    }
 
-    override fun nextPiePreview(values: List<Float>): List<Float> {
-        return values.map { value ->
+    override fun nextPiePreview(values: List<Float>): List<Float> =
+        values.map { value ->
             jitter(value, from = -6, until = 6, min = 8f, max = 55f)
         }
-    }
 
-    override fun nextLinePreview(values: List<Float>): List<Float> {
-        return values.map { value ->
+    override fun nextLinePreview(values: List<Float>): List<Float> =
+        values.map { value ->
             jitter(value, from = -6, until = 6, min = 6f, max = 28f)
         }
-    }
 
-    override fun nextBarPreview(values: List<Float>): List<Float> {
-        return values.map { value ->
+    override fun nextBarPreview(values: List<Float>): List<Float> =
+        values.map { value ->
             jitter(value, from = -8, until = 9, min = 0f, max = 100f)
         }
-    }
 
-    override fun nextMultiLinePreview(): List<Pair<String, List<Float>>> {
-        return previewMultiLineSeries.map { (label, values) ->
+    override fun nextMultiLinePreview(): List<Pair<String, List<Float>>> =
+        previewMultiLineSeries.map { (label, values) ->
             label to
                 values.map { value ->
                     jitter(value, from = -5, until = 6, min = 6f, max = 22f)
                 }
         }
-    }
 
-    override fun nextStackedAreaPreview(): List<Pair<String, List<Float>>> {
-        return previewStackedAreaSeries.map { (label, values) ->
+    override fun nextStackedAreaPreview(): List<Pair<String, List<Float>>> =
+        previewStackedAreaSeries.map { (label, values) ->
             label to
                 values.map { value ->
                     jitter(value, from = -5, until = 6, min = 4f, max = 28f)
                 }
         }
-    }
 
-    override fun nextStackedPreview(): List<Pair<String, List<Float>>> {
-        return previewStackedSeries.map { (label, values) ->
+    override fun nextStackedPreview(): List<Pair<String, List<Float>>> =
+        previewStackedSeries.map { (label, values) ->
             label to
                 values.map { value ->
                     jitter(value, from = -6, until = 6, min = 6f, max = 28f)
                 }
         }
-    }
 
-    override fun nextRadarPreview(): List<Pair<String, List<Float>>> {
-        return previewRadarSeries.map { (label, values) ->
+    override fun nextRadarPreview(): List<Pair<String, List<Float>>> =
+        previewRadarSeries.map { (label, values) ->
             label to
                 values.map { value ->
                     jitter(value, from = -18, until = 18, min = 30f, max = 100f)
                 }
         }
-    }
 
     private fun jitter(
         value: Float,

@@ -13,15 +13,12 @@ object LineChartStyleItems {
     fun customStyle() = ChartTestStyleFixtures.lineCustomStyle(chartViewStyle = ChartViewDefaults.style())
 
     @Composable
-    fun custom(): StyleItems {
-        return lineChartTableItems(customStyle())
-    }
+    fun custom(): StyleItems = lineChartTableItems(customStyle())
 }
 
 @Composable
-fun lineChartTableItems(currentStyle: LineChartStyle): StyleItems {
-    return ChartStyleItems(
+fun lineChartTableItems(currentStyle: LineChartStyle): StyleItems =
+    ChartStyleItems(
         currentStyle = currentStyle,
         defaultStyle = LineChartDefaults.style(),
     )
-}

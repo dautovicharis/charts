@@ -9,12 +9,11 @@ import io.github.dautovicharis.charts.style.RadarChartDefaults
 
 object RadarChartStyleItems {
     @Composable
-    fun default(): StyleItems {
-        return ChartStyleItems(
+    fun default(): StyleItems =
+        ChartStyleItems(
             currentStyle = RadarChartDefaults.style(),
             defaultStyle = RadarChartDefaults.style(),
         )
-    }
 
     @Composable
     fun customStyle(seriesKeys: List<String>) =
@@ -24,10 +23,9 @@ object RadarChartStyleItems {
         )
 
     @Composable
-    fun custom(seriesKeys: List<String>): StyleItems {
-        return ChartStyleItems(
+    fun custom(seriesKeys: List<String>): StyleItems =
+        ChartStyleItems(
             currentStyle = customStyle(seriesKeys),
             defaultStyle = RadarChartDefaults.style(),
         )
-    }
 }

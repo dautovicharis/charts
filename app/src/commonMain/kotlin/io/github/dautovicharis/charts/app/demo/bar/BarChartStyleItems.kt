@@ -9,12 +9,11 @@ import io.github.dautovicharis.charts.style.ChartViewDefaults
 
 object BarChartStyleItems {
     @Composable
-    fun default(): StyleItems {
-        return ChartStyleItems(
+    fun default(): StyleItems =
+        ChartStyleItems(
             currentStyle = BarChartDefaults.style(),
             defaultStyle = BarChartDefaults.style(),
         )
-    }
 
     @Composable
     fun customStyle(
@@ -30,10 +29,9 @@ object BarChartStyleItems {
     fun custom(
         minValue: Float,
         maxValue: Float,
-    ): StyleItems {
-        return ChartStyleItems(
+    ): StyleItems =
+        ChartStyleItems(
             currentStyle = customStyle(minValue = minValue, maxValue = maxValue),
             defaultStyle = BarChartDefaults.style(),
         )
-    }
 }

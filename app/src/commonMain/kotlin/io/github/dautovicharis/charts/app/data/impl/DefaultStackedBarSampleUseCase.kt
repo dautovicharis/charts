@@ -26,8 +26,8 @@ class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
             "Enterprise" to listOf(140f, 160f, 190f),
         )
 
-    override fun initialStackedBarSample(): StackedBarSampleData {
-        return StackedBarSampleData(
+    override fun initialStackedBarSample(): StackedBarSampleData =
+        StackedBarSampleData(
             dataSet =
                 stackedItems.toMultiChartDataSet(
                     title = DEFAULT_TITLE,
@@ -36,16 +36,14 @@ class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
                 ),
             segmentKeys = stackedCategories,
         )
-    }
 
     override fun initialStackedBarNoCategoriesDataSet(): MultiChartDataSet =
         noCategoriesItems.toMultiChartDataSet(title = "Revenue Streams (No Period Labels)")
 
     override fun stackedBarRefreshRange(): IntRange = REFRESH_RANGE
 
-    override fun stackedBarSample(range: IntRange): StackedBarSampleData {
-        return stackedBarSample(points = stackedItems.size, range = range)
-    }
+    override fun stackedBarSample(range: IntRange): StackedBarSampleData =
+        stackedBarSample(points = stackedItems.size, range = range)
 
     override fun stackedBarSample(
         points: Int,
@@ -71,7 +69,5 @@ class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
         )
     }
 
-    private fun stackedBarLabel(index: Int): String {
-        return stackedItems.getOrNull(index)?.first ?: "Region ${index + 1}"
-    }
+    private fun stackedBarLabel(index: Int): String = stackedItems.getOrNull(index)?.first ?: "Region ${index + 1}"
 }

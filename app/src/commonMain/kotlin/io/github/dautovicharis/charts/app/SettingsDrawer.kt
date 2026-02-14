@@ -365,8 +365,7 @@ private fun ThemeSwatches(
                                         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                                     },
                                 shape = CircleShape,
-                            )
-                            .padding(2.dp)
+                            ).padding(2.dp)
                             .clip(CircleShape)
                             .background(theme.light.primary),
                 )

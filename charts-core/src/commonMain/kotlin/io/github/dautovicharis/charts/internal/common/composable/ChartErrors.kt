@@ -38,8 +38,7 @@ fun ChartErrors(
                             .background(
                                 color = MaterialTheme.colorScheme.errorContainer,
                                 shape = RoundedCornerShape(5.dp),
-                            )
-                            .padding(5.dp),
+                            ).padding(5.dp),
                     text = "$error\n",
                     color = MaterialTheme.colorScheme.onErrorContainer,
                 )

@@ -8,7 +8,10 @@ fun validateLineData(
     data: MultiChartData,
     style: LineChartStyle,
 ): List<String> {
-    val firstPointsSize = data.items.first().item.points.size
+    val firstPointsSize =
+        data.items
+            .first()
+            .item.points.size
 
     val colorsSize = style.lineColors.size
     val expectedColorsSize = data.items.size

@@ -84,8 +84,8 @@ fun getSelectedIndex(
     pointY: Float,
     size: IntSize,
     slices: List<PieSlice>,
-): Int {
-    return when (isPointInCircle(pointX = pointX, pointY = pointY, size = size)) {
+): Int =
+    when (isPointInCircle(pointX = pointX, pointY = pointY, size = size)) {
         true -> {
             val touchDegree = degree(pointX = pointX, pointY = pointY, size = size)
             slices
@@ -95,14 +95,11 @@ fun getSelectedIndex(
 
         else -> NO_SELECTION
     }
-}
 
-fun createPieSlices(data: ChartData): List<PieSlice> {
-    return createPieSlices(data.points)
-}
+fun createPieSlices(data: ChartData): List<PieSlice> = createPieSlices(data.points)
 
-fun createPieSlices(values: List<Double>): List<PieSlice> {
-    return mutableListOf<PieSlice>().apply {
+fun createPieSlices(values: List<Double>): List<PieSlice> =
+    mutableListOf<PieSlice>().apply {
         var lastEndDeg = 0.0
         val maxValue = values.sum()
         for (slice in values) {
@@ -121,7 +118,6 @@ fun createPieSlices(values: List<Double>): List<PieSlice> {
             )
         }
     }
-}
 
 /**
  * Calculates the coordinates for the middle of a slice in a pie chart.

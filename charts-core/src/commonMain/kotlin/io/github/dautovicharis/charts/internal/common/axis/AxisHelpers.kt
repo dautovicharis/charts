@@ -23,9 +23,7 @@ data class AxisLabelFootprintPx(
 fun resolveAxisLabel(
     labels: List<String>,
     index: Int,
-): String {
-    return labels.getOrNull(index).orEmpty().ifBlank { (index + 1).toString() }
-}
+): String = labels.getOrNull(index).orEmpty().ifBlank { (index + 1).toString() }
 
 @InternalChartsApi
 fun formatNumericAxisValue(value: Double): String {

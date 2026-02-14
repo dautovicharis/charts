@@ -82,7 +82,9 @@ private fun StackedAreaChartContent(
             title = dataSet.data.getLabel(forcedSelectedIndex)
             labels =
                 if (dataSet.data.hasCategories()) {
-                    dataSet.data.items.map { it.item.labels[forcedSelectedIndex] }.toImmutableList()
+                    dataSet.data.items
+                        .map { it.item.labels[forcedSelectedIndex] }
+                        .toImmutableList()
                 } else {
                     persistentListOf()
                 }
@@ -127,7 +129,10 @@ private fun StackedAreaChartContent(
                     labels =
                         when (selectedIndex) {
                             NO_SELECTION -> persistentListOf()
-                            else -> dataSet.data.items.map { it.item.labels[selectedIndex] }.toImmutableList()
+                            else ->
+                                dataSet.data.items
+                                    .map { it.item.labels[selectedIndex] }
+                                    .toImmutableList()
                         }
                 }
             }
@@ -136,7 +141,10 @@ private fun StackedAreaChartContent(
         if (dataSet.data.hasCategories()) {
             Legend(
                 chartViewsStyle = style.chartViewStyle,
-                legend = dataSet.data.items.map { it.label }.toImmutableList(),
+                legend =
+                    dataSet.data.items
+                        .map { it.label }
+                        .toImmutableList(),
                 colors = areaColors,
                 labels = labels,
             )

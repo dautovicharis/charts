@@ -246,7 +246,11 @@ private fun resolveSelectedBarTitle(
     chartData: ChartData,
     index: Int,
 ): String {
-    val label = chartData.labels.getOrNull(index).orEmpty().ifBlank { (index + 1).toString() }
+    val label =
+        chartData.labels
+            .getOrNull(index)
+            .orEmpty()
+            .ifBlank { (index + 1).toString() }
     val value = chartData.points.getOrNull(index) ?: return label
     return "$label: $value"
 }

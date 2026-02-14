@@ -13,12 +13,11 @@ class DefaultLineSampleUseCase : LineSampleUseCase {
     private val defaultValues = listOf(42f, 38f, 45f, 51f, 47f, 54f, 49f)
     private val defaultLabels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
-    override fun initialLineDataSet(): ChartDataSet {
-        return defaultValues.toChartDataSet(
+    override fun initialLineDataSet(): ChartDataSet =
+        defaultValues.toChartDataSet(
             title = DEFAULT_TITLE,
             labels = defaultLabels,
         )
-    }
 
     override fun lineRefreshRange(): IntRange = REFRESH_RANGE
 

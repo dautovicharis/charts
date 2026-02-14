@@ -10,12 +10,11 @@ import io.github.dautovicharis.charts.style.StackedBarChartDefaults
 
 object StackedBarChartStyleItems {
     @Composable
-    fun default(): StyleItems {
-        return ChartStyleItems(
+    fun default(): StyleItems =
+        ChartStyleItems(
             currentStyle = StackedBarChartDefaults.style(),
             defaultStyle = StackedBarChartDefaults.style(),
         )
-    }
 
     @Composable
     fun customStyle(barColors: List<Color>) =
@@ -25,10 +24,9 @@ object StackedBarChartStyleItems {
         )
 
     @Composable
-    fun custom(barColors: List<Color>): StyleItems {
-        return ChartStyleItems(
+    fun custom(barColors: List<Color>): StyleItems =
+        ChartStyleItems(
             currentStyle = customStyle(barColors),
             defaultStyle = StackedBarChartDefaults.style(),
         )
-    }
 }

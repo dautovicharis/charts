@@ -85,7 +85,12 @@ fun StackedAreaChart(
 ) {
     val isPreview = LocalInspectionMode.current
     var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
-    val sourcePointsCount = data.items.firstOrNull()?.item?.points?.size ?: 0
+    val sourcePointsCount =
+        data.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: 0
     val isDenseData =
         remember(sourcePointsCount) {
             shouldUseScrollableDensity(sourcePointsCount)
@@ -101,7 +106,12 @@ fun StackedAreaChart(
             }
         }
     val renderData = renderDataBundle.data
-    val pointsCount = renderData.items.firstOrNull()?.item?.points?.size ?: 0
+    val pointsCount =
+        renderData.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: 0
     val seriesCount = renderData.items.size
     val targetNormalized = remember(renderData) { renderData.normalizeStackedAreaValues() }
     val valueAnimationSpec = remember { AnimationSpec.lineChart() }

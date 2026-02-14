@@ -82,7 +82,8 @@ private fun StackedBarChartContent(
             title = dataSet.data.items[forcedSelectedIndex].label
             labels =
                 if (dataSet.data.hasCategories()) {
-                    dataSet.data.items[forcedSelectedIndex].item.labels
+                    dataSet.data.items[forcedSelectedIndex]
+                        .item.labels
                 } else {
                     persistentListOf()
                 }
@@ -130,7 +131,9 @@ private fun StackedBarChartContent(
                     labels =
                         when (selectedIndex) {
                             NO_SELECTION -> persistentListOf()
-                            else -> dataSet.data.items[selectedIndex].item.labels
+                            else ->
+                                dataSet.data.items[selectedIndex]
+                                    .item.labels
                         }
                 }
             }

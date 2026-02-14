@@ -16,8 +16,8 @@ fun buildFitTapModifier(
     viewportWidthPx: Float,
     chartHeightPx: Float,
     onTapIndex: (Int) -> Unit,
-): Modifier {
-    return buildTapGestureModifier(
+): Modifier =
+    buildTapGestureModifier(
         interactionEnabled && !isScrollable,
         dataSize,
         spacingPx,
@@ -38,7 +38,6 @@ fun buildFitTapModifier(
             onTapIndex(index)
         },
     )
-}
 
 fun buildFitDragModifier(
     interactionEnabled: Boolean,
@@ -50,8 +49,8 @@ fun buildFitDragModifier(
     chartHeightPx: Float,
     onDragIndex: (Int) -> Unit,
     onDragFinished: () -> Unit,
-): Modifier {
-    return buildHorizontalDragGestureModifier(
+): Modifier =
+    buildHorizontalDragGestureModifier(
         interactionEnabled && dragSelectionEnabled && !isScrollable,
         dataSize,
         spacingPx,
@@ -88,7 +87,6 @@ fun buildFitDragModifier(
         onDragEnd = { onDragFinished() },
         onDragCancel = { onDragFinished() },
     )
-}
 
 fun buildScrollTapModifier(
     interactionEnabled: Boolean,
@@ -98,8 +96,8 @@ fun buildScrollTapModifier(
     scrollState: ScrollState,
     onTapIndex: (Int) -> Unit,
     onDoubleTap: () -> Unit,
-): Modifier {
-    return buildTapGestureModifier(
+): Modifier =
+    buildTapGestureModifier(
         interactionEnabled && isScrollable,
         dataSize,
         unitWidthPx,
@@ -115,7 +113,6 @@ fun buildScrollTapModifier(
         },
         onDoubleTap = { onDoubleTap() },
     )
-}
 
 fun buildPinchModifier(
     isScrollable: Boolean,
@@ -124,8 +121,8 @@ fun buildPinchModifier(
     zoomMax: Float,
     getZoomScale: () -> Float,
     setZoomScale: (Float) -> Unit,
-): Modifier {
-    return buildPinchZoomModifier(
+): Modifier =
+    buildPinchZoomModifier(
         isScrollable,
         zoomMin,
         zoomMax,
@@ -135,4 +132,3 @@ fun buildPinchModifier(
         zoomMin,
         zoomMax,
     )
-}

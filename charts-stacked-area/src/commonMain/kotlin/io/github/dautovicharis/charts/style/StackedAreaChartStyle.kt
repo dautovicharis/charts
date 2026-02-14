@@ -56,8 +56,8 @@ class StackedAreaChartStyle(
     val xAxisLabelSize: TextUnit,
     val xAxisLabelMaxCount: Int,
 ) : Style {
-    override fun getProperties(): List<Pair<String, Any>> {
-        return listOf(
+    override fun getProperties(): List<Pair<String, Any>> =
+        listOf(
             StackedAreaChartStyle::areaColor.name to areaColor,
             StackedAreaChartStyle::areaColors.name to areaColors,
             StackedAreaChartStyle::fillAlpha.name to fillAlpha,
@@ -76,7 +76,6 @@ class StackedAreaChartStyle(
             StackedAreaChartStyle::xAxisLabelSize.name to xAxisLabelSize,
             StackedAreaChartStyle::xAxisLabelMaxCount.name to xAxisLabelMaxCount,
         )
-    }
 }
 
 object StackedAreaChartDefaults {

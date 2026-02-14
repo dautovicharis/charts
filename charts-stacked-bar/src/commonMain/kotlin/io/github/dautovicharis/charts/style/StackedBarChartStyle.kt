@@ -61,8 +61,8 @@ class StackedBarChartStyle(
     /**
      * Returns a list of the properties of the StackedBarChartStyle.
      */
-    override fun getProperties(): List<Pair<String, Any>> {
-        return listOf(
+    override fun getProperties(): List<Pair<String, Any>> =
+        listOf(
             StackedBarChartStyle::barColor.name to barColor,
             StackedBarChartStyle::barAlpha.name to barAlpha,
             StackedBarChartStyle::space.name to space,
@@ -81,7 +81,6 @@ class StackedBarChartStyle(
             StackedBarChartStyle::selectionLineColor.name to selectionLineColor,
             StackedBarChartStyle::selectionLineWidth.name to selectionLineWidth,
         )
-    }
 }
 
 /**

@@ -27,68 +27,61 @@ const val BAR_DENSE_THRESHOLD = 50
 fun resolveAxisLabel(
     labels: List<String>,
     index: Int,
-): String {
-    return resolveAxisLabelCore(labels = labels, index = index)
-}
+): String = resolveAxisLabelCore(labels = labels, index = index)
 
 fun estimateXAxisLabelFootprintPx(
     labels: List<String>,
     dataSize: Int,
     fontSizePx: Float,
     tiltDegrees: Float,
-): AxisLabelFootprintPx {
-    return estimateXAxisLabelFootprintPxCore(
+): AxisLabelFootprintPx =
+    estimateXAxisLabelFootprintPxCore(
         labels = labels,
         dataSize = dataSize,
         fontSizePx = fontSizePx,
         tiltDegrees = tiltDegrees,
     )
-}
 
 fun estimateYAxisLabelWidthPx(
     ticks: List<YAxisTick>,
     fontSizePx: Float,
-): Float {
-    return estimateYAxisLabelWidthPxCore(
+): Float =
+    estimateYAxisLabelWidthPxCore(
         labels = ticks.map { it.label },
         fontSizePx = fontSizePx,
     )
-}
 
 fun getSelectedIndex(
     position: Offset,
     dataSize: Int,
     canvasSize: IntSize,
     spacingPx: Float,
-): Int {
-    return selectedIndexForBarFitCore(
+): Int =
+    selectedIndexForBarFitCore(
         positionX = position.x,
         dataSize = dataSize,
         canvasWidthPx = canvasSize.width.toFloat(),
         spacingPx = spacingPx,
         invalidIndex = 0,
     )
-}
 
 fun getSelectedIndexForContentX(
     contentX: Float,
     dataSize: Int,
     unitWidthPx: Float,
-): Int {
-    return selectedIndexForContentXCore(
+): Int =
+    selectedIndexForContentXCore(
         contentX = contentX,
         dataSize = dataSize,
         unitWidthPx = unitWidthPx,
         invalidIndex = 0,
     )
-}
 
-fun shouldUseScrollableDensity(pointsCount: Int): Boolean {
-    return shouldUseScrollableDensityCore(
+fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
+    shouldUseScrollableDensityCore(
         pointsCount = pointsCount,
         threshold = BAR_DENSE_THRESHOLD,
     )
-}
 
 fun aggregateForCompactDensity(
     data: ChartData,
@@ -120,9 +113,7 @@ fun maxBarsThatFit(
 fun unitWidth(
     barWidthPx: Float,
     spacingPx: Float,
-): Float {
-    return max(1f, barWidthPx + spacingPx)
-}
+): Float = max(1f, barWidthPx + spacingPx)
 
 fun contentWidth(
     dataSize: Int,
@@ -137,51 +128,47 @@ fun baselineYForRange(
     minValue: Double,
     maxValue: Double,
     heightPx: Float,
-): Float {
-    return baselineYForRangeCore(
+): Float =
+    baselineYForRangeCore(
         minValue = minValue,
         maxValue = maxValue,
         heightPx = heightPx,
     )
-}
 
 fun visibleIndexRange(
     dataSize: Int,
     viewportWidthPx: Float,
     scrollOffsetPx: Float,
     unitWidthPx: Float,
-): IntRange {
-    return visibleIndexRangeCore(
+): IntRange =
+    visibleIndexRangeCore(
         dataSize = dataSize,
         viewportWidthPx = viewportWidthPx,
         scrollOffsetPx = scrollOffsetPx,
         unitWidthPx = unitWidthPx,
     )
-}
 
 fun sampledLabelIndices(
     dataSize: Int,
     maxCount: Int,
     visibleRange: IntRange? = null,
-): List<Int> {
-    return sampledLabelIndicesCore(
+): List<Int> =
+    sampledLabelIndicesCore(
         dataSize = dataSize,
         maxCount = maxCount,
         visibleRange = visibleRange,
     )
-}
 
 fun scrollableLabelIndices(
     dataSize: Int,
     maxCount: Int,
     visibleRange: IntRange,
-): List<Int> {
-    return scrollableLabelIndicesCore(
+): List<Int> =
+    scrollableLabelIndicesCore(
         dataSize = dataSize,
         maxCount = maxCount,
         visibleRange = visibleRange,
     )
-}
 
 fun centeredLabelIndexRange(
     dataSize: Int,
@@ -191,8 +178,8 @@ fun centeredLabelIndexRange(
     firstCenterPx: Float = 0f,
     labelWidthPx: Float = 0f,
     edgePaddingPx: Float = 0f,
-): IntRange {
-    return centeredLabelIndexRangeCore(
+): IntRange =
+    centeredLabelIndexRangeCore(
         dataSize = dataSize,
         unitWidthPx = unitWidthPx,
         viewportWidthPx = viewportWidthPx,
@@ -201,4 +188,3 @@ fun centeredLabelIndexRange(
         labelWidthPx = labelWidthPx,
         edgePaddingPx = edgePaddingPx,
     )
-}

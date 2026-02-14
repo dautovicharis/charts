@@ -9,15 +9,15 @@ import kotlin.math.roundToInt
 // Avoid displaying "-0.0" for tiny values after rounding to two decimals.
 private const val NEAR_ZERO_DISPLAY_EPSILON = 0.005
 
-class ChartData(data: List<Pair<String, Double>>) {
+class ChartData(
+    data: List<Pair<String, Double>>,
+) {
     val data: ImmutableList<Pair<String, Double>> = data.toImmutableList()
     val labels: ImmutableList<String> = this.data.map { it.first }.toImmutableList()
     val points: ImmutableList<Double> = this.data.map { it.second }.toImmutableList()
 }
 
-private fun parseStringToDouble(value: String): Double {
-    return value.toDoubleOrNull() ?: Double.NaN
-}
+private fun parseStringToDouble(value: String): Double = value.toDoubleOrNull() ?: Double.NaN
 
 private fun formatNumericLabel(value: Double): String {
     val rounded = ((value * 100.0).roundToInt()) / 100.0

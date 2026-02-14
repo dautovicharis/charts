@@ -42,8 +42,14 @@ class LineChartHelpersTest {
             )
 
         val aggregated = aggregateForCompactDensity(data)
-        val aggregatedPoints = aggregated.items.first().item.points
-        val aggregatedLabels = aggregated.items.first().item.labels
+        val aggregatedPoints =
+            aggregated.items
+                .first()
+                .item.points
+        val aggregatedLabels =
+            aggregated.items
+                .first()
+                .item.labels
 
         assertTrue(aggregatedPoints.size < sourcePoints.size)
         assertEquals(expected = 40, actual = aggregatedPoints.size)

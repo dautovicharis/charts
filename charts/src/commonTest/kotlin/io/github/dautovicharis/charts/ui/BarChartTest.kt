@@ -33,7 +33,8 @@ class BarChartTest {
             // Assert
             onNodeWithTag(TestTags.BAR_CHART).isDisplayed()
             onNodeWithTag(TestTags.CHART_TITLE)
-                .assertTextEquals(expectedTitle).isDisplayed()
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
         }
 
     @OptIn(ExperimentalTestApi::class)

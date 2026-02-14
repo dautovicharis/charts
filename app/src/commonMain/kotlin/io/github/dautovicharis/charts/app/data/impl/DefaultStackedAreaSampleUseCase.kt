@@ -26,8 +26,8 @@ class DefaultStackedAreaSampleUseCase : StackedAreaSampleUseCase {
             "Premium Plan" to listOf(80f, 92f, 105f, 118f),
         )
 
-    override fun initialStackedAreaSample(): StackedAreaSampleData {
-        return StackedAreaSampleData(
+    override fun initialStackedAreaSample(): StackedAreaSampleData =
+        StackedAreaSampleData(
             dataSet =
                 stackedAreaItems.toMultiChartDataSet(
                     title = DEFAULT_TITLE,
@@ -36,16 +36,14 @@ class DefaultStackedAreaSampleUseCase : StackedAreaSampleUseCase {
                 ),
             seriesKeys = stackedAreaItems.map { it.first },
         )
-    }
 
     override fun initialStackedAreaNoCategoriesDataSet(): MultiChartDataSet =
         noCategoriesItems.toMultiChartDataSet(title = "Subscriber Mix (No Time Labels)")
 
     override fun stackedAreaRefreshRange(): IntRange = REFRESH_RANGE
 
-    override fun stackedAreaSample(range: IntRange): StackedAreaSampleData {
-        return stackedAreaSample(points = stackedAreaCategories.size, range = range)
-    }
+    override fun stackedAreaSample(range: IntRange): StackedAreaSampleData =
+        stackedAreaSample(points = stackedAreaCategories.size, range = range)
 
     override fun stackedAreaSample(
         points: Int,

@@ -303,10 +303,30 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.points, expected = firstList)
-        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = listOf("1.0", "2.0", "3.0"))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.points, expected = secondList)
-        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = listOf("3.0", "4.0", "5.0"))
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.points,
+            expected = firstList,
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
+            expected = listOf("1.0", "2.0", "3.0"),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.points,
+            expected = secondList,
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
+            expected = listOf("3.0", "4.0", "5.0"),
+        )
         assertEquals(actual = inputDataSet.data.categories, expected = categories)
         assertEquals(actual = inputDataSet.data.title, expected = MockTest.TITLE)
     }
@@ -329,8 +349,18 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = listOf("101.32", "149.13"))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = listOf("151.31", "219.2"))
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
+            expected = listOf("101.32", "149.13"),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
+            expected = listOf("151.31", "219.2"),
+        )
     }
 
     @Test
@@ -353,10 +383,30 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.points, expected = listOf(1.0, 2.0, 3.0))
-        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = listOf("1.0", "2.0", "3.0"))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.points, expected = listOf(3.0, 4.0, 5.0))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = listOf("3.0", "4.0", "5.0"))
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.points,
+            expected = listOf(1.0, 2.0, 3.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
+            expected = listOf("1.0", "2.0", "3.0"),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.points,
+            expected = listOf(3.0, 4.0, 5.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
+            expected = listOf("3.0", "4.0", "5.0"),
+        )
         assertEquals(actual = inputDataSet.data.categories, expected = categories)
         assertEquals(actual = inputDataSet.data.title, expected = MockTest.TITLE)
     }
@@ -382,14 +432,28 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.points, expected = listOf(1.0, 2.0, 3.0))
         assertContentEquals(
-            actual = inputDataSet.data.items[0].item.labels,
+            actual =
+                inputDataSet.data.items[0]
+                    .item.points,
+            expected = listOf(1.0, 2.0, 3.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
             expected = listOf("1.0 °C", "2.0 °C", "3.0 °C"),
         )
-        assertContentEquals(actual = inputDataSet.data.items[1].item.points, expected = listOf(3.0, 4.0, 5.0))
         assertContentEquals(
-            actual = inputDataSet.data.items[1].item.labels,
+            actual =
+                inputDataSet.data.items[1]
+                    .item.points,
+            expected = listOf(3.0, 4.0, 5.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
             expected = listOf("3.0 °C", "4.0 °C", "5.0 °C"),
         )
         assertEquals(actual = inputDataSet.data.categories, expected = categories)
@@ -417,10 +481,30 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.points, expected = listOf(1.0, 2.0, 3.0))
-        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = listOf("$1", "$2", "$3"))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.points, expected = listOf(3.0, 4.0, 5.0))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = listOf("$3", "$4", "$5"))
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.points,
+            expected = listOf(1.0, 2.0, 3.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
+            expected = listOf("$1", "$2", "$3"),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.points,
+            expected = listOf(3.0, 4.0, 5.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
+            expected = listOf("$3", "$4", "$5"),
+        )
         assertEquals(actual = inputDataSet.data.categories, expected = categories)
         assertEquals(actual = inputDataSet.data.title, expected = MockTest.TITLE)
     }
@@ -445,10 +529,30 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.points, expected = listOf(-1.0, 2.0, 3.0))
-        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = firstList)
-        assertContentEquals(actual = inputDataSet.data.items[1].item.points, expected = listOf(3.0, 4.0, 5.0))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = secondList)
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.points,
+            expected = listOf(-1.0, 2.0, 3.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
+            expected = firstList,
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.points,
+            expected = listOf(3.0, 4.0, 5.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
+            expected = secondList,
+        )
         assertEquals(actual = inputDataSet.data.categories, expected = categories)
         assertEquals(actual = inputDataSet.data.title, expected = MockTest.TITLE)
     }
@@ -473,10 +577,30 @@ class MultiChatDataTest {
             )
 
         // Assert
-        assertContentEquals(actual = inputDataSet.data.items[0].item.points, expected = listOf(1.0, 2.0, 3.0))
-        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = listOf("1", "2", "3"))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.points, expected = listOf(4.0, 5.0, 6.0))
-        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = listOf("4", "5", "6"))
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.points,
+            expected = listOf(1.0, 2.0, 3.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[0]
+                    .item.labels,
+            expected = listOf("1", "2", "3"),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.points,
+            expected = listOf(4.0, 5.0, 6.0),
+        )
+        assertContentEquals(
+            actual =
+                inputDataSet.data.items[1]
+                    .item.labels,
+            expected = listOf("4", "5", "6"),
+        )
         assertEquals(actual = inputDataSet.data.categories, expected = categories)
         assertEquals(actual = inputDataSet.data.title, expected = MockTest.TITLE)
     }

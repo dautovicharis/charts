@@ -8,7 +8,10 @@ fun validateBarData(
     data: MultiChartData,
     style: StackedBarChartStyle,
 ): List<String> {
-    val firstPointsSize = data.items.first().item.points.size
+    val firstPointsSize =
+        data.items
+            .first()
+            .item.points.size
     val colorsSize = style.barColors.size
 
     return validateMultiSeriesChartData(

@@ -87,17 +87,16 @@ internal object MockTest {
         )
     }
 
-    fun invalidDataSetCategories(): MultiChartDataSet {
-        return MultiChartDataSet(
+    fun invalidDataSetCategories(): MultiChartDataSet =
+        MultiChartDataSet(
             items = dataItems,
             categories = categories.drop(1),
             title = TITLE,
         )
-    }
 
     // Mock styles
-    fun mockLineChartStyle(lineColors: List<Color> = colors): LineChartStyle {
-        return LineChartStyle(
+    fun mockLineChartStyle(lineColors: List<Color> = colors): LineChartStyle =
+        LineChartStyle(
             modifier = Modifier.fillMaxSize(),
             pointColor = Color.Red,
             pointSize = 10f,
@@ -126,10 +125,9 @@ internal object MockTest {
             zoomControlsVisible = true,
             chartViewStyle = mockChartViewStyle(),
         )
-    }
 
-    fun mockStackedBarChartStyle(barColors: List<Color> = colors): StackedBarChartStyle {
-        return StackedBarChartStyle(
+    fun mockStackedBarChartStyle(barColors: List<Color> = colors): StackedBarChartStyle =
+        StackedBarChartStyle(
             modifier = Modifier.fillMaxSize(),
             barColors = barColors,
             barColor = Color.Red,
@@ -150,13 +148,12 @@ internal object MockTest {
             selectionLineWidth = 1f,
             chartViewStyle = mockChartViewStyle(),
         )
-    }
 
     fun mockStackedAreaChartStyle(
         areaColors: List<Color> = colors,
         lineColors: List<Color> = colors,
-    ): StackedAreaChartStyle {
-        return StackedAreaChartStyle(
+    ): StackedAreaChartStyle =
+        StackedAreaChartStyle(
             modifier = Modifier.fillMaxSize(),
             areaColor = Color.Red,
             areaColors = areaColors,
@@ -177,10 +174,9 @@ internal object MockTest {
             xAxisLabelMaxCount = 6,
             chartViewStyle = mockChartViewStyle(),
         )
-    }
 
-    fun mockBarChartStyle(barColors: List<Color> = colors): StackedBarChartStyle {
-        return StackedBarChartStyle(
+    fun mockBarChartStyle(barColors: List<Color> = colors): StackedBarChartStyle =
+        StackedBarChartStyle(
             modifier = Modifier.fillMaxSize(),
             barColors = barColors,
             barColor = Color.Red,
@@ -201,10 +197,9 @@ internal object MockTest {
             selectionLineWidth = 1f,
             chartViewStyle = mockChartViewStyle(),
         )
-    }
 
-    fun mockPieChartStyle(pieColors: List<Color> = colors): PieChartStyle {
-        return PieChartStyle(
+    fun mockPieChartStyle(pieColors: List<Color> = colors): PieChartStyle =
+        PieChartStyle(
             modifier = Modifier.fillMaxSize(),
             pieColors = pieColors,
             pieColor = Color.Red,
@@ -215,10 +210,9 @@ internal object MockTest {
             legendVisible = true,
             chartViewStyle = mockChartViewStyle(),
         )
-    }
 
-    private fun mockChartViewStyle(): ChartViewStyle {
-        return ChartViewStyle(
+    private fun mockChartViewStyle(): ChartViewStyle =
+        ChartViewStyle(
             modifierMain = Modifier.fillMaxSize(),
             styleTitle = TextStyle.Default,
             modifierLegend = Modifier.fillMaxSize(),
@@ -227,5 +221,4 @@ internal object MockTest {
             width = Dp.Infinity,
             backgroundColor = Color.White,
         )
-    }
 }

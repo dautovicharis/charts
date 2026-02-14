@@ -5,30 +5,32 @@ java = "17"
 # Android gradle plugin version
 agp = "8.13.2"
 
-androidx-navigation = "2.9.1"
+androidx-navigation = "2.9.2"
 androidx-lifecycle = "2.9.6"
-androidx-activity = "1.12.3"
+androidx-activity = "1.12.4"
+androidx-test = "1.7.0"
+androidx-test-ext = "1.3.0"
 
 # Kotlin compatibility
 # https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html#kotlin-compatibility
-compose = "1.10.2"
-compose-plugin = "1.10.0"
+compose = "1.10.3"
+compose-plugin = "1.10.1"
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.multiplatform
-kotlin-multiplatform = "2.3.0"
+kotlin-multiplatform = "2.3.10"
 # https://developer.android.com/studio/preview/compose-screenshot-testing
 compose-screenshot = "0.0.1-alpha13"
 # Coroutines version
 kotlinx-coroutines = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
 
-# Documentation: https://kotlin.github.io/dokka/
+# https://kotlin.github.io/dokka/
 dokka = "2.1.0"
 # https://github.com/vanniktech/gradle-maven-publish-plugin
 mavenPublish = "0.36.0"
 # https://github.com/gmazzo/gradle-buildconfig-plugin
 buildConfig = "6.0.7"
 # https://github.com/JLLeitschuh/ktlint-gradle
-ktlint = "12.1.1"
+ktlint = "14.0.1"
 # https://insert-koin.io
 # https://mvnrepository.com/artifact/io.insert-koin/koin-bom
 koin-bom = "4.1.1"
@@ -50,9 +52,9 @@ kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collec
 screenshot-validation-api = { module = "com.android.tools.screenshot:screenshot-validation-api", version.ref = "compose-screenshot" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
-androidx-test-ext-junit = { module = "androidx.test.ext:junit", version = "1.2.1" }
-androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
-androidx-test-rules = { module = "androidx.test:rules", version = "1.6.1" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -63,7 +65,6 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-mul
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
-# https://developer.android.com/develop/ui/compose/compiler
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-multiplatform" }
 composeScreenshot = { id = "com.android.compose.screenshot", version.ref = "compose-screenshot" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

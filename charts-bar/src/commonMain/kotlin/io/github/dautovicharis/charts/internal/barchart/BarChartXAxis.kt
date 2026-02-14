@@ -38,11 +38,10 @@ fun buildAxisTicks(
     barWidthPx: Float,
     unitWidthPx: Float,
     scrollOffsetPx: Float,
-): List<AxisTick> {
-    return labelIndices.map { index ->
+): List<AxisTick> =
+    labelIndices.map { index ->
         AxisTick(
             label = resolveAxisLabel(labels = chartData.labels, index = index),
             centerX = index * unitWidthPx + barWidthPx / 2f - scrollOffsetPx,
         )
     }
-}

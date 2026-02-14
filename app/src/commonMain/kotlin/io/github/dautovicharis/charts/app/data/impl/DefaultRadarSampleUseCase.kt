@@ -37,8 +37,8 @@ class DefaultRadarSampleUseCase : RadarSampleUseCase {
         )
     private val radarEdgeValues = listOf(40f, 55f, 100f, 45f, 70f, 60f)
 
-    override fun initialRadarSample(): RadarSampleData {
-        return RadarSampleData(
+    override fun initialRadarSample(): RadarSampleData =
+        RadarSampleData(
             basicDataSet =
                 radarBasicItems.toMultiChartDataSet(
                     title = DEFAULT_TITLE,
@@ -51,7 +51,6 @@ class DefaultRadarSampleUseCase : RadarSampleUseCase {
                 ),
             seriesKeys = radarInitialItems.map { it.first },
         )
-    }
 
     override fun initialRadarDefaultDataSet(): ChartDataSet =
         radarDefaultValues.toChartDataSet(

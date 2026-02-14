@@ -56,13 +56,18 @@ fun LineYAxisLabels(
     )
 }
 
-fun resolveLineXAxisLabels(data: MultiChartData): List<String> {
-    return when {
-        data.hasSingleItem() -> data.items.firstOrNull()?.item?.labels?.toList().orEmpty()
+fun resolveLineXAxisLabels(data: MultiChartData): List<String> =
+    when {
+        data.hasSingleItem() ->
+            data.items
+                .firstOrNull()
+                ?.item
+                ?.labels
+                ?.toList()
+                .orEmpty()
         data.hasCategories() -> data.categories.toList()
         else -> emptyList()
     }
-}
 
 fun buildLineXAxisTicks(
     labels: List<String>,
@@ -99,8 +104,8 @@ fun buildLineYAxisTicks(
     labelCount: Int,
     plotHeightPx: Float,
     verticalInsetPx: Float = 0f,
-): List<LineYAxisTick> {
-    return buildNumericYAxisTicks(
+): List<LineYAxisTick> =
+    buildNumericYAxisTicks(
         minValue = minValue,
         maxValue = maxValue,
         labelCount = labelCount,
@@ -112,4 +117,3 @@ fun buildLineYAxisTicks(
             centerY = tick.centerY,
         )
     }
-}

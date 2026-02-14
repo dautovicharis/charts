@@ -73,9 +73,7 @@ fun List<Float>.toChartDataSet(
     prefix: String = "",
     postfix: String = "",
     labels: List<String>? = null,
-): ChartDataSet {
-    return ChartDataSet(ChartDataType.FloatData(this), title, prefix, postfix, labels)
-}
+): ChartDataSet = ChartDataSet(ChartDataType.FloatData(this), title, prefix, postfix, labels)
 
 @JvmName("toDoubleChartDataSet")
 fun List<Double>.toChartDataSet(

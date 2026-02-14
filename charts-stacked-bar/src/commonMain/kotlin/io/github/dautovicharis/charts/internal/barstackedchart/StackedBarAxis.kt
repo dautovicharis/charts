@@ -61,22 +61,21 @@ internal fun buildStackedBarXAxisTicks(
     barWidthPx: Float,
     unitWidthPx: Float,
     scrollOffsetPx: Float,
-): List<StackedBarXAxisTick> {
-    return labelIndices.map { index ->
+): List<StackedBarXAxisTick> =
+    labelIndices.map { index ->
         StackedBarXAxisTick(
             label = resolveAxisLabel(labels = labels, index = index),
             centerX = index * unitWidthPx + barWidthPx / 2f - scrollOffsetPx,
         )
     }
-}
 
 internal fun buildStackedBarYAxisTicks(
     minValue: Double,
     maxValue: Double,
     labelCount: Int,
     chartHeightPx: Float,
-): List<StackedBarYAxisTick> {
-    return buildNumericYAxisTicks(
+): List<StackedBarYAxisTick> =
+    buildNumericYAxisTicks(
         minValue = minValue,
         maxValue = maxValue,
         labelCount = labelCount,
@@ -88,4 +87,3 @@ internal fun buildStackedBarYAxisTicks(
             centerY = tick.centerY,
         )
     }
-}

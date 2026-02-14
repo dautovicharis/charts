@@ -15,19 +15,23 @@ import io.github.dautovicharis.charts.internal.common.density.shouldUseScrollabl
 const val LINE_CHART_BEZIER_TENSION = 0.95f
 const val LINE_DENSE_THRESHOLD = 50
 
-fun shouldUseScrollableDensity(pointsCount: Int): Boolean {
-    return shouldUseScrollableDensityCore(
+fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
+    shouldUseScrollableDensityCore(
         pointsCount = pointsCount,
         threshold = LINE_DENSE_THRESHOLD,
     )
-}
 
 fun aggregateForCompactDensity(
     data: MultiChartData,
     targetPoints: Int = LINE_DENSE_THRESHOLD,
 ): MultiChartData {
     if (targetPoints <= 1) return data
-    val sourcePointsCount = data.items.firstOrNull()?.item?.points?.size ?: return data
+    val sourcePointsCount =
+        data.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: return data
     if (sourcePointsCount <= targetPoints) return data
 
     val bucketSize = bucketSizeForTargetCore(totalPoints = sourcePointsCount, targetPoints = targetPoints)

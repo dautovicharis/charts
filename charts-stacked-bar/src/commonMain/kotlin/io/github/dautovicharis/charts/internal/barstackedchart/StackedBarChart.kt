@@ -644,7 +644,9 @@ private fun DrawScope.drawStackedBars(
 
             drawRect(
                 color = colors.getOrElse(dataIndex) { colors.lastOrNull() ?: Color.Transparent },
-                topLeft = androidx.compose.ui.geometry.Offset(x = left, y = topOffset),
+                topLeft =
+                    androidx.compose.ui.geometry
+                        .Offset(x = left, y = topOffset),
                 size =
                     Size(
                         width = barWidthPx,
@@ -674,9 +676,7 @@ fun stackedSegmentHeight(
     segmentShare: Float,
     chartHeight: Float,
     progress: Float,
-): Float {
-    return lerp(0f, segmentShare * chartHeight, progress)
-}
+): Float = lerp(0f, segmentShare * chartHeight, progress)
 
 private fun resolveLabelRangeWithFallback(
     dataSize: Int,
@@ -719,6 +719,4 @@ private fun IntRange.clampToDataSize(dataSize: Int): IntRange {
     return start..end
 }
 
-private fun rangeCount(range: IntRange): Int {
-    return if (range.isEmpty()) 0 else range.last - range.first + 1
-}
+private fun rangeCount(range: IntRange): Int = if (range.isEmpty()) 0 else range.last - range.first + 1

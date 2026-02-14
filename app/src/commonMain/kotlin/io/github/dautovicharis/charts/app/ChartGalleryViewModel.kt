@@ -45,14 +45,13 @@ class ChartGalleryViewModel(
     val state: StateFlow<ChartGalleryState> = _state.asStateFlow()
     private var isLoopRunning = false
 
-    fun buildItems(menuItems: List<ChartDestination>): List<ChartGalleryItemUiState> {
-        return menuItems.map { screen ->
+    fun buildItems(menuItems: List<ChartDestination>): List<ChartGalleryItemUiState> =
+        menuItems.map { screen ->
             ChartGalleryItemUiState(
                 destination = screen,
                 subtitle = subtitleFor(screen),
             )
         }
-    }
 
     fun setMenuItems(menuItems: List<ChartDestination>) {
         _state.update { state ->
@@ -129,8 +128,8 @@ class ChartGalleryViewModel(
         }
     }
 
-    private fun subtitleFor(item: ChartDestination): String {
-        return when (item) {
+    private fun subtitleFor(item: ChartDestination): String =
+        when (item) {
             is ChartDestination.PieChartScreen -> "Composition at a glance."
             is ChartDestination.LineChartScreen -> "Trends over time."
             is ChartDestination.MultiLineChartScreen -> "Compare multiple series."
@@ -139,7 +138,6 @@ class ChartGalleryViewModel(
             is ChartDestination.StackedBarChartScreen -> "Segment composition by category."
             is ChartDestination.RadarChartScreen -> "Live radial signals."
         }
-    }
 
     private companion object {
         private const val LIVE_PREVIEW_INTERVAL_MS = 2000L

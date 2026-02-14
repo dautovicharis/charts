@@ -64,9 +64,12 @@ fun RadarChartImpl(
             if (hasForcedSelection) {
                 title = data.getLabel(forcedSelectedIndex)
                 seriesLabels =
-                    data.items.map {
-                        it.item.labels.getOrNull(forcedSelectedIndex).orEmpty()
-                    }.toImmutableList()
+                    data.items
+                        .map {
+                            it.item.labels
+                                .getOrNull(forcedSelectedIndex)
+                                .orEmpty()
+                        }.toImmutableList()
             }
         }
 
@@ -119,7 +122,13 @@ fun RadarChartImpl(
                         seriesLabels =
                             when (index) {
                                 NO_SELECTION -> persistentListOf()
-                                else -> data.items.map { it.item.labels.getOrNull(index).orEmpty() }.toImmutableList()
+                                else ->
+                                    data.items
+                                        .map {
+                                            it.item.labels
+                                                .getOrNull(index)
+                                                .orEmpty()
+                                        }.toImmutableList()
                             }
                     }
                 },

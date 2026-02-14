@@ -12,7 +12,11 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(libs.versions.java.get().toInt())
+    jvmToolchain(
+        libs.versions.java
+            .get()
+            .toInt(),
+    )
     androidTarget()
     listOf(
         iosX64(),
@@ -81,7 +85,11 @@ android {
     }
 
     kotlin {
-        jvmToolchain(libs.versions.java.get().toInt())
+        jvmToolchain(
+            libs.versions.java
+                .get()
+                .toInt(),
+        )
     }
 
     compileOptions {

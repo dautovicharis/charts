@@ -40,7 +40,10 @@ class DataValidationLineTest {
         val dataSet = invalidDataSetCategories()
 
         val lineChartStyle = mockLineChartStyle()
-        val expectedCategoriesSize = dataSet.data.items.first().item.points.size
+        val expectedCategoriesSize =
+            dataSet.data.items
+                .first()
+                .item.points.size
 
         // Act
         val validationErrors = validateLineData(dataSet.data, lineChartStyle)
@@ -81,8 +84,13 @@ class DataValidationLineTest {
 
         val lineChartStyle = mockLineChartStyle()
 
-        val expectedPoints = dataSet.data.items.first().item.points.size
-        val pointsSize = dataSet.data.items[index].item.points.size
+        val expectedPoints =
+            dataSet.data.items
+                .first()
+                .item.points.size
+        val pointsSize =
+            dataSet.data.items[index]
+                .item.points.size
 
         // Act
         val validationErrors = validateLineData(dataSet.data, lineChartStyle)

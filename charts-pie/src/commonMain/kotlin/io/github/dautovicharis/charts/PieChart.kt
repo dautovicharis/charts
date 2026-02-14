@@ -184,9 +184,8 @@ private fun PieChartContent(
     }
 }
 
-private fun selectedPercentageStyle(base: TextStyle): TextStyle {
-    return base.copy(
+private fun selectedPercentageStyle(base: TextStyle): TextStyle =
+    base.copy(
         fontSize = base.fontSize * SELECTED_TITLE_PERCENTAGE_SIZE_FACTOR,
         fontWeight = FontWeight.SemiBold,
     )
-}

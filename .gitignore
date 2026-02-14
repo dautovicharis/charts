@@ -41,9 +41,6 @@ DerivedData/
 # CocoaPods
 Pods/
 
-# Yarn
-*yarn.lock
-
 # Docs auto-generated files
 docs/public-site
 docs/src/api

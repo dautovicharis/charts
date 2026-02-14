@@ -109,9 +109,7 @@ private fun minMaxForSeries(
 private fun expandMinMax(
     base: Pair<Double, Double>,
     candidate: Pair<Double, Double>,
-): Pair<Double, Double> {
-    return minOf(base.first, candidate.first) to maxOf(base.second, candidate.second)
-}
+): Pair<Double, Double> = minOf(base.first, candidate.first) to maxOf(base.second, candidate.second)
 
 internal fun timelineStep(
     width: Float,
