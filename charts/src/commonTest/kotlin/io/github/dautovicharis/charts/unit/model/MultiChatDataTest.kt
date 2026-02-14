@@ -312,6 +312,28 @@ class MultiChatDataTest {
     }
 
     @Test
+    fun multiChartDataSet_doubleList_withHighPrecision_roundsDefaultLabels() {
+        // Arrange
+        val firstList = listOf(101.322397132296, 149.125)
+        val secondList = listOf(151.31476088115193, 219.2)
+
+        // Act
+        val inputDataSet =
+            MultiChartDataSet(
+                items =
+                    listOf(
+                        "Label1" to ChartDataType.DoubleData(firstList),
+                        "Label2" to ChartDataType.DoubleData(secondList),
+                    ),
+                title = MockTest.TITLE,
+            )
+
+        // Assert
+        assertContentEquals(actual = inputDataSet.data.items[0].item.labels, expected = listOf("101.32", "149.13"))
+        assertContentEquals(actual = inputDataSet.data.items[1].item.labels, expected = listOf("151.31", "219.2"))
+    }
+
+    @Test
     fun multiChartDataSet_floatList_correctDataReturned() {
         // Arrange
         val firstList = listOf(1.0f, 2.0f, 3.0f)

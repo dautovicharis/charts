@@ -25,6 +25,20 @@ class ChartDataTest {
         assertEquals(actual = inputDataSet.data.label, expected = MockTest.TITLE)
     }
 
+    @Test
+    fun chartDataSet_doubleList_withHighPrecision_roundsDefaultLabels() {
+        // Arrange
+        val items = listOf(101.322397132296, 151.31476088115193)
+        val itemsType = ChartDataType.DoubleData(items)
+
+        // Act
+        val inputDataSet = ChartDataSet(items = itemsType, title = MockTest.TITLE)
+
+        // Assert
+        assertContentEquals(actual = inputDataSet.data.item.points, expected = items)
+        assertContentEquals(actual = inputDataSet.data.item.labels, expected = listOf("101.32", "151.31"))
+    }
+
     // FloatList
     @Test
     fun chartDataSet_floatList_correctDataReturned() {
