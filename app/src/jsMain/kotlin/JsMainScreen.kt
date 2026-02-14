@@ -6,7 +6,7 @@ import io.github.dautovicharis.charts.app.ui.composable.LocalChartDemoMaxWidth
 
 @Composable
 internal fun JsMainScreen() {
-    CompositionLocalProvider(LocalChartDemoMaxWidth provides 400.dp) {
+    CompositionLocalProvider(LocalChartDemoMaxWidth provides 500.dp) {
         MainScreen()
     }
 }

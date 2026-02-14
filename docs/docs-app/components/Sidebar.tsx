@@ -33,6 +33,8 @@ function getDocumentationIcon(slug: string) {
 export function Sidebar({ navigation, versionId }: SidebarProps) {
   const pathname = usePathname();
   const [hash, setHash] = useState('');
+  const [mobileNavPath, setMobileNavPath] = useState<string | null>(null);
+  const isMobileNavOpen = mobileNavPath === pathname;
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -61,58 +63,112 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
     return normalizedPath === currentPath && !!itemHash && hash === `#${itemHash}`;
   }
 
-  return (
-    <aside className="docs-sidebar">
-      <div className="docs-sidebar__section">
-        <div className="docs-sidebar__section-title">Documentation</div>
-        <nav className="docs-sidebar__nav">
-          {navigation.map((item) => (
-            <div key={item.path} className="docs-sidebar__item-group">
-              <Link
-                href={item.path}
-                className={`docs-sidebar__link ${isActive(item) ? 'docs-sidebar__link--active' : ''}`}
-              >
-                {getDocumentationIcon(item.slug)}
-                {item.title}
-              </Link>
-              {item.children && item.children.length > 0 && isActive(item) && (
-                <div className="docs-sidebar__subnav">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.path}
-                      href={child.path}
-                      className={`docs-sidebar__sublink ${isChildActive(child) ? 'docs-sidebar__sublink--active' : ''}`}
-                    >
-                      {child.title}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-      </div>
+  function closeMobileNavigation() {
+    setMobileNavPath(null);
+  }
 
-      <div className="docs-sidebar__section">
-        <div className="docs-sidebar__section-title">Resources</div>
-        <nav className="docs-sidebar__nav">
-          <Link
-            href={`/${versionId}/api`}
-            className={`docs-sidebar__link ${pathname.includes('/api') ? 'docs-sidebar__link--active' : ''}`}
-          >
-            <ApiReferenceIcon />
-            API Reference
-          </Link>
-          <a
-            href={`/static/demo/${versionId}/index.html`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="docs-sidebar__link"
-          >
-            <DemoGalleryIcon />
-            Demo Gallery
-          </a>
-        </nav>
+  return (
+    <aside className={`docs-sidebar ${isMobileNavOpen ? 'docs-sidebar--mobile-open' : ''}`}>
+      <button
+        type="button"
+        className="docs-sidebar__mobile-toggle"
+        onClick={() =>
+          setMobileNavPath((currentPath) => (currentPath === pathname ? null : pathname))
+        }
+        aria-expanded={isMobileNavOpen}
+        aria-controls="docs-sidebar-content"
+      >
+        <span>Menu</span>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          aria-hidden="true"
+          style={{ transform: isMobileNavOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+        >
+          <path
+            d="M2 4L6 8L10 4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div id="docs-sidebar-content" className="docs-sidebar__content">
+        <div className="docs-sidebar__section">
+          <div className="docs-sidebar__section-title">Documentation</div>
+          <nav className="docs-sidebar__nav">
+            {navigation.map((item) => (
+              <div key={item.path} className="docs-sidebar__item-group">
+                <Link
+                  href={item.path}
+                  className={`docs-sidebar__link ${isActive(item) ? 'docs-sidebar__link--active' : ''}`}
+                  onClick={closeMobileNavigation}
+                >
+                  {getDocumentationIcon(item.slug)}
+                  {item.title}
+                </Link>
+                {item.children && item.children.length > 0 && isActive(item) && (
+                  <div className="docs-sidebar__subnav">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.path}
+                        href={child.path}
+                        className={`docs-sidebar__sublink ${isChildActive(child) ? 'docs-sidebar__sublink--active' : ''}`}
+                        onClick={closeMobileNavigation}
+                      >
+                        {child.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        <div className="docs-sidebar__section">
+          <div className="docs-sidebar__section-title">Resources</div>
+          <nav className="docs-sidebar__nav">
+            <Link
+              href={`/${versionId}/api`}
+              className={`docs-sidebar__link ${pathname.includes('/api') ? 'docs-sidebar__link--active' : ''}`}
+              onClick={closeMobileNavigation}
+            >
+              <ApiReferenceIcon />
+              API Reference
+            </Link>
+            <a
+              href={`/static/demo/${versionId}/index.html`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="docs-sidebar__link"
+              onClick={closeMobileNavigation}
+            >
+              <DemoGalleryIcon />
+              <span className="docs-sidebar__link-label">
+                Demo Gallery
+                <svg
+                  className="docs-sidebar__external-icon"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 4h6v6M12 4L4 12"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          </nav>
+        </div>
       </div>
     </aside>
   );
