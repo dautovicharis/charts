@@ -22,6 +22,7 @@ import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.toChartDataSet
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class LineChartTest {
     @OptIn(ExperimentalTestApi::class)
@@ -117,6 +118,27 @@ class LineChartTest {
 
             onNodeWithTag(TestTags.LINE_CHART_X_AXIS_LABELS).isDisplayed()
             onAllNodesWithTag(TestTags.LINE_CHART_Y_AXIS_LABELS).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun lineChart_lastXAxisLabel_hasRightEdgePadding() =
+        runComposeUiTest {
+            val edgeDataSet =
+                listOf(20f, 28f, 23f, 30f).toChartDataSet(
+                    title = "Quarterly Revenue by Region",
+                    labels = listOf("Region 4", "Region 36", "Region 68", "Region 100"),
+                )
+
+            setContent {
+                LineChart(dataSet = edgeDataSet)
+            }
+
+            val axisBounds = onNodeWithTag(TestTags.LINE_CHART_X_AXIS_LABELS).fetchSemanticsNode().boundsInRoot
+            val rightMostVisibleLabelBounds = onNodeWithText("Region 68").fetchSemanticsNode().boundsInRoot
+
+            onAllNodesWithText("Region 100").assertCountEquals(0)
+            assertTrue(rightMostVisibleLabelBounds.right <= axisBounds.right - 1f)
         }
 
     @OptIn(ExperimentalTestApi::class)

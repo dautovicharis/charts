@@ -15,7 +15,9 @@ import io.github.dautovicharis.charts.internal.format
 import io.github.dautovicharis.charts.mock.MockTest.TITLE
 import io.github.dautovicharis.charts.mock.MockTest.dataSet
 import io.github.dautovicharis.charts.model.ChartDataSet
+import io.github.dautovicharis.charts.model.toChartDataSet
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class BarChartTest {
     @OptIn(ExperimentalTestApi::class)
@@ -81,5 +83,25 @@ class BarChartTest {
             onNodeWithTag(TestTags.CHART_TITLE)
                 .assertTextEquals(expectedTitle)
                 .isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun barChart_lastXAxisLabel_hasRightEdgePadding() =
+        runComposeUiTest {
+            val edgeDataSet =
+                listOf(320f, 280f, 260f, 300f).toChartDataSet(
+                    title = "Quarterly Revenue by Region",
+                    labels = listOf("Region 4", "Region 36", "Region 68", "Region 100"),
+                )
+
+            setContent {
+                BarChart(dataSet = edgeDataSet)
+            }
+
+            val axisBounds = onNodeWithTag(TestTags.BAR_CHART_X_AXIS_LABELS).fetchSemanticsNode().boundsInRoot
+            val lastLabelBounds = onNodeWithText("Region 100").fetchSemanticsNode().boundsInRoot
+
+            assertTrue(lastLabelBounds.right <= axisBounds.right - 1f)
         }
 }

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTouchInput
@@ -19,6 +20,7 @@ import io.github.dautovicharis.charts.mock.MockTest.multiDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 import io.github.dautovicharis.charts.style.StackedAreaChartDefaults
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class StackedAreaChartTest {
     @OptIn(ExperimentalTestApi::class)
@@ -182,6 +184,31 @@ class StackedAreaChartTest {
             onNodeWithTag(TestTags.STACKED_AREA_CHART_DENSE_EXPAND).performTouchInput { click() }
             onAllNodesWithTag(TestTags.STACKED_AREA_CHART_ZOOM_OUT).assertCountEquals(0)
             onAllNodesWithTag(TestTags.STACKED_AREA_CHART_ZOOM_IN).assertCountEquals(0)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedAreaChart_lastXAxisLabel_hasRightEdgePadding() =
+        runComposeUiTest {
+            val edgeDataSet =
+                listOf(
+                    "Q1" to listOf(320f, 280f, 260f, 300f),
+                    "Q2" to listOf(180f, 210f, 190f, 220f),
+                    "Q3" to listOf(120f, 140f, 130f, 150f),
+                ).toMultiChartDataSet(
+                    title = "Quarterly Revenue by Region",
+                    categories = listOf("Region 4", "Region 36", "Region 68", "Region 100"),
+                )
+
+            setContent {
+                StackedAreaChart(dataSet = edgeDataSet)
+            }
+
+            val axisBounds = onNodeWithTag(TestTags.STACKED_AREA_CHART_X_AXIS_LABELS).fetchSemanticsNode().boundsInRoot
+            val rightMostVisibleLabelBounds = onNodeWithText("Region 68").fetchSemanticsNode().boundsInRoot
+
+            onAllNodesWithText("Region 100").assertCountEquals(0)
+            assertTrue(rightMostVisibleLabelBounds.right <= axisBounds.right - 1f)
         }
 
     private fun denseStackedAreaDataSet(points: Int = 120) =
