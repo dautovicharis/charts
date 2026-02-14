@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,7 +24,6 @@ import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.validateLineData
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import io.github.dautovicharis.charts.style.LineChartStyle
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
@@ -40,6 +39,7 @@ fun LineChartImpl(
     animateOnStart: Boolean = true,
     renderMode: LineChartRenderMode = LineChartRenderMode.Morph,
     animationDurationMillis: Int = 420,
+    selectedPointIndex: Int = NO_SELECTION,
 ) {
     val errors =
         remember(data, style) {
@@ -50,11 +50,8 @@ fun LineChartImpl(
         }
 
     if (errors.isEmpty()) {
-        var title by remember(data) { mutableStateOf(data.title) }
-        var labels by remember(data) {
-            mutableStateOf<ImmutableList<String>>(persistentListOf())
-        }
         val isTimelineMode = renderMode == LineChartRenderMode.Timeline
+        var selectedIndexFromInteraction by remember(data) { mutableIntStateOf(NO_SELECTION) }
         val sourcePointsCount = remember(data) { data.getFirstPointsSize() }
         val isDenseMorphData =
             remember(renderMode, sourcePointsCount) {
@@ -68,6 +65,33 @@ fun LineChartImpl(
                     aggregateForCompactDensity(data)
                 } else {
                     data
+                }
+            }
+        val renderDataPointsCount = renderData.getFirstPointsSize()
+        val forcedSelectedIndex =
+            if (isTimelineMode) {
+                NO_SELECTION
+            } else {
+                selectedPointIndex.takeIf { it in 0 until renderDataPointsCount }
+                    ?: NO_SELECTION
+            }
+        val selectedInteractionIndex =
+            selectedIndexFromInteraction.takeIf { it in 0 until renderDataPointsCount } ?: NO_SELECTION
+        val effectiveSelectedIndex =
+            when (forcedSelectedIndex) {
+                NO_SELECTION -> selectedInteractionIndex
+                else -> forcedSelectedIndex
+            }
+        val title =
+            remember(renderData, effectiveSelectedIndex) {
+                renderData.getLabel(effectiveSelectedIndex)
+            }
+        val labels =
+            remember(renderData, effectiveSelectedIndex, isTimelineMode) {
+                if (!isTimelineMode && renderData.hasCategories() && effectiveSelectedIndex != NO_SELECTION) {
+                    renderData.items.map { it.item.labels[effectiveSelectedIndex] }.toImmutableList()
+                } else {
+                    persistentListOf()
                 }
             }
         val isDenseMorphMode = isDenseMorphData && denseExpanded
@@ -138,15 +162,10 @@ fun LineChartImpl(
                 isDenseMorphMode = isDenseMorphMode,
                 scrollState = scrollState,
                 zoomScale = zoomScale,
+                selectedPointIndex = forcedSelectedIndex,
             ) { selectedIndex ->
-                title = renderData.getLabel(selectedIndex)
-
-                if (!isTimelineMode && renderData.hasCategories()) {
-                    labels =
-                        when (selectedIndex) {
-                            NO_SELECTION -> persistentListOf()
-                            else -> renderData.items.map { it.item.labels[selectedIndex] }.toImmutableList()
-                        }
+                if (forcedSelectedIndex == NO_SELECTION && selectedIndexFromInteraction != selectedIndex) {
+                    selectedIndexFromInteraction = selectedIndex
                 }
             }
 

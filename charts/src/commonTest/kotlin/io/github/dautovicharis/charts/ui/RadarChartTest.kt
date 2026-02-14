@@ -52,4 +52,29 @@ class RadarChartTest {
             onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
             onNodeWithText("${expectedError}\n").isDisplayed()
         }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun radarChart_withSelectedAxisIndex_displaysSelectedAxisDetails() =
+        runComposeUiTest {
+            // Arrange
+            val selectedAxisIndex = 1
+            val expectedTitle = dataSet.data.item.labels[selectedAxisIndex]
+
+            // Act
+            setContent {
+                RadarChart(
+                    dataSet = dataSet,
+                    interactionEnabled = false,
+                    animateOnStart = false,
+                    selectedAxisIndex = selectedAxisIndex,
+                )
+            }
+
+            // Assert
+            onNodeWithTag(TestTags.RADAR_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+        }
 }

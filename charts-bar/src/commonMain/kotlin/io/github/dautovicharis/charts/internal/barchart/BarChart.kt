@@ -39,6 +39,7 @@ fun BarChart(
     style: BarChartStyle,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedBarIndex: Int = NO_SELECTION,
     onValueChanged: (Int) -> Unit = {},
 ) {
     val barColor = style.barColor.copy(alpha = style.barAlpha)
@@ -127,35 +128,48 @@ fun BarChart(
                 maxZoom = zoomMax,
                 initialZoom = zoomMin,
             )
-        var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
+        var selectedIndexFromInteraction by remember { mutableIntStateOf(NO_SELECTION) }
+        val forcedSelectedIndex =
+            selectedBarIndex.takeIf { it in 0 until dataSize } ?: NO_SELECTION
+        val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
 
         LaunchedEffect(dataSize) {
-            if (selectedIndex !in 0 until dataSize) {
-                selectedIndex = NO_SELECTION
+            if (hasForcedSelection) return@LaunchedEffect
+            if (selectedIndexFromInteraction !in 0 until dataSize) {
+                selectedIndexFromInteraction = NO_SELECTION
                 onValueChanged(NO_SELECTION)
             }
         }
 
         LaunchedEffect(renderData) {
-            if (selectedIndex != NO_SELECTION) {
-                selectedIndex = NO_SELECTION
+            if (hasForcedSelection) return@LaunchedEffect
+            if (selectedIndexFromInteraction != NO_SELECTION) {
+                selectedIndexFromInteraction = NO_SELECTION
                 onValueChanged(NO_SELECTION)
             }
         }
 
+        val effectiveSelectedIndex =
+            when (forcedSelectedIndex) {
+                NO_SELECTION -> selectedIndexFromInteraction
+                else -> forcedSelectedIndex
+            }
+
         val resolvedTitle =
-            remember(title, renderData, selectedIndex) {
-                when (selectedIndex) {
+            remember(title, renderData, effectiveSelectedIndex) {
+                when (effectiveSelectedIndex) {
                     NO_SELECTION -> title
-                    else -> resolveSelectedBarTitle(chartData = renderData, index = selectedIndex)
+                    else -> resolveSelectedBarTitle(chartData = renderData, index = effectiveSelectedIndex)
                 }
             }
 
         val onSelectIndex: (Int) -> Unit = { index ->
-            val resolvedIndex = if (index in 0 until dataSize) index else NO_SELECTION
-            if (selectedIndex != resolvedIndex) {
-                selectedIndex = resolvedIndex
-                onValueChanged(resolvedIndex)
+            if (!hasForcedSelection) {
+                val resolvedIndex = if (index in 0 until dataSize) index else NO_SELECTION
+                if (selectedIndexFromInteraction != resolvedIndex) {
+                    selectedIndexFromInteraction = resolvedIndex
+                    onValueChanged(resolvedIndex)
+                }
             }
         }
 
@@ -164,7 +178,8 @@ fun BarChart(
         val showHeader = resolvedTitle.isNotBlank() || showCompactToggle || showZoomControlsInHeader
 
         val onToggleSelection: (Int) -> Unit = { index ->
-            if (selectedIndex == index && selectedIndex != NO_SELECTION) {
+            val currentSelected = if (hasForcedSelection) forcedSelectedIndex else selectedIndexFromInteraction
+            if (currentSelected == index && currentSelected != NO_SELECTION) {
                 onSelectIndex(NO_SELECTION)
             } else {
                 onSelectIndex(index)
@@ -210,7 +225,7 @@ fun BarChart(
                 zoomMin = zoomMin,
                 zoomMax = zoomMax,
                 zoomStep = zoomStep,
-                selectedIndex = selectedIndex,
+                selectedIndex = effectiveSelectedIndex,
                 onToggleSelection = onToggleSelection,
                 onSelectIndex = onSelectIndex,
                 onClearSelection = { onSelectIndex(NO_SELECTION) },

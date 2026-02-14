@@ -57,4 +57,29 @@ class StackedAreaChartTest {
             onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
             onNodeWithText("${expectedError}\n").isDisplayed()
         }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedAreaChart_withSelectedPointIndex_displaysSelectedPointDetails() =
+        runComposeUiTest {
+            // Arrange
+            val selectedPointIndex = 1
+            val expectedTitle = multiDataSet.data.getLabel(selectedPointIndex)
+
+            // Act
+            setContent {
+                StackedAreaChart(
+                    dataSet = multiDataSet,
+                    interactionEnabled = false,
+                    animateOnStart = false,
+                    selectedPointIndex = selectedPointIndex,
+                )
+            }
+
+            // Assert
+            onNodeWithTag(TestTags.STACKED_AREA_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+        }
 }

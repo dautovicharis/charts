@@ -2,6 +2,7 @@ package io.github.dautovicharis.charts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.barchart.BarChart
 import io.github.dautovicharis.charts.internal.common.composable.Chart
 import io.github.dautovicharis.charts.internal.common.composable.ChartErrors
@@ -18,6 +19,7 @@ import kotlinx.collections.immutable.toImmutableList
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
  * @param interactionEnabled Enables touch interactions (tap selection and scroll/zoom). Defaults to true.
  * @param animateOnStart Enables initial chart animations. Defaults to true.
+ * @param selectedBarIndex Optional preselected bar index for deterministic rendering (e.g. screenshots).
  */
 @Composable
 fun BarChart(
@@ -25,6 +27,7 @@ fun BarChart(
     style: BarChartStyle = BarChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    selectedBarIndex: Int = NO_SELECTION,
 ) {
     val errors =
         remember(dataSet) {
@@ -39,6 +42,7 @@ fun BarChart(
             style = style,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
+            selectedBarIndex = selectedBarIndex,
         )
     } else {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
@@ -51,6 +55,7 @@ private fun BarChartContent(
     style: BarChartStyle,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedBarIndex: Int,
 ) {
     Chart(chartViewsStyle = style.chartViewStyle) {
         BarChart(
@@ -59,6 +64,7 @@ private fun BarChartContent(
             style = style,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
+            selectedBarIndex = selectedBarIndex,
         )
     }
 }

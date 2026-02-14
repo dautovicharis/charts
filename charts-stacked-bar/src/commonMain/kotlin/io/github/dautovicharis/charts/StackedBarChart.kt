@@ -2,6 +2,7 @@ package io.github.dautovicharis.charts
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import kotlinx.collections.immutable.toImmutableList
  * @param style The style to be applied to the chart. If not provided, the default style will be used.
  * @param interactionEnabled Enables touch interactions (drag selection). Defaults to true.
  * @param animateOnStart Enables initial chart animations. Defaults to true.
+ * @param selectedBarIndex Optional preselected bar index for deterministic rendering (e.g. screenshots).
  */
 @Composable
 fun StackedBarChart(
@@ -36,6 +38,7 @@ fun StackedBarChart(
     style: StackedBarChartStyle = StackedBarChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    selectedBarIndex: Int = NO_SELECTION,
 ) {
     val errors =
         remember(dataSet, style) {
@@ -51,6 +54,7 @@ fun StackedBarChart(
             style = style,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
+            selectedBarIndex = selectedBarIndex,
         )
     } else {
         ChartErrors(style = style.chartViewStyle, errors = errors.toImmutableList())
@@ -63,10 +67,29 @@ private fun StackedBarChartContent(
     style: StackedBarChartStyle,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedBarIndex: Int,
 ) {
+    val dataSize = dataSet.data.items.size
+    val forcedSelectedIndex =
+        selectedBarIndex.takeIf { it in 0 until dataSize } ?: NO_SELECTION
+    val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
+
     var title by remember(dataSet) { mutableStateOf(dataSet.data.title) }
     var labels by remember(dataSet) {
         mutableStateOf<ImmutableList<String>>(persistentListOf())
+    }
+
+    // Apply forced selection title/labels
+    LaunchedEffect(forcedSelectedIndex, dataSet) {
+        if (hasForcedSelection) {
+            title = dataSet.data.items[forcedSelectedIndex].label
+            labels =
+                if (dataSet.data.hasCategories()) {
+                    dataSet.data.items[forcedSelectedIndex].item.labels
+                } else {
+                    persistentListOf()
+                }
+        }
     }
 
     val colors: ImmutableList<androidx.compose.ui.graphics.Color> =
@@ -104,21 +127,24 @@ private fun StackedBarChartContent(
             colors = colors,
             interactionEnabled = interactionEnabled,
             animateOnStart = animateOnStart,
+            selectedBarIndex = selectedBarIndex,
         ) { selectedIndex ->
-            title =
-                when (selectedIndex) {
-                    NO_SELECTION -> dataSet.data.title
-                    else -> {
-                        dataSet.data.items[selectedIndex].label
-                    }
-                }
-
-            if (dataSet.data.hasCategories()) {
-                labels =
+            if (!hasForcedSelection) {
+                title =
                     when (selectedIndex) {
-                        NO_SELECTION -> persistentListOf()
-                        else -> dataSet.data.items[selectedIndex].item.labels
+                        NO_SELECTION -> dataSet.data.title
+                        else -> {
+                            dataSet.data.items[selectedIndex].label
+                        }
                     }
+
+                if (dataSet.data.hasCategories()) {
+                    labels =
+                        when (selectedIndex) {
+                            NO_SELECTION -> persistentListOf()
+                            else -> dataSet.data.items[selectedIndex].item.labels
+                        }
+                }
             }
         }
 

@@ -42,6 +42,7 @@ fun StackedAreaChart(
     lineColors: ImmutableList<Color>,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedPointIndex: Int = NO_SELECTION,
     onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
@@ -71,6 +72,9 @@ fun StackedAreaChart(
         }
     val hasInitialized = remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(NO_SELECTION) }
+    val forcedSelectedIndex =
+        selectedPointIndex.takeIf { it in 0 until pointsCount } ?: NO_SELECTION
+    val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
 
     LaunchedEffect(show, targetNormalized) {
         if (pointsCount <= 0 || seriesCount == 0) return@LaunchedEffect
@@ -117,7 +121,7 @@ fun StackedAreaChart(
     }
 
     val interactionModifier =
-        if (interactionEnabled) {
+        if (interactionEnabled && !hasForcedSelection) {
             Modifier.pointerInput(pointsCount) {
                 detectHorizontalDragGestures(
                     onDragStart = { offset ->

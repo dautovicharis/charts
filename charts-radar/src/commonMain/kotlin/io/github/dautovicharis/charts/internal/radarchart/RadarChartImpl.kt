@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,7 @@ fun RadarChartImpl(
     style: RadarChartStyle = RadarChartDefaults.style(),
     interactionEnabled: Boolean = true,
     animateOnStart: Boolean = true,
+    selectedAxisIndex: Int = NO_SELECTION,
 ) {
     val legendAnimationDuration = 300
     val errors =
@@ -50,6 +52,22 @@ fun RadarChartImpl(
         var selectedIndex by remember(data) { mutableIntStateOf(NO_SELECTION) }
         var seriesLabels by remember(data) {
             mutableStateOf<ImmutableList<String>>(persistentListOf())
+        }
+
+        val axisCount = data.getFirstPointsSize()
+        val forcedSelectedIndex =
+            selectedAxisIndex.takeIf { it in 0 until axisCount } ?: NO_SELECTION
+        val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
+
+        // Apply forced selection title/labels
+        LaunchedEffect(forcedSelectedIndex, data) {
+            if (hasForcedSelection) {
+                title = data.getLabel(forcedSelectedIndex)
+                seriesLabels =
+                    data.items.map {
+                        it.item.labels.getOrNull(forcedSelectedIndex).orEmpty()
+                    }.toImmutableList()
+            }
         }
 
         val lineColors =
@@ -93,14 +111,17 @@ fun RadarChartImpl(
                 axisLabels = categories,
                 interactionEnabled = interactionEnabled,
                 animateOnStart = animateOnStart,
+                selectedAxisIndex = selectedAxisIndex,
                 onValueChanged = { index ->
-                    selectedIndex = index
-                    title = data.getLabel(index)
-                    seriesLabels =
-                        when (index) {
-                            NO_SELECTION -> persistentListOf()
-                            else -> data.items.map { it.item.labels.getOrNull(index).orEmpty() }.toImmutableList()
-                        }
+                    if (!hasForcedSelection) {
+                        selectedIndex = index
+                        title = data.getLabel(index)
+                        seriesLabels =
+                            when (index) {
+                                NO_SELECTION -> persistentListOf()
+                                else -> data.items.map { it.item.labels.getOrNull(index).orEmpty() }.toImmutableList()
+                            }
+                    }
                 },
             )
 

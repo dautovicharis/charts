@@ -34,3 +34,17 @@ fun BarChartCustomPreview() {
         )
     }
 }
+
+@PreviewTest
+@ScreenshotPreview
+@Composable
+fun BarChartSelectedBarPreview() {
+    ScreenshotSurface {
+        BarChart(
+            dataSet = SCREENSHOT_BAR_SAMPLE_USE_CASE.initialBarDataSet(),
+            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+            interactionEnabled = false,
+            selectedBarIndex = 1,
+        )
+    }
+}
