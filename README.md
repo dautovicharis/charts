@@ -21,8 +21,7 @@
 </p>
 
 <p align="center">
-<img width="1200" height="913" alt="Screenshot 2026-02-12 at 00 55 05" src="https://github.com/user-attachments/assets/b547a36f-d318-47ff-a7e1-f374e8b5eebb" />
-
+  <img width="1200" alt="demo-light" src="https://github.com/user-attachments/assets/91eb4a0a-8581-4aa9-aecf-a30926b422d6" />
 </p>
 
 ---
