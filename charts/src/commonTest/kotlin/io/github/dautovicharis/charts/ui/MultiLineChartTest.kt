@@ -74,6 +74,30 @@ class MultiLineChartTest {
 
     @OptIn(ExperimentalTestApi::class)
     @Test
+    fun multiLineChart_withSelectedPointIndex_displaysSelectedPointDetails() =
+        runComposeUiTest {
+            val selectedIndex = 2
+            val expectedTitle = multiDataSet.data.categories[selectedIndex]
+            val expectedCurrentValueItem1 =
+                "${multiDataSet.data.items[0].label} - ${multiDataSet.data.items[0].item.labels[selectedIndex]}"
+
+            setContent {
+                LineChart(
+                    dataSet = multiDataSet,
+                    interactionEnabled = false,
+                    animateOnStart = false,
+                    selectedPointIndex = selectedIndex,
+                )
+            }
+
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+            onNodeWithText(expectedCurrentValueItem1).isDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
     fun multiLineChart_withLargeDatasetInMorphMode_showsCompactToggleByDefault() =
         runComposeUiTest {
             val points = 120

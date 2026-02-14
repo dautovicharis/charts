@@ -83,3 +83,17 @@ fun RadarChartMultiNoCategoriesPreview() {
         )
     }
 }
+
+@PreviewTest
+@ScreenshotPreview
+@Composable
+fun RadarChartSelectedAxisPreview() {
+    ScreenshotSurface {
+        RadarChart(
+            dataSet = SCREENSHOT_RADAR_SAMPLE_USE_CASE.initialRadarDefaultDataSet(),
+            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+            interactionEnabled = false,
+            selectedAxisIndex = 2,
+        )
+    }
+}

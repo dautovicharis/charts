@@ -98,4 +98,29 @@ class StackedBarChartTest {
             onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
             onNodeWithText("${expectedColorsError}\n").isDisplayed()
         }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun stackedBarChart_withSelectedBarIndex_displaysSelectedBarDetails() =
+        runComposeUiTest {
+            // Arrange
+            val selectedBarIndex = 1
+            val expectedTitle = multiDataSet.data.items[selectedBarIndex].label
+
+            // Act
+            setContent {
+                StackedBarChart(
+                    dataSet = multiDataSet,
+                    interactionEnabled = false,
+                    animateOnStart = false,
+                    selectedBarIndex = selectedBarIndex,
+                )
+            }
+
+            // Assert
+            onNodeWithTag(TestTags.STACKED_BAR_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+        }
 }

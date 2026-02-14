@@ -104,13 +104,13 @@ internal fun LineChartContent(
     isDenseMorphMode: Boolean = false,
     scrollState: ScrollState,
     zoomScale: Float = 1f,
+    selectedPointIndex: Int = NO_SELECTION,
     onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
     var show by rememberShowState(isPreviewMode = isPreview || !animateOnStart)
     val touchX = remember { mutableFloatStateOf(0f) }
     val dragging = remember { mutableStateOf(false) }
-    val reportedSelection = remember { mutableIntStateOf(NO_SELECTION) }
     val valueAnimationSpec = remember { AnimationSpec.lineChart() }
 
     val lineAnimation by animateFloatAsState(
@@ -138,6 +138,9 @@ internal fun LineChartContent(
     val minMax = remember(data) { data.minMax() }
     val targetNormalized = remember(rawSeries, minMax) { data.normalizeByMinMax(minMax, 0f) }
     val pointsCount = rawSeries.firstOrNull()?.size ?: 0
+    val forcedSelectionIndex = selectedPointIndex.takeIf { it in 0 until pointsCount } ?: NO_SELECTION
+    val hasForcedSelection = forcedSelectionIndex != NO_SELECTION
+    val reportedSelection = remember(forcedSelectionIndex) { mutableIntStateOf(forcedSelectionIndex) }
     val seriesCount = rawSeries.size
     val bezierTension = LINE_CHART_BEZIER_TENSION
     val animatedValues =
@@ -161,11 +164,12 @@ internal fun LineChartContent(
     val timelineRenderMinMax = remember { mutableStateOf<Pair<Double, Double>?>(null) }
     val isTimelineMode = renderMode == LineChartRenderMode.Timeline
     val denseMorphEnabled = isDenseMorphMode && !isTimelineMode
-    val dragInteractionEnabled = interactionEnabled && !isTimelineMode && !denseMorphEnabled
-    val tapInteractionEnabled = interactionEnabled && denseMorphEnabled
+    val dragInteractionEnabled = interactionEnabled && !isTimelineMode && !denseMorphEnabled && !hasForcedSelection
+    val tapInteractionEnabled = interactionEnabled && denseMorphEnabled && !hasForcedSelection
 
-    LaunchedEffect(dragInteractionEnabled, tapInteractionEnabled) {
+    LaunchedEffect(dragInteractionEnabled, tapInteractionEnabled, hasForcedSelection) {
         dragging.value = false
+        if (hasForcedSelection) return@LaunchedEffect
         if (!tapInteractionEnabled) {
             dragging.value = false
             if (reportedSelection.intValue != NO_SELECTION) {
@@ -175,7 +179,8 @@ internal fun LineChartContent(
         }
     }
 
-    LaunchedEffect(pointsCount, tapInteractionEnabled) {
+    LaunchedEffect(pointsCount, tapInteractionEnabled, hasForcedSelection) {
+        if (hasForcedSelection) return@LaunchedEffect
         if (tapInteractionEnabled && reportedSelection.intValue >= pointsCount) {
             reportedSelection.intValue = NO_SELECTION
             onValueChanged(NO_SELECTION)

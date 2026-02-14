@@ -54,4 +54,30 @@ class BarChartTest {
             onNodeWithTag(TestTags.CHART_ERROR).isDisplayed()
             onNodeWithText("${expectedError}\n").isDisplayed()
         }
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun barChart_withSelectedBarIndex_displaysSelectedBarDetails() =
+        runComposeUiTest {
+            // Arrange
+            val selectedBarIndex = 1
+            val expectedLabel = dataSet.data.item.labels[selectedBarIndex]
+            val expectedValue = dataSet.data.item.points[selectedBarIndex]
+            val expectedTitle = "$expectedLabel: $expectedValue"
+
+            // Act
+            setContent {
+                BarChart(
+                    dataSet = dataSet,
+                    interactionEnabled = false,
+                    animateOnStart = false,
+                    selectedBarIndex = selectedBarIndex,
+                )
+            }
+
+            // Assert
+            onNodeWithTag(TestTags.BAR_CHART).isDisplayed()
+            onNodeWithTag(TestTags.CHART_TITLE)
+                .assertTextEquals(expectedTitle)
+                .isDisplayed()
+        }
 }

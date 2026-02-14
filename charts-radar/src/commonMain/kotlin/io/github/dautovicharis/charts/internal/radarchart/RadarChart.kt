@@ -56,6 +56,7 @@ fun RadarChart(
     axisLabels: ImmutableList<String> = persistentListOf(),
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedAxisIndex: Int = NO_SELECTION,
     onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
@@ -65,12 +66,22 @@ fun RadarChart(
     val radarAnimationSpec = remember { AnimationSpec.radarChart() }
     val hasInitialized = remember { mutableStateOf(false) }
 
+    val axisCount = remember(data) { data.getFirstPointsSize() }
+    val forcedSelectedIndex =
+        selectedAxisIndex.takeIf { it in 0 until axisCount } ?: NO_SELECTION
+    val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
+    val effectiveSelectedIndex =
+        when (forcedSelectedIndex) {
+            NO_SELECTION -> selectedIndex.intValue
+            else -> forcedSelectedIndex
+        }
+
     BoxWithConstraints(modifier = style.modifier) {
         val density = LocalDensity.current
         val widthPx = with(density) { maxWidth.toPx() }
         val heightPx = with(density) { maxHeight.toPx() }
 
-        val axisCount = remember(data) { data.getFirstPointsSize() }
+
         val minMax = remember(data) { data.minMax() }
         val targetNormalized = remember(data, minMax) { data.normalizeByMinMax(minMax, 1f) }
         val initialValues =
@@ -145,7 +156,7 @@ fun RadarChart(
 
         Box(modifier = Modifier.fillMaxSize()) {
             val interactionModifier =
-                if (interactionEnabled) {
+                if (interactionEnabled && !hasForcedSelection) {
                     Modifier.pointerInput(axisCount) {
                         detectDragGestures(
                             onDragStart = { offset ->
@@ -196,8 +207,8 @@ fun RadarChart(
                         animatedValues.map { series ->
                             series.map { it.value }
                         },
-                    dragging = dragging,
-                    selectedIndex = selectedIndex.intValue,
+                    dragging = dragging || hasForcedSelection,
+                    selectedIndex = effectiveSelectedIndex,
                 )
             }
 

@@ -2,6 +2,7 @@ package io.github.dautovicharis.charts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.linechart.LineChartImpl
 import io.github.dautovicharis.charts.model.ChartDataSet
@@ -20,6 +21,7 @@ import io.github.dautovicharis.charts.style.LineChartStyle
  * @param renderMode Chart transition mode. Defaults to [LineChartRenderMode.Morph].
  * @param animationDurationMillis Timeline transition duration. Used only when [renderMode]
  * is [LineChartRenderMode.Timeline].
+ * @param selectedPointIndex Optional preselected point index for deterministic rendering (e.g. screenshots).
  * Dense zoom/scroll style settings are applied in morph mode and ignored in timeline mode.
  */
 @Composable
@@ -30,6 +32,7 @@ fun LineChart(
     animateOnStart: Boolean = true,
     renderMode: LineChartRenderMode = LineChartRenderMode.Morph,
     animationDurationMillis: Int = 420,
+    selectedPointIndex: Int = NO_SELECTION,
 ) {
     val data =
         remember(dataSet) {
@@ -45,6 +48,7 @@ fun LineChart(
         animateOnStart = animateOnStart,
         renderMode = renderMode,
         animationDurationMillis = animationDurationMillis,
+        selectedPointIndex = selectedPointIndex,
     )
 }
 
@@ -59,6 +63,7 @@ fun LineChart(
  * @param renderMode Chart transition mode. Defaults to [LineChartRenderMode.Morph].
  * @param animationDurationMillis Timeline transition duration. Used only when [renderMode]
  * is [LineChartRenderMode.Timeline].
+ * @param selectedPointIndex Optional preselected point index for deterministic rendering (e.g. screenshots).
  * Dense zoom/scroll style settings are applied in morph mode and ignored in timeline mode.
  */
 @Composable
@@ -69,6 +74,7 @@ fun LineChart(
     animateOnStart: Boolean = true,
     renderMode: LineChartRenderMode = LineChartRenderMode.Morph,
     animationDurationMillis: Int = 420,
+    selectedPointIndex: Int = NO_SELECTION,
 ) {
     LineChartImpl(
         data = dataSet.data,
@@ -77,5 +83,6 @@ fun LineChart(
         animateOnStart = animateOnStart,
         renderMode = renderMode,
         animationDurationMillis = animationDurationMillis,
+        selectedPointIndex = selectedPointIndex,
     )
 }

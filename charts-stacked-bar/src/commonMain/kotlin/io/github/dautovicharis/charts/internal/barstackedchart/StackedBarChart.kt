@@ -43,6 +43,7 @@ fun StackedBarChart(
     colors: ImmutableList<Color>,
     interactionEnabled: Boolean,
     animateOnStart: Boolean,
+    selectedBarIndex: Int = NO_SELECTION,
     onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
@@ -59,6 +60,15 @@ fun StackedBarChart(
         }
     val hasInitialized = remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(-1) }
+    val dataSize = data.items.size
+    val forcedSelectedIndex =
+        selectedBarIndex.takeIf { it in 0 until dataSize } ?: NO_SELECTION
+    val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
+    val effectiveSelectedIndex =
+        when (forcedSelectedIndex) {
+            NO_SELECTION -> selectedIndex
+            else -> forcedSelectedIndex
+        }
     val spacingPx = with(LocalDensity.current) { style.space.toPx() }
 
     LaunchedEffect(targetNormalized) {
@@ -83,7 +93,7 @@ fun StackedBarChart(
     }
 
     val interactionModifier =
-        if (interactionEnabled) {
+        if (interactionEnabled && !hasForcedSelection) {
             Modifier.pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragStart = { offset ->
@@ -132,7 +142,7 @@ fun StackedBarChart(
                 size = size,
                 data = data,
                 progress = animatedValues,
-                selectedIndex = selectedIndex,
+                selectedIndex = effectiveSelectedIndex,
                 colors = colors,
             )
         },

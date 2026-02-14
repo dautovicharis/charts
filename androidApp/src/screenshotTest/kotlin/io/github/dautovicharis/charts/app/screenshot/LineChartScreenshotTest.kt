@@ -10,6 +10,19 @@ import io.github.dautovicharis.charts.app.screenshot.shared.SCREENSHOT_MULTI_LIN
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotPreview
 import io.github.dautovicharis.charts.app.screenshot.shared.ScreenshotSurface
 import io.github.dautovicharis.charts.style.ChartViewDefaults
+import io.github.dautovicharis.charts.model.toMultiChartDataSet
+
+private const val MULTI_LINE_SELECTION_INDEX = 4
+
+private val MULTI_LINE_SELECTION_DATA_SET =
+    listOf(
+        "P50 Latency" to listOf(122.5, 149.125, 134.333, 126.75, 101.322397132296, 114.667, 129.75),
+        "P95 Latency" to listOf(167.75, 219.2, 176.85, 161.45, 151.31476088115193, 166.42, 188.95),
+    ).toMultiChartDataSet(
+        title = "14:00:28",
+        categories = listOf("14:00:00", "14:00:07", "14:00:14", "14:00:21", "14:00:28", "14:00:35", "14:00:42"),
+        postfix = " ms",
+    )
 
 @PreviewTest
 @ScreenshotPreview
@@ -61,6 +74,25 @@ fun MultiLineChartCustomPreview() {
                     seriesCount = 3,
                 ),
             animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+        )
+    }
+}
+
+@PreviewTest
+@ScreenshotPreview
+@Composable
+fun MultiLineChartSelectionLegendPreview() {
+    ScreenshotSurface {
+        LineChart(
+            dataSet = MULTI_LINE_SELECTION_DATA_SET,
+            style =
+                ChartTestStyleFixtures.multiLineCustomStyle(
+                    chartViewStyle = ChartViewDefaults.style(),
+                    seriesCount = MULTI_LINE_SELECTION_DATA_SET.data.items.size,
+                ),
+            interactionEnabled = false,
+            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+            selectedPointIndex = MULTI_LINE_SELECTION_INDEX,
         )
     }
 }

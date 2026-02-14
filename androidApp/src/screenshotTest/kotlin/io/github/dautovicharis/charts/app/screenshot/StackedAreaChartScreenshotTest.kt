@@ -50,3 +50,17 @@ fun StackedAreaChartNoCategoriesPreview() {
         )
     }
 }
+
+@PreviewTest
+@ScreenshotPreview
+@Composable
+fun StackedAreaChartSelectedPointPreview() {
+    ScreenshotSurface {
+        StackedAreaChart(
+            dataSet = SCREENSHOT_STACKED_AREA_SAMPLE_USE_CASE.initialStackedAreaSample().dataSet,
+            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+            interactionEnabled = false,
+            selectedPointIndex = 1,
+        )
+    }
+}

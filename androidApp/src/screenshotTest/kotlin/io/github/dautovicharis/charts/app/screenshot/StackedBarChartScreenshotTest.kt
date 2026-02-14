@@ -50,3 +50,17 @@ fun StackedBarChartNoCategoriesPreview() {
         )
     }
 }
+
+@PreviewTest
+@ScreenshotPreview
+@Composable
+fun StackedBarChartSelectedBarPreview() {
+    ScreenshotSurface {
+        StackedBarChart(
+            dataSet = SCREENSHOT_STACKED_BAR_SAMPLE_USE_CASE.initialStackedBarSample().dataSet,
+            animateOnStart = SCREENSHOT_ANIMATE_ON_START,
+            interactionEnabled = false,
+            selectedBarIndex = 1,
+        )
+    }
+}

@@ -4,6 +4,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import io.github.dautovicharis.charts.LineChartRenderMode
+import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.style.LineChartStyle
 import kotlinx.collections.immutable.ImmutableList
@@ -20,6 +21,7 @@ fun LineChart(
     isDenseMorphMode: Boolean = false,
     scrollState: ScrollState,
     zoomScale: Float = 1f,
+    selectedPointIndex: Int = NO_SELECTION,
     onValueChanged: (Int) -> Unit = {},
 ) {
     LineChartContent(
@@ -33,6 +35,7 @@ fun LineChart(
         isDenseMorphMode = isDenseMorphMode,
         scrollState = scrollState,
         zoomScale = zoomScale,
+        selectedPointIndex = selectedPointIndex,
         onValueChanged = onValueChanged,
     )
 }
