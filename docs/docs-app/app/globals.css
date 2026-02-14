@@ -149,6 +149,7 @@ body {
   display: flex;
   align-items: center;
   padding: 0 var(--space-6);
+  gap: var(--space-3);
 }
 
 .docs-header__logo {
@@ -172,6 +173,39 @@ body {
   flex-shrink: 0;
 }
 
+.docs-header__snapshot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.5), rgba(30, 41, 59, 0.75));
+  color: #e2e8f0;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+
+.docs-header__snapshot:hover {
+  color: #f8fafc;
+  border-color: rgba(148, 163, 184, 0.7);
+  background: linear-gradient(135deg, rgba(71, 85, 105, 0.52), rgba(30, 41, 59, 0.82));
+}
+
+.docs-header__snapshot-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: var(--radius-full);
+  background: #94a3b8;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+}
+
 .docs-header__nav {
   display: flex;
   align-items: center;
@@ -190,11 +224,6 @@ body {
 .docs-header__link:hover,
 .docs-header__link--active {
   color: var(--text-primary);
-}
-
-.docs-header__link--hidden {
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .docs-header__link--github {
@@ -813,6 +842,14 @@ body {
    =========================================== */
 
 @media (max-width: 1024px) {
+  .docs-header {
+    padding: 0 var(--space-4);
+  }
+
+  .docs-header__nav {
+    gap: var(--space-4);
+  }
+
   .docs-layout {
     flex-direction: column;
   }
@@ -892,6 +929,23 @@ body {
 }
 
 @media (max-width: 768px) {
+  .docs-header__logo {
+    font-size: 1.05rem;
+    gap: var(--space-2);
+  }
+
+  .docs-header__link--github span {
+    display: none;
+  }
+
+  .docs-header__link--github {
+    padding: var(--space-2);
+  }
+
+  .version-switcher__button {
+    padding: var(--space-2);
+  }
+
   .hero__title {
     font-size: 2.5rem;
   }
@@ -915,15 +969,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
 .animate-fadeIn {
   animation: fadeIn 0.5s ease forwards;
-}
-
-.animate-pulse {
-  animation: pulse 2s ease-in-out infinite;
 }
