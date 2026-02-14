@@ -53,9 +53,16 @@ class StackedBarChartTest {
             val firstIndex = 1
             val thirdIndex = 3
 
-            val pointsSizeFirst = dataSet.data.items[firstIndex].item.points.size
-            val pointsSizeThird = dataSet.data.items[thirdIndex].item.points.size
-            val expectedPointsSize = dataSet.data.items.first().item.points.size
+            val pointsSizeFirst =
+                dataSet.data.items[firstIndex]
+                    .item.points.size
+            val pointsSizeThird =
+                dataSet.data.items[thirdIndex]
+                    .item.points.size
+            val expectedPointsSize =
+                dataSet.data.items
+                    .first()
+                    .item.points.size
 
             val expectedPointsErrorFirst = RULE_ITEM_POINTS_SIZE.format(firstIndex, pointsSizeFirst, expectedPointsSize)
             val expectedPointsErrorSecond =

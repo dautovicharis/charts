@@ -90,6 +90,4 @@ private fun List<Color>.minPairwiseRgbDistanceSquared(): Float {
     return minDistance
 }
 
-private fun Color.toLightness(): Float {
-    return (maxOf(red, green, blue) + minOf(red, green, blue)) / 2f
-}
+private fun Color.toLightness(): Float = (maxOf(red, green, blue) + minOf(red, green, blue)) / 2f

@@ -12,9 +12,7 @@ object AnimationSpec {
         index: Int,
         duration: Int = ANIMATION_DURATION,
         offset: Int = ANIMATION_OFFSET,
-    ): Int {
-        return duration + offset * index
-    }
+    ): Int = duration + offset * index
 
     fun lineChart() =
         TweenSpec<Float>(

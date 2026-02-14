@@ -15,9 +15,7 @@ internal data class StackedBarRenderData(
     val sourceIndexByRenderIndex: List<Int>,
     val bucketRanges: List<IntRange>,
 ) {
-    fun resolveSourceIndex(renderIndex: Int): Int {
-        return sourceIndexByRenderIndex.getOrNull(renderIndex) ?: NO_SELECTION
-    }
+    fun resolveSourceIndex(renderIndex: Int): Int = sourceIndexByRenderIndex.getOrNull(renderIndex) ?: NO_SELECTION
 
     fun resolveRenderIndex(sourceIndex: Int): Int {
         if (sourceIndex !in 0 until sourceSize) return NO_SELECTION
@@ -56,9 +54,7 @@ internal fun maxBarsThatFit(
 internal fun unitWidth(
     barWidthPx: Float,
     spacingPx: Float,
-): Float {
-    return max(1f, barWidthPx + spacingPx)
-}
+): Float = max(1f, barWidthPx + spacingPx)
 
 internal fun contentWidth(
     dataSize: Int,
@@ -80,7 +76,12 @@ internal fun aggregateForCompactDensity(
 
     val bucketSize = bucketSizeForTargetCore(totalPoints = sourceSize, targetPoints = targetBars)
     val bucketRanges = buildBucketRangesCore(totalPoints = sourceSize, bucketSize = bucketSize)
-    val segmentCount = data.items.firstOrNull()?.item?.points?.size ?: 0
+    val segmentCount =
+        data.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: 0
 
     val aggregatedItems =
         bucketRanges.mapIndexed { bucketIndex, range ->
@@ -92,8 +93,7 @@ internal fun aggregateForCompactDensity(
                     aggregatePointsByAverageCore(
                         sourcePoints = segmentValues,
                         bucketRanges = listOf(0 until segmentValues.size),
-                    )
-                        .firstOrNull() ?: 0.0
+                    ).firstOrNull() ?: 0.0
                 }
             val fallbackLabel = "Bucket ${bucketIndex + 1}"
             val label = centerItem.label.ifBlank { fallbackLabel }

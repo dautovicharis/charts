@@ -112,6 +112,4 @@ fun ChartColors.seriesColors(keys: List<String>): List<Color> {
 private fun mutedSeries(
     series: ImmutableList<Color>,
     alpha: Float = 0.45f,
-): ImmutableList<Color> {
-    return series.map { it.copy(alpha = alpha) }.toImmutableList()
-}
+): ImmutableList<Color> = series.map { it.copy(alpha = alpha) }.toImmutableList()

@@ -10,9 +10,7 @@ const val DEFAULT_DENSE_THRESHOLD = 50
 fun shouldUseScrollableDensity(
     pointsCount: Int,
     threshold: Int = DEFAULT_DENSE_THRESHOLD,
-): Boolean {
-    return pointsCount >= threshold
-}
+): Boolean = pointsCount >= threshold
 
 @InternalChartsApi
 fun bucketSizeForTarget(

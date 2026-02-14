@@ -19,8 +19,8 @@ class DefaultPieSampleUseCase : PieSampleUseCase {
     private val pieCustomLabels =
         listOf("Housing", "Food", "Transport", "Healthcare", "Savings", "Leisure")
 
-    override fun initialPieSample(): PieSampleData {
-        return PieSampleData(
+    override fun initialPieSample(): PieSampleData =
+        PieSampleData(
             dataSet =
                 pieDefaultValues.toChartDataSet(
                     title = DEFAULT_TITLE,
@@ -29,10 +29,9 @@ class DefaultPieSampleUseCase : PieSampleUseCase {
                 ),
             segmentKeys = pieDefaultLabels,
         )
-    }
 
-    override fun initialPieCustomSample(): PieSampleData {
-        return PieSampleData(
+    override fun initialPieCustomSample(): PieSampleData =
+        PieSampleData(
             dataSet =
                 pieCustomValues.toChartDataSet(
                     title = CUSTOM_TITLE,
@@ -41,7 +40,6 @@ class DefaultPieSampleUseCase : PieSampleUseCase {
                 ),
             segmentKeys = pieCustomLabels,
         )
-    }
 
     override fun pieRefreshRange(): IntRange = REFRESH_RANGE
 

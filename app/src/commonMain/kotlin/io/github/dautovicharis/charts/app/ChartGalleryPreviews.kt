@@ -245,8 +245,8 @@ private fun RadarChartPreview(series: List<Pair<String, List<Float>>>) {
 }
 
 @Composable
-private fun previewChartViewStyle(): ChartViewStyle {
-    return ChartViewDefaults.style(
+private fun previewChartViewStyle(): ChartViewStyle =
+    ChartViewDefaults.style(
         width = PreviewChartSize,
         outerPadding = 0.dp,
         innerPadding = 4.dp,
@@ -254,4 +254,3 @@ private fun previewChartViewStyle(): ChartViewStyle {
         shadow = 0.dp,
         backgroundColor = Color.Transparent,
     )
-}

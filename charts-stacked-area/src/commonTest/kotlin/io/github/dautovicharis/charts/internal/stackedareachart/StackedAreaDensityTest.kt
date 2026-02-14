@@ -19,7 +19,13 @@ class StackedAreaDensityTest {
 
         val render = aggregateForCompactDensity(data = data, targetPoints = 5)
 
-        assertEquals(expected = 5, actual = render.data.items.first().item.points.size)
+        assertEquals(
+            expected = 5,
+            actual =
+                render.data.items
+                    .first()
+                    .item.points.size,
+        )
         assertEquals(expected = listOf("P1", "P3", "P5", "P7", "P9"), actual = render.data.categories)
         assertEquals(expected = listOf(0, 2, 4, 6, 8), actual = render.sourceIndexByRenderIndex)
         assertEquals(expected = 0, actual = render.resolveSourceIndex(0))

@@ -36,8 +36,8 @@ fun buildYAxisTicks(
     maxValue: Double,
     labelCount: Int,
     chartHeightPx: Float,
-): List<YAxisTick> {
-    return buildNumericYAxisTicks(
+): List<YAxisTick> =
+    buildNumericYAxisTicks(
         minValue = minValue,
         maxValue = maxValue,
         labelCount = labelCount,
@@ -49,8 +49,5 @@ fun buildYAxisTicks(
             centerY = tick.centerY,
         )
     }
-}
 
-fun formatAxisValue(value: Double): String {
-    return formatNumericAxisValue(value)
-}
+fun formatAxisValue(value: Double): String = formatNumericAxisValue(value)

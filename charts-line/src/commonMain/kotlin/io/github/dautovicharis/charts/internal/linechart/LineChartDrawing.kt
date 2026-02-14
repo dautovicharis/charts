@@ -253,9 +253,8 @@ internal fun DrawScope.drawDragMarker(
 internal fun resolveSelectionLineColor(
     style: LineChartStyle,
     colors: ImmutableList<Color>,
-): Color {
-    return when (style.dragPointColorSameAsLine) {
+): Color =
+    when (style.dragPointColorSameAsLine) {
         true -> colors.firstOrNull() ?: style.dragPointColor
         else -> style.dragPointColor
     }
-}

@@ -41,8 +41,8 @@ class PieChartStyle(
     /**
      * Returns a list of the properties of the PieChartStyle.
      */
-    override fun getProperties(): List<Pair<String, Any>> {
-        return listOf(
+    override fun getProperties(): List<Pair<String, Any>> =
+        listOf(
             PieChartStyle::donutPercentage.name to donutPercentage,
             PieChartStyle::pieColors.name to pieColors,
             PieChartStyle::pieColor.name to pieColor,
@@ -51,7 +51,6 @@ class PieChartStyle(
             PieChartStyle::borderWidth.name to borderWidth,
             PieChartStyle::legendVisible.name to legendVisible,
         )
-    }
 }
 
 /**
@@ -82,8 +81,8 @@ object PieChartDefaults {
         borderWidth: Float = 3f,
         legendVisible: Boolean = true,
         chartViewStyle: ChartViewStyle = ChartViewDefaults.style(),
-    ): PieChartStyle {
-        return PieChartStyle(
+    ): PieChartStyle =
+        PieChartStyle(
             modifier =
                 Modifier
                     .wrapContentSize()
@@ -102,5 +101,4 @@ object PieChartDefaults {
             legendVisible = legendVisible,
             chartViewStyle = chartViewStyle,
         )
-    }
 }

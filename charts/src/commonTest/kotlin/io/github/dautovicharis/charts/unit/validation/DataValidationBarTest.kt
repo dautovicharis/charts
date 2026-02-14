@@ -21,7 +21,10 @@ class DataValidationBarTest {
         val dataSet = invalidDataSetCategories()
 
         val barChartStyle = mockBarChartStyle(colors)
-        val expectedCategoriesSize = dataSet.data.items.first().item.points.size
+        val expectedCategoriesSize =
+            dataSet.data.items
+                .first()
+                .item.points.size
 
         // Act
         val validationErrors = validateBarData(dataSet.data, barChartStyle)
@@ -62,8 +65,13 @@ class DataValidationBarTest {
         val dataSet = invalidMultiDataSet(index)
 
         val barChartStyle = mockBarChartStyle()
-        val expectedPoints = dataSet.data.items.first().item.points.size
-        val pointsSize = dataSet.data.items[index].item.points.size
+        val expectedPoints =
+            dataSet.data.items
+                .first()
+                .item.points.size
+        val pointsSize =
+            dataSet.data.items[index]
+                .item.points.size
 
         // Act
         val validationErrors = validateBarData(dataSet.data, barChartStyle)

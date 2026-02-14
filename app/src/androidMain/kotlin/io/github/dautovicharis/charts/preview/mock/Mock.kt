@@ -47,20 +47,18 @@ internal object Mock {
         return mockList
     }
 
-    fun barChart(size: Int = 10): ChartDataSet {
-        return ChartDataSet(
+    fun barChart(size: Int = 10): ChartDataSet =
+        ChartDataSet(
             items = FloatData(mockList(size = size)),
             title = BAR_CHART_TITLE,
         )
-    }
 
-    fun stackedBarChart(): MultiChartDataSet {
-        return MultiChartDataSet(
+    fun stackedBarChart(): MultiChartDataSet =
+        MultiChartDataSet(
             items = ITEMS,
             categories = CATEGORIES,
             title = STACKED_BAR_CHART_TITLE,
         )
-    }
 
     fun stackedBarChartInvalid(): MultiChartDataSet {
         val items =
@@ -78,23 +76,21 @@ internal object Mock {
         )
     }
 
-    fun lineChart(): MultiChartDataSet {
-        return MultiChartDataSet(
+    fun lineChart(): MultiChartDataSet =
+        MultiChartDataSet(
             items = ITEMS,
             categories = CATEGORIES,
             title = LINE_CHART_TITLE,
             prefix = PREFIX,
         )
-    }
 
-    fun stackedAreaChart(): MultiChartDataSet {
-        return MultiChartDataSet(
+    fun stackedAreaChart(): MultiChartDataSet =
+        MultiChartDataSet(
             items = ITEMS,
             categories = CATEGORIES,
             title = STACKED_AREA_CHART_TITLE,
             prefix = PREFIX,
         )
-    }
 
     fun stackedAreaChartInvalid(): MultiChartDataSet {
         val items =
@@ -113,12 +109,11 @@ internal object Mock {
         )
     }
 
-    fun lineChartSimple(size: Int = 10): ChartDataSet {
-        return ChartDataSet(
+    fun lineChartSimple(size: Int = 10): ChartDataSet =
+        ChartDataSet(
             items = FloatData(mockList(size = size)),
             title = LINE_CHART_TITLE,
         )
-    }
 
     fun lineChartInvalid(): MultiChartDataSet {
         val items =
@@ -137,10 +132,9 @@ internal object Mock {
         )
     }
 
-    fun pieChart(size: Int = 9): ChartDataSet {
-        return ChartDataSet(
+    fun pieChart(size: Int = 9): ChartDataSet =
+        ChartDataSet(
             items = FloatData(mockList(size = size, minFloat = 7f, maxFloat = 54f)),
             title = PIE_CHART_TITLE,
         )
-    }
 }

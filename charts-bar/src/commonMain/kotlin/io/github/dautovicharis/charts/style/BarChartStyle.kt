@@ -77,8 +77,8 @@ class BarChartStyle(
     /**
      * Returns a list of the properties of the BarChartStyle.
      */
-    override fun getProperties(): List<Pair<String, Any>> {
-        return listOf(
+    override fun getProperties(): List<Pair<String, Any>> =
+        listOf(
             BarChartStyle::barColor.name to barColor,
             BarChartStyle::barAlpha.name to barAlpha,
             BarChartStyle::space.name to space,
@@ -105,7 +105,6 @@ class BarChartStyle(
             BarChartStyle::selectionLineColor.name to selectionLineColor,
             BarChartStyle::selectionLineWidth.name to selectionLineWidth,
         )
-    }
 }
 
 /**

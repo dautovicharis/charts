@@ -16,28 +16,26 @@ internal fun selectedIndexForFit(
     dataSize: Int,
     canvasSize: IntSize,
     spacingPx: Float,
-): Int {
-    return selectedIndexForBarFitCore(
+): Int =
+    selectedIndexForBarFitCore(
         positionX = positionX,
         dataSize = dataSize,
         canvasWidthPx = canvasSize.width.toFloat(),
         spacingPx = spacingPx,
         invalidIndex = NO_SELECTION,
     )
-}
 
 internal fun selectedIndexForContentX(
     contentX: Float,
     dataSize: Int,
     unitWidthPx: Float,
-): Int {
-    return selectedIndexForContentXCore(
+): Int =
+    selectedIndexForContentXCore(
         contentX = contentX,
         dataSize = dataSize,
         unitWidthPx = unitWidthPx,
         invalidIndex = NO_SELECTION,
     )
-}
 
 internal fun buildFitTapModifier(
     interactionEnabled: Boolean,
@@ -47,8 +45,8 @@ internal fun buildFitTapModifier(
     viewportWidthPx: Float,
     chartHeightPx: Float,
     onTapIndex: (Int) -> Unit,
-): Modifier {
-    return buildTapGestureModifier(
+): Modifier =
+    buildTapGestureModifier(
         enabled = interactionEnabled && !isScrollable,
         dataSize,
         spacingPx,
@@ -69,7 +67,6 @@ internal fun buildFitTapModifier(
             onTapIndex(index)
         },
     )
-}
 
 internal fun buildFitDragModifier(
     interactionEnabled: Boolean,
@@ -81,8 +78,8 @@ internal fun buildFitDragModifier(
     chartHeightPx: Float,
     onDragIndex: (Int) -> Unit,
     onDragFinished: () -> Unit,
-): Modifier {
-    return buildHorizontalDragGestureModifier(
+): Modifier =
+    buildHorizontalDragGestureModifier(
         enabled = interactionEnabled && dragSelectionEnabled && !isScrollable,
         dataSize,
         spacingPx,
@@ -119,7 +116,6 @@ internal fun buildFitDragModifier(
         onDragEnd = { onDragFinished() },
         onDragCancel = { onDragFinished() },
     )
-}
 
 internal fun buildScrollTapModifier(
     interactionEnabled: Boolean,
@@ -129,8 +125,8 @@ internal fun buildScrollTapModifier(
     scrollState: ScrollState,
     onTapIndex: (Int) -> Unit,
     onDoubleTap: () -> Unit,
-): Modifier {
-    return buildTapGestureModifier(
+): Modifier =
+    buildTapGestureModifier(
         enabled = interactionEnabled && isScrollable,
         dataSize,
         unitWidthPx,
@@ -146,7 +142,6 @@ internal fun buildScrollTapModifier(
         },
         onDoubleTap = { onDoubleTap() },
     )
-}
 
 internal fun buildPinchModifier(
     isScrollable: Boolean,
@@ -155,8 +150,8 @@ internal fun buildPinchModifier(
     zoomMax: Float,
     getZoomScale: () -> Float,
     setZoomScale: (Float) -> Unit,
-): Modifier {
-    return buildPinchZoomModifier(
+): Modifier =
+    buildPinchZoomModifier(
         enabled = isScrollable,
         zoomMin = zoomMin,
         zoomMax = zoomMax,
@@ -166,4 +161,3 @@ internal fun buildPinchModifier(
         zoomMin,
         zoomMax,
     )
-}

@@ -387,12 +387,11 @@ private fun DeterministicChartScene(chartContent: @Composable (ChartViewStyle) -
 }
 
 @Composable
-private fun deterministicChartViewStyle(): ChartViewStyle {
-    return ChartViewDefaults.style(
+private fun deterministicChartViewStyle(): ChartViewStyle =
+    ChartViewDefaults.style(
         width = 360.dp,
         outerPadding = 12.dp,
         innerPadding = 12.dp,
         cornerRadius = 20.dp,
         shadow = 10.dp,
     )
-}

@@ -109,11 +109,10 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun resolveDarkTheme(isSystemInDark: Boolean): Boolean {
-        return when (themeState.value.darkMode) {
+    fun resolveDarkTheme(isSystemInDark: Boolean): Boolean =
+        when (themeState.value.darkMode) {
             DarkModeSettings.System -> isSystemInDark
             DarkModeSettings.On -> true
             DarkModeSettings.Off -> false
         }
-    }
 }

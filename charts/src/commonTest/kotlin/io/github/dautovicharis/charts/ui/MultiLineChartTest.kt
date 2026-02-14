@@ -79,7 +79,8 @@ class MultiLineChartTest {
             val selectedIndex = 2
             val expectedTitle = multiDataSet.data.categories[selectedIndex]
             val expectedCurrentValueItem1 =
-                "${multiDataSet.data.items[0].label} - ${multiDataSet.data.items[0].item.labels[selectedIndex]}"
+                "${multiDataSet.data.items[0].label} - ${multiDataSet.data.items[0]
+                    .item.labels[selectedIndex]}"
 
             setContent {
                 LineChart(
@@ -151,9 +152,16 @@ class MultiLineChartTest {
             val firstIndex = 1
             val thirdIndex = 3
 
-            val pointsSizeFirst = dataSet.data.items[firstIndex].item.points.size
-            val pointsSizeThird = dataSet.data.items[thirdIndex].item.points.size
-            val expectedPointsSize = dataSet.data.items.first().item.points.size
+            val pointsSizeFirst =
+                dataSet.data.items[firstIndex]
+                    .item.points.size
+            val pointsSizeThird =
+                dataSet.data.items[thirdIndex]
+                    .item.points.size
+            val expectedPointsSize =
+                dataSet.data.items
+                    .first()
+                    .item.points.size
 
             val expectedPointsErrorFirst = RULE_ITEM_POINTS_SIZE.format(firstIndex, pointsSizeFirst, expectedPointsSize)
             val expectedPointsErrorSecond =

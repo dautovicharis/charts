@@ -9,27 +9,25 @@ internal fun selectedIndexForTouch(
     touchX: Float,
     width: Float,
     pointsCount: Int,
-): Int {
-    return selectedIndexForTouchXCore(
+): Int =
+    selectedIndexForTouchXCore(
         touchX = touchX,
         widthPx = width,
         pointsCount = pointsCount,
         invalidIndex = NO_SELECTION,
     )
-}
 
 internal fun selectedIndexForContentX(
     contentX: Float,
     pointsCount: Int,
     stepX: Float,
-): Int {
-    return selectedIndexForContentXCore(
+): Int =
+    selectedIndexForContentXCore(
         contentX = contentX,
         dataSize = pointsCount,
         unitWidthPx = stepX,
         invalidIndex = NO_SELECTION,
     )
-}
 
 internal fun denseStepForViewport(
     viewportWidth: Float,

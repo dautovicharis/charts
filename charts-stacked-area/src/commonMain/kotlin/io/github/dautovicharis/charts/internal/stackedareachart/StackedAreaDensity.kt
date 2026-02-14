@@ -18,9 +18,7 @@ internal data class StackedAreaRenderData(
     val sourceIndexByRenderIndex: List<Int>,
     val bucketRanges: List<IntRange>,
 ) {
-    fun resolveSourceIndex(renderIndex: Int): Int {
-        return sourceIndexByRenderIndex.getOrNull(renderIndex) ?: NO_SELECTION
-    }
+    fun resolveSourceIndex(renderIndex: Int): Int = sourceIndexByRenderIndex.getOrNull(renderIndex) ?: NO_SELECTION
 
     fun resolveRenderIndex(sourceIndex: Int): Int {
         if (sourceIndex !in 0 until sourcePointsCount) return NO_SELECTION
@@ -30,15 +28,19 @@ internal data class StackedAreaRenderData(
     }
 }
 
-internal fun shouldUseScrollableDensity(pointsCount: Int): Boolean {
-    return shouldUseScrollableDensityCore(
+internal fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
+    shouldUseScrollableDensityCore(
         pointsCount = pointsCount,
         threshold = STACKED_AREA_DENSE_THRESHOLD,
     )
-}
 
 internal fun resolveStackedAreaTotalsRange(data: MultiChartData): Pair<Double, Double> {
-    val pointsCount = data.items.firstOrNull()?.item?.points?.size ?: 0
+    val pointsCount =
+        data.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: 0
     if (pointsCount <= 0) return 0.0 to 1.0
 
     val totalsByPoint =
@@ -60,7 +62,12 @@ internal fun aggregateForCompactDensity(
     data: MultiChartData,
     targetPoints: Int = STACKED_AREA_DENSE_THRESHOLD,
 ): StackedAreaRenderData {
-    val sourcePointsCount = data.items.firstOrNull()?.item?.points?.size ?: 0
+    val sourcePointsCount =
+        data.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: 0
     if (targetPoints <= 1 || sourcePointsCount <= targetPoints) {
         return identityRenderData(data)
     }
@@ -92,7 +99,12 @@ internal fun aggregateForCompactDensity(
 }
 
 internal fun identityRenderData(data: MultiChartData): StackedAreaRenderData {
-    val sourcePointsCount = data.items.firstOrNull()?.item?.points?.size ?: 0
+    val sourcePointsCount =
+        data.items
+            .firstOrNull()
+            ?.item
+            ?.points
+            ?.size ?: 0
     return StackedAreaRenderData(
         data = data,
         sourcePointsCount = sourcePointsCount,

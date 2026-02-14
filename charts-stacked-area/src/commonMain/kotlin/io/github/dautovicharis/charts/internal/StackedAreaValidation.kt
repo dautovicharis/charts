@@ -8,7 +8,10 @@ fun validateStackedAreaData(
     data: MultiChartData,
     style: StackedAreaChartStyle,
 ): List<String> {
-    val firstPointsSize = data.items.first().item.points.size
+    val firstPointsSize =
+        data.items
+            .first()
+            .item.points.size
     val expectedColorsSize = data.items.size
     val validationErrors =
         validateMultiSeriesChartData(

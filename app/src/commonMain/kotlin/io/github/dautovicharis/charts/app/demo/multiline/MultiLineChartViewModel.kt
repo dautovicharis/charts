@@ -235,12 +235,11 @@ class MultiLineChartViewModel(
         }
     }
 
-    private fun buildTimelineDataSet(window: LiveLatencyMultiSeriesWindow): MultiLineChartState {
-        return MultiLineChartState(
+    private fun buildTimelineDataSet(window: LiveLatencyMultiSeriesWindow): MultiLineChartState =
+        MultiLineChartState(
             dataSet = liveLatencyTimelineUseCase.toMultiDataSet(window),
             seriesKeys = liveLatencyTimelineUseCase.multiSeriesKeys,
         )
-    }
 
     private fun setPlaying(playing: Boolean) {
         if (_uiState.value.isPlaying == playing) return
@@ -260,7 +259,9 @@ class MultiLineChartViewModel(
         liveUpdatesJob =
             viewModelScope.launch {
                 while (isActive) {
-                    val intervalMs = _uiState.value.controlsState.updateIntervalMs.toLong()
+                    val intervalMs =
+                        _uiState.value.controlsState.updateIntervalMs
+                            .toLong()
                     delay(intervalMs)
                     appendLiveTick()
                 }
@@ -293,8 +294,8 @@ class MultiLineChartViewModel(
         val sourceMax = sourceValues.maxOrNull()?.toDouble() ?: sourceMin
         val sourceRange = sourceMax - sourceMin
 
-        fun normalize(values: List<Float>): List<Float> {
-            return if (sourceRange == 0.0) {
+        fun normalize(values: List<Float>): List<Float> =
+            if (sourceRange == 0.0) {
                 List(values.size) { safeMin.toFloat() }
             } else {
                 values.map { value ->
@@ -302,7 +303,6 @@ class MultiLineChartViewModel(
                     (safeMin + normalized * (safeMax - safeMin)).toFloat()
                 }
             }
-        }
 
         val p50Values = normalize(baseWindow.p50Values)
         val p95Values = normalize(baseWindow.p95Values)

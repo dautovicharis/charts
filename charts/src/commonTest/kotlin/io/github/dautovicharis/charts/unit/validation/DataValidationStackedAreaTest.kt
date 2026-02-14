@@ -76,7 +76,10 @@ class DataValidationStackedAreaTest {
         // Arrange
         val dataSet = invalidDataSetCategories()
         val style = mockStackedAreaChartStyle()
-        val expectedCategoriesSize = dataSet.data.items.first().item.points.size
+        val expectedCategoriesSize =
+            dataSet.data.items
+                .first()
+                .item.points.size
 
         // Act
         val validationErrors = validateStackedAreaData(dataSet.data, style)
@@ -97,8 +100,13 @@ class DataValidationStackedAreaTest {
         val index = 1
         val dataSet = invalidMultiDataSet(index)
         val style = mockStackedAreaChartStyle()
-        val expectedPoints = dataSet.data.items.first().item.points.size
-        val pointsSize = dataSet.data.items[index].item.points.size
+        val expectedPoints =
+            dataSet.data.items
+                .first()
+                .item.points.size
+        val pointsSize =
+            dataSet.data.items[index]
+                .item.points.size
 
         // Act
         val validationErrors = validateStackedAreaData(dataSet.data, style)

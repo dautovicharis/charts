@@ -16,7 +16,5 @@ object MultiLineStyleItems {
         )
 
     @Composable
-    fun custom(lineColors: List<Color>): StyleItems {
-        return lineChartTableItems(customStyle(lineColors))
-    }
+    fun custom(lineColors: List<Color>): StyleItems = lineChartTableItems(customStyle(lineColors))
 }

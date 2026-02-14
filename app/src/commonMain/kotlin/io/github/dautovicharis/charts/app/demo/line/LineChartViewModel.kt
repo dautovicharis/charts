@@ -242,7 +242,9 @@ class LineChartViewModel(
         liveUpdatesJob =
             viewModelScope.launch {
                 while (isActive) {
-                    val intervalMs = _uiState.value.timelineControlsState.updateIntervalMs.toLong()
+                    val intervalMs =
+                        _uiState.value.timelineControlsState.updateIntervalMs
+                            .toLong()
                     delay(intervalMs)
                     appendLiveTick()
                 }
@@ -268,7 +270,9 @@ class LineChartViewModel(
             )
         val baseDataSet = liveLatencyTimelineUseCase.toSingleDataSet(baseWindow)
         val basePoints = baseDataSet.data.item.points
-        val labels = baseDataSet.data.item.labels.toList()
+        val labels =
+            baseDataSet.data.item.labels
+                .toList()
         val safeMin = controls.minValue.toDouble()
         val safeMax = controls.maxValue.toDouble().coerceAtLeast(safeMin + 1.0)
         val sourceMin = basePoints.minOrNull() ?: 0.0

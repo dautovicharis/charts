@@ -75,8 +75,8 @@ class LineChartStyle(
     /**
      * Returns a list of the properties of the LineChartStyle.
      */
-    override fun getProperties(): List<Pair<String, Any>> {
-        return listOf(
+    override fun getProperties(): List<Pair<String, Any>> =
+        listOf(
             LineChartStyle::pointColor.name to pointColor,
             LineChartStyle::pointVisible.name to pointVisible,
             LineChartStyle::pointSize.name to pointSize,
@@ -101,7 +101,6 @@ class LineChartStyle(
             LineChartStyle::xAxisLabelMaxCount.name to xAxisLabelMaxCount,
             LineChartStyle::zoomControlsVisible.name to zoomControlsVisible,
         )
-    }
 }
 
 /**

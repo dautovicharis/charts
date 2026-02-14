@@ -20,17 +20,14 @@ data class MultiChartData(
         title = title,
     )
 
-    fun getFirstPointsSize(): Int {
-        return items.first().item.points.size
-    }
+    fun getFirstPointsSize(): Int =
+        items
+            .first()
+            .item.points.size
 
-    fun hasSingleItem(): Boolean {
-        return items.size == 1
-    }
+    fun hasSingleItem(): Boolean = items.size == 1
 
-    fun hasCategories(): Boolean {
-        return categories.isNotEmpty()
-    }
+    fun hasCategories(): Boolean = categories.isNotEmpty()
 
     fun getLabel(index: Int): String {
         if (index == NO_SELECTION) return title

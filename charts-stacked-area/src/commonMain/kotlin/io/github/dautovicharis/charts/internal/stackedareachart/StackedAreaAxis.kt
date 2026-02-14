@@ -89,8 +89,8 @@ internal fun buildStackedAreaYAxisTicks(
     maxValue: Double,
     labelCount: Int,
     plotHeightPx: Float,
-): List<StackedAreaYAxisTick> {
-    return buildNumericYAxisTicks(
+): List<StackedAreaYAxisTick> =
+    buildNumericYAxisTicks(
         minValue = minValue,
         maxValue = maxValue,
         labelCount = labelCount,
@@ -102,4 +102,3 @@ internal fun buildStackedAreaYAxisTicks(
             centerY = tick.centerY,
         )
     }
-}

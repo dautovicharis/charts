@@ -18,32 +18,24 @@ class DefaultLiveLatencyTimelineUseCase : LiveLatencyTimelineUseCase {
     override fun createSingleWindow(
         windowSize: Int,
         endTick: Int?,
-    ): LiveLatencySingleSeriesWindow {
-        return generator.createSingleWindow(windowSize = windowSize, endTick = endTick)
-    }
+    ): LiveLatencySingleSeriesWindow = generator.createSingleWindow(windowSize = windowSize, endTick = endTick)
 
-    override fun advanceSingleWindow(window: LiveLatencySingleSeriesWindow): LiveLatencySingleSeriesWindow {
-        return generator.advanceSingleWindow(window)
-    }
+    override fun advanceSingleWindow(window: LiveLatencySingleSeriesWindow): LiveLatencySingleSeriesWindow =
+        generator.advanceSingleWindow(window)
 
-    override fun toSingleDataSet(window: LiveLatencySingleSeriesWindow): ChartDataSet {
-        return generator.toSingleDataSet(window)
-    }
+    override fun toSingleDataSet(window: LiveLatencySingleSeriesWindow): ChartDataSet =
+        generator.toSingleDataSet(window)
 
     override fun createMultiWindow(
         windowSize: Int,
         endTick: Int?,
-    ): LiveLatencyMultiSeriesWindow {
-        return generator.createMultiWindow(windowSize = windowSize, endTick = endTick)
-    }
+    ): LiveLatencyMultiSeriesWindow = generator.createMultiWindow(windowSize = windowSize, endTick = endTick)
 
-    override fun advanceMultiWindow(window: LiveLatencyMultiSeriesWindow): LiveLatencyMultiSeriesWindow {
-        return generator.advanceMultiWindow(window)
-    }
+    override fun advanceMultiWindow(window: LiveLatencyMultiSeriesWindow): LiveLatencyMultiSeriesWindow =
+        generator.advanceMultiWindow(window)
 
-    override fun toMultiDataSet(window: LiveLatencyMultiSeriesWindow): MultiChartDataSet {
-        return generator.toMultiDataSet(window)
-    }
+    override fun toMultiDataSet(window: LiveLatencyMultiSeriesWindow): MultiChartDataSet =
+        generator.toMultiDataSet(window)
 }
 
 private class LiveLatencyTimelineGenerator {
@@ -91,12 +83,11 @@ private class LiveLatencyTimelineGenerator {
         )
     }
 
-    fun toSingleDataSet(window: LiveLatencySingleSeriesWindow): ChartDataSet {
-        return window.values.toChartDataSet(
+    fun toSingleDataSet(window: LiveLatencySingleSeriesWindow): ChartDataSet =
+        window.values.toChartDataSet(
             title = SINGLE_TITLE,
             labels = window.labels,
         )
-    }
 
     fun createMultiWindow(
         windowSize: Int,
@@ -135,8 +126,8 @@ private class LiveLatencyTimelineGenerator {
         )
     }
 
-    fun toMultiDataSet(window: LiveLatencyMultiSeriesWindow): MultiChartDataSet {
-        return listOf(
+    fun toMultiDataSet(window: LiveLatencyMultiSeriesWindow): MultiChartDataSet =
+        listOf(
             P50_SERIES_LABEL to window.p50Values,
             P95_SERIES_LABEL to window.p95Values,
         ).toMultiChartDataSet(
@@ -144,14 +135,11 @@ private class LiveLatencyTimelineGenerator {
             categories = window.labels,
             postfix = VALUE_POSTFIX,
         )
-    }
 
     private fun resolveEndTick(
         windowSize: Int,
         endTick: Int?,
-    ): Int {
-        return (endTick ?: windowSize - 1).coerceAtLeast(windowSize - 1)
-    }
+    ): Int = (endTick ?: windowSize - 1).coerceAtLeast(windowSize - 1)
 
     private fun sampleP50Latency(tick: Int): Float {
         val trend = 112.0 + (18.0 * sin(tick / 7.0)) + (8.0 * sin(tick / 2.8))
@@ -176,11 +164,10 @@ private class LiveLatencyTimelineGenerator {
         return "${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}"
     }
 
-    private fun twoDigits(value: Int): String {
-        return if (value < 10) {
+    private fun twoDigits(value: Int): String =
+        if (value < 10) {
             "0$value"
         } else {
             value.toString()
         }
-    }
 }

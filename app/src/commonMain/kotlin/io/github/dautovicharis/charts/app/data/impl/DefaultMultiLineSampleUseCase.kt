@@ -20,8 +20,8 @@ class DefaultMultiLineSampleUseCase : MultiLineSampleUseCase {
             "Partner Sales" to listOf(280f, 320f, 340f, 360f, 390f, 420f),
         )
 
-    override fun initialMultiLineSample(): MultiLineSampleData {
-        return MultiLineSampleData(
+    override fun initialMultiLineSample(): MultiLineSampleData =
+        MultiLineSampleData(
             dataSet =
                 multiLineItems.toMultiChartDataSet(
                     title = DEFAULT_TITLE,
@@ -30,7 +30,6 @@ class DefaultMultiLineSampleUseCase : MultiLineSampleUseCase {
                 ),
             seriesKeys = multiLineItems.map { it.first },
         )
-    }
 
     override fun multiLineRefreshRange(): IntRange = REFRESH_RANGE
 

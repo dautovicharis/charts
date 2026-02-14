@@ -17,10 +17,9 @@ object PieChartStyleItems {
         )
 
     @Composable
-    fun custom(pieColors: List<Color>): StyleItems {
-        return ChartStyleItems(
+    fun custom(pieColors: List<Color>): StyleItems =
+        ChartStyleItems(
             currentStyle = customStyle(pieColors),
             defaultStyle = PieChartDefaults.style(),
         )
-    }
 }

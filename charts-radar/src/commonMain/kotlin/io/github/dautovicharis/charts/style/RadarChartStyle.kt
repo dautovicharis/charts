@@ -75,8 +75,8 @@ class RadarChartStyle(
     /**
      * Returns a list of the properties of the RadarChartStyle.
      */
-    override fun getProperties(): List<Pair<String, Any>> {
-        return listOf(
+    override fun getProperties(): List<Pair<String, Any>> =
+        listOf(
             RadarChartStyle::gridColor.name to gridColor,
             RadarChartStyle::gridLineWidth.name to gridLineWidth,
             RadarChartStyle::gridSteps.name to gridSteps,
@@ -101,7 +101,6 @@ class RadarChartStyle(
             RadarChartStyle::fillAlpha.name to fillAlpha,
             RadarChartStyle::fillVisible.name to fillVisible,
         )
-    }
 }
 
 /**
