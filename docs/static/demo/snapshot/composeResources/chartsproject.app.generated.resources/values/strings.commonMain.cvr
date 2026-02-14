@@ -44,6 +44,10 @@ string|multi_line_chart|TXVsdGkgTGluZQ==
 string|pie_chart|UGll
 string|radar_chart|UmFkYXI=
 string|stacked_area_chart|U3RhY2tlZCBBcmVh
+string|stacked_area_data_points_range|VmFsdWUgcmFuZ2U6ICUxJGQgLSAlMiRk
+string|stacked_area_data_points|RGF0YSBwb2ludHM6ICUxJGQ=
+string|stacked_bar_data_points_range|VmFsdWUgcmFuZ2U6ICUxJGQgLSAlMiRk
+string|stacked_bar_data_points|RGF0YSBwb2ludHM6ICUxJGQ=
 string|style_details_title|U3R5bGUgZGV0YWlscw==
 string|themes_content_description|U2VsZWN0ZWQgYXBwIHRoZW1l
 string|timeline_update_interval|VXBkYXRlIGludGVydmFsOiAlMSRkIG1z
