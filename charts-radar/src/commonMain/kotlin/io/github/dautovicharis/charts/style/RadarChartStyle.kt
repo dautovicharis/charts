@@ -140,7 +140,7 @@ object RadarChartDefaults {
         categoryPinSize: Float = Float.NaN,
         categoryPinsVisible: Boolean = true,
         pointColor: Color = defaultPointColor(),
-        pointSize: Float = 6f,
+        pointSize: Float = 9f,
         pointVisible: Boolean = true,
         lineColor: Color = MaterialTheme.colorScheme.primary,
         lineColors: List<Color> = emptyList(),
@@ -159,7 +159,7 @@ object RadarChartDefaults {
         val pointColorSameAsLine = pointColor == defaultPointColor()
         val resolvedCategoryPinSize =
             if (categoryPinSize.isNaN()) {
-                pointSize * 2f
+                pointSize * 0.7f
             } else {
                 categoryPinSize
             }

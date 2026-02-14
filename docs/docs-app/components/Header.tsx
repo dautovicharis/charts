@@ -8,6 +8,9 @@ interface HeaderProps {
 }
 
 export function Header({ versions, currentVersion }: HeaderProps) {
+  const snapshotVersion = versions.find((version) => version.id === 'snapshot');
+  const showSnapshotShortcut = Boolean(snapshotVersion) && currentVersion.id !== 'snapshot';
+
   return (
     <header className="docs-header">
       <Link href={`/${currentVersion.id}/wiki`} className="docs-header__logo">
@@ -16,9 +19,16 @@ export function Header({ versions, currentVersion }: HeaderProps) {
       </Link>
 
       <nav className="docs-header__nav">
-        <Link href="/snapshot/playground" className="docs-header__link docs-header__link--hidden">
-          Playground (Snapshot)
-        </Link>
+        {showSnapshotShortcut ? (
+          <Link
+            href="/snapshot/wiki"
+            className="docs-header__snapshot"
+            aria-label="Open development snapshot documentation"
+          >
+            <span className="docs-header__snapshot-dot" aria-hidden="true" />
+            <span>Snapshot</span>
+          </Link>
+        ) : null}
         <a
           href="https://github.com/dautovicharis/charts"
           className="docs-header__link docs-header__link--github"

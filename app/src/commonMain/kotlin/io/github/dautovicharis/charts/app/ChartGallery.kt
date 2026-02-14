@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +36,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 private val GalleryCardShape = RoundedCornerShape(24.dp)
 private val GalleryTwoColumnBreakpoint = 760.dp
-private const val GALLERY_GRID_COLUMNS = 2
+private val GalleryThreeColumnBreakpoint = 940.dp
+internal val LocalChartGalleryColumns = staticCompositionLocalOf { 2 }
 
 @Composable
 fun ChartGallery(
@@ -66,7 +68,13 @@ fun ChartGallery(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-            val columns = if (maxWidth >= GalleryTwoColumnBreakpoint) GALLERY_GRID_COLUMNS else 1
+            val preferredColumns = LocalChartGalleryColumns.current.coerceIn(1, 3)
+            val columns =
+                when {
+                    preferredColumns >= 3 && maxWidth >= GalleryThreeColumnBreakpoint -> 3
+                    preferredColumns >= 2 && maxWidth >= GalleryTwoColumnBreakpoint -> 2
+                    else -> 1
+                }
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items.chunked(columns).forEach { rowItems ->
