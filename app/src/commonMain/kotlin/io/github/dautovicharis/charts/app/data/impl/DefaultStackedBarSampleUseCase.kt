@@ -44,9 +44,20 @@ class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
     override fun stackedBarRefreshRange(): IntRange = REFRESH_RANGE
 
     override fun stackedBarSample(range: IntRange): StackedBarSampleData {
+        return stackedBarSample(points = stackedItems.size, range = range)
+    }
+
+    override fun stackedBarSample(
+        points: Int,
+        range: IntRange,
+    ): StackedBarSampleData {
+        val safePoints = points.coerceAtLeast(1)
+        val safeRangeStart = minOf(range.first, range.last)
+        val safeRangeEnd = maxOf(range.first, range.last)
+        val safeRange = safeRangeStart..safeRangeEnd
         val newItems =
-            stackedItems.map { (name, values) ->
-                name to values.map { range.random().toFloat() }
+            List(safePoints) { index ->
+                stackedBarLabel(index) to List(stackedCategories.size) { safeRange.random().toFloat() }
             }
         val dataSet =
             newItems.toMultiChartDataSet(
@@ -58,5 +69,9 @@ class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
             dataSet = dataSet,
             segmentKeys = stackedCategories,
         )
+    }
+
+    private fun stackedBarLabel(index: Int): String {
+        return stackedItems.getOrNull(index)?.first ?: "Region ${index + 1}"
     }
 }

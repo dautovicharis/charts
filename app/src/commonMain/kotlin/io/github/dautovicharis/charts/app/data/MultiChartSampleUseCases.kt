@@ -19,6 +19,11 @@ interface StackedBarSampleUseCase {
     fun stackedBarRefreshRange(): IntRange
 
     fun stackedBarSample(range: IntRange): StackedBarSampleData
+
+    fun stackedBarSample(
+        points: Int,
+        range: IntRange,
+    ): StackedBarSampleData
 }
 
 interface StackedAreaSampleUseCase {
@@ -29,6 +34,11 @@ interface StackedAreaSampleUseCase {
     fun stackedAreaRefreshRange(): IntRange
 
     fun stackedAreaSample(range: IntRange): StackedAreaSampleData
+
+    fun stackedAreaSample(
+        points: Int,
+        range: IntRange,
+    ): StackedAreaSampleData
 }
 
 interface RadarSampleUseCase {

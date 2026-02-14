@@ -148,7 +148,12 @@ private fun StackedAreaChartPreview(series: List<Pair<String, List<Float>>>) {
         }
     StackedAreaChart(
         dataSet = dataSet,
-        style = StackedAreaChartDefaults.style(chartViewStyle = previewChartViewStyle()),
+        style =
+            StackedAreaChartDefaults.style(
+                chartViewStyle = previewChartViewStyle(),
+                xAxisLabelsVisible = false,
+                yAxisLabelsVisible = false,
+            ),
         interactionEnabled = false,
         animateOnStart = false,
     )
@@ -186,6 +191,8 @@ private fun StackedBarChartPreview(series: List<Pair<String, List<Float>>>) {
         style =
             StackedBarChartDefaults.style(
                 chartViewStyle = previewChartViewStyle(),
+                xAxisLabelsVisible = false,
+                yAxisLabelsVisible = false,
             ),
         interactionEnabled = false,
         animateOnStart = false,

@@ -107,6 +107,12 @@ object ChartTestStyleFixtures {
             chartViewStyle = chartViewStyle,
             barColors = chartColors.seriesColors(segmentCount),
             space = 8.dp,
+            zoomControlsVisible = true,
+            xAxisLabelColor = chartColors.axisLabel,
+            yAxisLabelColor = chartColors.axisLabel,
+            selectionLineVisible = true,
+            selectionLineColor = chartColors.selection,
+            selectionLineWidth = 2f,
         )
     }
 
@@ -125,6 +131,9 @@ object ChartTestStyleFixtures {
             lineVisible = true,
             lineWidth = 3.5f,
             bezier = false,
+            zoomControlsVisible = true,
+            xAxisLabelColor = chartColors.axisLabel,
+            yAxisLabelColor = chartColors.axisLabel,
         )
     }
 

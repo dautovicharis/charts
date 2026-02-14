@@ -3,7 +3,19 @@ package io.github.dautovicharis.charts.internal.barstackedchart
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,34 +23,53 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import io.github.dautovicharis.charts.internal.AXIS_LABEL_CHART_GAP
 import io.github.dautovicharis.charts.internal.AnimationSpec
-import io.github.dautovicharis.charts.internal.DEFAULT_SCALE
 import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.internal.TestTags
+import io.github.dautovicharis.charts.internal.common.axis.centeredLabelIndexRange
+import io.github.dautovicharis.charts.internal.common.axis.estimateXAxisLabelFootprintPx
+import io.github.dautovicharis.charts.internal.common.axis.estimateYAxisLabelWidthPx
+import io.github.dautovicharis.charts.internal.common.axis.sampledLabelIndices
+import io.github.dautovicharis.charts.internal.common.axis.scrollableLabelIndices
+import io.github.dautovicharis.charts.internal.common.axis.visibleIndexRange
+import io.github.dautovicharis.charts.internal.common.composable.rememberDenseExpandedState
+import io.github.dautovicharis.charts.internal.common.composable.rememberZoomScaleState
+import io.github.dautovicharis.charts.internal.common.composable.zoomInScale
+import io.github.dautovicharis.charts.internal.common.composable.zoomOutScale
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.internal.common.model.normalizeStackedValues
 import io.github.dautovicharis.charts.style.StackedBarChartStyle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.max
+import kotlin.math.roundToInt
 
-private const val STACKED_BAR_SELECTED_SCALE = 1.02f
+private const val ZOOM_MIN = 1f
+private const val ZOOM_MAX = 4f
+private const val ZOOM_STEP = 1.25f
+private const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
+private const val MIN_AXIS_LABELS_IN_PREFERRED_RANGE = 2
+private const val X_AXIS_LABEL_MIN_SPACING_FACTOR = 1.15f
+private val X_AXIS_LABEL_EDGE_PADDING: Dp = 4.dp
 
 @Composable
 fun StackedBarChart(
     data: MultiChartData,
+    title: String,
     style: StackedBarChartStyle,
     colors: ImmutableList<Color>,
     interactionEnabled: Boolean,
@@ -47,122 +78,555 @@ fun StackedBarChart(
     onValueChanged: (Int) -> Unit = {},
 ) {
     val isPreview = LocalInspectionMode.current
-    val targetNormalized = remember(data, style) { data.normalizeStackedValues() }
-    val initialValues =
-        remember(data.items.size, isPreview, animateOnStart) {
-            if (isPreview || !animateOnStart) targetNormalized else null
+    val sourceDataSize = data.items.size
+    BoxWithConstraints(modifier = style.modifier) {
+        val density = LocalDensity.current
+        val spacingPx = with(density) { style.space.toPx() }
+        val minBarWidthPx = with(density) { style.minBarWidth.toPx() }
+
+        val (sourceMinTotal, sourceMaxTotal) =
+            remember(data) {
+                resolveStackedTotalsRange(data)
+            }
+        val yAxisTicksForViewport =
+            remember(sourceMinTotal, sourceMaxTotal, style.yAxisLabelCount) {
+                buildStackedBarYAxisTicks(
+                    minValue = sourceMinTotal,
+                    maxValue = sourceMaxTotal,
+                    labelCount = style.yAxisLabelCount,
+                    chartHeightPx = 1f,
+                )
+            }
+        val yAxisWidthPxForViewport =
+            if (style.yAxisLabelsVisible) {
+                estimateYAxisLabelWidthPx(
+                    labels = yAxisTicksForViewport.map { tick -> tick.label },
+                    fontSizePx = with(density) { style.yAxisLabelSize.toPx() },
+                )
+            } else {
+                0f
+            }
+        val yAxisGapPxForViewport = if (style.yAxisLabelsVisible) with(density) { AXIS_LABEL_CHART_GAP.toPx() } else 0f
+        val viewportWidthPx =
+            (constraints.maxWidth.toFloat() - yAxisWidthPxForViewport - yAxisGapPxForViewport).coerceAtLeast(1f)
+        val maxFitBars =
+            remember(viewportWidthPx, spacingPx, minBarWidthPx) {
+                maxBarsThatFit(
+                    viewportWidthPx = viewportWidthPx,
+                    spacingPx = spacingPx,
+                    minBarWidthPx = minBarWidthPx,
+                )
+            }
+        val isDenseData =
+            remember(sourceDataSize, maxFitBars) {
+                sourceDataSize > maxFitBars
+            }
+        var denseExpanded by rememberDenseExpandedState(isDenseModeAvailable = isDenseData)
+        val compactDenseMode = isDenseData && !denseExpanded
+        val renderDataBundle =
+            remember(data, compactDenseMode, maxFitBars) {
+                if (compactDenseMode) {
+                    aggregateForCompactDensity(
+                        data = data,
+                        targetBars = maxFitBars,
+                    )
+                } else {
+                    identityRenderData(data)
+                }
+            }
+        val renderData = renderDataBundle.data
+        val renderDataSize = renderData.items.size
+        val targetNormalized =
+            remember(renderData) {
+                renderData.normalizeStackedValues()
+            }
+        val initialValues =
+            remember(renderDataSize, isPreview, animateOnStart) {
+                if (isPreview || !animateOnStart) targetNormalized else null
+            }
+        val animatedValues =
+            remember(renderDataSize, isPreview, animateOnStart) {
+                renderData.items.mapIndexed { index, _ ->
+                    Animatable(initialValues?.getOrNull(index) ?: 0f)
+                }
+            }
+        val hasInitialized = remember { mutableStateOf(false) }
+        var selectedSourceIndexFromInteraction by remember { mutableIntStateOf(NO_SELECTION) }
+        val forcedSelectedSourceIndex =
+            selectedBarIndex.takeIf { it in 0 until sourceDataSize } ?: NO_SELECTION
+        val hasForcedSelection = forcedSelectedSourceIndex != NO_SELECTION
+
+        val isScrollable = isDenseData && denseExpanded
+        val scrollState = rememberScrollState()
+        val zoomMin = ZOOM_MIN
+        val zoomMax = ZOOM_MAX
+        val zoomStep = ZOOM_STEP
+        var zoomScale by
+            rememberZoomScaleState(
+                isZoomActive = isScrollable,
+                minZoom = zoomMin,
+                maxZoom = zoomMax,
+                initialZoom = zoomMin,
+            )
+
+        LaunchedEffect(targetNormalized) {
+            if (renderData.items.isEmpty()) return@LaunchedEffect
+            coroutineScope {
+                animatedValues.forEachIndexed { index, animatable ->
+                    val target = targetNormalized.getOrNull(index) ?: 0f
+                    launch {
+                        val shouldAnimate = !isPreview && (animateOnStart || hasInitialized.value)
+                        if (!shouldAnimate) {
+                            animatable.snapTo(target)
+                        } else {
+                            animatable.animateTo(
+                                targetValue = target,
+                                animationSpec = AnimationSpec.stackedBar(0),
+                            )
+                        }
+                    }
+                }
+            }
+            hasInitialized.value = true
         }
-    val animatedValues =
-        remember(data.items.size, isPreview, animateOnStart) {
-            data.items.mapIndexed { index, _ ->
-                Animatable(initialValues?.getOrNull(index) ?: 0f)
+
+        LaunchedEffect(sourceDataSize) {
+            if (hasForcedSelection) return@LaunchedEffect
+            if (selectedSourceIndexFromInteraction !in 0 until sourceDataSize) {
+                selectedSourceIndexFromInteraction = NO_SELECTION
+                onValueChanged(NO_SELECTION)
             }
         }
-    val hasInitialized = remember { mutableStateOf(false) }
-    var selectedIndex by remember { mutableIntStateOf(-1) }
-    val dataSize = data.items.size
-    val forcedSelectedIndex =
-        selectedBarIndex.takeIf { it in 0 until dataSize } ?: NO_SELECTION
-    val hasForcedSelection = forcedSelectedIndex != NO_SELECTION
-    val effectiveSelectedIndex =
-        when (forcedSelectedIndex) {
-            NO_SELECTION -> selectedIndex
-            else -> forcedSelectedIndex
-        }
-    val spacingPx = with(LocalDensity.current) { style.space.toPx() }
 
-    LaunchedEffect(targetNormalized) {
-        if (data.items.isEmpty()) return@LaunchedEffect
-        coroutineScope {
-            animatedValues.forEachIndexed { index, animatable ->
-                val target = targetNormalized.getOrNull(index) ?: 0f
-                launch {
-                    val shouldAnimate = !isPreview && (animateOnStart || hasInitialized.value)
-                    if (!shouldAnimate) {
-                        animatable.snapTo(target)
+        LaunchedEffect(renderData) {
+            if (hasForcedSelection) return@LaunchedEffect
+            if (selectedSourceIndexFromInteraction != NO_SELECTION) {
+                selectedSourceIndexFromInteraction = NO_SELECTION
+                onValueChanged(NO_SELECTION)
+            }
+        }
+
+        val effectiveSelectedSourceIndex =
+            when (forcedSelectedSourceIndex) {
+                NO_SELECTION -> selectedSourceIndexFromInteraction
+                else -> forcedSelectedSourceIndex
+            }
+        val effectiveSelectedRenderIndex =
+            when (effectiveSelectedSourceIndex) {
+                NO_SELECTION -> NO_SELECTION
+                else -> renderDataBundle.resolveRenderIndex(effectiveSelectedSourceIndex)
+            }
+
+        val onSelectRenderIndex: (Int) -> Unit = { renderIndex ->
+            if (!hasForcedSelection) {
+                val resolvedSourceIndex =
+                    when (renderIndex) {
+                        in 0 until renderDataSize -> renderDataBundle.resolveSourceIndex(renderIndex)
+                        else -> NO_SELECTION
+                    }
+                if (selectedSourceIndexFromInteraction != resolvedSourceIndex) {
+                    selectedSourceIndexFromInteraction = resolvedSourceIndex
+                    onValueChanged(resolvedSourceIndex)
+                }
+            }
+        }
+
+        val onToggleSelection: (Int) -> Unit = { renderIndex ->
+            val currentRenderIndex =
+                when (hasForcedSelection) {
+                    true -> renderDataBundle.resolveRenderIndex(forcedSelectedSourceIndex)
+                    false -> renderDataBundle.resolveRenderIndex(selectedSourceIndexFromInteraction)
+                }
+            if (currentRenderIndex == renderIndex && currentRenderIndex != NO_SELECTION) {
+                onSelectRenderIndex(NO_SELECTION)
+            } else {
+                onSelectRenderIndex(renderIndex)
+            }
+        }
+
+        val showZoomControlsInHeader = isScrollable && style.zoomControlsVisible
+        val showCompactToggle = isDenseData
+        val showHeader = title.isNotBlank() || showCompactToggle || showZoomControlsInHeader
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (showHeader) {
+                StackedBarChartHeader(
+                    title = title,
+                    style = style,
+                    showDensityToggle = showCompactToggle,
+                    denseExpanded = denseExpanded,
+                    onToggleDensity = { denseExpanded = !denseExpanded },
+                    showZoomControls = showZoomControlsInHeader,
+                    zoomScale = zoomScale,
+                    minZoom = zoomMin,
+                    maxZoom = zoomMax,
+                    onZoomOut = {
+                        zoomScale = zoomOutScale(zoomScale, zoomStep, zoomMin, zoomMax)
+                    },
+                    onZoomIn = {
+                        zoomScale = zoomInScale(zoomScale, zoomStep, zoomMin, zoomMax)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            StackedBarChartContent(
+                data = renderData,
+                style = style,
+                colors = colors,
+                interactionEnabled = interactionEnabled,
+                dragSelectionEnabled = !isScrollable,
+                animatedValues = animatedValues,
+                fixedMinTotal = sourceMinTotal,
+                fixedMaxTotal = sourceMaxTotal,
+                isScrollable = isScrollable,
+                spacingPx = spacingPx,
+                minBarWidthPx = minBarWidthPx,
+                scrollState = scrollState,
+                zoomScale = zoomScale,
+                zoomMin = zoomMin,
+                zoomMax = zoomMax,
+                zoomStep = zoomStep,
+                selectedIndex = effectiveSelectedRenderIndex,
+                onToggleSelection = onToggleSelection,
+                onSelectIndex = onSelectRenderIndex,
+                onClearSelection = { onSelectRenderIndex(NO_SELECTION) },
+                onZoomScaleChange = { updatedScale ->
+                    zoomScale = updatedScale
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = if (showHeader) style.chartViewStyle.innerPadding else 0.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun StackedBarChartContent(
+    data: MultiChartData,
+    style: StackedBarChartStyle,
+    colors: ImmutableList<Color>,
+    interactionEnabled: Boolean,
+    dragSelectionEnabled: Boolean,
+    animatedValues: List<Animatable<Float, AnimationVector1D>>,
+    fixedMinTotal: Double,
+    fixedMaxTotal: Double,
+    isScrollable: Boolean,
+    spacingPx: Float,
+    minBarWidthPx: Float,
+    scrollState: ScrollState,
+    zoomScale: Float,
+    zoomMin: Float,
+    zoomMax: Float,
+    zoomStep: Float,
+    selectedIndex: Int,
+    onToggleSelection: (Int) -> Unit,
+    onSelectIndex: (Int) -> Unit,
+    onClearSelection: () -> Unit,
+    onZoomScaleChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val dataSize = data.items.size
+    val labels = remember(data) { data.items.map { item -> item.label } }
+
+    BoxWithConstraints(modifier = modifier) {
+        val density = LocalDensity.current
+        val xAxisTilt = FIXED_X_AXIS_LABEL_TILT_DEGREES
+        val xAxisLabelSizePx = with(density) { style.xAxisLabelSize.toPx() }
+        val xAxisLabelFootprintPx =
+            remember(labels, dataSize, xAxisLabelSizePx, xAxisTilt) {
+                estimateXAxisLabelFootprintPx(
+                    labels = labels,
+                    dataSize = dataSize,
+                    fontSizePx = xAxisLabelSizePx,
+                    tiltDegrees = xAxisTilt,
+                )
+            }
+        val xAxisHeight =
+            if (!style.xAxisLabelsVisible) {
+                0.dp
+            } else {
+                with(density) {
+                    (xAxisLabelFootprintPx.height + AXIS_LABEL_CHART_GAP.toPx()).toDp()
+                }
+            }
+        val chartHeight = (maxHeight - xAxisHeight).coerceAtLeast(0.dp)
+        val chartHeightPx = with(density) { chartHeight.toPx() }.coerceAtLeast(1f)
+        val yAxisTicks =
+            remember(fixedMinTotal, fixedMaxTotal, chartHeightPx, style.yAxisLabelCount) {
+                buildStackedBarYAxisTicks(
+                    minValue = fixedMinTotal,
+                    maxValue = fixedMaxTotal,
+                    labelCount = style.yAxisLabelCount,
+                    chartHeightPx = chartHeightPx,
+                )
+            }
+        val yAxisWidthPx =
+            if (style.yAxisLabelsVisible) {
+                estimateYAxisLabelWidthPx(
+                    labels = yAxisTicks.map { tick -> tick.label },
+                    fontSizePx = with(density) { style.yAxisLabelSize.toPx() },
+                )
+            } else {
+                0f
+            }
+        val yAxisGapPx = if (style.yAxisLabelsVisible) with(density) { AXIS_LABEL_CHART_GAP.toPx() } else 0f
+        val yAxisWidth = with(density) { yAxisWidthPx.toDp() }
+        val plotStartPadding = with(density) { (yAxisWidthPx + yAxisGapPx).toDp() }
+        val viewportWidthPx = (constraints.maxWidth.toFloat() - yAxisWidthPx - yAxisGapPx).coerceAtLeast(1f)
+
+        val barWidthPx =
+            when {
+                isScrollable -> (minBarWidthPx * zoomScale).coerceAtLeast(1f)
+                dataSize <= 0 -> viewportWidthPx
+                else -> ((viewportWidthPx - spacingPx * (dataSize - 1)) / dataSize).coerceAtLeast(1f)
+            }
+        val unitWidthPx = unitWidth(barWidthPx, spacingPx)
+        val contentWidthPx =
+            if (isScrollable) {
+                contentWidth(dataSize, unitWidthPx, spacingPx).coerceAtLeast(viewportWidthPx)
+            } else {
+                viewportWidthPx
+            }
+        val canvasWidth = with(density) { contentWidthPx.toDp() }
+        val scrollOffsetPx = if (isScrollable) scrollState.value.toFloat() else 0f
+
+        LaunchedEffect(contentWidthPx, viewportWidthPx, isScrollable) {
+            val maxScroll = (contentWidthPx - viewportWidthPx).roundToInt().coerceAtLeast(0)
+            if (!isScrollable && scrollState.value != 0) {
+                scrollState.scrollTo(0)
+            } else if (scrollState.value > maxScroll) {
+                scrollState.scrollTo(maxScroll)
+            }
+        }
+
+        val fitTapModifier =
+            buildFitTapModifier(
+                interactionEnabled = interactionEnabled,
+                isScrollable = isScrollable,
+                dataSize = dataSize,
+                spacingPx = spacingPx,
+                viewportWidthPx = viewportWidthPx,
+                chartHeightPx = chartHeightPx,
+                onTapIndex = onToggleSelection,
+            )
+
+        val fitDragModifier =
+            buildFitDragModifier(
+                interactionEnabled = interactionEnabled,
+                dragSelectionEnabled = dragSelectionEnabled,
+                isScrollable = isScrollable,
+                dataSize = dataSize,
+                spacingPx = spacingPx,
+                viewportWidthPx = viewportWidthPx,
+                chartHeightPx = chartHeightPx,
+                onDragIndex = onSelectIndex,
+                onDragFinished = onClearSelection,
+            )
+
+        val scrollTapModifier =
+            buildScrollTapModifier(
+                interactionEnabled = interactionEnabled,
+                isScrollable = isScrollable,
+                dataSize = dataSize,
+                unitWidthPx = unitWidthPx,
+                scrollState = scrollState,
+                onTapIndex = onToggleSelection,
+                onDoubleTap = {
+                    onZoomScaleChange((zoomScale * zoomStep).coerceIn(zoomMin, zoomMax))
+                },
+            )
+
+        val pinchModifier =
+            buildPinchModifier(
+                isScrollable = isScrollable,
+                dataSize = dataSize,
+                zoomMin = zoomMin,
+                zoomMax = zoomMax,
+                getZoomScale = { zoomScale },
+                setZoomScale = onZoomScaleChange,
+            )
+
+        val visibleRange =
+            if (isScrollable) {
+                visibleIndexRange(
+                    dataSize = dataSize,
+                    viewportWidthPx = viewportWidthPx,
+                    scrollOffsetPx = scrollOffsetPx,
+                    unitWidthPx = unitWidthPx,
+                )
+            } else {
+                0..<dataSize
+            }
+        val selectedCenterXContent =
+            if (selectedIndex in 0 until dataSize) {
+                selectedIndex * unitWidthPx + barWidthPx / 2f
+            } else {
+                Float.NaN
+            }
+
+        val xAxisEdgePaddingPx = with(density) { X_AXIS_LABEL_EDGE_PADDING.toPx() }
+        val labelSafeRange =
+            centeredLabelIndexRange(
+                dataSize = dataSize,
+                unitWidthPx = unitWidthPx,
+                viewportWidthPx = viewportWidthPx,
+                scrollOffsetPx = if (isScrollable) scrollOffsetPx else 0f,
+                firstCenterPx = barWidthPx / 2f,
+                labelWidthPx = xAxisLabelFootprintPx.width,
+                edgePaddingPx = xAxisEdgePaddingPx,
+            )
+        val labelRange =
+            remember(dataSize, labelSafeRange, visibleRange) {
+                resolveLabelRangeWithFallback(
+                    dataSize = dataSize,
+                    preferredRange = labelSafeRange,
+                    fallbackRange = visibleRange,
+                )
+            }
+        val maxVisibleLabels =
+            remember(style.xAxisLabelMaxCount, labelRange, unitWidthPx, xAxisLabelFootprintPx.width) {
+                resolveMaxXAxisLabelCount(
+                    requestedMaxCount = style.xAxisLabelMaxCount,
+                    visibleRange = labelRange,
+                    unitWidthPx = unitWidthPx,
+                    labelWidthPx = xAxisLabelFootprintPx.width,
+                )
+            }
+        val labelIndices =
+            when {
+                dataSize <= 0 || labelRange.isEmpty() -> emptyList()
+                else -> {
+                    if (isScrollable) {
+                        scrollableLabelIndices(
+                            dataSize = dataSize,
+                            maxCount = maxVisibleLabels.coerceAtLeast(2),
+                            visibleRange = labelRange,
+                        )
                     } else {
-                        animatable.animateTo(
-                            targetValue = target,
-                            animationSpec = AnimationSpec.stackedBar(0),
+                        sampledLabelIndices(
+                            dataSize = dataSize,
+                            maxCount = maxVisibleLabels.coerceAtLeast(2),
+                            visibleRange = labelRange,
                         )
                     }
                 }
             }
-        }
-        hasInitialized.value = true
-    }
-
-    val interactionModifier =
-        if (interactionEnabled && !hasForcedSelection) {
-            Modifier.pointerInput(Unit) {
-                detectHorizontalDragGestures(
-                    onDragStart = { offset ->
-                        selectedIndex =
-                            getSelectedIndex(
-                                position = offset,
-                                dataSize = data.items.count(),
-                                canvasSize = size,
-                                spacingPx = spacingPx,
-                            )
-                        onValueChanged(selectedIndex)
-                    },
-                    onHorizontalDrag = { change, _ ->
-                        selectedIndex =
-                            getSelectedIndex(
-                                position = change.position,
-                                dataSize = data.items.count(),
-                                canvasSize = size,
-                                spacingPx = spacingPx,
-                            )
-                        onValueChanged(selectedIndex)
-                        change.consume()
-                    },
-                    onDragEnd = {
-                        selectedIndex = NO_SELECTION
-                        onValueChanged(NO_SELECTION)
-                    },
-                    onDragCancel = {
-                        selectedIndex = NO_SELECTION
-                        onValueChanged(NO_SELECTION)
-                    },
+        val xAxisTicks =
+            remember(labels, labelIndices, barWidthPx, unitWidthPx, scrollOffsetPx) {
+                buildStackedBarXAxisTicks(
+                    labels = labels,
+                    labelIndices = labelIndices,
+                    barWidthPx = barWidthPx,
+                    unitWidthPx = unitWidthPx,
+                    scrollOffsetPx = scrollOffsetPx,
                 )
             }
-        } else {
+
+        val interactionModifier =
             Modifier
+                .then(fitTapModifier)
+                .then(fitDragModifier)
+                .then(scrollTapModifier)
+                .then(pinchModifier)
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(chartHeight)
+                    .testTag(TestTags.STACKED_BAR_CHART),
+        ) {
+            if (style.yAxisLabelsVisible) {
+                StackedBarYAxisLabels(
+                    ticks = yAxisTicks,
+                    color = style.yAxisLabelColor,
+                    fontSize = style.yAxisLabelSize,
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .fillMaxHeight()
+                            .width(yAxisWidth),
+                )
+            }
+
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = plotStartPadding),
+            ) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .then(interactionModifier)
+                            .horizontalScroll(state = scrollState, enabled = isScrollable),
+                ) {
+                    Canvas(
+                        modifier =
+                            Modifier
+                                .fillMaxHeight()
+                                .requiredWidth(canvasWidth),
+                        onDraw = {
+                            drawStackedBars(
+                                data = data,
+                                style = style,
+                                progress = animatedValues,
+                                selectedIndex = selectedIndex,
+                                selectedCenterX = selectedCenterXContent,
+                                colors = colors,
+                                barWidthPx = barWidthPx,
+                                spacingPx = spacingPx,
+                                visibleRange = visibleRange,
+                            )
+                        },
+                    )
+                }
+            }
         }
 
-    Canvas(
-        modifier =
-            style.modifier
-                .testTag(TestTags.STACKED_BAR_CHART)
-                .then(interactionModifier),
-        onDraw = {
-            drawBars(
-                style = style,
-                size = size,
-                data = data,
-                progress = animatedValues,
-                selectedIndex = effectiveSelectedIndex,
-                colors = colors,
+        if (style.xAxisLabelsVisible) {
+            StackedBarXAxisLabels(
+                ticks = xAxisTicks,
+                color = style.xAxisLabelColor,
+                fontSize = style.xAxisLabelSize,
+                tiltDegrees = xAxisTilt,
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .padding(start = plotStartPadding)
+                        .height(xAxisHeight),
             )
-        },
-    )
+        }
+    }
 }
 
-private fun DrawScope.drawBars(
-    style: StackedBarChartStyle,
-    size: Size,
+private fun DrawScope.drawStackedBars(
     data: MultiChartData,
+    style: StackedBarChartStyle,
     progress: List<Animatable<Float, AnimationVector1D>>,
     selectedIndex: Int,
+    selectedCenterX: Float,
     colors: ImmutableList<Color>,
+    barWidthPx: Float,
+    spacingPx: Float,
+    visibleRange: IntRange,
 ) {
-    val spacing = style.space.toPx()
-    val barWidth = (size.width - spacing * (data.items.size - 1)) / data.items.size
-
-    data.items.forEachIndexed { index, item ->
+    if (barWidthPx <= 0f || data.items.isEmpty()) return
+    val indices =
+        when {
+            visibleRange.isEmpty() -> 0 until data.items.size
+            else -> visibleRange
+        }
+    for (index in indices) {
+        val item = data.items.getOrNull(index) ?: continue
         var topOffset = size.height
-        val selectedBarScale = if (index == selectedIndex) STACKED_BAR_SELECTED_SCALE else DEFAULT_SCALE
+        val left = index * (barWidthPx + spacingPx)
         val barTotal = item.item.points.sum()
         item.item.points.forEachIndexed { dataIndex, value ->
             val segmentShare =
@@ -174,45 +638,87 @@ private fun DrawScope.drawBars(
                 stackedSegmentHeight(
                     segmentShare = segmentShare,
                     chartHeight = size.height,
-                    barScale = selectedBarScale,
                     progress = progress.getOrNull(index)?.value ?: 0f,
                 )
             topOffset -= height
 
             drawRect(
-                color = colors[dataIndex],
-                topLeft = Offset(x = index * (barWidth + spacing), y = topOffset),
+                color = colors.getOrElse(dataIndex) { colors.lastOrNull() ?: Color.Transparent },
+                topLeft = androidx.compose.ui.geometry.Offset(x = left, y = topOffset),
                 size =
                     Size(
-                        width = barWidth * selectedBarScale,
+                        width = barWidthPx,
                         height = height,
                     ),
             )
         }
+    }
+
+    if (style.selectionLineVisible && selectedIndex != NO_SELECTION && selectedCenterX.isFinite()) {
+        drawLine(
+            color = style.selectionLineColor,
+            start = Offset(selectedCenterX, 0f),
+            end = Offset(selectedCenterX, size.height),
+            strokeWidth = style.selectionLineWidth,
+        )
+        drawCircle(
+            color = style.selectionLineColor,
+            radius = 3.dp.toPx(),
+            center = Offset(selectedCenterX, size.height),
+            style = Stroke(width = style.selectionLineWidth),
+        )
     }
 }
 
 fun stackedSegmentHeight(
     segmentShare: Float,
     chartHeight: Float,
-    barScale: Float,
     progress: Float,
 ): Float {
-    return lerp(0f, segmentShare * chartHeight * barScale, progress)
+    return lerp(0f, segmentShare * chartHeight, progress)
 }
 
-private fun getSelectedIndex(
-    position: Offset,
+private fun resolveLabelRangeWithFallback(
     dataSize: Int,
-    canvasSize: IntSize,
-    spacingPx: Float,
-): Int {
-    if (dataSize <= 0 || canvasSize.width <= 0) return 0
+    preferredRange: IntRange,
+    fallbackRange: IntRange,
+): IntRange {
+    if (dataSize <= 0) return IntRange.EMPTY
+    val clampedPreferred = preferredRange.clampToDataSize(dataSize)
+    val clampedFallback = fallbackRange.clampToDataSize(dataSize)
+    return when {
+        rangeCount(clampedPreferred) >= MIN_AXIS_LABELS_IN_PREFERRED_RANGE -> clampedPreferred
+        rangeCount(clampedFallback) >= MIN_AXIS_LABELS_IN_PREFERRED_RANGE -> clampedFallback
+        else -> clampedPreferred
+    }
+}
 
-    val totalSpacing = spacingPx * (dataSize - 1)
-    val availableWidth = max(1f, canvasSize.width - totalSpacing)
-    val barWidth = availableWidth / dataSize
-    val unitWidth = barWidth + spacingPx
-    val index = (position.x / unitWidth).toInt()
-    return index.coerceIn(0, dataSize - 1)
+private fun resolveMaxXAxisLabelCount(
+    requestedMaxCount: Int,
+    visibleRange: IntRange,
+    unitWidthPx: Float,
+    labelWidthPx: Float,
+): Int {
+    val labelsInRange = rangeCount(visibleRange)
+    if (labelsInRange <= 0) return 0
+    if (labelsInRange == 1) return 1
+
+    val requested = requestedMaxCount.coerceAtLeast(2).coerceAtMost(labelsInRange)
+    val safeUnitWidth = unitWidthPx.coerceAtLeast(1f)
+    val safeLabelWidth = labelWidthPx.coerceAtLeast(1f)
+    val requiredSpacingPx = (safeLabelWidth * X_AXIS_LABEL_MIN_SPACING_FACTOR).coerceAtLeast(1f)
+    val spanPx = (labelsInRange - 1) * safeUnitWidth
+    val fitCount = (spanPx / requiredSpacingPx).toInt() + 1
+    return fitCount.coerceIn(2, requested)
+}
+
+private fun IntRange.clampToDataSize(dataSize: Int): IntRange {
+    if (isEmpty() || dataSize <= 0) return IntRange.EMPTY
+    val start = first.coerceIn(0, dataSize - 1)
+    val end = last.coerceIn(start, dataSize - 1)
+    return start..end
+}
+
+private fun rangeCount(range: IntRange): Int {
+    return if (range.isEmpty()) 0 else range.last - range.first + 1
 }

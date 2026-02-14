@@ -20,6 +20,10 @@
     <string name="bar_data_points_range">Value range: %1$d - %2$d</string>
     <string name="line_data_points">Data points: %1$d</string>
     <string name="line_data_points_range">Value range: %1$d - %2$d</string>
+    <string name="stacked_bar_data_points">Data points: %1$d</string>
+    <string name="stacked_bar_data_points_range">Value range: %1$d - %2$d</string>
+    <string name="stacked_area_data_points">Data points: %1$d</string>
+    <string name="stacked_area_data_points_range">Value range: %1$d - %2$d</string>
     <string name="timeline_update_interval">Update interval: %1$d ms</string>
     <string name="timeline_window_size">Window size: %1$d points</string>
 

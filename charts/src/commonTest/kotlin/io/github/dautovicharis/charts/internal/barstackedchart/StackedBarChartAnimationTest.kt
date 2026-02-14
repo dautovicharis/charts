@@ -19,12 +19,11 @@ class StackedBarChartAnimationTest {
             stackedSegmentHeight(
                 segmentShare = segmentShare,
                 chartHeight = chartHeight,
-                barScale = 1f,
                 progress = progress,
             )
 
         // Assert
-        val expected = chartHeight * 1f * progress * segmentShare
+        val expected = chartHeight * progress * segmentShare
         assertEquals(expected, height, 0.0001f)
     }
 
@@ -40,7 +39,6 @@ class StackedBarChartAnimationTest {
             stackedSegmentHeight(
                 segmentShare = segmentShare,
                 chartHeight = chartHeight,
-                barScale = 1f,
                 progress = progress,
             )
 
@@ -49,11 +47,10 @@ class StackedBarChartAnimationTest {
     }
 
     @Test
-    fun stackedSegmentHeight_appliesBarScale() {
+    fun stackedSegmentHeight_scalesWithChartHeight() {
         // Arrange
         val segmentShare = 0.25f
-        val chartHeight = 80f
-        val barScale = 2f
+        val chartHeight = 160f
         val progress = 0.5f
 
         // Act
@@ -61,12 +58,11 @@ class StackedBarChartAnimationTest {
             stackedSegmentHeight(
                 segmentShare = segmentShare,
                 chartHeight = chartHeight,
-                barScale = barScale,
                 progress = progress,
             )
 
         // Assert
-        val expected = chartHeight * barScale * progress * segmentShare
+        val expected = chartHeight * progress * segmentShare
         assertEquals(expected, height, 0.0001f)
     }
 
@@ -77,7 +73,6 @@ class StackedBarChartAnimationTest {
         val value = 2f
         val segmentShare = if (barTotal == 0f) 0f else value / barTotal
         val chartHeight = 100f
-        val barScale = 1f
         val progress = 0.7f
 
         // Act
@@ -85,12 +80,11 @@ class StackedBarChartAnimationTest {
             stackedSegmentHeight(
                 segmentShare = segmentShare,
                 chartHeight = chartHeight,
-                barScale = barScale,
                 progress = progress,
             )
 
         // Assert
-        val expected = chartHeight * barScale * progress * segmentShare
+        val expected = chartHeight * progress * segmentShare
         assertEquals(0f, height, 0.0001f)
         assertEquals(expected, height, 0.0001f)
     }

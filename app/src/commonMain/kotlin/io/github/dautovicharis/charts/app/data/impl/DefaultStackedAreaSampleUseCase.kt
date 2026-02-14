@@ -44,19 +44,40 @@ class DefaultStackedAreaSampleUseCase : StackedAreaSampleUseCase {
     override fun stackedAreaRefreshRange(): IntRange = REFRESH_RANGE
 
     override fun stackedAreaSample(range: IntRange): StackedAreaSampleData {
+        return stackedAreaSample(points = stackedAreaCategories.size, range = range)
+    }
+
+    override fun stackedAreaSample(
+        points: Int,
+        range: IntRange,
+    ): StackedAreaSampleData {
+        val safePoints = points.coerceAtLeast(2)
+        val safeRangeStart = minOf(range.first, range.last).coerceAtLeast(0)
+        val safeRangeEnd = maxOf(range.first, range.last).coerceAtLeast(safeRangeStart)
+        val safeRange = safeRangeStart..safeRangeEnd
+        val categories = stackedAreaCategoriesFor(points = safePoints)
         val newItems =
-            stackedAreaItems.map { (name, values) ->
-                name to values.map { range.random().toFloat() }
+            stackedAreaItems.map { (name, _) ->
+                name to List(safePoints) { safeRange.random().toFloat() }
             }
         val dataSet =
             newItems.toMultiChartDataSet(
                 prefix = DEFAULT_PREFIX,
-                categories = stackedAreaCategories,
+                categories = categories,
                 title = DEFAULT_TITLE,
             )
         return StackedAreaSampleData(
             dataSet = dataSet,
             seriesKeys = newItems.map { it.first },
         )
+    }
+
+    private fun stackedAreaCategoriesFor(points: Int): List<String> {
+        if (points <= stackedAreaCategories.size) {
+            return stackedAreaCategories.take(points)
+        }
+        val extraCount = points - stackedAreaCategories.size
+        val extras = List(extraCount) { index -> "P${stackedAreaCategories.size + index + 1}" }
+        return stackedAreaCategories + extras
     }
 }
