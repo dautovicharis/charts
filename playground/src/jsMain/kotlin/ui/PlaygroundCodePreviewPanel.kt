@@ -151,7 +151,12 @@ fun PlaygroundCodePreviewPanel(
                         if (expandToFillHeight) {
                             Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState())
                         } else {
-                            Modifier.fillMaxWidth().heightIn(min = 220.dp, max = 320.dp).verticalScroll(rememberScrollState())
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(
+                                    min = 220.dp,
+                                    max = 320.dp,
+                                ).verticalScroll(rememberScrollState())
                         },
                 )
             }

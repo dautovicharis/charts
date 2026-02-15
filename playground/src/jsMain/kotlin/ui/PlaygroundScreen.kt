@@ -18,31 +18,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.dautovicharis.charts.app.ui.theme.AppTheme
 import io.github.dautovicharis.charts.app.ui.theme.docsSlate
 import model.PlaygroundAction
-import model.PlaygroundReducer
 import model.PlaygroundRightPanelTab
-import model.defaultPlaygroundState
-import model.playgroundChartRegistry
+import model.PlaygroundViewModel
 
 private val WideLayoutBreakpoint = 1000.dp
 
 @Composable
 fun PlaygroundScreen() {
-    val registry = remember { playgroundChartRegistry }
-    var state by remember { mutableStateOf(defaultPlaygroundState(registry)) }
+    val viewModel = remember { PlaygroundViewModel() }
+    val registry = viewModel.registry
+    val state by viewModel.state.collectAsState()
 
-    fun dispatch(action: PlaygroundAction) {
-        state = PlaygroundReducer.reduce(state, action, registry)
-    }
+    fun dispatch(action: PlaygroundAction) = viewModel.dispatch(action)
 
     val selectedDefinition = registry.definition(state.selectedChartType)
     val selectedSession = state.sessions.getValue(state.selectedChartType)
@@ -150,7 +146,10 @@ fun PlaygroundScreen() {
                                         onStyleStateChange = { nextStyle ->
                                             dispatch(PlaygroundAction.UpdateStyleState(nextStyle))
                                         },
-                                        modifier = Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
+                                        modifier =
+                                            Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(
+                                                rememberScrollState(),
+                                            ),
                                     )
                                 },
                                 codeContent = {

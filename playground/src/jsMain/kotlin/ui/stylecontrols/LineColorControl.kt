@@ -82,8 +82,7 @@ private fun ColorSwatch(
                     width = if (selected) 2.dp else 1.dp,
                     color = borderColor,
                     shape = RoundedCornerShape(6.dp),
-                )
-                .background(color = color, shape = RoundedCornerShape(6.dp))
+                ).background(color = color, shape = RoundedCornerShape(6.dp))
                 .clickable(onClick = onClick),
     )
 }

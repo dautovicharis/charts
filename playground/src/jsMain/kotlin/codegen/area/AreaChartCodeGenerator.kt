@@ -10,7 +10,9 @@ import model.ChartCodeGenerator
 import model.GeneratedSnippet
 import kotlin.math.max
 
-class AreaChartCodeGenerator : BaseChartCodeGenerator<AreaCodegenConfig>(), ChartCodeGenerator<AreaCodegenConfig> {
+class AreaChartCodeGenerator :
+    BaseChartCodeGenerator<AreaCodegenConfig>(),
+    ChartCodeGenerator<AreaCodegenConfig> {
     override fun generate(config: AreaCodegenConfig): GeneratedSnippet {
         val normalized = normalizeSeries(config)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)

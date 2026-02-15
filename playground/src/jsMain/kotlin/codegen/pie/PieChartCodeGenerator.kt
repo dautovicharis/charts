@@ -8,7 +8,9 @@ import model.GeneratedSnippet
 import model.PieCodegenConfig
 import model.PieSliceInput
 
-class PieChartCodeGenerator : BaseChartCodeGenerator<PieCodegenConfig>(), ChartCodeGenerator<PieCodegenConfig> {
+class PieChartCodeGenerator :
+    BaseChartCodeGenerator<PieCodegenConfig>(),
+    ChartCodeGenerator<PieCodegenConfig> {
     override fun generate(config: PieCodegenConfig): GeneratedSnippet {
         val items = normalizeRows(config.rows)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)

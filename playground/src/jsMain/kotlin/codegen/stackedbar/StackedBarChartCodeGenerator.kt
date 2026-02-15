@@ -10,7 +10,9 @@ import model.GeneratedSnippet
 import model.StackedBarCodegenConfig
 import kotlin.math.max
 
-class StackedBarChartCodeGenerator : BaseChartCodeGenerator<StackedBarCodegenConfig>(), ChartCodeGenerator<StackedBarCodegenConfig> {
+class StackedBarChartCodeGenerator :
+    BaseChartCodeGenerator<StackedBarCodegenConfig>(),
+    ChartCodeGenerator<StackedBarCodegenConfig> {
     override fun generate(config: StackedBarCodegenConfig): GeneratedSnippet {
         val normalized = normalizeSeries(config)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)

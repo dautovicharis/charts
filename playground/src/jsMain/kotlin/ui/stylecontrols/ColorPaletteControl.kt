@@ -91,8 +91,7 @@ private fun PaletteRow(
                     width = if (selected) 2.dp else 1.dp,
                     color = borderColor,
                     shape = RoundedCornerShape(12.dp),
-                )
-                .clickable(onClick = onClick)
+                ).clickable(onClick = onClick)
                 .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {

@@ -9,7 +9,9 @@ import model.ChartCodeGenerator
 import model.GeneratedSnippet
 import model.MultiLineCodegenConfig
 
-class MultiLineChartCodeGenerator : BaseChartCodeGenerator<MultiLineCodegenConfig>(), ChartCodeGenerator<MultiLineCodegenConfig> {
+class MultiLineChartCodeGenerator :
+    BaseChartCodeGenerator<MultiLineCodegenConfig>(),
+    ChartCodeGenerator<MultiLineCodegenConfig> {
     override fun generate(config: MultiLineCodegenConfig): GeneratedSnippet {
         val normalized = normalizeSeries(config)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)

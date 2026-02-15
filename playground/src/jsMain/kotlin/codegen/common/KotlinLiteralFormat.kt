@@ -96,7 +96,7 @@ private fun colorLiteral(color: Color): String {
     val redHex = channelToHex(color.red)
     val greenHex = channelToHex(color.green)
     val blueHex = channelToHex(color.blue)
-    return "Color(0x${alphaHex}${redHex}${greenHex}${blueHex})"
+    return "Color(0x${alphaHex}${redHex}${greenHex}$blueHex)"
 }
 
 private fun channelToHex(value: Float): String =

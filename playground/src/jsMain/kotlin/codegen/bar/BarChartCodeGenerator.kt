@@ -8,7 +8,9 @@ import model.BarPointInput
 import model.ChartCodeGenerator
 import model.GeneratedSnippet
 
-class BarChartCodeGenerator : BaseChartCodeGenerator<BarCodegenConfig>(), ChartCodeGenerator<BarCodegenConfig> {
+class BarChartCodeGenerator :
+    BaseChartCodeGenerator<BarCodegenConfig>(),
+    ChartCodeGenerator<BarCodegenConfig> {
     override fun generate(config: BarCodegenConfig): GeneratedSnippet {
         val items = normalizePoints(config.points)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)

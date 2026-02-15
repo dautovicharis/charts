@@ -83,7 +83,9 @@ class PieChartCodeGeneratorTest {
             )
 
         assertTrue(snippet.code.contains("borderWidth = 3f,"))
-        assertTrue(snippet.code.contains("pieColors = listOf(Color(0xFF1D3557), Color(0xFF457B9D), Color(0xFFA8DADC)),"))
+        assertTrue(
+            snippet.code.contains("pieColors = listOf(Color(0xFF1D3557), Color(0xFF457B9D), Color(0xFFA8DADC)),"),
+        )
         assertTrue(snippet.code.contains("import androidx.compose.ui.graphics.Color"))
     }
 

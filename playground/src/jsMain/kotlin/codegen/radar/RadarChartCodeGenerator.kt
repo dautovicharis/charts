@@ -10,7 +10,9 @@ import model.GeneratedSnippet
 import model.RadarCodegenConfig
 import kotlin.math.max
 
-class RadarChartCodeGenerator : BaseChartCodeGenerator<RadarCodegenConfig>(), ChartCodeGenerator<RadarCodegenConfig> {
+class RadarChartCodeGenerator :
+    BaseChartCodeGenerator<RadarCodegenConfig>(),
+    ChartCodeGenerator<RadarCodegenConfig> {
     override fun generate(config: RadarCodegenConfig): GeneratedSnippet {
         val normalized = normalizeSeries(config)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)

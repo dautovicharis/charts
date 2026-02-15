@@ -8,7 +8,9 @@ import model.GeneratedSnippet
 import model.LineCodegenConfig
 import model.LinePointInput
 
-class LineChartCodeGenerator : BaseChartCodeGenerator<LineCodegenConfig>(), ChartCodeGenerator<LineCodegenConfig> {
+class LineChartCodeGenerator :
+    BaseChartCodeGenerator<LineCodegenConfig>(),
+    ChartCodeGenerator<LineCodegenConfig> {
     override fun generate(config: LineCodegenConfig): GeneratedSnippet {
         val items = normalizePoints(config.points)
         val styleArguments = resolveStyleArguments(config.styleProperties, config.codegenMode)
