@@ -7,12 +7,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -66,37 +73,8 @@ fun PlaygroundCodePreviewPanel(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                if (showTitle) {
-                    Text(text = "Code")
-                }
-
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val copyLabel =
-                        when (copyState) {
-                            CopyState.IDLE -> "Copy"
-                            CopyState.COPIED -> "Copied ✓"
-                            CopyState.FAILED -> "Copy failed"
-                        }
-
-                    Button(
-                        onClick = {
-                            copyTextToClipboard(snippet.code) { success ->
-                                copyState = if (success) CopyState.COPIED else CopyState.FAILED
-                            }
-                        },
-                        colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
-                                contentColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                    ) {
-                        Text(copyLabel)
-                    }
-                }
+            if (showTitle) {
+                Text(text = "Code")
             }
 
             Row(
@@ -132,6 +110,33 @@ fun PlaygroundCodePreviewPanel(
                     modifier = Modifier.weight(1f),
                 ) {
                     Text("Full")
+                }
+
+                val (copyIcon, copyDescription) =
+                    when (copyState) {
+                        CopyState.IDLE -> Icons.Filled.ContentCopy to "Copy code"
+                        CopyState.COPIED -> Icons.Filled.Check to "Copied"
+                        CopyState.FAILED -> Icons.Filled.ErrorOutline to "Copy failed"
+                    }
+
+                IconButton(
+                    onClick = {
+                        copyTextToClipboard(snippet.code) { success ->
+                            copyState = if (success) CopyState.COPIED else CopyState.FAILED
+                        }
+                    },
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Icon(
+                        imageVector = copyIcon,
+                        contentDescription = copyDescription,
+                        tint =
+                            when (copyState) {
+                                CopyState.COPIED -> MaterialTheme.colorScheme.primary
+                                CopyState.FAILED -> MaterialTheme.colorScheme.error
+                                CopyState.IDLE -> MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                    )
                 }
             }
 

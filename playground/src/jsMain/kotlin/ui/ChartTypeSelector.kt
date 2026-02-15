@@ -69,7 +69,7 @@ private fun ChartTypeButtonIcon(
     chartType: ChartType,
     compact: Boolean,
 ) {
-    val iconSize = if (compact) 20.dp else 22.dp
+    val iconSize = if (compact) 22.dp else 24.dp
     Icon(
         painter = painterResource(chartTypeIconResource(chartType)),
         contentDescription = chartType.displayName,

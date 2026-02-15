@@ -8,12 +8,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +36,7 @@ import model.PlaygroundRightPanelTab
 import model.PlaygroundViewModel
 
 private val WideLayoutBreakpoint = 1000.dp
+private val RightPanelTabIconSize = 18.dp
 
 @Composable
 fun PlaygroundScreen() {
@@ -262,6 +268,11 @@ private fun RightPanel(
                         },
                     modifier = Modifier.weight(1f),
                 ) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 6.dp).size(RightPanelTabIconSize),
+                    )
                     Text("Settings")
                 }
 
@@ -278,6 +289,11 @@ private fun RightPanel(
                         },
                     modifier = Modifier.weight(1f),
                 ) {
+                    Icon(
+                        imageVector = Icons.Filled.Code,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 6.dp).size(RightPanelTabIconSize),
+                    )
                     Text("Code")
                 }
             }

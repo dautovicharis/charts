@@ -3,15 +3,17 @@ package ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,6 +50,7 @@ fun PlaygroundEditorPanel(
     modifier: Modifier = Modifier,
 ) {
     val canDeleteRows = editorState.rows.size > editorState.minRows
+    val actionColumnWidth = 56.dp
     val scrollState = rememberScrollState()
     val currentRowIds = editorState.rows.map { row -> row.id }
     var previousRowIds by remember { mutableStateOf(currentRowIds) }
@@ -121,11 +124,7 @@ fun PlaygroundEditorPanel(
                         style = MaterialTheme.typography.labelMedium,
                     )
                 }
-                Text(
-                    text = "Action",
-                    modifier = Modifier.width(80.dp),
-                    style = MaterialTheme.typography.labelMedium,
-                )
+                Spacer(modifier = Modifier.width(actionColumnWidth))
             }
             HorizontalDivider()
 
@@ -167,9 +166,13 @@ fun PlaygroundEditorPanel(
                             IconButton(
                                 onClick = { onDeleteRow(rowIndex) },
                                 enabled = canDeleteRows,
-                                modifier = Modifier.width(80.dp).alpha(if (canDeleteRows) 1f else 0.45f),
+                                modifier = Modifier.width(actionColumnWidth).alpha(if (canDeleteRows) 1f else 0.45f),
                             ) {
-                                Icon(Icons.Filled.Delete, contentDescription = "Delete row")
+                                Icon(
+                                    Icons.Filled.Close,
+                                    contentDescription = "Delete row",
+                                    modifier = Modifier.size(18.dp),
+                                )
                             }
                         }
                     }
