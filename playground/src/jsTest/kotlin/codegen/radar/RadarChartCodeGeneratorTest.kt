@@ -70,5 +70,4 @@ class RadarChartCodeGeneratorTest {
         assertTrue(snippet.code.contains("pointVisible = true,"))
         assertTrue(snippet.code.contains("fillAlpha = 0.3f,"))
     }
-
 }

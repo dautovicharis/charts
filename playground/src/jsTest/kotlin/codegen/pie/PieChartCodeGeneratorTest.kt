@@ -89,5 +89,4 @@ class PieChartCodeGeneratorTest {
         )
         assertTrue(snippet.code.contains("import androidx.compose.ui.graphics.Color"))
     }
-
 }

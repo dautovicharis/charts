@@ -70,5 +70,4 @@ class AreaChartCodeGeneratorTest {
         assertTrue(snippet.code.contains("fillAlpha = 0.4f,"))
         assertTrue(snippet.code.contains("bezier = true,"))
     }
-
 }

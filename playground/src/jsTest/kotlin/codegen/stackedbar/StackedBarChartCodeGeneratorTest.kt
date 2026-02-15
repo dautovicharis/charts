@@ -76,5 +76,4 @@ class StackedBarChartCodeGeneratorTest {
         assertTrue(snippet.code.contains("barAlpha = 0.8f,"))
         assertTrue(snippet.code.contains("selectionLineWidth = 2f,"))
     }
-
 }

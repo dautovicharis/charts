@@ -38,7 +38,9 @@ kotlin {
                 implementation(project(":charts"))
                 implementation(compose.runtime)
                 implementation(compose.ui)
-                implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.multiplatform.get()}")
+                implementation(
+                    "org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.multiplatform.get()}",
+                )
             }
         }
 

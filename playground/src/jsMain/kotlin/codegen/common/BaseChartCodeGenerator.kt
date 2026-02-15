@@ -10,22 +10,22 @@ abstract class BaseChartCodeGenerator<TConfig> {
     abstract fun generate(config: TConfig): GeneratedSnippet
 
     // Indentation levels
-    protected val INDENT_STATEMENT = 1 // Top-level statements in function body
-    protected val INDENT_BUILDER = 2 // Inside builder/method calls
-    protected val INDENT_PARAM = 3 // Parameters and arguments
-    protected val INDENT_NESTED = 4 // Nested parameters (e.g., items in nested listOf)
+    protected val indentStatement = 1 // Top-level statements in function body
+    protected val indentBuilder = 2 // Inside builder/method calls
+    protected val indentParam = 3 // Parameters and arguments
+    protected val indentNested = 4 // Nested parameters (e.g., items in nested listOf)
 
     // Common method names
-    protected val METHOD_TO_CHART_DATA_SET = "toChartDataSet"
-    protected val METHOD_LIST_OF = "listOf"
+    protected val methodToChartDataSet = "toChartDataSet"
+    protected val methodListOf = "listOf"
 
     // Common variable names
-    protected val VAR_DATA_SET = "dataSet"
-    protected val VAR_STYLE = "style"
+    protected val varDataSet = "dataSet"
+    protected val varStyle = "style"
 
     // Common parameter names
-    protected val PARAM_TITLE = "title"
-    protected val PARAM_LABELS = "labels"
+    protected val paramTitle = "title"
+    protected val paramLabels = "labels"
 
     /**
      * Builds the complete function code with imports, annotation, and body.
@@ -61,11 +61,11 @@ abstract class BaseChartCodeGenerator<TConfig> {
                 "\"${escapeKotlinString(item.label)}\""
             }
 
-        lines += kotlinLine(INDENT_STATEMENT, "val $VAR_DATA_SET =")
-        lines += kotlinLine(INDENT_BUILDER, "$METHOD_LIST_OF($valuesCode).$METHOD_TO_CHART_DATA_SET(")
-        lines += kotlinLine(INDENT_PARAM, "$PARAM_TITLE = \"${escapeKotlinString(title)}\",")
-        lines += kotlinLine(INDENT_PARAM, "$PARAM_LABELS = $METHOD_LIST_OF($labelsCode),")
-        lines += kotlinLine(INDENT_BUILDER, ")")
+        lines += kotlinLine(indentStatement, "val $varDataSet =")
+        lines += kotlinLine(indentBuilder, "$methodListOf($valuesCode).$methodToChartDataSet(")
+        lines += kotlinLine(indentParam, "$paramTitle = \"${escapeKotlinString(title)}\",")
+        lines += kotlinLine(indentParam, "$paramLabels = $methodListOf($labelsCode),")
+        lines += kotlinLine(indentBuilder, ")")
 
         return lines
     }
@@ -79,12 +79,12 @@ abstract class BaseChartCodeGenerator<TConfig> {
     ): List<String> {
         val lines = mutableListOf<String>()
 
-        lines += kotlinLine(INDENT_STATEMENT, "val $VAR_STYLE =")
-        lines += kotlinLine(INDENT_BUILDER, "$styleBuilder(")
+        lines += kotlinLine(indentStatement, "val $varStyle =")
+        lines += kotlinLine(indentBuilder, "$styleBuilder(")
         styleArguments.forEach { argument ->
-            lines += kotlinLine(INDENT_PARAM, argument.code)
+            lines += kotlinLine(indentParam, argument.code)
         }
-        lines += kotlinLine(INDENT_BUILDER, ")")
+        lines += kotlinLine(indentBuilder, ")")
 
         return lines
     }
@@ -99,12 +99,12 @@ abstract class BaseChartCodeGenerator<TConfig> {
         val lines = mutableListOf<String>()
 
         if (includeStyle) {
-            lines += kotlinLine(INDENT_STATEMENT, "$componentName(")
-            lines += kotlinLine(INDENT_BUILDER, "$VAR_DATA_SET = $VAR_DATA_SET,")
-            lines += kotlinLine(INDENT_BUILDER, "$VAR_STYLE = $VAR_STYLE,")
-            lines += kotlinLine(INDENT_STATEMENT, ")")
+            lines += kotlinLine(indentStatement, "$componentName(")
+            lines += kotlinLine(indentBuilder, "$varDataSet = $varDataSet,")
+            lines += kotlinLine(indentBuilder, "$varStyle = $varStyle,")
+            lines += kotlinLine(indentStatement, ")")
         } else {
-            lines += kotlinLine(INDENT_STATEMENT, "$componentName($VAR_DATA_SET = $VAR_DATA_SET)")
+            lines += kotlinLine(indentStatement, "$componentName($varDataSet = $varDataSet)")
         }
 
         return lines

@@ -7,10 +7,6 @@ import codegen.multiline.MultiLineChartCodeGenerator
 import codegen.pie.PieChartCodeGenerator
 import codegen.radar.RadarChartCodeGenerator
 import codegen.stackedbar.StackedBarChartCodeGenerator
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.PrintStream
-import kotlin.io.path.createTempDirectory
 import model.AreaCodegenConfig
 import model.BarCodegenConfig
 import model.LineCodegenConfig
@@ -23,6 +19,10 @@ import model.RadarCodegenConfig
 import model.StackedBarCodegenConfig
 import org.jetbrains.kotlin.cli.common.ExitCode
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
+import kotlin.io.path.createTempDirectory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -137,7 +137,7 @@ class GeneratedSnippetCompilationTest {
         assertEquals(
             ExitCode.OK,
             exitCode,
-            "Generated snippet failed to compile:\n$snippet\n\nCompiler output:\n${compilerOutput}",
+            "Generated snippet failed to compile:\n$snippet\n\nCompiler output:\n$compilerOutput",
         )
     }
 }

@@ -68,5 +68,4 @@ class MultiLineChartCodeGeneratorTest {
         assertTrue(snippet.code.contains("bezier = true,"))
         assertTrue(snippet.code.contains("lineAlpha = 1f,"))
     }
-
 }

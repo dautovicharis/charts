@@ -75,5 +75,4 @@ class BarChartCodeGeneratorTest {
         assertTrue(snippet.code.contains("axisVisible = true,"))
         assertTrue(snippet.code.contains("selectionLineWidth = 1.5f,"))
     }
-
 }
