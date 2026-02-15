@@ -7,9 +7,11 @@ import { NavItem } from '@/lib/types';
 import {
   ApiReferenceIcon,
   DemoGalleryIcon,
+  ExternalLinkIcon,
   ExamplesIcon,
   GettingStartedIcon,
   OverviewIcon,
+  PlaygroundIcon,
 } from '@/components/icons/SidebarIcons';
 
 interface SidebarProps {
@@ -151,20 +153,20 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
               <DemoGalleryIcon />
               <span className="docs-sidebar__link-label">
                 Demo Gallery
-                <svg
-                  className="docs-sidebar__external-icon"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M6 4h6v6M12 4L4 12"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <ExternalLinkIcon className="docs-sidebar__external-icon" />
+              </span>
+            </a>
+            <a
+              href="/static/playground/snapshot/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="docs-sidebar__link"
+              onClick={closeMobileNavigation}
+            >
+              <PlaygroundIcon />
+              <span className="docs-sidebar__link-label">
+                Playground
+                <ExternalLinkIcon className="docs-sidebar__external-icon" />
               </span>
             </a>
           </nav>

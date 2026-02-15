@@ -145,3 +145,59 @@ export function DemoGalleryIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function PlaygroundIcon(props: IconProps) {
+  return (
+    <svg {...withDefaults(props)}>
+      <rect
+        x="3.5"
+        y="4.5"
+        width="17"
+        height="15"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
+      <path
+        d="M8.5 12h2.8M9.9 10.6v2.8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <circle cx="14.7" cy="10.8" r="1.1" fill="currentColor" />
+      <circle cx="17.4" cy="13.3" r="1.1" fill="currentColor" />
+      <path
+        d="M10.4 19.5l1.3 1.9h.6l1.3-1.9"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function ExternalLinkIcon(props: IconProps) {
+  return (
+    <svg {...withDefaults(props)}>
+      <path
+        d="M7.5 6.5h10v10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17.5 6.5l-11 11"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M15 13.5v4h-8.5v-8.5h4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
