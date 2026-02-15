@@ -1,5 +1,6 @@
 import codegen.area.AreaChartCodeGenerator
 import codegen.bar.BarChartCodeGenerator
+import codegen.common.escapeKotlinString
 import codegen.multiline.MultiLineChartCodeGenerator
 import codegen.radar.RadarChartCodeGenerator
 import codegen.stackedbar.StackedBarChartCodeGenerator
@@ -13,9 +14,54 @@ import model.RadarCodegenConfig
 import model.StackedBarCodegenConfig
 import model.StylePropertiesSnapshot
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class AdditionalChartCodeGeneratorsTest {
+    @Test
+    fun multiline_generator_escapes_dollar_signs_in_prefix_and_labels() {
+        val generator = MultiLineChartCodeGenerator()
+        val snippet =
+            generator.generate(
+                MultiLineCodegenConfig(
+                    series = listOf(MultiSeriesCodegenInput("Revenue $", listOf(120f, 140f))),
+                    categories = listOf("Q$1", "$" + "{value}"),
+                    title = "Growth $",
+                ),
+            )
+        val escapedTemplate = "\\$" + "{value}"
+
+        assertTrue(snippet.code.contains("prefix = \"\\$\","))
+        assertTrue(snippet.code.contains("\"Revenue \\$\" to listOf(120f, 140f)"))
+        assertTrue(snippet.code.contains("categories = listOf(\"Q\\$1\", \"$escapedTemplate\")"))
+        assertTrue(snippet.code.contains("title = \"Growth \\$\","))
+    }
+
+    @Test
+    fun stacked_bar_generator_escapes_dollar_signs_in_prefix_and_labels() {
+        val generator = StackedBarChartCodeGenerator()
+        val snippet =
+            generator.generate(
+                StackedBarCodegenConfig(
+                    series = listOf(MultiSeriesCodegenInput("$" + "{segment}", listOf(10f, 20f))),
+                    categories = listOf("Q$2"),
+                    title = "Revenue $",
+                ),
+            )
+        val escapedTemplate = "\\$" + "{segment}"
+
+        assertTrue(snippet.code.contains("prefix = \"\\$\","), snippet.code)
+        assertTrue(snippet.code.contains("\"$escapedTemplate\" to listOf(10f, 20f)"), snippet.code)
+        assertTrue(snippet.code.contains("\"Q\\$2\""), snippet.code)
+        assertTrue(snippet.code.contains("title = \"Revenue \\$\","), snippet.code)
+    }
+
+    @Test
+    fun kotlin_string_escaping_escapes_dollar_sign() {
+        assertEquals("\\$", escapeKotlinString("$"))
+        assertEquals("\\$" + "{value}", escapeKotlinString("$" + "{value}"))
+    }
+
     @Test
     fun multiline_generator_uses_direct_series_data() {
         val generator = MultiLineChartCodeGenerator()
