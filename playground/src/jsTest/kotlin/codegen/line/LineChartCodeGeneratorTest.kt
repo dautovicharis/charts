@@ -1,4 +1,5 @@
-import codegen.line.LineChartCodeGenerator
+package codegen.line
+
 import model.CodegenMode
 import model.LineCodegenConfig
 import model.LinePointInput

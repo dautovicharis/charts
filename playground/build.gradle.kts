@@ -15,6 +15,8 @@ kotlin {
             .toInt(),
     )
 
+    jvm()
+
     js(IR) {
         browser {
             commonWebpackConfig {
@@ -26,6 +28,20 @@ kotlin {
     }
 
     sourceSets {
+        jvmTest {
+            kotlin.srcDir("src/jsMain/kotlin/codegen")
+            kotlin.srcDir("src/jsMain/kotlin/model")
+
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(project(":app"))
+                implementation(project(":charts"))
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.multiplatform.get()}")
+            }
+        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)

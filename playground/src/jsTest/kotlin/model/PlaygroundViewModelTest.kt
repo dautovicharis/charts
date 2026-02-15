@@ -1,6 +1,5 @@
-import model.ChartType
-import model.PlaygroundAction
-import model.PlaygroundViewModel
+package model
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

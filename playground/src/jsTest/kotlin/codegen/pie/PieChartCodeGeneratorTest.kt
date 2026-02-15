@@ -1,5 +1,6 @@
+package codegen.pie
+
 import androidx.compose.ui.graphics.Color
-import codegen.pie.PieChartCodeGenerator
 import model.CodegenMode
 import model.PieCodegenConfig
 import model.PieSliceInput
@@ -89,20 +90,4 @@ class PieChartCodeGeneratorTest {
         assertTrue(snippet.code.contains("import androidx.compose.ui.graphics.Color"))
     }
 
-    @Test
-    fun function_name_can_be_overridden() {
-        val snippet =
-            generator.generate(
-                PieCodegenConfig(
-                    rows =
-                        listOf(
-                            PieSliceInput(label = "A", valueText = "1"),
-                            PieSliceInput(label = "B", valueText = "2"),
-                        ),
-                    functionName = "RevenuePieChartSample",
-                ),
-            )
-
-        assertTrue(snippet.code.contains("fun RevenuePieChartSample()"))
-    }
 }

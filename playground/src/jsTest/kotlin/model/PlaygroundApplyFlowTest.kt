@@ -1,3 +1,5 @@
+package model
+
 import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
@@ -5,14 +7,6 @@ import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
-import model.ChartType
-import model.CodegenMode
-import model.PlaygroundAction
-import model.PlaygroundDataModel
-import model.PlaygroundReducer
-import model.SettingDescriptor
-import model.defaultPlaygroundState
-import model.playgroundChartRegistry
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
