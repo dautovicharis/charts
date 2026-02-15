@@ -3,6 +3,7 @@ package ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,19 +30,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import chartsproject.app.generated.resources.Res
+import chartsproject.app.generated.resources.charts_logo
+import chartsproject.app.generated.resources.ic_github
 import io.github.dautovicharis.charts.app.ui.theme.AppTheme
 import io.github.dautovicharis.charts.app.ui.theme.docsSlate
 import model.PlaygroundAction
 import model.PlaygroundRightPanelTab
 import model.PlaygroundViewModel
+import org.jetbrains.compose.resources.painterResource
 
 private val WideLayoutBreakpoint = 1000.dp
 private val RightPanelTabIconSize = 18.dp
+private const val ProjectGithubUrl = "https://github.com/dautovicharis/charts"
 
 @Composable
 fun PlaygroundScreen() {
     val viewModel = remember { PlaygroundViewModel() }
+    val uriHandler = LocalUriHandler.current
     val registry = viewModel.registry
     val state by viewModel.state.collectAsState()
 
@@ -66,17 +75,20 @@ fun PlaygroundScreen() {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.Top,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Image(
+                                painter = painterResource(Res.drawable.charts_logo),
+                                contentDescription = "Charts logo",
+                                modifier = Modifier.size(28.dp),
+                            )
                             Text(
                                 text = "Playground",
                                 style = MaterialTheme.typography.titleLarge,
-                            )
-                            Text(
-                                text = "Chart-agnostic lab",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
 
@@ -88,6 +100,18 @@ fun PlaygroundScreen() {
                                 onTypeSelected = { chartType -> dispatch(PlaygroundAction.SelectChart(chartType)) },
                                 compact = true,
                                 modifier = Modifier.weight(1f),
+                            )
+                        }
+
+                        FilledTonalIconButton(
+                            onClick = { uriHandler.openUri(ProjectGithubUrl) },
+                            modifier = Modifier.size(34.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_github),
+                                contentDescription = "Open Charts GitHub repository",
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(18.dp),
                             )
                         }
                     }
