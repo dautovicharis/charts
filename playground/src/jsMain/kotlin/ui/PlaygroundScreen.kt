@@ -1,9 +1,9 @@
 package ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 
 private val WideLayoutBreakpoint = 1000.dp
 private val RightPanelTabIconSize = 18.dp
-private const val ProjectGithubUrl = "https://github.com/dautovicharis/charts"
+private const val PROJECT_GITHUB_URL = "https://github.com/dautovicharis/charts"
 
 @Composable
 fun PlaygroundScreen() {
@@ -104,7 +104,7 @@ fun PlaygroundScreen() {
                         }
 
                         FilledTonalIconButton(
-                            onClick = { uriHandler.openUri(ProjectGithubUrl) },
+                            onClick = { uriHandler.openUri(PROJECT_GITHUB_URL) },
                             modifier = Modifier.size(34.dp),
                         ) {
                             Icon(
