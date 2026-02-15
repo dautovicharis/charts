@@ -130,7 +130,7 @@ fun PlaygroundEditorPanel(
 
             Column(
                 modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(scrollState),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 editorState.rows.forEachIndexed { rowIndex, row ->
                     val rowContainerColor =
@@ -148,7 +148,7 @@ fun PlaygroundEditorPanel(
                             ),
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
