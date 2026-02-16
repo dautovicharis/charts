@@ -89,7 +89,7 @@ fun PlaygroundScreen() {
                             Image(
                                 painter = painterResource(AppRes.drawable.charts_logo),
                                 contentDescription = stringResource(Res.string.playground_logo_content_description),
-                                modifier = Modifier.size(28.dp),
+                                modifier = Modifier.size(32.dp),
                             )
                             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 Text(
