@@ -1,8 +1,6 @@
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.dokka)
     `maven-publish`
@@ -18,8 +16,10 @@ kotlin {
             .toInt(),
     )
 
-    androidTarget {
-        publishLibraryVariants("release")
+    android {
+        namespace = Config.chartsNamespace
+        compileSdk = Config.compileSdk
+        minSdk = Config.minSdk
         compilerOptions {
             jvmTarget.set(
                 org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -54,7 +54,7 @@ kotlin {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            implementation(compose.uiTest)
+            implementation(libs.compose.mpp.ui.test)
         }
 
         androidMain.dependencies {
@@ -65,26 +65,6 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
         }
-    }
-}
-
-android {
-    namespace = Config.chartsNamespace
-    compileSdk = Config.compileSdk
-
-    defaultConfig {
-        minSdk = Config.minSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("proguard-rules.pro")
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
     }
 }
 

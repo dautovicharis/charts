@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -37,8 +35,8 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(project(":app"))
                 implementation(project(":charts"))
-                implementation(compose.runtime)
-                implementation(compose.ui)
+                implementation(libs.compose.mpp.runtime)
+                implementation(libs.compose.mpp.ui)
                 implementation(
                     "org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.multiplatform.get()}",
                 )
@@ -46,12 +44,12 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
+            implementation(libs.compose.mpp.runtime)
+            implementation(libs.compose.mpp.foundation)
+            implementation(libs.compose.mpp.material3)
+            implementation(libs.compose.mpp.material.icons.extended)
+            implementation(libs.compose.mpp.ui)
+            implementation(libs.compose.mpp.resources)
             implementation(project(":app"))
             implementation(project(":charts"))
         }

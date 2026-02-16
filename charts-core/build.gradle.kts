@@ -1,8 +1,6 @@
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.jetbrainsCompose)
     `maven-publish`
     signing
@@ -17,8 +15,10 @@ kotlin {
             .toInt(),
     )
 
-    androidTarget {
-        publishLibraryVariants("release")
+    android {
+        namespace = Config.chartsCoreNamespace
+        compileSdk = Config.compileSdk
+        minSdk = Config.minSdk
         compilerOptions {
             jvmTarget.set(
                 org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -40,12 +40,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material3)
-            api(compose.ui)
-            implementation(compose.preview)
-            implementation(compose.components.resources)
+            api(libs.compose.mpp.runtime)
+            api(libs.compose.mpp.foundation)
+            api(libs.compose.mpp.material3)
+            api(libs.compose.mpp.ui)
+            implementation(libs.compose.mpp.preview)
+            implementation(libs.compose.mpp.resources)
             api(libs.kotlinx.collections.immutable)
         }
 
@@ -53,7 +53,7 @@ kotlin {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
-            implementation(compose.uiTest)
+            implementation(libs.compose.mpp.ui.test)
         }
 
         androidMain.dependencies {
@@ -64,25 +64,6 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
         }
-    }
-}
-
-android {
-    namespace = Config.chartsCoreNamespace
-    compileSdk = Config.compileSdk
-
-    defaultConfig {
-        minSdk = Config.minSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
     }
 }
 
