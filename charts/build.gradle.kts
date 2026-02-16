@@ -130,13 +130,6 @@ dokka {
     }
 }
 
-tasks.register<Sync>("syncDokkaSnapshot") {
-    dependsOn("dokkaGenerate")
-    onlyIf { !Config.chartsVersion.endsWith("-SNAPSHOT") }
-    from(file(project.rootDir.resolve("docs/static/api/${Config.chartsVersion}")))
-    into(file(project.rootDir.resolve("docs/static/api/snapshot")))
-}
-
 // https://github.com/Kotlin/dokka/issues/3988
 tasks.register("dokkaHtml") {
     dependsOn("dokkaGenerate")
