@@ -37,6 +37,8 @@ tasks.register("chartsTest") {
     group = "Charts"
     description = "Relevant tests for the charts project"
     dependsOn("charts:jvmTest")
+    dependsOn(":playground:jvmTest")
+    dependsOn(":playground:jsTest")
     dependsOn(":androidApp:validateDebugScreenshotTest")
     dependsOn("chartsModulesTest")
 }

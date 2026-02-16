@@ -48,3 +48,9 @@ docs/src/jsdemo
 docs/.venv
 pgp
 docs/static
+
+# CI generated summary files
+ci-test-summary.md
+ci-test-summary.json
+.ci-test-summary.md
+.ci-test-summary.json

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CODE_PATH_PATTERN='^(charts/|app/|androidApp/|iosApp/|buildSrc/|gradle/|build\.gradle\.kts$|settings\.gradle\.kts$|gradle\.properties$|gradlew$|gradlew\.bat$|\.editorconfig$|\.github/workflows/)'
+CODE_PATH_PATTERN='^(charts/|app/|playground/|androidApp/|iosApp/|buildSrc/|gradle/|build\.gradle\.kts$|settings\.gradle\.kts$|gradle\.properties$|gradlew$|gradlew\.bat$|\.editorconfig$|\.github/workflows/)'
 
 is_code_change() {
   local changed_files="$1"
@@ -43,6 +43,11 @@ run_self_test() {
 
   result="$(is_code_change $'README.md\ncharts/src/commonMain/kotlin/Foo.kt')"
   if ! assert_equal "true" "$result" "charts source change"; then
+    failures=$((failures + 1))
+  fi
+
+  result="$(is_code_change $'README.md\nplayground/src/jsMain/kotlin/Foo.kt')"
+  if ! assert_equal "true" "$result" "playground source change"; then
     failures=$((failures + 1))
   fi
 
