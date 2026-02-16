@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import chartsproject.playground.generated.resources.Res
 import chartsproject.playground.generated.resources.playground_editor_add_row
@@ -59,13 +60,13 @@ fun PlaygroundEditorPanel(
     onDeleteRow: (rowIndex: Int) -> Unit,
     onRandomize: () -> Unit,
     onReset: () -> Unit,
+    expandToFillHeight: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val canDeleteRows = editorState.rows.size > editorState.minRows
     val rowNumberColumnWidth = 42.dp
     val actionColumnWidth = 56.dp
     val cellHeight = 56.dp
-    val scrollState = rememberScrollState()
     val currentRowIds = editorState.rows.map { row -> row.id }
     val visibleRows = editorState.rows.asReversed()
     var previousRowIds by remember { mutableStateOf(currentRowIds) }
@@ -94,10 +95,13 @@ fun PlaygroundEditorPanel(
         shape = RoundedCornerShape(16.dp),
         tonalElevation = 2.dp,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+        val columnModifier =
+            Modifier
+                .fillMaxWidth()
+                .then(if (expandToFillHeight) Modifier.fillMaxHeight() else Modifier)
+                .padding(16.dp)
+
+        Column(modifier = columnModifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -110,20 +114,38 @@ fun PlaygroundEditorPanel(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         ),
+                    modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(Res.string.playground_editor_add_row))
+                    Text(
+                        text = stringResource(Res.string.playground_editor_add_row),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
                 Button(
                     onClick = onRandomize,
                     colors = ButtonDefaults.outlinedButtonColors(),
+                    modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(Res.string.playground_editor_randomize))
+                    Text(
+                        text = stringResource(Res.string.playground_editor_randomize),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
                 Button(
                     onClick = onReset,
                     colors = ButtonDefaults.outlinedButtonColors(),
+                    modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(Res.string.playground_editor_reset))
+                    Text(
+                        text = stringResource(Res.string.playground_editor_reset),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
 
@@ -175,7 +197,12 @@ fun PlaygroundEditorPanel(
             HorizontalDivider()
 
             Column(
-                modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(scrollState),
+                modifier =
+                    if (expandToFillHeight) {
+                        Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState())
+                    } else {
+                        Modifier.fillMaxWidth()
+                    },
                 verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 visibleRows.forEachIndexed { visualRowIndex, row ->

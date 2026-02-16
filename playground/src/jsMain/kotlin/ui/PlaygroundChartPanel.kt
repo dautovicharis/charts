@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +25,7 @@ fun PlaygroundChartPanel(
     session: PlaygroundChartSession,
     definition: PlaygroundChartDefinition,
     onTitleChange: (String) -> Unit,
+    expandToFillHeight: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -31,10 +33,13 @@ fun PlaygroundChartPanel(
         shape = RoundedCornerShape(16.dp),
         tonalElevation = 2.dp,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+        val columnModifier =
+            Modifier
+                .fillMaxWidth()
+                .then(if (expandToFillHeight) Modifier.fillMaxHeight() else Modifier)
+                .padding(16.dp)
+
+        Column(modifier = columnModifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(
                 value = session.title,
                 onValueChange = onTitleChange,
@@ -43,7 +48,12 @@ fun PlaygroundChartPanel(
             )
 
             Box(
-                modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
+                modifier =
+                    if (expandToFillHeight) {
+                        Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState())
+                    } else {
+                        Modifier.fillMaxWidth().heightIn(min = 220.dp)
+                    },
                 contentAlignment = Alignment.TopCenter,
             ) {
                 Box(
