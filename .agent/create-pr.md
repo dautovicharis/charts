@@ -11,8 +11,9 @@ Use this file as the **single source of truth** for an agent to ship the current
 - If **any step fails**, stop immediately and report the error.
 - Never push directly to the base branch (usually `main`).
 - Do **not** force-push or rewrite history unless explicitly asked.
-- Include the snapshot docs update workflow before staging/commit:
-  - Follow `.agent/update-snapshot-docs.md`.
+- Do **not** run docs static publish scripts manually; CI handles docs-static updates after merge to `main`.
+- Always run `./gradlew ktlintFormat` before staging/commit.
+- If `ktlintFormat` fails, fix the reported issues and re-run `./gradlew ktlintFormat` until it passes.
 
 ## Conventions (short)
 
@@ -32,9 +33,9 @@ Use this file as the **single source of truth** for an agent to ship the current
 1. Infer the summary from context (do not ask the user).
 2. Decide remotes (base vs head) using the conventions above.
 3. Create a new branch: `git checkout -b <branch>`.
-4. Update snapshot docs:
-   - Run the `.agent/update-snapshot-docs.md` workflow.
-   - Ensure only source docs updates (for example `docs/content/snapshot/wiki/**`) remain on the PR branch.
+4. Run formatting/lint flow:
+   - `./gradlew ktlintFormat`
+   - If it fails, fix the reported issues and run `./gradlew ktlintFormat` again until it succeeds
 5. Stage changes: `git add -A`
 6. Commit: `git commit -m "<commit>"`
 7. Push: `git push -u <head-remote> <branch>`

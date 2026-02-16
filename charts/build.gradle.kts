@@ -1,7 +1,5 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
-import org.gradle.api.tasks.Sync
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -128,13 +126,6 @@ dokka {
             version.set(Config.chartsVersion)
         }
     }
-}
-
-tasks.register<Sync>("syncDokkaSnapshot") {
-    dependsOn("dokkaGenerate")
-    onlyIf { !Config.chartsVersion.endsWith("-SNAPSHOT") }
-    from(file(project.rootDir.resolve("docs/static/api/${Config.chartsVersion}")))
-    into(file(project.rootDir.resolve("docs/static/api/snapshot")))
 }
 
 // https://github.com/Kotlin/dokka/issues/3988

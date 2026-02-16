@@ -19,6 +19,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Publish docs/static behavior tests
+        run: bash scripts/test-publish-docs-static.sh
       - name: Detect code changes
         id: changes
         run: |

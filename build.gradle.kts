@@ -85,7 +85,7 @@ tasks.register("publishChartsModulesToMavenLocal") {
 
 tasks.register("generateJsDemo") {
     group = "Charts"
-    description = "Builds the JS app and copies files to docs/static/demo/snapshot (and docs/static/demo/<version> for stable releases)"
+    description = "Builds the JS app and copies files to docs/static/demo/<target-version>"
 
     // Only the demo app distribution is needed for docs/static/demo.
     // Depending on all jsBrowserDistribution tasks triggers unnecessary production JS builds
@@ -94,22 +94,21 @@ tasks.register("generateJsDemo") {
     doLast {
         val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
         val buildDir = file("app/build/dist/js/productionExecutable")
-        val snapshotDestinationDir = file("docs/static/demo/snapshot")
 
-        sync {
-            from(buildDir)
-            into(snapshotDestinationDir)
-        }
-
-        if (!isSnapshotVersion) {
+        if (isSnapshotVersion) {
+            val snapshotDestinationDir = file("docs/static/demo/snapshot")
+            sync {
+                from(buildDir)
+                into(snapshotDestinationDir)
+            }
+            println("✅JS Demo generated successfully! Updated snapshot.")
+        } else {
             val versionDestinationDir = file("docs/static/demo/${Config.chartsVersion}")
             sync {
                 from(buildDir)
                 into(versionDestinationDir)
             }
-            println("✅JS Demo generated successfully! Updated snapshot and ${Config.chartsVersion}.")
-        } else {
-            println("✅JS Demo generated successfully! Updated snapshot.")
+            println("✅JS Demo generated successfully! Updated ${Config.chartsVersion}.")
         }
     }
 }
@@ -165,14 +164,13 @@ tasks.register("generateDocs") {
     description = "Generate Dokka API docs and JS demo to docs/static/"
 
     dependsOn("charts:dokkaGenerate")
-    dependsOn("charts:syncDokkaSnapshot")
     dependsOn("generateJsDemo")
     doLast {
         val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
         if (isSnapshotVersion) {
             println("✅Documentation generated successfully to docs/static/ (updated snapshot)")
         } else {
-            println("✅Documentation generated successfully to docs/static/ (updated snapshot and ${Config.chartsVersion})")
+            println("✅Documentation generated successfully to docs/static/ (updated ${Config.chartsVersion})")
         }
     }
 }
