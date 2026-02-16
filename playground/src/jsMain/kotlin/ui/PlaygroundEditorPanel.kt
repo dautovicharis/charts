@@ -4,9 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -218,7 +218,11 @@ fun PlaygroundEditorPanel(
                             Surface(
                                 modifier = Modifier.weight(column.weight),
                                 color = rowContainerColor,
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.75f)),
+                                border =
+                                    BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.75f),
+                                    ),
                             ) {
                                 TextField(
                                     value = row.cells[column.id].orEmpty(),
@@ -271,7 +275,12 @@ fun PlaygroundEditorPanel(
                 val isAppliedMessage = message.startsWith("Applied ")
                 Text(
                     text = message,
-                    color = if (isAppliedMessage) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
+                    color =
+                        if (isAppliedMessage) {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.error
+                        },
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
