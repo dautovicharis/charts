@@ -154,9 +154,9 @@ internal fun validateSimpleSeries(
             editorState = editorState,
             labelPrefix = labelPrefix,
             clampToPositive = clampToPositive,
-        ) ?: return invalidNumericResult
+        ) ?: return invalidNumericResult(editorState)
 
-    val valueColumn = parsed.numericColumns.firstOrNull() ?: return invalidNumericResult
+    val valueColumn = parsed.numericColumns.firstOrNull() ?: return invalidNumericResult(editorState)
     val values = parsed.valuesByColumn.getValue(valueColumn.id)
 
     return PlaygroundValidationResult(
@@ -226,12 +226,30 @@ internal fun parseEditorTable(
     )
 }
 
-internal val invalidNumericResult =
+internal fun invalidNumericResult(editorState: DataEditorState): PlaygroundValidationResult =
     PlaygroundValidationResult(
         sanitizedEditor = null,
         dataModel = null,
         message = "Please enter valid numeric values in all rows.",
+        invalidRowIds = invalidNumericRowIds(editorState),
     )
+
+internal fun invalidNumericRowIds(editorState: DataEditorState): Set<Int> {
+    val numericColumns = editorState.columns.filter { column -> column.numeric }
+    if (numericColumns.isEmpty()) return emptySet()
+    return buildSet {
+        editorState.rows.forEachIndexed { index, row ->
+            val hasInvalidNumericCell =
+                numericColumns.any { column ->
+                    row.cells[column.id]
+                        .orEmpty()
+                        .trim()
+                        .toFloatOrNull() == null
+                }
+            if (hasInvalidNumericCell) add(index + 1)
+        }
+    }
+}
 
 internal fun defaultRowCells(
     columns: List<DataEditorColumn>,

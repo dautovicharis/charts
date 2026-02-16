@@ -92,7 +92,7 @@ internal object MultiLineChartDefinition : PlaygroundChartDefinition {
                 editorState = editorState,
                 labelPrefix = "Point",
                 clampToPositive = false,
-            ) ?: return invalidNumericResult
+            ) ?: return invalidNumericResult(editorState)
 
         val series =
             parsed.numericColumns.map { column ->

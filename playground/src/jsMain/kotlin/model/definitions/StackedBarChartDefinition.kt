@@ -92,7 +92,7 @@ internal object StackedBarChartDefinition : PlaygroundChartDefinition {
                 editorState = editorState,
                 labelPrefix = "Bar",
                 clampToPositive = true,
-            ) ?: return invalidNumericResult
+            ) ?: return invalidNumericResult(editorState)
 
         val segmentNames = parsed.numericColumns.map { column -> column.label }
         val bars =

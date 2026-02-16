@@ -154,6 +154,7 @@ fun PlaygroundScreen() {
                             PlaygroundEditorPanel(
                                 editorState = selectedSession.editorState,
                                 validationMessage = selectedSession.validationMessage,
+                                invalidRowIds = selectedSession.invalidRowIds,
                                 onCellChange = { rowIndex, columnId, value ->
                                     dispatch(
                                         PlaygroundAction.UpdateEditorCell(
@@ -225,6 +226,7 @@ fun PlaygroundScreen() {
                             PlaygroundEditorPanel(
                                 editorState = selectedSession.editorState,
                                 validationMessage = selectedSession.validationMessage,
+                                invalidRowIds = selectedSession.invalidRowIds,
                                 onCellChange = { rowIndex, columnId, value ->
                                     dispatch(
                                         PlaygroundAction.UpdateEditorCell(

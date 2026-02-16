@@ -7,6 +7,7 @@ data class PlaygroundValidationResult(
     val sanitizedEditor: DataEditorState?,
     val dataModel: PlaygroundDataModel?,
     val message: String,
+    val invalidRowIds: Set<Int> = emptySet(),
 )
 
 enum class PlaygroundRightPanelTab {
@@ -21,6 +22,7 @@ data class PlaygroundChartSession(
     val appliedData: PlaygroundDataModel,
     val styleState: PlaygroundStyleState,
     val validationMessage: String?,
+    val invalidRowIds: Set<Int>,
     val codegenMode: CodegenMode,
 )
 
@@ -71,6 +73,7 @@ interface PlaygroundChartDefinition {
             appliedData = dataModel,
             styleState = defaultStyleState(),
             validationMessage = null,
+            invalidRowIds = emptySet(),
             codegenMode = codegenMode,
         )
     }

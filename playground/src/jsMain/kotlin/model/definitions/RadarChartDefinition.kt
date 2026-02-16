@@ -90,7 +90,7 @@ internal object RadarChartDefinition : PlaygroundChartDefinition {
                 editorState = editorState,
                 labelPrefix = "Axis",
                 clampToPositive = true,
-            ) ?: return invalidNumericResult
+            ) ?: return invalidNumericResult(editorState)
 
         val entries =
             parsed.numericColumns.map { column ->

@@ -53,6 +53,7 @@ import org.jetbrains.compose.resources.stringResource
 fun PlaygroundEditorPanel(
     editorState: DataEditorState,
     validationMessage: String?,
+    invalidRowIds: Set<Int>,
     onCellChange: (rowIndex: Int, columnId: String, value: String) -> Unit,
     onAddRow: () -> Unit,
     onDeleteRow: (rowIndex: Int) -> Unit,
@@ -179,8 +180,11 @@ fun PlaygroundEditorPanel(
             ) {
                 visibleRows.forEachIndexed { visualRowIndex, row ->
                     val rowIndex = editorState.rows.lastIndex - visualRowIndex
+                    val rowId = rowIndex + 1
                     val rowContainerColor =
-                        if (row.id == highlightedRowId) {
+                        if (rowId in invalidRowIds) {
+                            MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.32f)
+                        } else if (row.id == highlightedRowId) {
                             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f)
                         } else {
                             if (visualRowIndex % 2 == 0) {
@@ -264,9 +268,10 @@ fun PlaygroundEditorPanel(
             }
 
             validationMessage?.let { message ->
+                val isAppliedMessage = message.startsWith("Applied ")
                 Text(
                     text = message,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (isAppliedMessage) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                 )
             }

@@ -92,7 +92,7 @@ internal object AreaChartDefinition : PlaygroundChartDefinition {
                 editorState = editorState,
                 labelPrefix = "Point",
                 clampToPositive = true,
-            ) ?: return invalidNumericResult
+            ) ?: return invalidNumericResult(editorState)
 
         val series =
             parsed.numericColumns.map { column ->

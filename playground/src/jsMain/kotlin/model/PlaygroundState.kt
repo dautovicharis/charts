@@ -145,6 +145,7 @@ object PlaygroundReducer {
             return session.copy(
                 editorState = updatedEditor,
                 validationMessage = result.message,
+                invalidRowIds = result.invalidRowIds,
             )
         }
 
@@ -152,6 +153,7 @@ object PlaygroundReducer {
             editorState = nextEditor,
             appliedData = nextDataModel,
             validationMessage = result.message,
+            invalidRowIds = emptySet(),
         )
     }
 }
