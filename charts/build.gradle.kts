@@ -1,7 +1,5 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
-import org.gradle.api.tasks.Sync
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
