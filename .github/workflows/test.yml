@@ -54,6 +54,27 @@ jobs:
         env:
           CI_BEHAVIOR_OUTCOME: ${{ steps.behavior_tests.outcome }}
         run: bash scripts/ci-test-summary.sh
+      - name: Ensure summary files exist
+        if: always()
+        run: |
+          if [ ! -f .ci-test-summary.md ]; then
+            cat > .ci-test-summary.md <<'EOF'
+## ✅ Test Summary
+
+- ⚪ Charts: 0 tests completed
+- ⚪ App: 0 tests completed
+- ⚪ Playground: 0 tests completed
+- ⚪ Android screenshot: 0 tests completed
+- ⚪ CI behavior: 0 tests completed
+- ⚪ Total: 0 tests completed
+EOF
+          fi
+
+          if [ ! -f .ci-test-summary.json ]; then
+            cat > .ci-test-summary.json <<'EOF'
+{"charts":{"tests":0,"failures":0,"errors":0},"app":{"tests":0,"failures":0,"errors":0},"playground":{"tests":0,"failures":0,"errors":0},"android_screenshot":{"tests":0,"failures":0,"errors":0},"ci_behavior":{"tests":0,"failures":0,"errors":0},"total":{"tests":0,"failures":0,"errors":0}}
+EOF
+          fi
       - name: Upload test summary artifact
         if: always()
         uses: actions/upload-artifact@v4
