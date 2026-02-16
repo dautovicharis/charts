@@ -128,7 +128,9 @@ main() {
     )
 
     read -r playground_tests playground_failures playground_errors playground_skipped < <(
-      collect_counts_for_dirs playground/build/test-results/jvmTest
+      collect_counts_for_dirs \
+        playground/build/test-results/jvmTest \
+        playground/build/test-results/jsBrowserTest
     )
 
     read -r android_screenshot_tests android_screenshot_failures android_screenshot_errors android_screenshot_skipped < <(
@@ -161,9 +163,8 @@ main() {
   total_errors=$((charts_errors + app_errors + playground_errors + android_screenshot_errors + behavior_errors))
   total_broken=$((total_failures + total_errors))
 
-  local charts_line app_line playground_line android_screenshot_line ci_behavior_line total_line total_test_word
+  local charts_line playground_line android_screenshot_line ci_behavior_line total_line total_test_word
   charts_line="$(line_text "Charts" "${charts_tests}" "${charts_failures}" "${charts_errors}")"
-  app_line="$(line_text "App" "${app_tests}" "${app_failures}" "${app_errors}")"
   playground_line="$(line_text "Playground" "${playground_tests}" "${playground_failures}" "${playground_errors}")"
   android_screenshot_line="$(line_text "Android screenshot" "${android_screenshot_tests}" "${android_screenshot_failures}" "${android_screenshot_errors}")"
   ci_behavior_line="$(line_text "CI behavior" "${behavior_tests}" "${behavior_failures}" "${behavior_errors}")"
@@ -182,7 +183,6 @@ main() {
     "${SUMMARY_TEMPLATE_MD}" \
     "${SUMMARY_FILE}" \
     charts_line "${charts_line}" \
-    app_line "${app_line}" \
     playground_line "${playground_line}" \
     android_screenshot_line "${android_screenshot_line}" \
     ci_behavior_line "${ci_behavior_line}" \

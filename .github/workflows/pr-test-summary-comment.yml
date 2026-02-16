@@ -38,74 +38,13 @@ jobs:
               return;
             }
 
-            const summaryPath = 'ci-summary/ci-test-summary.json';
+            const summaryPath = 'ci-summary/ci-test-summary.md';
             if (!fs.existsSync(summaryPath)) {
               core.info(`Summary artifact file not found at ${summaryPath}.`);
               return;
             }
-
-            const raw = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
-            const toCount = (value) => {
-              const n = Number(value);
-              return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
-            };
-
-            const sections = {
-              charts: {
-                tests: toCount(raw?.charts?.tests),
-                failures: toCount(raw?.charts?.failures),
-                errors: toCount(raw?.charts?.errors),
-              },
-              app: {
-                tests: toCount(raw?.app?.tests),
-                failures: toCount(raw?.app?.failures),
-                errors: toCount(raw?.app?.errors),
-              },
-              playground: {
-                tests: toCount(raw?.playground?.tests),
-                failures: toCount(raw?.playground?.failures),
-                errors: toCount(raw?.playground?.errors),
-              },
-              android_screenshot: {
-                tests: toCount(raw?.android_screenshot?.tests),
-                failures: toCount(raw?.android_screenshot?.failures),
-                errors: toCount(raw?.android_screenshot?.errors),
-              },
-              ci_behavior: {
-                tests: toCount(raw?.ci_behavior?.tests),
-                failures: toCount(raw?.ci_behavior?.failures),
-                errors: toCount(raw?.ci_behavior?.errors),
-              },
-              total: {
-                tests: toCount(raw?.total?.tests),
-                failures: toCount(raw?.total?.failures),
-                errors: toCount(raw?.total?.errors),
-              },
-            };
-
-            const line = (label, data) => {
-              const broken = data.failures + data.errors;
-              if (data.tests === 0) return `- ⚪ ${label}: 0 tests completed`;
-              if (broken > 0) return `- ❌ ${label}: ${data.tests} ${data.tests === 1 ? 'test' : 'tests'} completed (${broken} failed)`;
-              return `- ✅ ${label}: ${data.tests} ${data.tests === 1 ? 'test' : 'tests'} completed`;
-            };
-
-            const totalBroken = sections.total.failures + sections.total.errors;
-            const totalLine = totalBroken === 0
-              ? `- ✅ Total: ${sections.total.tests} ${sections.total.tests === 1 ? 'test' : 'tests'} completed successfully`
-              : `- ❌ Total: ${sections.total.tests} ${sections.total.tests === 1 ? 'test' : 'tests'} completed, ${totalBroken} failed`;
-
-            const body = [
-              marker,
-              '## ✅ Test Summary',
-              '',
-              line('Charts', sections.charts),
-              line('App', sections.app),
-              line('Playground', sections.playground),
-              line('Android screenshot', sections.android_screenshot),
-              line('CI behavior', sections.ci_behavior),
-              totalLine,
-            ].join('\n');
+            const summaryMarkdown = fs.readFileSync(summaryPath, 'utf8').trim();
+            const body = `${marker}\n${summaryMarkdown}`;
 
             const issue_number = pulls[0].number;
             const owner = context.repo.owner;
