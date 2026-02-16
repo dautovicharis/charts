@@ -79,6 +79,7 @@ jobs:
         with:
           name: ci-test-summary
           if-no-files-found: error
+          include-hidden-files: true
           path: |
             .ci-test-summary.md
             .ci-test-summary.json
