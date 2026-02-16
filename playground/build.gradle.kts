@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.build.config)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -59,4 +60,10 @@ kotlin {
             implementation(kotlin("test"))
         }
     }
+}
+
+buildConfig {
+    packageName("ui")
+    buildConfigField("CHARTS_VERSION", Config.chartsVersion)
+    useKotlinOutput()
 }

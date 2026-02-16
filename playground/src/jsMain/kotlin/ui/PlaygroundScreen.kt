@@ -32,15 +32,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import chartsproject.app.generated.resources.Res
 import chartsproject.app.generated.resources.charts_logo
 import chartsproject.app.generated.resources.ic_github
+import chartsproject.playground.generated.resources.Res
+import chartsproject.playground.generated.resources.playground_logo_content_description
+import chartsproject.playground.generated.resources.playground_open_github_content_description
+import chartsproject.playground.generated.resources.playground_title
 import io.github.dautovicharis.charts.app.ui.theme.AppTheme
 import io.github.dautovicharis.charts.app.ui.theme.docsSlate
 import model.PlaygroundAction
 import model.PlaygroundRightPanelTab
 import model.PlaygroundViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import chartsproject.app.generated.resources.Res as AppRes
 
 private val WideLayoutBreakpoint = 1000.dp
 private val RightPanelTabIconSize = 18.dp
@@ -82,14 +87,21 @@ fun PlaygroundScreen() {
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Image(
-                                painter = painterResource(Res.drawable.charts_logo),
-                                contentDescription = "Charts logo",
+                                painter = painterResource(AppRes.drawable.charts_logo),
+                                contentDescription = stringResource(Res.string.playground_logo_content_description),
                                 modifier = Modifier.size(28.dp),
                             )
-                            Text(
-                                text = "Playground",
-                                style = MaterialTheme.typography.titleLarge,
-                            )
+                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text(
+                                    text = stringResource(Res.string.playground_title),
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                                Text(
+                                    text = BuildConfig.CHARTS_VERSION,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
 
                         if (inlineChartSwitcher) {
@@ -108,8 +120,9 @@ fun PlaygroundScreen() {
                             modifier = Modifier.size(34.dp),
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_github),
-                                contentDescription = "Open Charts GitHub repository",
+                                painter = painterResource(AppRes.drawable.ic_github),
+                                contentDescription =
+                                    stringResource(Res.string.playground_open_github_content_description),
                                 tint = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.size(18.dp),
                             )

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="playground_title">Playground</string>
+    <string name="playground_logo_content_description">Charts logo</string>
+    <string name="playground_open_github_content_description">Open Charts GitHub repository</string>
+</resources>
