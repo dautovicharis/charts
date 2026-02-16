@@ -66,8 +66,8 @@ create_fixture_repo() {
   local remote_repo="${sandbox_root}/remote.git"
   local work_repo="${sandbox_root}/repo"
 
-  git init --bare "${remote_repo}" >/dev/null
-  git init "${work_repo}" >/dev/null
+  git init --bare -b main "${remote_repo}" >/dev/null
+  git init -b main "${work_repo}" >/dev/null
 
   git -C "${work_repo}" config user.name "Test Bot"
   git -C "${work_repo}" config user.email "test@example.com"
@@ -148,7 +148,7 @@ test_refuses_local_execution() {
   assert_command_fails_with \
     "CI-only and must not be run locally" \
     "rejects local execution when CI is not set" \
-    bash -lc "cd '${repo}' && CURRENT_VERSION=1.2.3 bash scripts/publish-docs-static.sh"
+    bash -lc "cd '${repo}' && env -u CI CURRENT_VERSION=1.2.3 bash scripts/publish-docs-static.sh"
 
   rm -rf "${sandbox}"
 }
