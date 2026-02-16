@@ -2,6 +2,15 @@ name: Publish Docs Static
 
 on:
   workflow_dispatch:
+    inputs:
+      playground_bundle:
+        description: "Playground bundle mode"
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
   push:
     branches:
       - main
@@ -79,7 +88,17 @@ jobs:
           done
 
       - name: Build docs static assets
-        run: ./gradlew generateDocs playground --no-daemon
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          playground_task="playground"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.playground_bundle }}" == "prod" ]]; then
+            playground_task=":playground:jsBrowserDistribution"
+          fi
+
+          echo "Using playground task: ${playground_task}"
+          ./gradlew generateDocs "${playground_task}" --no-daemon
 
       - name: Validate required docs static files
         shell: bash
