@@ -10,6 +10,8 @@ SUMMARY_TEMPLATE_MD="${CI_TEST_SUMMARY_TEMPLATE_MD:-${TEMPLATES_DIR}/ci-test-sum
 SUMMARY_TEMPLATE_JSON="${CI_TEST_SUMMARY_TEMPLATE_JSON:-${TEMPLATES_DIR}/ci-test-summary.json.tpl}"
 FORCE_ZERO="${CI_TEST_SUMMARY_FORCE_ZERO:-false}"
 SKIP_STEP_SUMMARY="${CI_TEST_SUMMARY_SKIP_STEP_SUMMARY:-false}"
+GRADLE_TEST_OUTCOME="${CI_GRADLE_TEST_OUTCOME:-}"
+SHOULD_RUN_TESTS="${CI_SHOULD_RUN:-true}"
 
 extract_attr() {
   local line="$1"
@@ -157,11 +159,23 @@ main() {
     esac
   fi
 
-  local total_tests total_failures total_errors total_broken
+  local total_tests total_failures total_errors total_broken gradle_step_broken effective_total_broken
   total_tests=$((charts_tests + app_tests + playground_tests + android_screenshot_tests + behavior_tests))
   total_failures=$((charts_failures + app_failures + playground_failures + android_screenshot_failures + behavior_failures))
   total_errors=$((charts_errors + app_errors + playground_errors + android_screenshot_errors + behavior_errors))
   total_broken=$((total_failures + total_errors))
+  gradle_step_broken=0
+
+  if [[ "${FORCE_ZERO}" != "true" && "${SHOULD_RUN_TESTS}" == "true" ]]; then
+    case "${GRADLE_TEST_OUTCOME}" in
+      failure|cancelled|timed_out|action_required)
+        gradle_step_broken=1
+        ;;
+      *)
+        ;;
+    esac
+  fi
+  effective_total_broken=$((total_broken + gradle_step_broken))
 
   local charts_line playground_line android_screenshot_line ci_behavior_line total_line total_test_word
   charts_line="$(line_text "Charts" "${charts_tests}" "${charts_failures}" "${charts_errors}")"
@@ -173,10 +187,12 @@ main() {
   if ((total_tests == 1)); then
     total_test_word="test"
   fi
-  if ((total_broken == 0)); then
+  if ((effective_total_broken == 0)); then
     total_line="- ✅ Total: ${total_tests} ${total_test_word} completed successfully"
+  elif ((total_broken == 0 && gradle_step_broken == 1)); then
+    total_line="- ❌ Total: test workflow failed before complete test results were produced"
   else
-    total_line="- ❌ Total: ${total_tests} ${total_test_word} completed, ${total_broken} failed"
+    total_line="- ❌ Total: ${total_tests} ${total_test_word} completed, ${effective_total_broken} failed"
   fi
 
   render_template \
@@ -207,7 +223,7 @@ main() {
     ci_behavior_failures "${behavior_failures}" \
     ci_behavior_errors "${behavior_errors}" \
     total_tests "${total_tests}" \
-    total_failures "${total_failures}" \
+    total_failures "$((total_failures + gradle_step_broken))" \
     total_errors "${total_errors}"
 
   if [[ "${SKIP_STEP_SUMMARY}" != "true" && -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
