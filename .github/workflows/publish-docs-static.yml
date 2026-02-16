@@ -79,7 +79,7 @@ jobs:
           done
 
       - name: Build docs static assets
-        run: ./gradlew generateDocs playgroundProd --no-daemon --stacktrace
+        run: ./gradlew generateDocs playground --no-daemon
 
       - name: Validate required docs static files
         shell: bash

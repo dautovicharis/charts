@@ -136,29 +136,6 @@ tasks.register("playground") {
     }
 }
 
-tasks.register("playgroundProd") {
-    group = "Charts"
-    description = "Builds the JS playground app (production bundle) and copies files to docs/static/playground/snapshot (snapshot versions only)"
-
-    val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
-    onlyIf { isSnapshotVersion }
-    if (isSnapshotVersion) {
-        dependsOn(":playground:jsBrowserDistribution")
-    }
-
-    doLast {
-        val buildDir = file("playground/build/dist/js/productionExecutable")
-        val snapshotDestinationDir = file("docs/static/playground/snapshot")
-
-        sync {
-            from(buildDir)
-            into(snapshotDestinationDir)
-        }
-
-        println("✅JS Playground (production bundle) generated successfully! Updated snapshot.")
-    }
-}
-
 tasks.register("generateDocs") {
     group = "Charts"
     description = "Generate Dokka API docs and JS demo to docs/static/"
