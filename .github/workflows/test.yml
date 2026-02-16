@@ -57,21 +57,11 @@ jobs:
       - name: Ensure summary files exist
         if: always()
         run: |
-          if [ ! -f ci-test-summary.md ]; then
-            {
-              echo "## ✅ Test Summary"
-              echo
-              echo "- ⚪ Charts: 0 tests completed"
-              echo "- ⚪ App: 0 tests completed"
-              echo "- ⚪ Playground: 0 tests completed"
-              echo "- ⚪ Android screenshot: 0 tests completed"
-              echo "- ⚪ CI behavior: 0 tests completed"
-              echo "- ⚪ Total: 0 tests completed"
-            } > ci-test-summary.md
-          fi
-
-          if [ ! -f ci-test-summary.json ]; then
-            echo '{"charts":{"tests":0,"failures":0,"errors":0},"app":{"tests":0,"failures":0,"errors":0},"playground":{"tests":0,"failures":0,"errors":0},"android_screenshot":{"tests":0,"failures":0,"errors":0},"ci_behavior":{"tests":0,"failures":0,"errors":0},"total":{"tests":0,"failures":0,"errors":0}}' > ci-test-summary.json
+          if [ ! -f ci-test-summary.md ] || [ ! -f ci-test-summary.json ]; then
+            CI_TEST_SUMMARY_FORCE_ZERO=true \
+            CI_TEST_SUMMARY_SKIP_STEP_SUMMARY=true \
+            CI_BEHAVIOR_OUTCOME="${{ steps.behavior_tests.outcome }}" \
+            bash scripts/ci-test-summary.sh
           fi
       - name: Upload test summary artifact
         if: always()

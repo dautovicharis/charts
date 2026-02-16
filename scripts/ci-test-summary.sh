@@ -8,6 +8,8 @@ SUMMARY_FILE="${CI_TEST_SUMMARY_FILE:-ci-test-summary.md}"
 SUMMARY_JSON_FILE="${CI_TEST_SUMMARY_JSON_FILE:-ci-test-summary.json}"
 SUMMARY_TEMPLATE_MD="${CI_TEST_SUMMARY_TEMPLATE_MD:-${TEMPLATES_DIR}/ci-test-summary.md.tpl}"
 SUMMARY_TEMPLATE_JSON="${CI_TEST_SUMMARY_TEMPLATE_JSON:-${TEMPLATES_DIR}/ci-test-summary.json.tpl}"
+FORCE_ZERO="${CI_TEST_SUMMARY_FORCE_ZERO:-false}"
+SKIP_STEP_SUMMARY="${CI_TEST_SUMMARY_SKIP_STEP_SUMMARY:-false}"
 
 extract_attr() {
   local line="$1"
@@ -103,50 +105,55 @@ render_template() {
 }
 
 main() {
-  local charts_tests charts_failures charts_errors charts_skipped
-  read -r charts_tests charts_failures charts_errors charts_skipped < <(
-    collect_counts_for_dirs \
-      charts/build/test-results/jvmTest \
-      charts-core/build/test-results/jvmTest \
-      charts-line/build/test-results/jvmTest \
-      charts-pie/build/test-results/jvmTest \
-      charts-bar/build/test-results/jvmTest \
-      charts-stacked-bar/build/test-results/jvmTest \
-      charts-stacked-area/build/test-results/jvmTest \
-      charts-radar/build/test-results/jvmTest
-  )
+  local charts_tests=0 charts_failures=0 charts_errors=0 charts_skipped=0
+  local app_tests=0 app_failures=0 app_errors=0 app_skipped=0
+  local playground_tests=0 playground_failures=0 playground_errors=0 playground_skipped=0
+  local android_screenshot_tests=0 android_screenshot_failures=0 android_screenshot_errors=0 android_screenshot_skipped=0
 
-  local app_tests app_failures app_errors app_skipped
-  read -r app_tests app_failures app_errors app_skipped < <(
-    collect_counts_for_dirs app/build/test-results/jvmTest
-  )
+  if [[ "${FORCE_ZERO}" != "true" ]]; then
+    read -r charts_tests charts_failures charts_errors charts_skipped < <(
+      collect_counts_for_dirs \
+        charts/build/test-results/jvmTest \
+        charts-core/build/test-results/jvmTest \
+        charts-line/build/test-results/jvmTest \
+        charts-pie/build/test-results/jvmTest \
+        charts-bar/build/test-results/jvmTest \
+        charts-stacked-bar/build/test-results/jvmTest \
+        charts-stacked-area/build/test-results/jvmTest \
+        charts-radar/build/test-results/jvmTest
+    )
 
-  local playground_tests playground_failures playground_errors playground_skipped
-  read -r playground_tests playground_failures playground_errors playground_skipped < <(
-    collect_counts_for_dirs playground/build/test-results/jvmTest
-  )
+    read -r app_tests app_failures app_errors app_skipped < <(
+      collect_counts_for_dirs app/build/test-results/jvmTest
+    )
 
-  local android_screenshot_tests android_screenshot_failures android_screenshot_errors android_screenshot_skipped
-  read -r android_screenshot_tests android_screenshot_failures android_screenshot_errors android_screenshot_skipped < <(
-    collect_counts_for_dirs androidApp/build/test-results/validateDebugScreenshotTest
-  )
+    read -r playground_tests playground_failures playground_errors playground_skipped < <(
+      collect_counts_for_dirs playground/build/test-results/jvmTest
+    )
+
+    read -r android_screenshot_tests android_screenshot_failures android_screenshot_errors android_screenshot_skipped < <(
+      collect_counts_for_dirs androidApp/build/test-results/validateDebugScreenshotTest
+    )
+  fi
 
   local behavior_tests=0
   local behavior_failures=0
   local behavior_errors=0
-  local behavior_outcome="${CI_BEHAVIOR_OUTCOME:-success}"
-  case "${behavior_outcome}" in
-    success)
-      behavior_tests=1
-      ;;
-    failure|cancelled|timed_out|action_required)
-      behavior_tests=1
-      behavior_failures=1
-      ;;
-    *)
-      behavior_tests=0
-      ;;
-  esac
+  if [[ "${FORCE_ZERO}" != "true" ]]; then
+    local behavior_outcome="${CI_BEHAVIOR_OUTCOME:-success}"
+    case "${behavior_outcome}" in
+      success)
+        behavior_tests=1
+        ;;
+      failure|cancelled|timed_out|action_required)
+        behavior_tests=1
+        behavior_failures=1
+        ;;
+      *)
+        behavior_tests=0
+        ;;
+    esac
+  fi
 
   local total_tests total_failures total_errors total_broken
   total_tests=$((charts_tests + app_tests + playground_tests + android_screenshot_tests + behavior_tests))
@@ -203,7 +210,7 @@ main() {
     total_failures "${total_failures}" \
     total_errors "${total_errors}"
 
-  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+  if [[ "${SKIP_STEP_SUMMARY}" != "true" && -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
     cat "${SUMMARY_FILE}" >> "${GITHUB_STEP_SUMMARY}"
   fi
 
