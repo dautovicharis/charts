@@ -3,4 +3,9 @@
     <string name="playground_title">Playground</string>
     <string name="playground_logo_content_description">Charts logo</string>
     <string name="playground_open_github_content_description">Open Charts GitHub repository</string>
+    <string name="playground_editor_add_row">+ New row</string>
+    <string name="playground_editor_randomize">Randomize</string>
+    <string name="playground_editor_reset">Reset</string>
+    <string name="playground_editor_row_number_header">#</string>
+    <string name="playground_editor_delete_row_content_description">Delete row</string>
 </resources>
