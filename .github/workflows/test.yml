@@ -58,22 +58,20 @@ jobs:
         if: always()
         run: |
           if [ ! -f .ci-test-summary.md ]; then
-            cat > .ci-test-summary.md <<'EOF'
-## ✅ Test Summary
-
-- ⚪ Charts: 0 tests completed
-- ⚪ App: 0 tests completed
-- ⚪ Playground: 0 tests completed
-- ⚪ Android screenshot: 0 tests completed
-- ⚪ CI behavior: 0 tests completed
-- ⚪ Total: 0 tests completed
-EOF
+            {
+              echo "## ✅ Test Summary"
+              echo
+              echo "- ⚪ Charts: 0 tests completed"
+              echo "- ⚪ App: 0 tests completed"
+              echo "- ⚪ Playground: 0 tests completed"
+              echo "- ⚪ Android screenshot: 0 tests completed"
+              echo "- ⚪ CI behavior: 0 tests completed"
+              echo "- ⚪ Total: 0 tests completed"
+            } > .ci-test-summary.md
           fi
 
           if [ ! -f .ci-test-summary.json ]; then
-            cat > .ci-test-summary.json <<'EOF'
-{"charts":{"tests":0,"failures":0,"errors":0},"app":{"tests":0,"failures":0,"errors":0},"playground":{"tests":0,"failures":0,"errors":0},"android_screenshot":{"tests":0,"failures":0,"errors":0},"ci_behavior":{"tests":0,"failures":0,"errors":0},"total":{"tests":0,"failures":0,"errors":0}}
-EOF
+            echo '{"charts":{"tests":0,"failures":0,"errors":0},"app":{"tests":0,"failures":0,"errors":0},"playground":{"tests":0,"failures":0,"errors":0},"android_screenshot":{"tests":0,"failures":0,"errors":0},"ci_behavior":{"tests":0,"failures":0,"errors":0},"total":{"tests":0,"failures":0,"errors":0}}' > .ci-test-summary.json
           fi
       - name: Upload test summary artifact
         if: always()
