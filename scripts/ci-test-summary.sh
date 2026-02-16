@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SUMMARY_FILE="${CI_TEST_SUMMARY_FILE:-.ci-test-summary.md}"
-SUMMARY_JSON_FILE="${CI_TEST_SUMMARY_JSON_FILE:-.ci-test-summary.json}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="${SCRIPT_DIR}/templates"
+
+SUMMARY_FILE="${CI_TEST_SUMMARY_FILE:-ci-test-summary.md}"
+SUMMARY_JSON_FILE="${CI_TEST_SUMMARY_JSON_FILE:-ci-test-summary.json}"
+SUMMARY_TEMPLATE_MD="${CI_TEST_SUMMARY_TEMPLATE_MD:-${TEMPLATES_DIR}/ci-test-summary.md.tpl}"
+SUMMARY_TEMPLATE_JSON="${CI_TEST_SUMMARY_TEMPLATE_JSON:-${TEMPLATES_DIR}/ci-test-summary.json.tpl}"
 
 extract_attr() {
   local line="$1"
@@ -45,7 +50,7 @@ collect_counts_for_dirs() {
   printf '%s %s %s %s\n' "${tests}" "${failures}" "${errors}" "${skipped}"
 }
 
-render_line() {
+line_text() {
   local label="$1"
   local tests="$2"
   local failures="$3"
@@ -70,7 +75,31 @@ render_line() {
     text="${tests} ${test_word} completed (${broken} failed)"
   fi
 
-  printf -- '- %s %s: %s\n' "${icon}" "${label}" "${text}"
+  printf -- '- %s %s: %s' "${icon}" "${label}" "${text}"
+}
+
+render_template() {
+  local template_path="$1"
+  local output_path="$2"
+  shift 2
+
+  if [[ ! -f "${template_path}" ]]; then
+    echo "Missing template file: ${template_path}" >&2
+    return 1
+  fi
+
+  local content
+  content="$(cat "${template_path}")"
+
+  while (($# > 0)); do
+    local key="$1"
+    local value="$2"
+    shift 2
+
+    content="${content//\{\{${key}\}\}/${value}}"
+  done
+
+  printf '%s\n' "${content}" > "${output_path}"
 }
 
 main() {
@@ -125,28 +154,54 @@ main() {
   total_errors=$((charts_errors + app_errors + playground_errors + android_screenshot_errors + behavior_errors))
   total_broken=$((total_failures + total_errors))
 
-  {
-    echo "## ✅ Test Summary"
-    echo
-    render_line "Charts" "${charts_tests}" "${charts_failures}" "${charts_errors}"
-    render_line "App" "${app_tests}" "${app_failures}" "${app_errors}"
-    render_line "Playground" "${playground_tests}" "${playground_failures}" "${playground_errors}"
-    render_line "Android screenshot" "${android_screenshot_tests}" "${android_screenshot_failures}" "${android_screenshot_errors}"
-    render_line "CI behavior" "${behavior_tests}" "${behavior_failures}" "${behavior_errors}"
-    local total_test_word="tests"
-    if ((total_tests == 1)); then
-      total_test_word="test"
-    fi
-    if ((total_broken == 0)); then
-      echo "- ✅ Total: ${total_tests} ${total_test_word} completed successfully"
-    else
-      echo "- ❌ Total: ${total_tests} ${total_test_word} completed, ${total_broken} failed"
-    fi
-  } > "${SUMMARY_FILE}"
+  local charts_line app_line playground_line android_screenshot_line ci_behavior_line total_line total_test_word
+  charts_line="$(line_text "Charts" "${charts_tests}" "${charts_failures}" "${charts_errors}")"
+  app_line="$(line_text "App" "${app_tests}" "${app_failures}" "${app_errors}")"
+  playground_line="$(line_text "Playground" "${playground_tests}" "${playground_failures}" "${playground_errors}")"
+  android_screenshot_line="$(line_text "Android screenshot" "${android_screenshot_tests}" "${android_screenshot_failures}" "${android_screenshot_errors}")"
+  ci_behavior_line="$(line_text "CI behavior" "${behavior_tests}" "${behavior_failures}" "${behavior_errors}")"
 
-  cat > "${SUMMARY_JSON_FILE}" <<EOF
-{"charts":{"tests":${charts_tests},"failures":${charts_failures},"errors":${charts_errors}},"app":{"tests":${app_tests},"failures":${app_failures},"errors":${app_errors}},"playground":{"tests":${playground_tests},"failures":${playground_failures},"errors":${playground_errors}},"android_screenshot":{"tests":${android_screenshot_tests},"failures":${android_screenshot_failures},"errors":${android_screenshot_errors}},"ci_behavior":{"tests":${behavior_tests},"failures":${behavior_failures},"errors":${behavior_errors}},"total":{"tests":${total_tests},"failures":${total_failures},"errors":${total_errors}}}
-EOF
+  total_test_word="tests"
+  if ((total_tests == 1)); then
+    total_test_word="test"
+  fi
+  if ((total_broken == 0)); then
+    total_line="- ✅ Total: ${total_tests} ${total_test_word} completed successfully"
+  else
+    total_line="- ❌ Total: ${total_tests} ${total_test_word} completed, ${total_broken} failed"
+  fi
+
+  render_template \
+    "${SUMMARY_TEMPLATE_MD}" \
+    "${SUMMARY_FILE}" \
+    charts_line "${charts_line}" \
+    app_line "${app_line}" \
+    playground_line "${playground_line}" \
+    android_screenshot_line "${android_screenshot_line}" \
+    ci_behavior_line "${ci_behavior_line}" \
+    total_line "${total_line}"
+
+  render_template \
+    "${SUMMARY_TEMPLATE_JSON}" \
+    "${SUMMARY_JSON_FILE}" \
+    charts_tests "${charts_tests}" \
+    charts_failures "${charts_failures}" \
+    charts_errors "${charts_errors}" \
+    app_tests "${app_tests}" \
+    app_failures "${app_failures}" \
+    app_errors "${app_errors}" \
+    playground_tests "${playground_tests}" \
+    playground_failures "${playground_failures}" \
+    playground_errors "${playground_errors}" \
+    android_screenshot_tests "${android_screenshot_tests}" \
+    android_screenshot_failures "${android_screenshot_failures}" \
+    android_screenshot_errors "${android_screenshot_errors}" \
+    ci_behavior_tests "${behavior_tests}" \
+    ci_behavior_failures "${behavior_failures}" \
+    ci_behavior_errors "${behavior_errors}" \
+    total_tests "${total_tests}" \
+    total_failures "${total_failures}" \
+    total_errors "${total_errors}"
 
   if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
     cat "${SUMMARY_FILE}" >> "${GITHUB_STEP_SUMMARY}"

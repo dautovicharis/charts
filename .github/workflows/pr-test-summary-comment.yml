@@ -38,7 +38,7 @@ jobs:
               return;
             }
 
-            const summaryPath = 'ci-summary/.ci-test-summary.json';
+            const summaryPath = 'ci-summary/ci-test-summary.json';
             if (!fs.existsSync(summaryPath)) {
               core.info(`Summary artifact file not found at ${summaryPath}.`);
               return;
