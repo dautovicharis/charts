@@ -631,72 +631,6 @@ body {
 .token.annotation { color: #ffcb6b; }
 
 /* ===========================================
-   Playground
-   =========================================== */
-
-.playground {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
-  height: calc(100vh - var(--header-height) - var(--space-20));
-  min-height: 500px;
-}
-
-.playground__panel {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.playground__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-3) var(--space-4);
-  background: var(--bg-tertiary);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.playground__title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.playground__content {
-  flex: 1;
-  overflow: auto;
-  padding: var(--space-4);
-}
-
-.playground__preview {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-primary);
-}
-
-.playground__unavailable {
-  text-align: center;
-  padding: var(--space-16);
-}
-
-.playground__unavailable-icon {
-  font-size: 3rem;
-  margin-bottom: var(--space-4);
-}
-
-.playground__unavailable-text {
-  color: var(--text-secondary);
-  max-width: 400px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-/* ===========================================
    API Docs Frame
    =========================================== */
 
@@ -923,9 +857,6 @@ body {
     padding: var(--space-6) var(--space-4);
   }
   
-  .playground {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {

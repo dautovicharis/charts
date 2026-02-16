@@ -1,0 +1,429 @@
+package ui
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.unit.dp
+import chartsproject.app.generated.resources.charts_logo
+import chartsproject.app.generated.resources.ic_github
+import chartsproject.playground.generated.resources.Res
+import chartsproject.playground.generated.resources.playground_logo_content_description
+import chartsproject.playground.generated.resources.playground_open_github_content_description
+import chartsproject.playground.generated.resources.playground_title
+import io.github.dautovicharis.charts.app.ui.theme.AppTheme
+import io.github.dautovicharis.charts.app.ui.theme.docsSlate
+import model.PlaygroundAction
+import model.PlaygroundRightPanelTab
+import model.PlaygroundViewModel
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import chartsproject.app.generated.resources.Res as AppRes
+
+private val WideLayoutBreakpoint = 1000.dp
+private val CompactHeaderBreakpoint = 760.dp
+private val RightPanelTabIconSize = 18.dp
+private const val PROJECT_GITHUB_URL = "https://github.com/dautovicharis/charts"
+
+@Composable
+fun PlaygroundScreen() {
+    val viewModel = remember { PlaygroundViewModel() }
+    val uriHandler = LocalUriHandler.current
+    val registry = viewModel.registry
+    val state by viewModel.state.collectAsState()
+
+    fun dispatch(action: PlaygroundAction) = viewModel.dispatch(action)
+
+    val selectedDefinition = registry.definition(state.selectedChartType)
+    val selectedSession = state.sessions.getValue(state.selectedChartType)
+    val settingsSchema = selectedDefinition.settingsSchema(selectedSession)
+
+    AppTheme(
+        theme = docsSlate,
+        useDynamicColors = false,
+    ) {
+        val generatedSnippet = selectedDefinition.generateCode(selectedSession)
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    val inlineChartSwitcher = maxWidth >= WideLayoutBreakpoint
+                    val compactHeader = maxWidth < CompactHeaderBreakpoint
+                    var chartMenuExpanded by remember { mutableStateOf(false) }
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Image(
+                                    painter = painterResource(AppRes.drawable.charts_logo),
+                                    contentDescription = stringResource(Res.string.playground_logo_content_description),
+                                    modifier = Modifier.size(32.dp),
+                                )
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Text(
+                                        text = stringResource(Res.string.playground_title),
+                                        style = MaterialTheme.typography.titleLarge,
+                                    )
+                                    Text(
+                                        text = BuildConfig.CHARTS_VERSION,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+
+                            if (inlineChartSwitcher) {
+                                ChartTypeSelector(
+                                    selectedType = state.selectedChartType,
+                                    primaryTypes = registry.primaryChartTypes,
+                                    overflowTypes = registry.overflowChartTypes,
+                                    onTypeSelected = { chartType ->
+                                        dispatch(PlaygroundAction.SelectChart(chartType))
+                                    },
+                                    compact = true,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            } else if (compactHeader) {
+                                Text(
+                                    text = selectedDefinition.type.displayName,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Box {
+                                    IconButton(onClick = { chartMenuExpanded = true }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Menu,
+                                            contentDescription = "Select chart",
+                                        )
+                                    }
+                                    DropdownMenu(
+                                        expanded = chartMenuExpanded,
+                                        onDismissRequest = { chartMenuExpanded = false },
+                                    ) {
+                                        (registry.primaryChartTypes + registry.overflowChartTypes)
+                                            .forEach { chartType ->
+                                                DropdownMenuItem(
+                                                    text = { Text(chartType.displayName) },
+                                                    onClick = {
+                                                        dispatch(PlaygroundAction.SelectChart(chartType))
+                                                        chartMenuExpanded = false
+                                                    },
+                                                    leadingIcon = {
+                                                        Icon(
+                                                            painter = painterResource(chartTypeIconResource(chartType)),
+                                                            contentDescription = null,
+                                                            modifier = Modifier.size(18.dp),
+                                                        )
+                                                    },
+                                                )
+                                            }
+                                    }
+                                }
+                            }
+
+                            FilledTonalIconButton(
+                                onClick = { uriHandler.openUri(PROJECT_GITHUB_URL) },
+                                modifier = Modifier.size(34.dp),
+                            ) {
+                                Icon(
+                                    painter = painterResource(AppRes.drawable.ic_github),
+                                    contentDescription =
+                                        stringResource(Res.string.playground_open_github_content_description),
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
+                        }
+
+                        if (!inlineChartSwitcher && !compactHeader) {
+                            ChartTypeSelector(
+                                selectedType = state.selectedChartType,
+                                primaryTypes = registry.primaryChartTypes,
+                                overflowTypes = registry.overflowChartTypes,
+                                onTypeSelected = { chartType -> dispatch(PlaygroundAction.SelectChart(chartType)) },
+                                compact = true,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+                }
+
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                ) {
+                    val useWideLayout = maxWidth >= WideLayoutBreakpoint
+
+                    if (useWideLayout) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            PlaygroundEditorPanel(
+                                editorState = selectedSession.editorState,
+                                validationMessage = selectedSession.validationMessage,
+                                invalidRowIds = selectedSession.invalidRowIds,
+                                onCellChange = { rowIndex, columnId, value ->
+                                    dispatch(
+                                        PlaygroundAction.UpdateEditorCell(
+                                            rowIndex = rowIndex,
+                                            columnId = columnId,
+                                            value = value,
+                                        ),
+                                    )
+                                },
+                                onAddRow = { dispatch(PlaygroundAction.AddRow) },
+                                onDeleteRow = { rowIndex -> dispatch(PlaygroundAction.DeleteRow(rowIndex)) },
+                                onRandomize = { dispatch(PlaygroundAction.Randomize) },
+                                onReset = { dispatch(PlaygroundAction.Reset) },
+                                expandToFillHeight = true,
+                                modifier = Modifier.weight(30f).fillMaxHeight(),
+                            )
+
+                            PlaygroundChartPanel(
+                                session = selectedSession,
+                                definition = selectedDefinition,
+                                onTitleChange = { title ->
+                                    dispatch(PlaygroundAction.UpdateTitle(title))
+                                },
+                                expandToFillHeight = true,
+                                modifier = Modifier.weight(40f).fillMaxHeight(),
+                            )
+
+                            RightPanel(
+                                tab = state.rightPanelTab,
+                                onTabChange = { tab -> dispatch(PlaygroundAction.SelectRightPanelTab(tab)) },
+                                settingsContent = {
+                                    PlaygroundSettingsPanel(
+                                        session = selectedSession,
+                                        descriptors = settingsSchema,
+                                        onStyleStateChange = { nextStyle ->
+                                            dispatch(PlaygroundAction.UpdateStyleState(nextStyle))
+                                        },
+                                        modifier =
+                                            Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(
+                                                rememberScrollState(),
+                                            ),
+                                    )
+                                },
+                                codeContent = {
+                                    PlaygroundCodePreviewPanel(
+                                        snippet = generatedSnippet,
+                                        mode = selectedSession.codegenMode,
+                                        onModeChange = { mode -> dispatch(PlaygroundAction.UpdateCodegenMode(mode)) },
+                                        expandToFillHeight = true,
+                                        showTitle = false,
+                                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                                    )
+                                },
+                                modifier = Modifier.weight(30f).fillMaxHeight(),
+                            )
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            PlaygroundEditorPanel(
+                                editorState = selectedSession.editorState,
+                                validationMessage = selectedSession.validationMessage,
+                                invalidRowIds = selectedSession.invalidRowIds,
+                                onCellChange = { rowIndex, columnId, value ->
+                                    dispatch(
+                                        PlaygroundAction.UpdateEditorCell(
+                                            rowIndex = rowIndex,
+                                            columnId = columnId,
+                                            value = value,
+                                        ),
+                                    )
+                                },
+                                onAddRow = { dispatch(PlaygroundAction.AddRow) },
+                                onDeleteRow = { rowIndex -> dispatch(PlaygroundAction.DeleteRow(rowIndex)) },
+                                onRandomize = { dispatch(PlaygroundAction.Randomize) },
+                                onReset = { dispatch(PlaygroundAction.Reset) },
+                                expandToFillHeight = false,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+
+                            PlaygroundChartPanel(
+                                session = selectedSession,
+                                definition = selectedDefinition,
+                                onTitleChange = { title ->
+                                    dispatch(PlaygroundAction.UpdateTitle(title))
+                                },
+                                expandToFillHeight = false,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+
+                            RightPanel(
+                                tab = state.rightPanelTab,
+                                onTabChange = { tab -> dispatch(PlaygroundAction.SelectRightPanelTab(tab)) },
+                                settingsContent = {
+                                    PlaygroundSettingsPanel(
+                                        session = selectedSession,
+                                        descriptors = settingsSchema,
+                                        onStyleStateChange = { nextStyle ->
+                                            dispatch(PlaygroundAction.UpdateStyleState(nextStyle))
+                                        },
+                                        modifier = Modifier.fillMaxWidth(),
+                                    )
+                                },
+                                codeContent = {
+                                    PlaygroundCodePreviewPanel(
+                                        snippet = generatedSnippet,
+                                        mode = selectedSession.codegenMode,
+                                        onModeChange = { mode -> dispatch(PlaygroundAction.UpdateCodegenMode(mode)) },
+                                        expandToFillHeight = false,
+                                        showTitle = false,
+                                        modifier = Modifier.fillMaxWidth(),
+                                    )
+                                },
+                                showTabSelector = true,
+                                expandToFillHeight = false,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RightPanel(
+    tab: PlaygroundRightPanelTab,
+    onTabChange: (PlaygroundRightPanelTab) -> Unit,
+    settingsContent: @Composable () -> Unit,
+    codeContent: @Composable () -> Unit,
+    showTabSelector: Boolean = true,
+    expandToFillHeight: Boolean = true,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        tonalElevation = 2.dp,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            if (showTabSelector) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Button(
+                        onClick = { onTabChange(PlaygroundRightPanelTab.SETTINGS) },
+                        colors =
+                            if (tab == PlaygroundRightPanelTab.SETTINGS) {
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            } else {
+                                ButtonDefaults.outlinedButtonColors()
+                            },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 6.dp).size(RightPanelTabIconSize),
+                        )
+                        Text("Settings")
+                    }
+
+                    Button(
+                        onClick = { onTabChange(PlaygroundRightPanelTab.CODE) },
+                        colors =
+                            if (tab == PlaygroundRightPanelTab.CODE) {
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            } else {
+                                ButtonDefaults.outlinedButtonColors()
+                            },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Code,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 6.dp).size(RightPanelTabIconSize),
+                        )
+                        Text("Code")
+                    }
+                }
+
+                HorizontalDivider()
+                Surface(
+                    modifier =
+                        if (expandToFillHeight) {
+                            Modifier.fillMaxWidth().weight(1f)
+                        } else {
+                            Modifier.fillMaxWidth()
+                        },
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    when (tab) {
+                        PlaygroundRightPanelTab.SETTINGS -> settingsContent()
+                        PlaygroundRightPanelTab.CODE -> codeContent()
+                    }
+                }
+            } else {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    settingsContent()
+                }
+            }
+        }
+    }
+}

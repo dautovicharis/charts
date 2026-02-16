@@ -1,0 +1,69 @@
+name: Publish Docs Static
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-static-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-docs-static:
+    name: Build and Publish docs/static
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'dautovicharis' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build docs static assets
+        run: ./gradlew generateDocs playgroundProd --no-daemon --stacktrace
+
+      - name: Validate required docs static files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required_files=(
+            "docs/static/demo/snapshot/index.html"
+            "docs/static/playground/snapshot/index.html"
+          )
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required file: $file" >&2
+              exit 1
+            fi
+          done
+
+      - name: Publish docs/static to docs-static branch
+        env:
+          REMOTE: origin
+          BRANCH: docs-static
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          bash scripts/publish-docs-static.sh

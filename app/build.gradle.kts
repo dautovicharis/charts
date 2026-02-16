@@ -120,3 +120,7 @@ buildConfig {
     buildConfigField("CHARTS_VERSION", Config.chartsVersion)
     useKotlinOutput()
 }
+
+compose.resources {
+    publicResClass = true
+}

@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 }
 
 include(":app")
+include(":playground")
 include(":androidApp")
 include(":charts")
 include(":charts-core")
@@ -44,4 +45,3 @@ include(":charts-stacked-area")
 include(":charts-bom")
 include(":smoke-line")
 include(":docs")
-

@@ -41,7 +41,6 @@ RadarChart(
 ```
 
 - See more setup and variants in [Examples](/2.1.0/wiki/examples)
-- Try it live in the [Demo Gallery](/2.1.0/playground)
 
 ### Demo Experience
 - Improved gallery navigation and responsive behavior across screen sizes.
