@@ -1,11 +1,9 @@
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.build.config)
     alias(libs.plugins.compose.compiler)
@@ -17,7 +15,20 @@ kotlin {
             .get()
             .toInt(),
     )
-    androidTarget()
+    android {
+        namespace = Config.demoLibraryNamespace
+        compileSdk = Config.compileSdk
+        minSdk = Config.minSdk
+        androidResources {
+            enable = true
+        }
+        compilerOptions {
+            jvmTarget.set(
+                org.jetbrains.kotlin.gradle.dsl.JvmTarget
+                    .fromTarget(libs.versions.java.get()),
+            )
+        }
+    }
     listOf(
         iosX64(),
         iosArm64(),
@@ -41,12 +52,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.compose.mpp.runtime)
+            implementation(libs.compose.mpp.foundation)
+            implementation(libs.compose.mpp.material3)
+            implementation(libs.compose.mpp.ui)
+            implementation(libs.compose.mpp.resources)
+            implementation(libs.compose.mpp.material.icons.extended)
 
             implementation(project(":charts"))
             // Snapshot test
@@ -67,38 +78,6 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
         }
-    }
-}
-
-android {
-    namespace = Config.demoLibraryNamespace
-    compileSdk = Config.compileSdk
-
-    defaultConfig {
-        minSdk = Config.minSdk
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-
-    kotlin {
-        jvmToolchain(
-            libs.versions.java
-                .get()
-                .toInt(),
-        )
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-    }
-
-    buildFeatures {
-        compose = true
     }
 }
 

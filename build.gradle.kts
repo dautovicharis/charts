@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.jetbrainsCompose) apply false
-    alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.build.config) apply false
     alias(libs.plugins.compose.compiler) apply false
@@ -39,7 +39,7 @@ tasks.register("chartsTest") {
     dependsOn("charts:jvmTest")
     dependsOn(":playground:jvmTest")
     dependsOn(":playground:jsTest")
-    dependsOn(":androidApp:validateDebugScreenshotTest")
+    dependsOn(project(":androidApp").tasks.named("validateDebugScreenshotTest"))
     dependsOn("chartsModulesTest")
 }
 
