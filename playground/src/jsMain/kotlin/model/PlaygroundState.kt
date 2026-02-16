@@ -90,7 +90,7 @@ object PlaygroundReducer {
                 updateCurrentSession(state, registry) { session, definition ->
                     val rowIndex = session.editorState.rows.size
                     val cells = definition.newRowCells(rowIndex, session.editorState.columns)
-                    val updatedEditor = session.editorState.withAddedRow(cells, insertAtTop = true)
+                    val updatedEditor = session.editorState.withAddedRow(cells)
                     applyValidation(
                         session = session,
                         definition = definition,

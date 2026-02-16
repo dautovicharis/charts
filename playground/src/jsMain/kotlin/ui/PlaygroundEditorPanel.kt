@@ -53,15 +53,16 @@ fun PlaygroundEditorPanel(
     val actionColumnWidth = 56.dp
     val scrollState = rememberScrollState()
     val currentRowIds = editorState.rows.map { row -> row.id }
+    val visibleRows = editorState.rows.asReversed()
     var previousRowIds by remember { mutableStateOf(currentRowIds) }
     var highlightedRowId by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(currentRowIds) {
-        val isTopInsertion =
+        val isAppendInsertion =
             currentRowIds.size == previousRowIds.size + 1 &&
-                currentRowIds.drop(1) == previousRowIds
-        if (isTopInsertion) {
-            highlightedRowId = currentRowIds.firstOrNull()
+                currentRowIds.dropLast(1) == previousRowIds
+        if (isAppendInsertion) {
+            highlightedRowId = currentRowIds.lastOrNull()
         }
         previousRowIds = currentRowIds
     }
@@ -132,7 +133,8 @@ fun PlaygroundEditorPanel(
                 modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                editorState.rows.forEachIndexed { rowIndex, row ->
+                visibleRows.forEachIndexed { visualRowIndex, row ->
+                    val rowIndex = editorState.rows.lastIndex - visualRowIndex
                     val rowContainerColor =
                         if (row.id == highlightedRowId) {
                             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f)

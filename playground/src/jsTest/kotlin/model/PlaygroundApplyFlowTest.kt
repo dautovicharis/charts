@@ -79,8 +79,9 @@ class PlaygroundApplyFlowTest {
         val afterRows = afterSession.editorState.rows
         val afterData = afterSession.appliedData as PlaygroundDataModel.SimpleSeries
         assertEquals(beforeCount + 1, afterData.values.size)
-        assertEquals(afterRows.maxOf { row -> row.id }, afterRows.first().id)
-        assertEquals(beforeRows.map { row -> row.id }, afterRows.drop(1).map { row -> row.id })
+        assertEquals(afterRows.maxOf { row -> row.id }, afterRows.last().id)
+        assertEquals(beforeRows.map { row -> row.id }, afterRows.dropLast(1).map { row -> row.id })
+        assertEquals(afterRows.last().cells.getValue("label"), afterData.labels?.last())
 
         val descriptor =
             registry
