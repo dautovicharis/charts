@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { MarkdownRenderer } from '@/components';
 import { getPage, getPageSlugs } from '@/lib/content';
-import { getVersions } from '@/lib/versions';
+import { getAllVersions } from '@/lib/versions';
 
 interface WikiPageProps {
   params: Promise<{ version: string; slug?: string[] }>;
@@ -32,8 +32,8 @@ export default async function WikiPage({ params }: WikiPageProps) {
     notFound();
   }
 
-  const isSnapshotExamples = version === 'snapshot' && pageSlug === 'examples';
-  const articleClassName = isSnapshotExamples
+  const usesSplitExamplesLayout = pageSlug === 'examples';
+  const articleClassName = usesSplitExamplesLayout
     ? 'docs-content animate-fadeIn docs-page--snapshot-examples'
     : 'docs-content animate-fadeIn';
 
@@ -41,14 +41,14 @@ export default async function WikiPage({ params }: WikiPageProps) {
     <article className={articleClassName}>
       <MarkdownRenderer
         content={page.content}
-        layoutVariant={isSnapshotExamples ? 'snapshotExamples' : 'default'}
+        layoutVariant={usesSplitExamplesLayout ? 'snapshotExamples' : 'default'}
       />
     </article>
   );
 }
 
 export function generateStaticParams() {
-  const versions = getVersions();
+  const versions = getAllVersions();
   const params: { version: string; slug?: string[] }[] = [];
 
   for (const version of versions) {

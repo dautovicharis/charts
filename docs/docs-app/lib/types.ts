@@ -8,6 +8,7 @@
 export interface DocVersion {
   id: string;
   label: string;
+  visible?: boolean;
   wikiRoot: string;
   apiBase: string;
   demoBase?: string;

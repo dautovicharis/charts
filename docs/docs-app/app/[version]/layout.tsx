@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Header, Sidebar } from '@/components';
-import { getVersions, getVersion } from '@/lib/versions';
+import { getAllVersions, getVersions, getVersion } from '@/lib/versions';
 import { getNavigation } from '@/lib/content';
 
 interface VersionLayoutProps {
@@ -31,7 +31,7 @@ export default async function VersionLayout({ children, params }: VersionLayoutP
 }
 
 export function generateStaticParams() {
-  const versions = getVersions();
+  const versions = getAllVersions();
   return versions.map((v) => ({
     version: v.id,
   }));
