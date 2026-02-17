@@ -15,13 +15,14 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 /**
- * Checks whether the given [pointX] and [pointY] is inside a circle with the specified [size].
+ * Checks whether the given point (`[pointX]`, `[pointY]`) is inside a circle with the specified [size].
  *
- * @param [pointX] and [pointY] The input representing the position of a point.
+ * @param pointX X coordinate of the point.
+ * @param pointY Y coordinate of the point.
  * @param size The size of the circle as [IntSize].
  * @return `true` if the point is inside the circle, `false` otherwise.
  */
-fun isPointInCircle(
+internal fun isPointInCircle(
     pointX: Float,
     pointY: Float,
     size: IntSize,
@@ -43,13 +44,15 @@ fun isPointInCircle(
 }
 
 /**
- * Calculates the degree based on the position of the given [point] relative to the center of a circle with [size].
+ * Calculates the degree based on the position of the given point (`[pointX]`, `[pointY]`)
+ * relative to the center of a circle with [size].
  *
- * @param [pointX] and [pointY] The input representing the position of a point.
+ * @param pointX X coordinate of the point.
+ * @param pointY Y coordinate of the point.
  * @param size The size of the circle as [IntSize].
  * @return The degree of the point in relation to the center of the circle.
  */
-fun degree(
+internal fun degree(
     pointX: Float,
     pointY: Float,
     size: IntSize,
@@ -79,7 +82,7 @@ fun degree(
     return degree
 }
 
-fun getSelectedIndex(
+internal fun getSelectedIndex(
     pointX: Float,
     pointY: Float,
     size: IntSize,
@@ -96,9 +99,9 @@ fun getSelectedIndex(
         else -> NO_SELECTION
     }
 
-fun createPieSlices(data: ChartData): List<PieSlice> = createPieSlices(data.points)
+internal fun createPieSlices(data: ChartData): List<PieSlice> = createPieSlices(data.points)
 
-fun createPieSlices(values: List<Double>): List<PieSlice> =
+internal fun createPieSlices(values: List<Double>): List<PieSlice> =
     mutableListOf<PieSlice>().apply {
         var lastEndDeg = 0.0
         val maxValue = values.sum()
@@ -127,7 +130,7 @@ fun createPieSlices(values: List<Double>): List<PieSlice> =
  * @param slices The list of slices in the pie chart.
  * @return The [Offset] representing the coordinates of the middle of the slice.
  */
-fun getCoordinatesForSlice(
+internal fun getCoordinatesForSlice(
     index: Int,
     size: IntSize,
     slices: List<PieSlice>,
@@ -153,7 +156,7 @@ fun getCoordinatesForSlice(
     return Offset(x, y)
 }
 
-fun calculatePercentages(values: List<Double>): List<String> {
+internal fun calculatePercentages(values: List<Double>): List<String> {
     val total = values.sum()
     return values.map { value ->
         val percentage = (value / total) * 100

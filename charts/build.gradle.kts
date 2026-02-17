@@ -95,6 +95,11 @@ dokka {
 
         skipDeprecated.set(false)
         skipEmptyPackages.set(true)
+
+        perPackageOption {
+            matchingRegex.set("io\\.github\\.dautovicharis\\.charts\\.internal(\\..*)?")
+            suppress.set(true)
+        }
     }
 
     dokkaPublications.html {

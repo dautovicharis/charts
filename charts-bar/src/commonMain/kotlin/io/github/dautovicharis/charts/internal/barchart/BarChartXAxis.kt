@@ -10,13 +10,13 @@ import io.github.dautovicharis.charts.internal.common.axis.AxisXLabelsLayout
 import io.github.dautovicharis.charts.internal.common.axis.AxisXLayoutTick
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 
-data class AxisTick(
+internal data class AxisTick(
     val label: String,
     val centerX: Float,
 )
 
 @Composable
-fun BarXAxisLabels(
+internal fun BarXAxisLabels(
     ticks: List<AxisTick>,
     color: Color,
     fontSize: TextUnit,
@@ -32,7 +32,7 @@ fun BarXAxisLabels(
     )
 }
 
-fun buildAxisTicks(
+internal fun buildAxisTicks(
     chartData: ChartData,
     labelIndices: List<Int>,
     barWidthPx: Float,

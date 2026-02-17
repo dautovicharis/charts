@@ -12,16 +12,16 @@ import io.github.dautovicharis.charts.internal.common.density.bucketSizeForTarge
 import io.github.dautovicharis.charts.internal.common.density.buildBucketRanges as buildBucketRangesCore
 import io.github.dautovicharis.charts.internal.common.density.shouldUseScrollableDensity as shouldUseScrollableDensityCore
 
-const val LINE_CHART_BEZIER_TENSION = 0.95f
-const val LINE_DENSE_THRESHOLD = 50
+internal const val LINE_CHART_BEZIER_TENSION = 0.95f
+internal const val LINE_DENSE_THRESHOLD = 50
 
-fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
+internal fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
     shouldUseScrollableDensityCore(
         pointsCount = pointsCount,
         threshold = LINE_DENSE_THRESHOLD,
     )
 
-fun aggregateForCompactDensity(
+internal fun aggregateForCompactDensity(
     data: MultiChartData,
     targetPoints: Int = LINE_DENSE_THRESHOLD,
 ): MultiChartData {
@@ -54,12 +54,12 @@ fun aggregateForCompactDensity(
     )
 }
 
-data class CubicControlPoints(
+internal data class CubicControlPoints(
     val first: Offset,
     val second: Offset,
 )
 
-fun cubicControlPointsForSegment(
+internal fun cubicControlPointsForSegment(
     points: List<Offset>,
     segmentStartIndex: Int,
     tension: Float = LINE_CHART_BEZIER_TENSION,
@@ -96,7 +96,7 @@ fun cubicControlPointsForSegment(
     return CubicControlPoints(first = control1, second = control2)
 }
 
-fun findNearestPoint(
+internal fun findNearestPoint(
     touchX: Float,
     scaledValues: List<Float>,
     size: Size,
@@ -190,7 +190,7 @@ fun findNearestPoint(
     return Offset(targetX, y)
 }
 
-fun mapScaledValueToCanvasY(
+internal fun mapScaledValueToCanvasY(
     scaledValue: Float,
     canvasHeight: Float,
     verticalInset: Float = 0f,
@@ -239,7 +239,7 @@ private fun cubicBezier(
         (t2 * t * p3)
 }
 
-fun scaleValues(
+internal fun scaleValues(
     values: List<Double>,
     size: Size,
     minValue: Double = values.min(),
