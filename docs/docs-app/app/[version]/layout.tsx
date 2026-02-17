@@ -3,6 +3,8 @@ import { Header, Sidebar } from '@/components';
 import { getAllVersions, getVersions, getVersion } from '@/lib/versions';
 import { getNavigation } from '@/lib/content';
 
+export const dynamicParams = false;
+
 interface VersionLayoutProps {
   children: React.ReactNode;
   params: Promise<{ version: string }>;

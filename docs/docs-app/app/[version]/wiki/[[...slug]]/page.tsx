@@ -4,6 +4,8 @@ import { MarkdownRenderer } from '@/components';
 import { getPage, getPageSlugs } from '@/lib/content';
 import { getAllVersions } from '@/lib/versions';
 
+export const dynamicParams = false;
+
 interface WikiPageProps {
   params: Promise<{ version: string; slug?: string[] }>;
 }
