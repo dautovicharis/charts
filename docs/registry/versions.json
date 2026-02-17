@@ -1,23 +1,21 @@
 {
   "versions": [
     {
-      "id": "2.2.0",
-      "label": "2.2.0",
-      "visible": false,
-      "wikiRoot": "/docs/content/2.2.0/wiki",
-      "apiBase": "/docs/static/api/2.2.0",
-      "demoBase": "/demo/2.2.0/",
-      "releasedAt": "2026-02-17",
-      "notes": "Stable release with StackedAreaChart, modular publishing, and playground updates."
-    },
-    {
       "id": "snapshot",
       "label": "Snapshot",
       "wikiRoot": "/docs/content/snapshot/wiki",
       "apiBase": "/docs/static/api/snapshot",
       "demoBase": "/demo/snapshot/",
-      "releasedAt": "2026-02-09",
       "notes": "Latest development snapshot"
+    },
+    {
+      "id": "2.2.0",
+      "label": "2.2.0",
+      "visible": true,
+      "wikiRoot": "/docs/content/2.2.0/wiki",
+      "apiBase": "/docs/static/api/2.2.0",
+      "demoBase": "/demo/2.2.0/",
+      "notes": "Stable release with StackedAreaChart, modular publishing, and playground updates."
     },
     {
       "id": "2.1.0",
@@ -25,7 +23,6 @@
       "wikiRoot": "/docs/content/2.1.0/wiki",
       "apiBase": "/docs/static/api/2.1.0",
       "demoBase": "/demo/2.1.0/",
-      "releasedAt": "2026-02-09",
       "notes": "Stable release with RadarChart, gallery improvements, and expanded docs tooling."
     },
     {
@@ -34,7 +31,6 @@
       "wikiRoot": "/docs/content/2.0.1/wiki",
       "apiBase": "/docs/static/api/2.0.1",
       "demoBase": "/demo/2.0.1/",
-      "releasedAt": "2024-11-02",
       "notes": "Latest stable release with ProGuard fixes and Compose 1.9.2"
     },
     {
@@ -43,7 +39,6 @@
       "wikiRoot": "/docs/content/2.0.0/wiki",
       "apiBase": "/docs/static/api/2.0.0",
       "demoBase": "/demo/2.0.0/",
-      "releasedAt": "2024-10-01",
       "notes": "Initial 2.0 release"
     }
   ]

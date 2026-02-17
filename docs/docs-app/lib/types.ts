@@ -12,7 +12,6 @@ export interface DocVersion {
   wikiRoot: string;
   apiBase: string;
   demoBase?: string;
-  releasedAt: string;
   notes?: string;
 }
 
