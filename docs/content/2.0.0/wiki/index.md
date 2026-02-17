@@ -28,4 +28,5 @@ New to Charts? Check out our [Getting Started Guide](getting-started) to learn h
 
 ## Documentation
 
+- [Demo Gallery](/demo/2.0.0/) - Interactive chart examples
 - [API Documentation](/2.0.0/api) - Detailed API reference

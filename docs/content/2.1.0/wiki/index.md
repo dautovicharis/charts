@@ -70,4 +70,5 @@ New to Charts? Check out our [Getting Started Guide](/2.1.0/wiki/getting-started
 
 ## Documentation
 
+- [Demo Gallery](/demo/2.1.0/) - Interactive chart examples
 - [API Documentation](/2.1.0/api) - Detailed API reference

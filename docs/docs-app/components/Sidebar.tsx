@@ -144,7 +144,7 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
               API Reference
             </Link>
             <a
-              href={`/static/demo/${versionId}/index.html`}
+              href={`/demo/${versionId}/`}
               target="_blank"
               rel="noopener noreferrer"
               className="docs-sidebar__link"
@@ -157,7 +157,7 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
               </span>
             </a>
             <a
-              href="/static/playground/snapshot/index.html"
+              href="/playground"
               target="_blank"
               rel="noopener noreferrer"
               className="docs-sidebar__link"
