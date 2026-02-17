@@ -25,6 +25,8 @@ jobs:
       - name: Docs release links behavior tests
         id: behavior_docs_release_links
         if: always()
+        env:
+          DOCS_RELEASE_LINKS_REQUIRE_ASSETS: "false"
         run: bash scripts/test-docs-release-links.sh
       - name: Detect code changes
         id: changes

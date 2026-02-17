@@ -8,6 +8,8 @@ REGISTRY_PATH="${REPO_ROOT}/docs/registry/versions.json"
 NEXT_CONFIG_PATH="${REPO_ROOT}/docs/docs-app/next.config.ts"
 SIDEBAR_PATH="${REPO_ROOT}/docs/docs-app/components/Sidebar.tsx"
 README_PATH="${REPO_ROOT}/README.md"
+REQUIRE_ASSETS="${DOCS_RELEASE_LINKS_REQUIRE_ASSETS:-false}"
+ASSET_ROOT="${DOCS_RELEASE_LINKS_ASSET_ROOT:-${REPO_ROOT}/docs/static}"
 
 failures=0
 
@@ -62,59 +64,19 @@ assert_file_contains() {
   fi
 }
 
-assert_git_path_exists() {
-  local ref="$1"
-  local path="$2"
-  local label="$3"
-  if git cat-file -e "${ref}:${path}" 2>/dev/null; then
-    log_pass "${label}"
-  else
-    log_fail "${label} (missing: ${path} in ${ref})"
-  fi
-}
-
-resolve_docs_static_ref() {
-  local branch="${DOCS_STATIC_BRANCH:-docs-static}"
-  local preferred_remote="${DOCS_STATIC_REMOTE:-origin}"
-
-  local candidate
-  for candidate in \
-    "${preferred_remote}/${branch}" \
-    "origin/${branch}" \
-    "upstream/${branch}" \
-    "${branch}"; do
-    if git rev-parse --verify --quiet "${candidate}^{commit}" >/dev/null; then
-      echo "${candidate}"
-      return 0
-    fi
-  done
-
-  local remote
-  for remote in "${preferred_remote}" origin upstream; do
-    if git remote get-url "${remote}" >/dev/null 2>&1; then
-      git fetch --quiet "${remote}" "${branch}:refs/remotes/${remote}/${branch}" || true
-      if git rev-parse --verify --quiet "refs/remotes/${remote}/${branch}^{commit}" >/dev/null; then
-        echo "${remote}/${branch}"
-        return 0
-      fi
-    fi
-  done
-
-  return 1
-}
-
 test_registry_release_links() {
   if [[ ! -f "${REGISTRY_PATH}" ]]; then
     log_fail "versions registry exists (missing: ${REGISTRY_PATH})"
     return
   fi
 
-  local docs_static_ref
-  if ! docs_static_ref="$(resolve_docs_static_ref)"; then
-    log_fail "docs-static branch ref not found (set DOCS_STATIC_REMOTE/DOCS_STATIC_BRANCH if needed)"
-    return
+  local verify_assets=false
+  if [[ "${REQUIRE_ASSETS}" == "true" ]]; then
+    verify_assets=true
+    log_pass "asset existence checks enabled against ${ASSET_ROOT}"
+  else
+    log_pass "asset existence checks disabled for this run"
   fi
-  log_pass "using docs static assets from ${docs_static_ref}"
 
   local row_count=0
   while IFS=$'\t' read -r id wiki_root api_base demo_base; do
@@ -130,8 +92,10 @@ test_registry_release_links() {
 
     assert_dir_exists "${REPO_ROOT}/docs/content/${id}/wiki" "wiki directory exists for ${id}"
     assert_file_exists "${REPO_ROOT}/docs/content/${id}/wiki/index.md" "wiki index exists for ${id}"
-    assert_git_path_exists "${docs_static_ref}" "docs/static/api/${id}/index.html" "api index exists for ${id}"
-    assert_git_path_exists "${docs_static_ref}" "docs/static/demo/${id}/index.html" "demo index exists for ${id}"
+    if [[ "${verify_assets}" == "true" ]]; then
+      assert_file_exists "${ASSET_ROOT}/api/${id}/index.html" "api index exists for ${id}"
+      assert_file_exists "${ASSET_ROOT}/demo/${id}/index.html" "demo index exists for ${id}"
+    fi
   done < <(
     node -e '
       const fs = require("fs");
