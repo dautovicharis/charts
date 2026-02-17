@@ -117,9 +117,7 @@ jobs:
 
       - name: Validate docs release links against built static assets
         shell: bash
-        env:
-          DOCS_RELEASE_LINKS_REQUIRE_ASSETS: "true"
-        run: bash scripts/test-docs-release-links.sh
+        run: bash scripts/test-docs-release-assets.sh
 
       - name: Guard against accidental deletion of historical docs versions
         shell: bash

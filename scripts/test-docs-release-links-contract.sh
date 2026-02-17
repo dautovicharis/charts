@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Validates docs release link contract for PR CI:
+# - registry path conventions
+# - required docs content entries
+# - route rewrites/redirects and user-facing links
+# Does not require built docs/static assets.
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
@@ -8,8 +14,6 @@ REGISTRY_PATH="${REPO_ROOT}/docs/registry/versions.json"
 NEXT_CONFIG_PATH="${REPO_ROOT}/docs/docs-app/next.config.ts"
 SIDEBAR_PATH="${REPO_ROOT}/docs/docs-app/components/Sidebar.tsx"
 README_PATH="${REPO_ROOT}/README.md"
-REQUIRE_ASSETS="${DOCS_RELEASE_LINKS_REQUIRE_ASSETS:-false}"
-ASSET_ROOT="${DOCS_RELEASE_LINKS_ASSET_ROOT:-${REPO_ROOT}/docs/static}"
 
 failures=0
 
@@ -70,14 +74,6 @@ test_registry_release_links() {
     return
   fi
 
-  local verify_assets=false
-  if [[ "${REQUIRE_ASSETS}" == "true" ]]; then
-    verify_assets=true
-    log_pass "asset existence checks enabled against ${ASSET_ROOT}"
-  else
-    log_pass "asset existence checks disabled for this run"
-  fi
-
   local row_count=0
   while IFS=$'\t' read -r id wiki_root api_base demo_base; do
     row_count=$((row_count + 1))
@@ -92,10 +88,6 @@ test_registry_release_links() {
 
     assert_dir_exists "${REPO_ROOT}/docs/content/${id}/wiki" "wiki directory exists for ${id}"
     assert_file_exists "${REPO_ROOT}/docs/content/${id}/wiki/index.md" "wiki index exists for ${id}"
-    if [[ "${verify_assets}" == "true" ]]; then
-      assert_file_exists "${ASSET_ROOT}/api/${id}/index.html" "api index exists for ${id}"
-      assert_file_exists "${ASSET_ROOT}/demo/${id}/index.html" "demo index exists for ${id}"
-    fi
   done < <(
     node -e '
       const fs = require("fs");
