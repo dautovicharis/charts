@@ -52,7 +52,6 @@ The version registry at `registry/versions.json` is the source of truth for all 
 - `wikiRoot` - Path to wiki content
 - `apiBase` - Path to Dokka API docs
 - `demoBase` - Path to JS demo (optional)
-- `releasedAt` - Release date
 - `notes` - Optional release notes
 
 ## Adding a New Version
