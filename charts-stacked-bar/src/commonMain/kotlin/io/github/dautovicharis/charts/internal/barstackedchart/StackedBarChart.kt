@@ -525,6 +525,7 @@ private fun StackedBarChartContent(
                     modifier =
                         Modifier
                             .fillMaxSize()
+                            .testTag(TestTags.STACKED_BAR_CHART_PLOT)
                             .then(interactionModifier)
                             .horizontalScroll(state = scrollState, enabled = isScrollable),
                 ) {

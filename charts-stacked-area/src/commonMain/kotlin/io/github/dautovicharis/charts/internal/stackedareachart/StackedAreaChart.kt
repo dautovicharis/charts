@@ -575,6 +575,7 @@ private fun StackedAreaChartContent(
                     modifier =
                         Modifier
                             .fillMaxSize()
+                            .testTag(TestTags.STACKED_AREA_CHART_PLOT)
                             .then(denseTapModifier)
                             .then(dragModifier)
                             .then(pinchModifier)

@@ -3,7 +3,7 @@ package io.github.dautovicharis.charts.app.recording
 import androidx.compose.runtime.Composable
 import io.github.dautovicharis.charts.style.ChartViewStyle
 
-internal const val DEFAULT_DEMO_NAME = "pie_custom"
+internal const val DEFAULT_DEMO_NAME = "pie_default"
 internal const val DEFAULT_FRAME_STEP_MS = 20L
 internal const val REGENERATE_LABEL = "Regenerate chart"
 internal const val CHART_CAPTURE_TEST_TAG = "DeterministicChartCapture"
@@ -11,9 +11,13 @@ internal const val CHART_CAPTURE_TEST_TAG = "DeterministicChartCapture"
 internal object ChartSemanticsTags {
     const val PIE = "PieChart"
     const val BAR = "BarChart"
+    const val BAR_PLOT = "BarChartPlot"
     const val LINE = "LineChart"
+    const val LINE_PLOT = "LineChartPlot"
     const val STACKED_BAR = "StackedBarChart"
+    const val STACKED_BAR_PLOT = "StackedBarChartPlot"
     const val STACKED_AREA = "StackedAreaChart"
+    const val STACKED_AREA_PLOT = "StackedAreaChartPlot"
     const val RADAR = "RadarChart"
 }
 

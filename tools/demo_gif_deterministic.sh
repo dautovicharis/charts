@@ -14,12 +14,11 @@ GIF_WIDTH="${GIF_WIDTH:-540}"
 GIF_HEIGHT="${GIF_HEIGHT:-}"
 GIF_FPS="${GIF_FPS:-50}"
 GIF_OPT_LEVEL="${GIF_OPT_LEVEL:-3}"
-GIF_OPT_LOSSY="${GIF_OPT_LOSSY:-80}"
+GIF_OPT_LOSSY="${GIF_OPT_LOSSY:-0}"
 GIF_OPT_COLORS="${GIF_OPT_COLORS:-256}"
 FRAME_STEP_MS="${FRAME_STEP_MS:-}"
 INTRO_FRAMES="${INTRO_FRAMES:-}"
 INTERACTION_FRAMES="${INTERACTION_FRAMES:-}"
-TAP_FRAMES="${TAP_FRAMES:-}"
 KEEP_TMP="${KEEP_TMP:-0}"
 VERBOSE="${VERBOSE:-0}"
 
@@ -41,19 +40,12 @@ TEST_CLASS="io.github.dautovicharis.charts.app.recording.DeterministicGifFrameCa
 
 SUPPORTED_DEMOS=(
   pie_default
-  pie_custom
   line_default
-  line_custom
   multi_line_default
-  multi_line_custom
   bar_default
-  bar_custom
   stacked_bar_default
-  stacked_bar_custom
   stacked_area_default
-  stacked_area_custom
   radar_default
-  radar_custom
 )
 
 log() {
@@ -73,10 +65,9 @@ Usage:
   $SCRIPT_NAME --help
 
 Examples:
-  ./tools/demo_gif_deterministic.sh pie_custom
-  ./tools/demo_gif_deterministic.sh line_custom
+  ./tools/demo_gif_deterministic.sh pie_default
   ./tools/demo_gif_deterministic.sh --all
-  ADB_SERIAL=emulator-5554 ./tools/demo_gif_deterministic.sh radar_custom
+  ADB_SERIAL=emulator-5554 ./tools/demo_gif_deterministic.sh radar_default
   ADB_BIN="$HOME/Library/Android/sdk/platform-tools/adb" ./tools/demo_gif_deterministic.sh multi_line_default
 
 Requires GIF optimizer in PATH:
@@ -98,7 +89,6 @@ Environment overrides:
   FRAME_STEP_MS              (default per demo)
   INTRO_FRAMES               (default per demo)
   INTERACTION_FRAMES         (default per demo)
-  TAP_FRAMES                 (legacy alias for INTERACTION_FRAMES)
   DOCS_VERSION               (default: $DOCS_VERSION; ignored when OUTPUT_DIR is set)
   OUTPUT_DIR                 (default: $OUTPUT_DIR)
   KEEP_TMP                   (1 to keep temp files)
@@ -183,10 +173,6 @@ select_device() {
 
 resolve_demo() {
   local demo="$1"
-  if [[ "$demo" == "pie_donut" ]]; then
-    demo="pie_custom"
-  fi
-
   DEMO_NAME="$demo"
 
   local supported=0
@@ -205,36 +191,27 @@ resolve_demo() {
   [[ -n "$FRAME_STEP_MS" ]] || FRAME_STEP_MS="20"
 
   case "$demo" in
-    pie_default|pie_custom)
+    pie_default)
       [[ -n "$INTRO_FRAMES" ]] || INTRO_FRAMES="65"
       [[ -n "$INTERACTION_FRAMES" ]] || INTERACTION_FRAMES="14"
       ;;
-    bar_default|bar_custom)
+    bar_default)
       [[ -n "$INTRO_FRAMES" ]] || INTRO_FRAMES="55"
       [[ -n "$INTERACTION_FRAMES" ]] || INTERACTION_FRAMES="14"
       ;;
-    line_default|line_custom|multi_line_default|multi_line_custom|stacked_area_default|stacked_area_custom)
+    line_default|multi_line_default|stacked_area_default)
       [[ -n "$INTRO_FRAMES" ]] || INTRO_FRAMES="90"
       [[ -n "$INTERACTION_FRAMES" ]] || INTERACTION_FRAMES="12"
       ;;
-    stacked_bar_default|stacked_bar_custom)
+    stacked_bar_default)
       [[ -n "$INTRO_FRAMES" ]] || INTRO_FRAMES="70"
       [[ -n "$INTERACTION_FRAMES" ]] || INTERACTION_FRAMES="12"
       ;;
-    radar_default|radar_custom)
+    radar_default)
       [[ -n "$INTRO_FRAMES" ]] || INTRO_FRAMES="80"
       [[ -n "$INTERACTION_FRAMES" ]] || INTERACTION_FRAMES="12"
       ;;
   esac
-}
-
-apply_legacy_interaction_alias() {
-  if [[ -n "$INTERACTION_FRAMES" ]]; then
-    return
-  fi
-  if [[ -n "$TAP_FRAMES" ]]; then
-    INTERACTION_FRAMES="$TAP_FRAMES"
-  fi
 }
 
 run_capture_test() {
@@ -368,7 +345,8 @@ render_gif() {
 
 normalize_frames() {
   local scale_pad_filter
-  scale_pad_filter="scale=${GIF_WIDTH}:${RESOLVED_GIF_HEIGHT}:flags=lanczos:force_original_aspect_ratio=decrease,pad=${GIF_WIDTH}:${RESOLVED_GIF_HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=white,format=rgb24"
+  # For light theme GIFs, switch pad color from black to white.
+  scale_pad_filter="scale=${GIF_WIDTH}:${RESOLVED_GIF_HEIGHT}:flags=lanczos:force_original_aspect_ratio=decrease,pad=${GIF_WIDTH}:${RESOLVED_GIF_HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=black,format=rgb24"
   log "Normalizing frames to fixed canvas ${GIF_WIDTH}x${RESOLVED_GIF_HEIGHT}"
 
   local ffmpeg_loglevel="error"
@@ -494,7 +472,6 @@ main() {
 
   DEMO_NAME="$1"
 
-  apply_legacy_interaction_alias
   resolve_demo "$DEMO_NAME"
 
   require_gifsicle

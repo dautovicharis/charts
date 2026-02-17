@@ -567,6 +567,7 @@ internal fun LineChartContent(
                     modifier =
                         Modifier
                             .fillMaxSize()
+                            .testTag(TestTags.LINE_CHART_PLOT)
                             .then(denseTapInteractionModifier)
                             .then(
                                 if (denseMorphEnabled) {

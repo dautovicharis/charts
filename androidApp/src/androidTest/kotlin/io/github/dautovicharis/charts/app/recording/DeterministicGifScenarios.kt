@@ -13,7 +13,6 @@ import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
 import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
-import io.github.dautovicharis.charts.app.fixtures.ChartTestStyleFixtures
 import io.github.dautovicharis.charts.style.BarChartDefaults
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import io.github.dautovicharis.charts.style.PieChartDefaults
@@ -52,59 +51,10 @@ internal val SCENARIOS: Map<String, DemoScenario> =
             },
         ),
         DemoScenario(
-            demoName = "pie_custom",
-            introFrames = 65,
-            interactionFrames = 14,
-            interactionNodeTag = ChartSemanticsTags.PIE,
-            renderChart = { chartViewStyle ->
-                PieChart(
-                    dataSet = pieSampleUseCase.initialPieCustomSample().dataSet,
-                    style =
-                        ChartTestStyleFixtures.pieCustomStyle(
-                            chartViewStyle = chartViewStyle,
-                            segmentCount = 6,
-                        ),
-                    animateOnStart = true,
-                )
-            },
-            interactionSteps = { frames ->
-                listOf(
-                    Tap(xFraction = 0.52f, yFraction = 0.34f, framesAfter = frames),
-                    Tap(xFraction = 0.70f, yFraction = 0.52f, framesAfter = frames),
-                    Tap(xFraction = 0.30f, yFraction = 0.58f, framesAfter = frames),
-                )
-            },
-        ),
-        DemoScenario(
-            // Backward-compatible alias for existing docs/tooling.
-            demoName = "pie_donut",
-            introFrames = 65,
-            interactionFrames = 14,
-            interactionNodeTag = ChartSemanticsTags.PIE,
-            renderChart = { chartViewStyle ->
-                PieChart(
-                    dataSet = pieSampleUseCase.initialPieCustomSample().dataSet,
-                    style =
-                        ChartTestStyleFixtures.pieCustomStyle(
-                            chartViewStyle = chartViewStyle,
-                            segmentCount = 6,
-                        ),
-                    animateOnStart = true,
-                )
-            },
-            interactionSteps = { frames ->
-                listOf(
-                    Tap(xFraction = 0.52f, yFraction = 0.34f, framesAfter = frames),
-                    Tap(xFraction = 0.70f, yFraction = 0.52f, framesAfter = frames),
-                    Tap(xFraction = 0.30f, yFraction = 0.58f, framesAfter = frames),
-                )
-            },
-        ),
-        DemoScenario(
             demoName = "line_default",
             introFrames = 90,
             interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.LINE,
+            interactionNodeTag = ChartSemanticsTags.LINE_PLOT,
             renderChart = { chartViewStyle ->
                 LineChart(
                     dataSet = lineSampleUseCase.initialLineDataSet(),
@@ -117,26 +67,10 @@ internal val SCENARIOS: Map<String, DemoScenario> =
             },
         ),
         DemoScenario(
-            demoName = "line_custom",
-            introFrames = 90,
-            interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.LINE,
-            renderChart = { chartViewStyle ->
-                LineChart(
-                    dataSet = lineSampleUseCase.initialLineDataSet(),
-                    style = ChartTestStyleFixtures.lineCustomStyle(chartViewStyle),
-                    animateOnStart = true,
-                )
-            },
-            interactionSteps = { frames ->
-                horizontalDragSequence(frames, yFraction = 0.54f)
-            },
-        ),
-        DemoScenario(
             demoName = "multi_line_default",
             introFrames = 90,
             interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.LINE,
+            interactionNodeTag = ChartSemanticsTags.LINE_PLOT,
             renderChart = { chartViewStyle ->
                 LineChart(
                     dataSet = multiLineSampleUseCase.initialMultiLineSample().dataSet,
@@ -145,34 +79,34 @@ internal val SCENARIOS: Map<String, DemoScenario> =
                 )
             },
             interactionSteps = { frames ->
-                horizontalDragSequence(frames, yFraction = 0.60f)
-            },
-        ),
-        DemoScenario(
-            demoName = "multi_line_custom",
-            introFrames = 90,
-            interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.LINE,
-            renderChart = { chartViewStyle ->
-                LineChart(
-                    dataSet = multiLineSampleUseCase.initialMultiLineSample().dataSet,
-                    style =
-                        ChartTestStyleFixtures.multiLineCustomStyle(
-                            chartViewStyle = chartViewStyle,
-                            seriesCount = 3,
-                        ),
-                    animateOnStart = true,
+                val pauseFrames = frames.coerceAtLeast(1)
+                val dragFrames = (frames * 2).coerceAtLeast(1)
+                val tapFrames = (frames * 2).coerceAtLeast(1)
+                listOf(
+                    Pause(frames = pauseFrames),
+                    DragPath(
+                        points =
+                            listOf(
+                                FractionPoint(0.14f, 0.60f),
+                                FractionPoint(0.38f, 0.60f),
+                                FractionPoint(0.62f, 0.60f),
+                                FractionPoint(0.84f, 0.60f),
+                            ),
+                        holdStartFrames = dragFrames,
+                        framesPerWaypoint = dragFrames,
+                        releaseFrames = dragFrames,
+                    ),
+                    Tap(xFraction = 0.24f, yFraction = 0.60f, framesAfter = tapFrames),
+                    Tap(xFraction = 0.52f, yFraction = 0.58f, framesAfter = tapFrames),
+                    Tap(xFraction = 0.80f, yFraction = 0.56f, framesAfter = tapFrames),
                 )
-            },
-            interactionSteps = { frames ->
-                horizontalDragSequence(frames, yFraction = 0.56f)
             },
         ),
         DemoScenario(
             demoName = "bar_default",
             introFrames = 55,
             interactionFrames = 14,
-            interactionNodeTag = ChartSemanticsTags.BAR,
+            interactionNodeTag = ChartSemanticsTags.BAR_PLOT,
             renderChart = { chartViewStyle ->
                 BarChart(
                     dataSet = barSampleUseCase.initialBarDataSet(),
@@ -189,30 +123,10 @@ internal val SCENARIOS: Map<String, DemoScenario> =
             },
         ),
         DemoScenario(
-            demoName = "bar_custom",
-            introFrames = 55,
-            interactionFrames = 14,
-            interactionNodeTag = ChartSemanticsTags.BAR,
-            renderChart = { chartViewStyle ->
-                BarChart(
-                    dataSet = barSampleUseCase.initialBarDataSet(),
-                    style = ChartTestStyleFixtures.barCustomStyle(chartViewStyle),
-                    animateOnStart = true,
-                )
-            },
-            interactionSteps = { frames ->
-                listOf(
-                    Tap(xFraction = 0.12f, yFraction = 0.24f, framesAfter = frames),
-                    Tap(xFraction = 0.46f, yFraction = 0.78f, framesAfter = frames),
-                    Tap(xFraction = 0.86f, yFraction = 0.40f, framesAfter = frames),
-                )
-            },
-        ),
-        DemoScenario(
             demoName = "stacked_bar_default",
             introFrames = 70,
             interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.STACKED_BAR,
+            interactionNodeTag = ChartSemanticsTags.STACKED_BAR_PLOT,
             renderChart = { chartViewStyle ->
                 StackedBarChart(
                     dataSet = stackedBarSampleUseCase.initialStackedBarSample().dataSet,
@@ -225,30 +139,10 @@ internal val SCENARIOS: Map<String, DemoScenario> =
             },
         ),
         DemoScenario(
-            demoName = "stacked_bar_custom",
-            introFrames = 70,
-            interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.STACKED_BAR,
-            renderChart = { chartViewStyle ->
-                StackedBarChart(
-                    dataSet = stackedBarSampleUseCase.initialStackedBarSample().dataSet,
-                    style =
-                        ChartTestStyleFixtures.stackedBarCustomStyle(
-                            chartViewStyle = chartViewStyle,
-                            segmentCount = 4,
-                        ),
-                    animateOnStart = true,
-                )
-            },
-            interactionSteps = { frames ->
-                horizontalDragSequence(frames, yFraction = 0.60f, withPause = false)
-            },
-        ),
-        DemoScenario(
             demoName = "stacked_area_default",
             introFrames = 90,
             interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.STACKED_AREA,
+            interactionNodeTag = ChartSemanticsTags.STACKED_AREA_PLOT,
             renderChart = { chartViewStyle ->
                 StackedAreaChart(
                     dataSet = stackedAreaSampleUseCase.initialStackedAreaSample().dataSet,
@@ -257,27 +151,28 @@ internal val SCENARIOS: Map<String, DemoScenario> =
                 )
             },
             interactionSteps = { frames ->
-                horizontalDragSequence(frames, yFraction = 0.64f)
-            },
-        ),
-        DemoScenario(
-            demoName = "stacked_area_custom",
-            introFrames = 90,
-            interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.STACKED_AREA,
-            renderChart = { chartViewStyle ->
-                StackedAreaChart(
-                    dataSet = stackedAreaSampleUseCase.initialStackedAreaSample().dataSet,
-                    style =
-                        ChartTestStyleFixtures.stackedAreaCustomStyle(
-                            chartViewStyle = chartViewStyle,
-                            seriesCount = 3,
-                        ),
-                    animateOnStart = true,
+                val pauseFrames = frames.coerceAtLeast(1)
+                val dragFrames = (frames * 2).coerceAtLeast(1)
+                val tapFrames = (frames * 2).coerceAtLeast(1)
+                val finalTapFrames = (frames * 3).coerceAtLeast(1)
+                listOf(
+                    Pause(frames = pauseFrames),
+                    DragPath(
+                        points =
+                            listOf(
+                                FractionPoint(0.16f, 0.58f),
+                                FractionPoint(0.40f, 0.58f),
+                                FractionPoint(0.62f, 0.58f),
+                                FractionPoint(0.84f, 0.58f),
+                            ),
+                        holdStartFrames = dragFrames,
+                        framesPerWaypoint = dragFrames,
+                        releaseFrames = dragFrames,
+                    ),
+                    Tap(xFraction = 0.22f, yFraction = 0.60f, framesAfter = tapFrames),
+                    Tap(xFraction = 0.52f, yFraction = 0.56f, framesAfter = tapFrames),
+                    Tap(xFraction = 0.80f, yFraction = 0.52f, framesAfter = finalTapFrames),
                 )
-            },
-            interactionSteps = { frames ->
-                horizontalDragSequence(frames, yFraction = 0.58f)
             },
         ),
         DemoScenario(
@@ -289,27 +184,6 @@ internal val SCENARIOS: Map<String, DemoScenario> =
                 RadarChart(
                     dataSet = radarSampleUseCase.initialRadarDefaultDataSet(),
                     style = RadarChartDefaults.style(chartViewStyle = chartViewStyle),
-                    animateOnStart = true,
-                )
-            },
-            interactionSteps = { frames ->
-                radarDragSequence(frames)
-            },
-        ),
-        DemoScenario(
-            demoName = "radar_custom",
-            introFrames = 80,
-            interactionFrames = 12,
-            interactionNodeTag = ChartSemanticsTags.RADAR,
-            renderChart = { chartViewStyle ->
-                val sample = radarSampleUseCase.initialRadarSample()
-                RadarChart(
-                    dataSet = sample.customDataSet,
-                    style =
-                        ChartTestStyleFixtures.radarCustomStyle(
-                            chartViewStyle = chartViewStyle,
-                            seriesKeys = sample.seriesKeys,
-                        ),
                     animateOnStart = true,
                 )
             },
