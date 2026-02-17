@@ -1,58 +1,53 @@
-# Contributing to Charts
+# Contributing to charts
 
-Thank you for your time!
+Contributions are welcome.
 
-# Contributions 
-New issue: https://github.com/dautovicharis/Charts/issues
-Feel free to create issue for any suggestions, improvement ideas, feature requests, or bugs. 
+This repository contains many subprojects, including chart libraries, demo apps, docs and playground. There are many ways to contribute, such as feature work, bug fixes, documentation updates, and test improvements.
 
-## Git setup
-#### Fork repo
- - Fork repository: https://github.com/dautovicharis/charts
- - Clone forked repository locally
- - Add upstream
-   ```bash
-   git remote add upstream https://github.com/dautovicharis/Charts.git
-   ```
-
-#### Sync **origin/main** with **upstream/main**
-```bash
- git fetch upstream
- git checkout main
- git merge upstream/main
- git push origin main
+## Project hierarchy
+```text
+ChartsProject
+├── Core
+│   └── :charts-core
+├── Umbrella
+│   └── :charts
+├── Independent Charts
+│   ├── :charts-line
+│   ├── :charts-pie
+│   ├── :charts-bar
+│   ├── :charts-radar
+│   ├── :charts-stacked-bar
+│   └── :charts-stacked-area
+├── BOM
+│   └── :charts-bom
+└── Apps
+    ├── :app (common)
+    ├── :androidApp
+    ├── :iosApp
+    ├── :playground
+    └── :docs/docs-app
 ```
 
-## Branch naming convention
-```bash
-bugfix/<bug-name>
-feature/<feature-name>
-improvement/<improvement-name>
-update/<update-name>
-```
+## Report issues
+Open an issue: https://github.com/dautovicharis/charts/issues
 
-Example:
-```bash
-bugfix/bar-chart-animation
-bugfix/line-chart-shadow
+## Technologies by module
+| Module | Technologies / Languages |
+| --- | --- |
+| `:charts-*` | Kotlin Multiplatform, Compose Multiplatform (Android/iOS/JVM/JS) |
+| `:charts-bom` | Gradle Java Platform (BOM), Maven Publishing |
+| `:app` | Kotlin Multiplatform, Compose Multiplatform (Android/iOS/JVM/JS) |
+| `:androidApp` | Kotlin, Android, Jetpack Compose |
+| `:iosApp` | Swift, SwiftUI, Xcode |
+| `:playground` | Kotlin Multiplatform (JVM/JS), Compose Multiplatform |
+| `:docs` | Dokka-generated API docs, Markdown content |
+| `:docs/docs-app` | TypeScript, Next.js, React, MDX |
 
-feature/line-chart
-feature/styles
-feature/documentation
-
-update/docs
-update/dependencies
-
-improvement/styles
-improvement/app-demo
-```
-
-## Commit
- - Write in imperative mode:  Start the line with 'Fix', 'Add', 'Update' instead of 'Fixed', 'Added', 'Updated'
- - Capitalize the subject line
-
-## New branches
-Create new branch from **main**
-
-## PR
-Create new PR to **upstream/main**
+## Test types in this project
+- Kotlin/JVM unit tests (core and chart modules).
+- Compose UI tests for chart modules (`:charts-*`, KMP Compose UI test APIs).
+- Kotlin/JS tests (playground and JS targets).
+- Android instrumented tests for deterministic GIF frame capture (`:androidApp`, runs on device/emulator).
+- Android screenshot tests (baseline image validation).
+- Smoke compile checks (module-level compile validation).
+- Behavior/contract tests for docs release links and assets.
