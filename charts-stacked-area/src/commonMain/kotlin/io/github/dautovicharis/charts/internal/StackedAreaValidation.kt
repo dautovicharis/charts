@@ -4,6 +4,7 @@ import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_STA
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.style.StackedAreaChartStyle
 
+@InternalChartsApi
 fun validateStackedAreaData(
     data: MultiChartData,
     style: StackedAreaChartStyle,

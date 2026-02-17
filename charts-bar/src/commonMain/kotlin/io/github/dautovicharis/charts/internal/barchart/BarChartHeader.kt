@@ -9,7 +9,7 @@ import io.github.dautovicharis.charts.internal.common.composable.ZoomControls
 import io.github.dautovicharis.charts.style.BarChartStyle
 
 @Composable
-fun BarChartHeader(
+internal fun BarChartHeader(
     title: String,
     style: BarChartStyle,
     showDensityToggle: Boolean,

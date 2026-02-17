@@ -39,7 +39,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
-data class PieSlice(
+internal data class PieSlice(
     val startDeg: Float,
     val endDeg: Float,
     val sweepAngle: Float,
@@ -48,7 +48,7 @@ data class PieSlice(
 )
 
 @Composable
-fun PieChart(
+internal fun PieChart(
     chartData: ChartData,
     colors: ImmutableList<Color>,
     style: PieChartStyle,

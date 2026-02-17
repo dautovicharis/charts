@@ -34,7 +34,7 @@ import kotlin.math.roundToInt
 private const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
 
 @Composable
-fun BarChartContent(
+internal fun BarChartContent(
     chartData: ChartData,
     style: BarChartStyle,
     interactionEnabled: Boolean,

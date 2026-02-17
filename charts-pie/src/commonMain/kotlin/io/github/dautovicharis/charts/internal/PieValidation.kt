@@ -4,6 +4,7 @@ import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_PIE
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.style.PieChartStyle
 
+@InternalChartsApi
 fun validatePieData(
     dataSet: ChartDataSet,
     style: PieChartStyle,

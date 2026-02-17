@@ -4,6 +4,7 @@ import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_LIN
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 import io.github.dautovicharis.charts.style.LineChartStyle
 
+@InternalChartsApi
 fun validateLineData(
     data: MultiChartData,
     style: LineChartStyle,

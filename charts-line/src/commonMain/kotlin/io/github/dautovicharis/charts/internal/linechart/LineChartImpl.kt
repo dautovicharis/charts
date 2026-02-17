@@ -32,7 +32,7 @@ private const val LINE_ZOOM_MAX = 4f
 private const val LINE_ZOOM_STEP = 1.25f
 
 @Composable
-fun LineChartImpl(
+internal fun LineChartImpl(
     data: MultiChartData,
     style: LineChartStyle = LineChartDefaults.style(),
     interactionEnabled: Boolean = true,

@@ -33,7 +33,7 @@ private const val ZOOM_STEP = 1.25f
 private val Y_AXIS_CHART_GAP: Dp = 10.dp
 
 @Composable
-fun BarChart(
+internal fun BarChart(
     chartData: ChartData,
     title: String,
     style: BarChartStyle,
