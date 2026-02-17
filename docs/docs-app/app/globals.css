@@ -66,7 +66,7 @@
   /* Layout */
   --header-height: 64px;
   --sidebar-width: 280px;
-  --content-max-width: 900px;
+  --content-max-width: 1120px;
 }
 
 /* Dark Theme (default) */
@@ -369,7 +369,7 @@ body {
   flex: 1;
   margin-left: var(--sidebar-width);
   margin-top: var(--header-height);
-  padding: var(--space-10);
+  padding: var(--space-8) var(--space-6);
 }
 
 .docs-content {
@@ -582,6 +582,36 @@ body {
   overflow-x: auto;
 }
 
+/* Keep code block scrollbars dark (horizontal + vertical) */
+.docs-content pre,
+.docs-content .code-block pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.9) rgba(15, 23, 42, 0.9);
+}
+
+.docs-content pre::-webkit-scrollbar,
+.docs-content .code-block pre::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+.docs-content pre::-webkit-scrollbar-track,
+.docs-content .code-block pre::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 9999px;
+}
+
+.docs-content pre::-webkit-scrollbar-thumb,
+.docs-content .code-block pre::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.9);
+  border-radius: 9999px;
+}
+
+.docs-content pre::-webkit-scrollbar-thumb:hover,
+.docs-content .code-block pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.95);
+}
+
 .docs-content .code-block code {
   background: transparent;
   padding: 0;
@@ -592,6 +622,44 @@ body {
 
 .docs-content .code-block span {
   background: transparent !important;
+}
+
+/* Snapshot examples split layout: GIF left (35%), code right (65%) */
+.docs-page--snapshot-examples .docs-content .docs-example-split-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.docs-page--snapshot-examples .docs-content .docs-example-split-row > .markdown-html-block {
+  flex: 0 0 35%;
+  max-width: 35%;
+  margin: 0;
+}
+
+.docs-page--snapshot-examples .docs-content .docs-example-split-row > .code-block {
+  flex: 0 0 65%;
+  max-width: 65%;
+  margin: 0;
+}
+
+.docs-page--snapshot-examples .docs-content .docs-example-split-row > .code-block pre {
+  max-height: min(76vh, 820px);
+}
+
+@media (max-width: 1080px) {
+  .docs-page--snapshot-examples .docs-content .docs-example-split-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+
+  .docs-page--snapshot-examples .docs-content .docs-example-split-row > .markdown-html-block,
+  .docs-page--snapshot-examples .docs-content .docs-example-split-row > .code-block {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 
 .code-block__copy {

@@ -267,6 +267,7 @@ internal fun BarChartContent(
                     modifier =
                         Modifier
                             .fillMaxSize()
+                            .testTag(TestTags.BAR_CHART_PLOT)
                             .then(interactionModifier)
                             .horizontalScroll(state = scrollState, enabled = isScrollable),
                 ) {

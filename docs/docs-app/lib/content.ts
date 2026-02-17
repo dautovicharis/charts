@@ -117,6 +117,10 @@ function extractExamplesChildren(content: string, pagePath: string): NavItem[] {
   const makeSlug = createHeadingSlugger();
   let hasStartedPrimaryGroup = false;
   let hasEndedPrimaryGroup = false;
+  const isSnapshotVersion = pagePath.startsWith('/snapshot/');
+
+  const displayTitle = (title: string) =>
+    isSnapshotVersion ? title.replace(/\s+Chart$/, '') : title;
 
   for (const rawLine of content.split('\n')) {
     const match = rawLine.match(/^(#{1,6})\s+(.+)$/);
@@ -133,12 +137,12 @@ function extractExamplesChildren(content: string, pagePath: string): NavItem[] {
         continue;
       }
       hasStartedPrimaryGroup = true;
-      children.push({ title, slug: anchor, path: `${pagePath}#${anchor}` });
+      children.push({ title: displayTitle(title), slug: anchor, path: `${pagePath}#${anchor}` });
       continue;
     }
 
     if (!hasEndedPrimaryGroup && level === 3) {
-      children.push({ title, slug: anchor, path: `${pagePath}#${anchor}` });
+      children.push({ title: displayTitle(title), slug: anchor, path: `${pagePath}#${anchor}` });
       continue;
     }
 

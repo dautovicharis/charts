@@ -7,12 +7,15 @@ import { createHeadingSlugger } from '@/lib/anchors';
 
 interface MarkdownRendererProps {
   content: string;
+  layoutVariant?: 'default' | 'snapshotExamples';
 }
 
-export function MarkdownRenderer({ content }: MarkdownRendererProps) {
-  // Parse and render markdown content
-  const elements = parseMarkdown(content);
-  
+export function MarkdownRenderer({
+  content,
+  layoutVariant = 'default',
+}: MarkdownRendererProps) {
+  const elements = parseMarkdown(content, { layoutVariant });
+
   return (
     <div className="docs-content">
       {elements}
@@ -77,7 +80,99 @@ function CodeBlock({ code, language }: CodeBlockProps) {
   );
 }
 
-function parseMarkdown(content: string): React.ReactNode[] {
+interface ParseMarkdownOptions {
+  layoutVariant: 'default' | 'snapshotExamples';
+}
+
+interface HtmlBlockParseResult {
+  htmlContent: string;
+  nextIndex: number;
+}
+
+interface CodeBlockParseResult {
+  code: string;
+  language: string;
+  nextIndex: number;
+}
+
+function skipBlankLines(lines: string[], startIndex: number): number {
+  let index = startIndex;
+  while (index < lines.length && lines[index].trim() === '') {
+    index += 1;
+  }
+  return index;
+}
+
+function parseHtmlBlockAt(lines: string[], startIndex: number): HtmlBlockParseResult | null {
+  if (startIndex >= lines.length) {
+    return null;
+  }
+
+  const firstLine = lines[startIndex].trim();
+  if (!firstLine.startsWith('<') || firstLine.startsWith('</')) {
+    return null;
+  }
+
+  const blockMatch = firstLine.match(
+    /^<(div|figure|table|section|article|aside|header|footer|nav|iframe|img)[\s>]/i,
+  );
+  if (!blockMatch) {
+    return null;
+  }
+
+  const tagName = blockMatch[1].toLowerCase();
+  const htmlLines: string[] = [];
+  let index = startIndex;
+  let depth = 0;
+
+  do {
+    const currentLine = lines[index];
+    const openTags = (currentLine.match(new RegExp(`<${tagName}[\\s>]`, 'gi')) || []).length;
+    const closeTags = (currentLine.match(new RegExp(`</${tagName}>`, 'gi')) || []).length;
+    const selfClosing = tagName === 'img' && currentLine.includes('<img');
+
+    depth += openTags - closeTags;
+    htmlLines.push(currentLine);
+    index += 1;
+
+    if (selfClosing || (depth <= 0 && htmlLines.length > 0)) {
+      break;
+    }
+  } while (index < lines.length && depth > 0);
+
+  return {
+    htmlContent: htmlLines.join('\n'),
+    nextIndex: index,
+  };
+}
+
+function parseCodeBlockAt(lines: string[], startIndex: number): CodeBlockParseResult | null {
+  if (startIndex >= lines.length || !lines[startIndex].startsWith('```')) {
+    return null;
+  }
+
+  const language = lines[startIndex].slice(3).trim() || 'text';
+  const codeLines: string[] = [];
+  let index = startIndex + 1;
+
+  while (index < lines.length && !lines[index].startsWith('```')) {
+    codeLines.push(lines[index]);
+    index += 1;
+  }
+
+  if (index < lines.length && lines[index].startsWith('```')) {
+    index += 1;
+  }
+
+  return {
+    code: codeLines.join('\n'),
+    language,
+    nextIndex: index,
+  };
+}
+
+function parseMarkdown(content: string, options: ParseMarkdownOptions): React.ReactNode[] {
+  const { layoutVariant } = options;
   const lines = content.split('\n');
   const elements: React.ReactNode[] = [];
   const makeSlug = createHeadingSlugger();
@@ -87,59 +182,64 @@ function parseMarkdown(content: string): React.ReactNode[] {
   while (i < lines.length) {
     const line = lines[i];
 
-    // HTML block (starts with < and is not a self-closing single line)
-    if (line.trim().startsWith('<') && !line.trim().startsWith('</')) {
-      // Check if it's a block-level HTML element
-      const blockMatch = line.trim().match(/^<(div|figure|table|section|article|aside|header|footer|nav|iframe|img)[\s>]/i);
-      if (blockMatch) {
-        const htmlLines: string[] = [];
-        const tagName = blockMatch[1].toLowerCase();
-        let depth = 0;
-        
-        // Collect all lines until the closing tag
-        do {
-          const currentLine = lines[i];
-          // Count opening tags
-          const openTags = (currentLine.match(new RegExp(`<${tagName}[\\s>]`, 'gi')) || []).length;
-          // Count closing tags
-          const closeTags = (currentLine.match(new RegExp(`</${tagName}>`, 'gi')) || []).length;
-          // Handle self-closing img tags
-          const selfClosing = tagName === 'img' && currentLine.includes('<img');
-          
-          depth += openTags - closeTags;
-          htmlLines.push(currentLine);
-          i++;
-          
-          // Break if self-closing or depth is 0
-          if (selfClosing || (depth <= 0 && htmlLines.length > 0)) {
-            break;
+    if (layoutVariant === 'snapshotExamples') {
+      const h3Match = line.match(/^###\s+(.+)$/);
+      if (h3Match) {
+        const rawText = h3Match[1].trim().replace(/\s+#+\s*$/, '');
+        const id = makeSlug(rawText);
+        elements.push(<h3 key={key++} id={id}>{parseInlineMarkdown(rawText)}</h3>);
+        i += 1;
+
+        let probe = skipBlankLines(lines, i);
+        const htmlBlock = parseHtmlBlockAt(lines, probe);
+        if (htmlBlock) {
+          probe = skipBlankLines(lines, htmlBlock.nextIndex);
+          const codeBlock = parseCodeBlockAt(lines, probe);
+          if (codeBlock) {
+            const htmlNode = (
+              <div
+                key={`snapshot-html-${key++}`}
+                dangerouslySetInnerHTML={{ __html: htmlBlock.htmlContent }}
+                className="markdown-html-block"
+              />
+            );
+            const codeNode = (
+              <CodeBlock
+                key={`snapshot-code-${key++}`}
+                code={codeBlock.code}
+                language={codeBlock.language}
+              />
+            );
+            elements.push(
+              <div className="docs-example-split-row" key={`snapshot-row-${key++}`}>
+                {htmlNode}
+                {codeNode}
+              </div>,
+            );
+            i = codeBlock.nextIndex;
           }
-        } while (i < lines.length && depth > 0);
-        
-        const htmlContent = htmlLines.join('\n');
-        elements.push(
-          <div 
-            key={key++} 
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-            className="markdown-html-block"
-          />
-        );
+        }
         continue;
       }
     }
 
-    // Code blocks
-    if (line.startsWith('```')) {
-      const lang = line.slice(3).trim() || 'text';
-      const codeLines: string[] = [];
-      i++;
-      while (i < lines.length && !lines[i].startsWith('```')) {
-        codeLines.push(lines[i]);
-        i++;
-      }
-      i++; // Skip closing ```
-      
-      elements.push(<CodeBlock key={key++} code={codeLines.join('\n')} language={lang} />);
+    const htmlBlock = parseHtmlBlockAt(lines, i);
+    if (htmlBlock) {
+      elements.push(
+        <div
+          key={key++}
+          dangerouslySetInnerHTML={{ __html: htmlBlock.htmlContent }}
+          className="markdown-html-block"
+        />
+      );
+      i = htmlBlock.nextIndex;
+      continue;
+    }
+
+    const codeBlock = parseCodeBlockAt(lines, i);
+    if (codeBlock) {
+      elements.push(<CodeBlock key={key++} code={codeBlock.code} language={codeBlock.language} />);
+      i = codeBlock.nextIndex;
       continue;
     }
 

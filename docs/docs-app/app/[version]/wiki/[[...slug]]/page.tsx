@@ -32,9 +32,17 @@ export default async function WikiPage({ params }: WikiPageProps) {
     notFound();
   }
 
+  const isSnapshotExamples = version === 'snapshot' && pageSlug === 'examples';
+  const articleClassName = isSnapshotExamples
+    ? 'docs-content animate-fadeIn docs-page--snapshot-examples'
+    : 'docs-content animate-fadeIn';
+
   return (
-    <article className="docs-content animate-fadeIn">
-      <MarkdownRenderer content={page.content} />
+    <article className={articleClassName}>
+      <MarkdownRenderer
+        content={page.content}
+        layoutVariant={isSnapshotExamples ? 'snapshotExamples' : 'default'}
+      />
     </article>
   );
 }

@@ -29,7 +29,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.github.dautovicharis.charts.app.ui.theme.AppTheme
@@ -122,7 +121,6 @@ class DeterministicGifFrameCaptureTest {
         val interactionFrames =
             (
                 args.getString("interaction_frames")?.toIntOrNull()
-                    ?: args.getString("tap_frames")?.toIntOrNull()
                     ?: scenario.interactionFrames
             ).coerceAtLeast(0)
 
@@ -363,7 +361,7 @@ class DeterministicGifFrameCaptureTest {
 @Composable
 private fun DeterministicChartScene(chartContent: @Composable (ChartViewStyle) -> Unit) {
     var refreshKey by remember { mutableIntStateOf(0) }
-    AppTheme(theme = docsSlate, darkTheme = false, useDynamicColors = false) {
+    AppTheme(theme = docsSlate, darkTheme = true, useDynamicColors = false) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
@@ -388,10 +386,4 @@ private fun DeterministicChartScene(chartContent: @Composable (ChartViewStyle) -
 
 @Composable
 private fun deterministicChartViewStyle(): ChartViewStyle =
-    ChartViewDefaults.style(
-        width = 360.dp,
-        outerPadding = 12.dp,
-        innerPadding = 12.dp,
-        cornerRadius = 20.dp,
-        shadow = 10.dp,
-    )
+    ChartViewDefaults.style()
