@@ -16,7 +16,7 @@ private const val VALUE_DELTA_EPSILON = 0.0001f
 private const val CASCADE_MAX_POINTS = 200
 
 @Composable
-fun rememberBarChartAnimatedValues(
+internal fun rememberBarChartAnimatedValues(
     chartData: ChartData,
     targetNormalized: List<Float>,
     isPreview: Boolean,

@@ -11,7 +11,7 @@ import io.github.dautovicharis.charts.internal.NO_SELECTION
 import io.github.dautovicharis.charts.style.BarChartStyle
 import kotlin.math.abs
 
-fun DrawScope.drawBars(
+internal fun DrawScope.drawBars(
     style: BarChartStyle,
     animatedValues: List<Animatable<Float, AnimationVector1D>>,
     visibleRange: IntRange,

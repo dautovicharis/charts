@@ -16,7 +16,7 @@ import io.github.dautovicharis.charts.style.ChartViewStyle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun RadarLegend(
+internal fun RadarLegend(
     chartViewsStyle: ChartViewStyle,
     series: ImmutableList<String>,
     seriesColors: ImmutableList<Color>,

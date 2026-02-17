@@ -10,7 +10,7 @@ import io.github.dautovicharis.charts.style.LineChartStyle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun LineChart(
+internal fun LineChart(
     data: MultiChartData,
     style: LineChartStyle,
     colors: ImmutableList<Color>,

@@ -25,7 +25,7 @@ private val DefaultCategoryColors =
         Color(0xFFEDC949),
     )
 
-fun categoryColors(
+internal fun categoryColors(
     style: RadarChartStyle,
     count: Int,
 ): ImmutableList<Color> {

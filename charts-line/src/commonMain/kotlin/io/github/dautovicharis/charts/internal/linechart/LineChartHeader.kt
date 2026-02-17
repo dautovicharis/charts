@@ -9,7 +9,7 @@ import io.github.dautovicharis.charts.internal.common.composable.ZoomControls
 import io.github.dautovicharis.charts.style.LineChartStyle
 
 @Composable
-fun LineChartHeader(
+internal fun LineChartHeader(
     title: String,
     style: LineChartStyle,
     showDensityToggle: Boolean,

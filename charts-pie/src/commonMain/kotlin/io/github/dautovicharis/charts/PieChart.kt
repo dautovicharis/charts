@@ -34,7 +34,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 
 private const val SELECTED_TITLE_PERCENTAGE_SIZE_FACTOR = 0.72f
-const val PIE_SELECTION_AUTO_DESELECT_TIMEOUT_MS = 3000L
+internal const val PIE_SELECTION_AUTO_DESELECT_TIMEOUT_MS = 3000L
 
 /**
  * A composable function that displays a Pie Chart.

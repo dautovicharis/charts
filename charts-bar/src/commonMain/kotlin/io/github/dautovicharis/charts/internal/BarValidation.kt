@@ -3,6 +3,7 @@ package io.github.dautovicharis.charts.internal
 import io.github.dautovicharis.charts.internal.ValidationErrors.MIN_REQUIRED_BAR
 import io.github.dautovicharis.charts.internal.common.model.ChartData
 
+@InternalChartsApi
 fun validateBarData(data: ChartData): List<String> {
     val validationErrors = mutableListOf<String>()
     val pointsSize = data.points.size

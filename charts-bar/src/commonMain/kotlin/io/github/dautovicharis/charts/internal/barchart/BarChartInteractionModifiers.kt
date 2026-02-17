@@ -8,7 +8,7 @@ import io.github.dautovicharis.charts.internal.common.interaction.buildPinchZoom
 import io.github.dautovicharis.charts.internal.common.interaction.buildTapGestureModifier
 import kotlin.math.roundToInt
 
-fun buildFitTapModifier(
+internal fun buildFitTapModifier(
     interactionEnabled: Boolean,
     isScrollable: Boolean,
     dataSize: Int,
@@ -39,7 +39,7 @@ fun buildFitTapModifier(
         },
     )
 
-fun buildFitDragModifier(
+internal fun buildFitDragModifier(
     interactionEnabled: Boolean,
     dragSelectionEnabled: Boolean,
     isScrollable: Boolean,
@@ -88,7 +88,7 @@ fun buildFitDragModifier(
         onDragCancel = { onDragFinished() },
     )
 
-fun buildScrollTapModifier(
+internal fun buildScrollTapModifier(
     interactionEnabled: Boolean,
     isScrollable: Boolean,
     dataSize: Int,
@@ -114,7 +114,7 @@ fun buildScrollTapModifier(
         onDoubleTap = { onDoubleTap() },
     )
 
-fun buildPinchModifier(
+internal fun buildPinchModifier(
     isScrollable: Boolean,
     dataSize: Int,
     zoomMin: Float,

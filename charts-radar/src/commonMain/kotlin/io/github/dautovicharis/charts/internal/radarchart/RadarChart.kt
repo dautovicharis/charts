@@ -48,7 +48,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @Composable
-fun RadarChart(
+internal fun RadarChart(
     data: MultiChartData,
     style: RadarChartStyle,
     colors: ImmutableList<Color>,

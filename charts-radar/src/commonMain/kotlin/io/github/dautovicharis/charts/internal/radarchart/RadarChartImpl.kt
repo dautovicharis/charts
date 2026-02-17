@@ -31,7 +31,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-fun RadarChartImpl(
+internal fun RadarChartImpl(
     data: MultiChartData,
     style: RadarChartStyle = RadarChartDefaults.style(),
     interactionEnabled: Boolean = true,

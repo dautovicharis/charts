@@ -61,7 +61,7 @@ private const val ZOOM_STEP = 1.25f
 private const val FIXED_X_AXIS_LABEL_TILT_DEGREES = 34f
 
 @Composable
-fun StackedBarChart(
+internal fun StackedBarChart(
     data: MultiChartData,
     title: String,
     style: StackedBarChartStyle,
