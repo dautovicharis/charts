@@ -26,15 +26,21 @@
 
 ---
 
+## 📚 Documentation
+https://charts.harisdautovic.com/
+
+## 🟢 Production Demo
+https://charts.harisdautovic.com/demo
+
+## ✨ Snapshot Demo
+https://charts.harisdautovic.com/demo/snapshot/
+
+## 🏀 Playground
+https://charts.harisdautovic.com/playground
+
 ## Get Started
 
-Add Charts to `commonMain`:
-
 ```kotlin
-commonMain.dependencies {
-    implementation("io.github.dautovicharis:charts:<version>")
-}
-
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -42,7 +48,20 @@ dependencyResolutionManagement {
 }
 ```
 
-Use modular dependencies if you want to include only specific chart modules:
+
+### All Charts
+
+Use the umbrella artifact when you want all chart types with the simplest setup.
+
+```kotlin
+commonMain.dependencies {
+    implementation("io.github.dautovicharis:charts:<version>")
+}
+```
+
+### Independent Charts
+
+Use independent modules when you want only specific chart types and smaller dependency footprint.
 
 ```kotlin
 commonMain.dependencies {
@@ -57,8 +76,10 @@ commonMain.dependencies {
 }
 ```
 
-Use BOM for version alignment where Gradle platforms are supported
-(for example JVM/Android module dependencies). For KMP `commonMain`, keep explicit versions.
+### BOM
+
+Use BOM for version alignment where Gradle platforms are supported.
+For KMP `commonMain`, keep explicit versions as shown above.
 
 ```kotlin
 dependencies {
@@ -72,9 +93,7 @@ dependencies {
 }
 ```
 
-Basic example:
-
-<img src="docs/content/snapshot/wiki/assets/line_default.gif" alt="Basic line chart example" height="236" align="right" style="margin-top: 28px;" />
+## Example
 
 ```kotlin
 @Composable
@@ -91,16 +110,12 @@ fun BasicLineChart() {
 }
 ```
 
-<br clear="right" />
+<p align="center">
+  <img src="docs/content/snapshot/wiki/assets/line_default.gif" alt="Basic line chart example" width="400" />
+</p>
 
-## Documentation
-https://charts.harisdautovic.com/
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-## Production Demo
-https://charts.harisdautovic.com/demo
-
-## Snapshot Demo
-https://charts.harisdautovic.com/demo/snapshot/
-
-## Playground
-https://charts.harisdautovic.com/playground
+## License
+[MIT](LICENSE)
