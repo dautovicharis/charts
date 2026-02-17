@@ -21,3 +21,9 @@
 ## Getting Started
 
 New to Charts? Check out our [Getting Started Guide](/2.2.0/wiki/getting-started) to learn how to integrate the library into your project and create your first charts in minutes.
+
+## Resources
+
+- [Demo Gallery](/demo/snapshot/)
+- [Playground](/playground/)
+- [API Documentation](/snapshot/api)

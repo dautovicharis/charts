@@ -115,6 +115,10 @@ jobs:
             fi
           done
 
+      - name: Validate docs release links against built static assets
+        shell: bash
+        run: bash scripts/test-docs-release-assets.sh
+
       - name: Guard against accidental deletion of historical docs versions
         shell: bash
         run: |

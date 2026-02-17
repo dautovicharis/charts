@@ -20,9 +20,9 @@ This release adds a new chart type, improves chart controls, and introduces modu
 - Added axes support across all chart types for clearer labels and easier reading.
 - Added new line chart animation modes (`Morph`, `Timeline`) for different data update flows.
 - Added `StackedAreaChart` as a new core chart type.
-- Improved the [demo gallery](/static/demo/2.2.0/index.html) layout and navigation for easier browsing.
+- Improved the [demo gallery](/demo/2.2.0/) layout and navigation for easier browsing.
 - Updated [examples](/2.2.0/wiki/examples) with cleaner, default-focused chart demos.
-- Launched a charts [Playground](/static/playground/snapshot/index.html).
+- Launched a charts [Playground](/playground/).
 
 ### Modular publishing updates
 

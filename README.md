@@ -42,6 +42,36 @@ dependencyResolutionManagement {
 }
 ```
 
+Use modular dependencies if you want to include only specific chart modules:
+
+```kotlin
+commonMain.dependencies {
+    implementation("io.github.dautovicharis:charts-line:<version>")
+    implementation("io.github.dautovicharis:charts-pie:<version>")
+    implementation("io.github.dautovicharis:charts-bar:<version>")
+    implementation("io.github.dautovicharis:charts-stacked-bar:<version>")
+    implementation("io.github.dautovicharis:charts-stacked-area:<version>")
+    implementation("io.github.dautovicharis:charts-radar:<version>")
+    // Optional: add charts-core directly only if you need shared base APIs
+    implementation("io.github.dautovicharis:charts-core:<version>")
+}
+```
+
+Use BOM for version alignment where Gradle platforms are supported
+(for example JVM/Android module dependencies). For KMP `commonMain`, keep explicit versions.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.dautovicharis:charts-bom:<version>"))
+    implementation("io.github.dautovicharis:charts-line")
+    implementation("io.github.dautovicharis:charts-pie")
+    implementation("io.github.dautovicharis:charts-bar")
+    implementation("io.github.dautovicharis:charts-stacked-bar")
+    implementation("io.github.dautovicharis:charts-stacked-area")
+    implementation("io.github.dautovicharis:charts-radar")
+}
+```
+
 Basic example:
 
 <img src="docs/content/snapshot/wiki/assets/line_default.gif" alt="Basic line chart example" height="236" align="right" style="margin-top: 28px;" />
@@ -66,8 +96,11 @@ fun BasicLineChart() {
 ## Documentation
 https://charts.harisdautovic.com/
 
-## Production Demo (JS)
-https://charts.harisdautovic.com/static/demo/2.1.0/index.html
+## Production Demo
+https://charts.harisdautovic.com/demo
 
-## Snapshot Demo (JS)
-https://charts.harisdautovic.com/static/demo/snapshot/index.html
+## Snapshot Demo
+https://charts.harisdautovic.com/demo/snapshot/
+
+## Playground
+https://charts.harisdautovic.com/playground
