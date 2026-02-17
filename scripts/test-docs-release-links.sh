@@ -62,24 +62,59 @@ assert_file_contains() {
   fi
 }
 
+assert_git_path_exists() {
+  local ref="$1"
+  local path="$2"
+  local label="$3"
+  if git cat-file -e "${ref}:${path}" 2>/dev/null; then
+    log_pass "${label}"
+  else
+    log_fail "${label} (missing: ${path} in ${ref})"
+  fi
+}
+
+resolve_docs_static_ref() {
+  local branch="${DOCS_STATIC_BRANCH:-docs-static}"
+  local preferred_remote="${DOCS_STATIC_REMOTE:-origin}"
+
+  local candidate
+  for candidate in \
+    "${preferred_remote}/${branch}" \
+    "origin/${branch}" \
+    "upstream/${branch}" \
+    "${branch}"; do
+    if git rev-parse --verify --quiet "${candidate}^{commit}" >/dev/null; then
+      echo "${candidate}"
+      return 0
+    fi
+  done
+
+  local remote
+  for remote in "${preferred_remote}" origin upstream; do
+    if git remote get-url "${remote}" >/dev/null 2>&1; then
+      git fetch --quiet "${remote}" "${branch}:refs/remotes/${remote}/${branch}" || true
+      if git rev-parse --verify --quiet "refs/remotes/${remote}/${branch}^{commit}" >/dev/null; then
+        echo "${remote}/${branch}"
+        return 0
+      fi
+    fi
+  done
+
+  return 1
+}
+
 test_registry_release_links() {
   if [[ ! -f "${REGISTRY_PATH}" ]]; then
     log_fail "versions registry exists (missing: ${REGISTRY_PATH})"
     return
   fi
 
-  local verify_api_artifacts=false
-  local verify_demo_artifacts=false
-  if compgen -G "${REPO_ROOT}/docs/static/api/*/index.html" >/dev/null; then
-    verify_api_artifacts=true
-  else
-    log_pass "static API artifacts not present in checkout; skipping API index existence checks"
+  local docs_static_ref
+  if ! docs_static_ref="$(resolve_docs_static_ref)"; then
+    log_fail "docs-static branch ref not found (set DOCS_STATIC_REMOTE/DOCS_STATIC_BRANCH if needed)"
+    return
   fi
-  if compgen -G "${REPO_ROOT}/docs/static/demo/*/index.html" >/dev/null; then
-    verify_demo_artifacts=true
-  else
-    log_pass "static demo artifacts not present in checkout; skipping demo index existence checks"
-  fi
+  log_pass "using docs static assets from ${docs_static_ref}"
 
   local row_count=0
   while IFS=$'\t' read -r id wiki_root api_base demo_base; do
@@ -95,12 +130,8 @@ test_registry_release_links() {
 
     assert_dir_exists "${REPO_ROOT}/docs/content/${id}/wiki" "wiki directory exists for ${id}"
     assert_file_exists "${REPO_ROOT}/docs/content/${id}/wiki/index.md" "wiki index exists for ${id}"
-    if [[ "${verify_api_artifacts}" == "true" ]]; then
-      assert_file_exists "${REPO_ROOT}/docs/static/api/${id}/index.html" "api index exists for ${id}"
-    fi
-    if [[ "${verify_demo_artifacts}" == "true" ]]; then
-      assert_file_exists "${REPO_ROOT}/docs/static/demo/${id}/index.html" "demo index exists for ${id}"
-    fi
+    assert_git_path_exists "${docs_static_ref}" "docs/static/api/${id}/index.html" "api index exists for ${id}"
+    assert_git_path_exists "${docs_static_ref}" "docs/static/demo/${id}/index.html" "demo index exists for ${id}"
   done < <(
     node -e '
       const fs = require("fs");
