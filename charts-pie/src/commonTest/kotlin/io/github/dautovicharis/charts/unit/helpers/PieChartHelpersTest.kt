@@ -6,7 +6,6 @@ import io.github.dautovicharis.charts.internal.piechart.createPieSlices
 import io.github.dautovicharis.charts.internal.piechart.degree
 import io.github.dautovicharis.charts.internal.piechart.getCoordinatesForSlice
 import io.github.dautovicharis.charts.internal.piechart.isPointInCircle
-import io.github.dautovicharis.charts.mock.MockTest.dataSet
 import io.github.dautovicharis.charts.unit.helpers.PieChartHelpersTest.Companion.WIDTH
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -111,7 +110,7 @@ class PieChartHelpersTest {
                 2 to Pair(131.11794f, 288.62714f),
                 3 to Pair(288.62714f, 131.11794f),
             )
-        val slices = createPieSlices(dataSet.data.item)
+        val slices = createPieSlices(values = listOf(10.0, 20.0, 30.0, 40.0))
         val size = IntSize(WIDTH, HEIGHT)
 
         // Act

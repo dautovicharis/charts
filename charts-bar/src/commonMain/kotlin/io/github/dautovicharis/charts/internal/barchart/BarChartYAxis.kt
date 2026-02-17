@@ -11,13 +11,13 @@ import io.github.dautovicharis.charts.internal.common.axis.AxisYLayoutTick
 import io.github.dautovicharis.charts.internal.common.axis.buildNumericYAxisTicks
 import io.github.dautovicharis.charts.internal.common.axis.formatNumericAxisValue
 
-data class YAxisTick(
+internal data class YAxisTick(
     val label: String,
     val centerY: Float,
 )
 
 @Composable
-fun BarYAxisLabels(
+internal fun BarYAxisLabels(
     ticks: List<YAxisTick>,
     color: Color,
     fontSize: TextUnit,
@@ -31,7 +31,7 @@ fun BarYAxisLabels(
     )
 }
 
-fun buildYAxisTicks(
+internal fun buildYAxisTicks(
     minValue: Double,
     maxValue: Double,
     labelCount: Int,
@@ -50,4 +50,4 @@ fun buildYAxisTicks(
         )
     }
 
-fun formatAxisValue(value: Double): String = formatNumericAxisValue(value)
+internal fun formatAxisValue(value: Double): String = formatNumericAxisValue(value)

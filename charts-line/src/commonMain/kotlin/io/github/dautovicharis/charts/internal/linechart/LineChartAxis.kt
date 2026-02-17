@@ -14,18 +14,18 @@ import io.github.dautovicharis.charts.internal.common.axis.buildNumericYAxisTick
 import io.github.dautovicharis.charts.internal.common.axis.resolveAxisLabel
 import io.github.dautovicharis.charts.internal.common.model.MultiChartData
 
-data class LineAxisTick(
+internal data class LineAxisTick(
     val label: String,
     val centerX: Float,
 )
 
-data class LineYAxisTick(
+internal data class LineYAxisTick(
     val label: String,
     val centerY: Float,
 )
 
 @Composable
-fun LineXAxisLabels(
+internal fun LineXAxisLabels(
     ticks: List<LineAxisTick>,
     color: Color,
     fontSize: TextUnit,
@@ -42,7 +42,7 @@ fun LineXAxisLabels(
 }
 
 @Composable
-fun LineYAxisLabels(
+internal fun LineYAxisLabels(
     ticks: List<LineYAxisTick>,
     color: Color,
     fontSize: TextUnit,
@@ -56,7 +56,7 @@ fun LineYAxisLabels(
     )
 }
 
-fun resolveLineXAxisLabels(data: MultiChartData): List<String> =
+internal fun resolveLineXAxisLabels(data: MultiChartData): List<String> =
     when {
         data.hasSingleItem() ->
             data.items
@@ -69,7 +69,7 @@ fun resolveLineXAxisLabels(data: MultiChartData): List<String> =
         else -> emptyList()
     }
 
-fun buildLineXAxisTicks(
+internal fun buildLineXAxisTicks(
     labels: List<String>,
     labelIndices: List<Int>,
     pointsCount: Int,
@@ -98,7 +98,7 @@ fun buildLineXAxisTicks(
         }
 }
 
-fun buildLineYAxisTicks(
+internal fun buildLineYAxisTicks(
     minValue: Double,
     maxValue: Double,
     labelCount: Int,

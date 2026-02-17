@@ -9,7 +9,7 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-fun seriesAnimationProgress(
+internal fun seriesAnimationProgress(
     index: Int,
     total: Int,
     animationProgress: Float,
@@ -22,7 +22,7 @@ fun seriesAnimationProgress(
     return ((animationProgress - delay) / available).coerceIn(0f, 1f)
 }
 
-fun axisIndexForOffset(
+internal fun axisIndexForOffset(
     offset: Offset,
     size: IntSize,
     axisCount: Int,
@@ -43,7 +43,7 @@ fun axisIndexForOffset(
     return (normalized / step).roundToInt() % axisCount
 }
 
-fun buildAxisLabelPositions(
+internal fun buildAxisLabelPositions(
     axisCount: Int,
     center: Offset,
     radius: Float,

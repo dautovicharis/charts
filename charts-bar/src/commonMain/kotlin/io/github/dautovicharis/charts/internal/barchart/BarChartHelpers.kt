@@ -25,14 +25,14 @@ import io.github.dautovicharis.charts.internal.common.density.shouldUseScrollabl
 import io.github.dautovicharis.charts.internal.common.interaction.selectedIndexForBarFit as selectedIndexForBarFitCore
 import io.github.dautovicharis.charts.internal.common.interaction.selectedIndexForContentX as selectedIndexForContentXCore
 
-const val BAR_DENSE_THRESHOLD = 50
+internal const val BAR_DENSE_THRESHOLD = 50
 
-fun resolveAxisLabel(
+internal fun resolveAxisLabel(
     labels: List<String>,
     index: Int,
 ): String = resolveAxisLabelCore(labels = labels, index = index)
 
-fun estimateXAxisLabelFootprintPx(
+internal fun estimateXAxisLabelFootprintPx(
     labels: List<String>,
     dataSize: Int,
     fontSizePx: Float,
@@ -45,7 +45,7 @@ fun estimateXAxisLabelFootprintPx(
         tiltDegrees = tiltDegrees,
     )
 
-fun estimateYAxisLabelWidthPx(
+internal fun estimateYAxisLabelWidthPx(
     ticks: List<YAxisTick>,
     fontSizePx: Float,
 ): Float =
@@ -54,7 +54,7 @@ fun estimateYAxisLabelWidthPx(
         fontSizePx = fontSizePx,
     )
 
-fun getSelectedIndex(
+internal fun getSelectedIndex(
     position: Offset,
     dataSize: Int,
     canvasSize: IntSize,
@@ -68,7 +68,7 @@ fun getSelectedIndex(
         invalidIndex = 0,
     )
 
-fun getSelectedIndexForContentX(
+internal fun getSelectedIndexForContentX(
     contentX: Float,
     dataSize: Int,
     unitWidthPx: Float,
@@ -80,13 +80,13 @@ fun getSelectedIndexForContentX(
         invalidIndex = 0,
     )
 
-fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
+internal fun shouldUseScrollableDensity(pointsCount: Int): Boolean =
     shouldUseScrollableDensityCore(
         pointsCount = pointsCount,
         threshold = BAR_DENSE_THRESHOLD,
     )
 
-fun aggregateForCompactDensity(
+internal fun aggregateForCompactDensity(
     data: ChartData,
     targetPoints: Int = BAR_DENSE_THRESHOLD,
 ): ChartData {
@@ -101,7 +101,7 @@ fun aggregateForCompactDensity(
     return aggregatedPoints.toChartData(labels = aggregatedLabels)
 }
 
-fun maxBarsThatFit(
+internal fun maxBarsThatFit(
     viewportWidthPx: Float,
     spacingPx: Float,
     minBarWidthPx: Float,
@@ -113,12 +113,12 @@ fun maxBarsThatFit(
     return ((safeViewportWidthPx + safeSpacingPx) / unitWidthPx).toInt().coerceAtLeast(1)
 }
 
-fun unitWidth(
+internal fun unitWidth(
     barWidthPx: Float,
     spacingPx: Float,
 ): Float = max(1f, barWidthPx + spacingPx)
 
-fun contentWidth(
+internal fun contentWidth(
     dataSize: Int,
     unitWidthPx: Float,
     spacingPx: Float,
@@ -127,7 +127,7 @@ fun contentWidth(
     return max(1f, dataSize * unitWidthPx - spacingPx)
 }
 
-fun baselineYForRange(
+internal fun baselineYForRange(
     minValue: Double,
     maxValue: Double,
     heightPx: Float,
@@ -138,7 +138,7 @@ fun baselineYForRange(
         heightPx = heightPx,
     )
 
-fun visibleIndexRange(
+internal fun visibleIndexRange(
     dataSize: Int,
     viewportWidthPx: Float,
     scrollOffsetPx: Float,
@@ -151,7 +151,7 @@ fun visibleIndexRange(
         unitWidthPx = unitWidthPx,
     )
 
-fun sampledLabelIndices(
+internal fun sampledLabelIndices(
     dataSize: Int,
     maxCount: Int,
     visibleRange: IntRange? = null,
@@ -162,7 +162,7 @@ fun sampledLabelIndices(
         visibleRange = visibleRange,
     )
 
-fun scrollableLabelIndices(
+internal fun scrollableLabelIndices(
     dataSize: Int,
     maxCount: Int,
     visibleRange: IntRange,
@@ -173,7 +173,7 @@ fun scrollableLabelIndices(
         visibleRange = visibleRange,
     )
 
-fun centeredLabelIndexRange(
+internal fun centeredLabelIndexRange(
     dataSize: Int,
     unitWidthPx: Float,
     viewportWidthPx: Float,
@@ -192,4 +192,4 @@ fun centeredLabelIndexRange(
         edgePaddingPx = edgePaddingPx,
     )
 
-fun planAxisXLabels(request: AxisXPlanRequest): AxisXPlanResult = planAxisXLabelsCore(request)
+internal fun planAxisXLabels(request: AxisXPlanRequest): AxisXPlanResult = planAxisXLabelsCore(request)

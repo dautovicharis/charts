@@ -634,7 +634,7 @@ private fun DrawScope.drawStackedBars(
     }
 }
 
-fun stackedSegmentHeight(
+internal fun stackedSegmentHeight(
     segmentShare: Float,
     chartHeight: Float,
     progress: Float,
