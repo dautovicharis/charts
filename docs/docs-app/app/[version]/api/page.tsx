@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getVersion, getVersions } from '@/lib/versions';
+import { getAllVersions, getVersion } from '@/lib/versions';
 
 interface ApiPageProps {
   params: Promise<{ version: string }>;
@@ -65,5 +65,5 @@ export default async function ApiPage({ params }: ApiPageProps) {
 }
 
 export function generateStaticParams() {
-  return getVersions().map((v) => ({ version: v.id }));
+  return getAllVersions().map((v) => ({ version: v.id }));
 }

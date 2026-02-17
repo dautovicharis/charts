@@ -12,6 +12,10 @@ const REGISTRY_PATH = path.join(process.cwd(), '..', 'registry', 'versions.json'
  */
 let registryCache: VersionRegistry | null = null;
 
+function isVisible(version: DocVersion): boolean {
+  return version.visible !== false;
+}
+
 /**
  * Load the version registry from disk
  */
@@ -34,15 +38,22 @@ export function getVersionRegistry(): VersionRegistry {
 /**
  * Get all available versions
  */
-export function getVersions(): DocVersion[] {
+export function getAllVersions(): DocVersion[] {
   return getVersionRegistry().versions;
 }
 
 /**
- * Get a specific version by ID
+ * Get all visible versions (shown in UI controls)
+ */
+export function getVersions(): DocVersion[] {
+  return getAllVersions().filter(isVisible);
+}
+
+/**
+ * Get a specific version by ID (including hidden versions)
  */
 export function getVersion(versionId: string): DocVersion | undefined {
-  return getVersions().find(v => v.id === versionId);
+  return getAllVersions().find(v => v.id === versionId);
 }
 
 /**
@@ -58,7 +69,7 @@ export function getCurrentVersion(): DocVersion | undefined {
  */
 export function getDefaultVersionId(): string {
   const current = getCurrentVersion();
-  return current?.id ?? getVersions()[0]?.id ?? 'v2';
+  return current?.id ?? getAllVersions()[0]?.id ?? 'v2';
 }
 
 /**
