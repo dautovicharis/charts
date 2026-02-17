@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.compose.mpp.foundation)
             implementation(libs.compose.mpp.material3)
             implementation(libs.compose.mpp.ui)
+            implementation(libs.compose.mpp.preview)
             implementation(libs.compose.mpp.resources)
             implementation(libs.compose.mpp.material.icons.extended)
 
