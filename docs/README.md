@@ -73,7 +73,7 @@ The version registry at `registry/versions.json` is the source of truth for all 
 
 ## Deployment
 
-The site is deployed on Vercel. Any push to `main` triggers a new deployment.
+The site is deployed on Vercel after `Publish Docs Static` completes.
 
 ## Legacy Versions
 

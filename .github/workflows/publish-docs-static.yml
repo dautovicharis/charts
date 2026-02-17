@@ -161,3 +161,22 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           bash scripts/publish-docs-static.sh
+
+      - name: Ensure Vercel deploy hook is configured
+        if: ${{ secrets.VERCEL_DEPLOY_HOOK_URL == '' }}
+        shell: bash
+        run: |
+          echo "Missing required secret: VERCEL_DEPLOY_HOOK_URL" >&2
+          echo "Disable Vercel automatic Git deploys and configure a deploy hook secret in GitHub Actions." >&2
+          exit 1
+
+      - name: Trigger Vercel deploy hook
+        if: ${{ secrets.VERCEL_DEPLOY_HOOK_URL != '' }}
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Triggering Vercel deployment..."
+          curl -fsS -X POST "${VERCEL_DEPLOY_HOOK_URL}" >/tmp/vercel-deploy-hook-response.json
+          sed -n '1,20p' /tmp/vercel-deploy-hook-response.json || true
