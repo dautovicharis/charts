@@ -1,15 +1,11 @@
 buildscript {
-    fun tomlVersion(key: String, tomlPath: String = "gradle/libs.versions.toml"): String {
-        val toml = java.io.File(tomlPath).readText()
-        val keyPattern = Regex.escape(key)
-        return Regex("""(?m)^$keyPattern\s*=\s*"([^"]+)"""")
-            .find(toml)
-            ?.groupValues
-            ?.get(1)
-            ?: error("Missing '$key' in $tomlPath")
-    }
-
-    val protobufSecurityVersion = tomlVersion("protobuf-security")
+    val protobufSecurityVersion =
+        project.extensions
+            .getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java)
+            .named("libs")
+            .findVersion("protobuf-security")
+            .get()
+            .requiredVersion
 
     // Force patched protobuf artifacts on the Gradle plugin classpath (AGP/UTP transitives).
     configurations.configureEach {
