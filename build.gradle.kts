@@ -1,3 +1,37 @@
+buildscript {
+    fun tomlVersion(key: String, tomlPath: String = "gradle/libs.versions.toml"): String {
+        val toml = java.io.File(tomlPath).readText()
+        val keyPattern = Regex.escape(key)
+        return Regex("""(?m)^$keyPattern\s*=\s*"([^"]+)"""")
+            .find(toml)
+            ?.groupValues
+            ?.get(1)
+            ?: error("Missing '$key' in $tomlPath")
+    }
+
+    val protobufSecurityVersion = tomlVersion("protobuf-security")
+
+    // Force patched protobuf artifacts on the Gradle plugin classpath (AGP/UTP transitives).
+    configurations.configureEach {
+        if (name == "classpath") {
+            resolutionStrategy.eachDependency {
+                if (requested.group == "com.google.protobuf" &&
+                    requested.name in setOf(
+                        "protobuf-java",
+                        "protobuf-java-util",
+                        "protobuf-javalite",
+                        "protobuf-kotlin",
+                        "protobuf-kotlin-lite",
+                    )
+                ) {
+                    useVersion(protobufSecurityVersion)
+                    because("Mitigate CVE-2024-7254 / GHSA-735f-pc8j-v9w8")
+                }
+            }
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false

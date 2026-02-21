@@ -45,6 +45,29 @@ val hasReleaseSigningConfig =
     ).all { !it.isNullOrBlank() }
 
 val gifDocsVersion = providers.gradleProperty("gifDocsVersion").orElse("snapshot")
+val protobufSecurityVersion =
+    libs.versions.protobuf.security
+        .get()
+
+configurations.configureEach {
+    if (name.startsWith("_internal-unified-test-platform")) {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.google.protobuf" &&
+                requested.name in
+                setOf(
+                    "protobuf-java",
+                    "protobuf-java-util",
+                    "protobuf-javalite",
+                    "protobuf-kotlin",
+                    "protobuf-kotlin-lite",
+                )
+            ) {
+                useVersion(protobufSecurityVersion)
+                because("Mitigate CVE-2024-7254 / GHSA-735f-pc8j-v9w8")
+            }
+        }
+    }
+}
 
 android {
     namespace = Config.demoNamespace
