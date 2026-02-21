@@ -1,3 +1,27 @@
+buildscript {
+    val protobufSecurityVersion =
+        project.extensions
+            .getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java)
+            .named("libs")
+            .findVersion("protobuf-security")
+            .get()
+            .requiredVersion
+
+    // Force patched protobuf artifacts on the Gradle plugin classpath (AGP/UTP transitives).
+    configurations.configureEach {
+        if (name == "classpath") {
+            resolutionStrategy.eachDependency {
+                if (requested.group == SecurityOverrides.protobufGroup &&
+                    requested.name in SecurityOverrides.protobufArtifacts
+                ) {
+                    useVersion(protobufSecurityVersion)
+                    because(SecurityOverrides.protobufReason)
+                }
+            }
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false

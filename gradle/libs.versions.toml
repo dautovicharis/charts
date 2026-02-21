@@ -26,6 +26,8 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
 ksp = "2.3.4"
 compose-gif-recorder = "0.1.2"
+# https://www.cve.org/CVERecord?id=CVE-2024-7254
+protobuf-security = "3.25.5"
 
 # https://kotlin.github.io/dokka/
 dokka = "2.1.0"

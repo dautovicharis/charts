@@ -45,6 +45,22 @@ val hasReleaseSigningConfig =
     ).all { !it.isNullOrBlank() }
 
 val gifDocsVersion = providers.gradleProperty("gifDocsVersion").orElse("snapshot")
+val protobufSecurityVersion =
+    libs.versions.protobuf.security
+        .get()
+
+configurations.configureEach {
+    if (name.startsWith("_internal-unified-test-platform")) {
+        resolutionStrategy.eachDependency {
+            if (requested.group == SecurityOverrides.protobufGroup &&
+                requested.name in SecurityOverrides.protobufArtifacts
+            ) {
+                useVersion(protobufSecurityVersion)
+                because(SecurityOverrides.protobufReason)
+            }
+        }
+    }
+}
 
 android {
     namespace = Config.demoNamespace

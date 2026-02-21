@@ -42,4 +42,5 @@ object Config {
     const val chartsStackedBarNamespace = "$groupId.charts.stackedbar"
     const val chartsStackedAreaNamespace = "$groupId.charts.stackedarea"
     const val chartsRadarNamespace = "$groupId.charts.radar"
+
 }
