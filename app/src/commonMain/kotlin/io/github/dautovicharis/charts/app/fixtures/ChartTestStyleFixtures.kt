@@ -24,7 +24,7 @@ import io.github.dautovicharis.charts.style.StackedBarChartStyle
  * Shared custom style fixtures used by:
  * - `app/src/commonMain/kotlin/io/github/dautovicharis/charts/app/demo/...`
  * - `androidApp/src/screenshotTest/kotlin/.../ChartScreenshotTest.kt`
- * - `androidApp/src/androidTest/kotlin/io/github/dautovicharis/charts/app/recording/DeterministicGifScenarios.kt`
+ * - `androidApp/src/main/kotlin/io/github/dautovicharis/charts/app/gif/DocsGifScenarios.kt`
  */
 object ChartTestStyleFixtures {
     @Composable

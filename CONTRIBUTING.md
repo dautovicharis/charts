@@ -47,7 +47,13 @@ Open an issue: https://github.com/dautovicharis/charts/issues
 - Kotlin/JVM unit tests (core and chart modules).
 - Compose UI tests for chart modules (`:charts-*`, KMP Compose UI test APIs).
 - Kotlin/JS tests (playground and JS targets).
-- Android instrumented tests for deterministic GIF frame capture (`:androidApp`, runs on device/emulator).
+- Android instrumented GIF recording via `compose-gif-recorder` Gradle plugin (`:androidApp`, runs on device/emulator).
 - Android screenshot tests (baseline image validation).
 - Smoke compile checks (module-level compile validation).
 - Behavior/contract tests for docs release links and assets.
+
+## GIF Recording
+- List available docs GIF scenarios: `./gradlew listDocsGifScenarios`
+- Record one scenario to `docs/content/snapshot/wiki/assets`: `./gradlew recordDocsGif -PgifScenario=line_default`
+- Record all scenarios to `docs/content/snapshot/wiki/assets`: `./gradlew recordDocsGifs`
+- Target a different docs version folder with `-PgifDocsVersion=<version>` (for example `2.2.0`).
