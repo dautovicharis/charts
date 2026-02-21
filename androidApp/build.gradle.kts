@@ -52,18 +52,11 @@ val protobufSecurityVersion =
 configurations.configureEach {
     if (name.startsWith("_internal-unified-test-platform")) {
         resolutionStrategy.eachDependency {
-            if (requested.group == "com.google.protobuf" &&
-                requested.name in
-                setOf(
-                    "protobuf-java",
-                    "protobuf-java-util",
-                    "protobuf-javalite",
-                    "protobuf-kotlin",
-                    "protobuf-kotlin-lite",
-                )
+            if (requested.group == SecurityOverrides.protobufGroup &&
+                requested.name in SecurityOverrides.protobufArtifacts
             ) {
                 useVersion(protobufSecurityVersion)
-                because("Mitigate CVE-2024-7254 / GHSA-735f-pc8j-v9w8")
+                because(SecurityOverrides.protobufReason)
             }
         }
     }
