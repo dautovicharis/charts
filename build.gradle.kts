@@ -153,3 +153,22 @@ tasks.register("generateDocs") {
         }
     }
 }
+
+tasks.register("listDocsGifScenarios") {
+    group = "Charts"
+    description = "Lists available docs GIF scenarios discovered via @RecordGif in :androidApp"
+    dependsOn(":androidApp:listGifScenarios")
+}
+
+tasks.register("recordDocsGif") {
+    group = "Charts"
+    description =
+        "Records one docs GIF scenario to docs/content/<gifDocsVersion>/wiki/assets (set -PgifScenario=<name>, defaults to first)"
+    dependsOn(":androidApp:recordGifDebug")
+}
+
+tasks.register("recordDocsGifs") {
+    group = "Charts"
+    description = "Records all docs GIF scenarios to docs/content/<gifDocsVersion>/wiki/assets (default version: snapshot)"
+    dependsOn(":androidApp:recordGifsDebug")
+}

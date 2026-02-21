@@ -24,6 +24,8 @@ compose-screenshot = "0.0.1-alpha13"
 # Coroutines version
 kotlinx-coroutines = "1.10.2"
 kotlinx-collections-immutable = "0.4.0"
+ksp = "2.3.4"
+compose-gif-recorder = "0.1.2"
 
 # https://kotlin.github.io/dokka/
 dokka = "2.1.0"
@@ -78,3 +80,5 @@ build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-multiplatform" }
 composeScreenshot = { id = "com.android.compose.screenshot", version.ref = "compose-screenshot" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+composeGifRecorder = { id = "io.github.hdcodedev.compose-gif-recorder", version.ref = "compose-gif-recorder" }

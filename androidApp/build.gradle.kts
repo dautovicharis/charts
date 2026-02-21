@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.composeScreenshot)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.composeGifRecorder)
 }
 
 val localSigningProperties =
@@ -41,6 +43,8 @@ val hasReleaseSigningConfig =
         releaseKeyAlias,
         releaseKeyPassword,
     ).all { !it.isNullOrBlank() }
+
+val gifDocsVersion = providers.gradleProperty("gifDocsVersion").orElse("snapshot")
 
 android {
     namespace = Config.demoNamespace
@@ -110,8 +114,18 @@ android {
     }
 }
 
+gifRecorder {
+    applicationId.set(Config.demoNamespace)
+    outputDir.set(
+        gifDocsVersion.map { docsVersion ->
+            rootProject.layout.projectDirectory.dir("docs/content/$docsVersion/wiki/assets")
+        },
+    )
+}
+
 dependencies {
     implementation(project(":app"))
+    implementation(project(":charts"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.koin.android)
