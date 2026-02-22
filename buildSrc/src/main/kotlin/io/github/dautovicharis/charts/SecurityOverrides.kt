@@ -17,4 +17,8 @@ object SecurityOverrides {
     const val nettyGroup = "io.netty"
     const val nettyHttp2Artifact = "netty-codec-http2"
     const val nettyHttp2Reason = "Mitigate MadeYouReset HTTP/2 DDoS in io.netty:netty-codec-http2 <= 4.1.123.Final"
+
+    const val jose4jGroup = "org.bitbucket.b_c"
+    const val jose4jArtifact = "jose4j"
+    const val jose4jReason = "Mitigate DoS via compressed JWE content in org.bitbucket.b_c:jose4j < 0.9.6"
 }
