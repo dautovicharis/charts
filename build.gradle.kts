@@ -117,6 +117,8 @@ plugins {
 }
 
 val logbackSecurityVersion = libs.versions.logback.core.security.get()
+val commonsLang3SecurityVersion = libs.versions.commons.lang3.security.get()
+val guavaSecurityVersion = libs.versions.guava.security.get()
 val ajvSecurityVersion = libs.versions.ajv.security.get()
 val minimatchSecurityVersion = libs.versions.minimatch.security.get()
 
@@ -194,6 +196,21 @@ subprojects {
     }
 
     configurations.configureEach {
+        resolutionStrategy.eachDependency {
+            if (requested.group == SecurityOverrides.commonsLangGroup &&
+                requested.name == SecurityOverrides.commonsLang3Artifact
+            ) {
+                useVersion(commonsLang3SecurityVersion)
+                because(SecurityOverrides.commonsLang3Reason)
+            }
+            if (requested.group == SecurityOverrides.guavaGroup &&
+                requested.name == SecurityOverrides.guavaArtifact
+            ) {
+                useVersion(guavaSecurityVersion)
+                because(SecurityOverrides.guavaReason)
+            }
+        }
+
         if (name == "ktlint") {
             resolutionStrategy.eachDependency {
                 if (requested.group == SecurityOverrides.logbackGroup &&
