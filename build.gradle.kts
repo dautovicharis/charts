@@ -14,6 +14,11 @@ buildscript {
             .findVersion("jdom-security")
             .get()
             .requiredVersion
+    val nettyHttp2SecurityVersion =
+        versionCatalog
+            .findVersion("netty-codec-http2-security")
+            .get()
+            .requiredVersion
 
     // Force patched vulnerable transitives on the Gradle plugin classpath (AGP/UTP transitives).
     configurations.configureEach {
@@ -30,6 +35,12 @@ buildscript {
                 ) {
                     useVersion(jdomSecurityVersion)
                     because(SecurityOverrides.jdomReason)
+                }
+                if (requested.group == SecurityOverrides.nettyGroup &&
+                    requested.name == SecurityOverrides.nettyHttp2Artifact
+                ) {
+                    useVersion(nettyHttp2SecurityVersion)
+                    because(SecurityOverrides.nettyHttp2Reason)
                 }
             }
         }
