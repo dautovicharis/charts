@@ -32,6 +32,8 @@ protobuf-security = "3.25.5"
 jdom-security = "2.0.6.1"
 # https://www.cve.org/CVERecord?id=CVE-2025-55163
 netty-codec-http2-security = "4.1.124.Final"
+# https://www.cve.org/CVERecord?id=CVE-2024-29371
+jose4j-security = "0.9.6"
 
 # https://kotlin.github.io/dokka/
 dokka = "2.1.0"

@@ -51,6 +51,9 @@ val protobufSecurityVersion =
 val nettyHttp2SecurityVersion =
     libs.versions.netty.codec.http2.security
         .get()
+val jose4jSecurityVersion =
+    libs.versions.jose4j.security
+        .get()
 
 configurations.configureEach {
     if (name.startsWith("_internal-unified-test-platform")) {
@@ -66,6 +69,12 @@ configurations.configureEach {
             ) {
                 useVersion(nettyHttp2SecurityVersion)
                 because(SecurityOverrides.nettyHttp2Reason)
+            }
+            if (requested.group == SecurityOverrides.jose4jGroup &&
+                requested.name == SecurityOverrides.jose4jArtifact
+            ) {
+                useVersion(jose4jSecurityVersion)
+                because(SecurityOverrides.jose4jReason)
             }
         }
     }
