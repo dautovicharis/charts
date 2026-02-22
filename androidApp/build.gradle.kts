@@ -48,8 +48,17 @@ val gifDocsVersion = providers.gradleProperty("gifDocsVersion").orElse("snapshot
 val protobufSecurityVersion =
     libs.versions.protobuf.security
         .get()
-val nettyHttp2SecurityVersion =
+val nettySecurityVersion =
     libs.versions.netty.codec.http2.security
+        .get()
+val commonsLang3SecurityVersion =
+    libs.versions.commons.lang3.security
+        .get()
+val httpClientSecurityVersion =
+    libs.versions.httpclient.security
+        .get()
+val guavaSecurityVersion =
+    libs.versions.guava.security
         .get()
 val jose4jSecurityVersion =
     libs.versions.jose4j.security
@@ -67,8 +76,38 @@ configurations.configureEach {
             if (requested.group == SecurityOverrides.nettyGroup &&
                 requested.name == SecurityOverrides.nettyHttp2Artifact
             ) {
-                useVersion(nettyHttp2SecurityVersion)
+                useVersion(nettySecurityVersion)
                 because(SecurityOverrides.nettyHttp2Reason)
+            }
+            if (requested.group == SecurityOverrides.nettyGroup &&
+                requested.name == SecurityOverrides.nettyCodecArtifact
+            ) {
+                useVersion(nettySecurityVersion)
+                because(SecurityOverrides.nettyCodecReason)
+            }
+            if (requested.group == SecurityOverrides.nettyGroup &&
+                requested.name == SecurityOverrides.nettyHttpArtifact
+            ) {
+                useVersion(nettySecurityVersion)
+                because(SecurityOverrides.nettyHttpReason)
+            }
+            if (requested.group == SecurityOverrides.commonsLangGroup &&
+                requested.name == SecurityOverrides.commonsLang3Artifact
+            ) {
+                useVersion(commonsLang3SecurityVersion)
+                because(SecurityOverrides.commonsLang3Reason)
+            }
+            if (requested.group == SecurityOverrides.httpComponentsGroup &&
+                requested.name == SecurityOverrides.httpClientArtifact
+            ) {
+                useVersion(httpClientSecurityVersion)
+                because(SecurityOverrides.httpClientReason)
+            }
+            if (requested.group == SecurityOverrides.guavaGroup &&
+                requested.name == SecurityOverrides.guavaArtifact
+            ) {
+                useVersion(guavaSecurityVersion)
+                because(SecurityOverrides.guavaReason)
             }
             if (requested.group == SecurityOverrides.jose4jGroup &&
                 requested.name == SecurityOverrides.jose4jArtifact

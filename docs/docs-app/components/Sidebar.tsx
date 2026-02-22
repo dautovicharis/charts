@@ -19,6 +19,26 @@ interface SidebarProps {
   versionId: string;
 }
 
+function sanitizeNavigationPath(rawPath: string): string {
+  const trimmedPath = rawPath.trim();
+  if (!trimmedPath.startsWith('/') || trimmedPath.startsWith('//')) {
+    return '/';
+  }
+
+  const [pathname, hashFragment] = trimmedPath.split('#', 2);
+  const sanitizedPathname =
+    pathname
+      .split('/')
+      .map((segment, index) => (index === 0 ? '' : encodeURIComponent(segment)))
+      .join('/') || '/';
+
+  if (!hashFragment) {
+    return sanitizedPathname;
+  }
+
+  return `${sanitizedPathname}#${encodeURIComponent(hashFragment)}`;
+}
+
 function getDocumentationIcon(slug: string) {
   switch (slug) {
     case '':
@@ -106,7 +126,7 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
             {navigation.map((item) => (
               <div key={item.path} className="docs-sidebar__item-group">
                 <Link
-                  href={item.path}
+                  href={sanitizeNavigationPath(item.path)}
                   className={`docs-sidebar__link ${isActive(item) ? 'docs-sidebar__link--active' : ''}`}
                   onClick={closeMobileNavigation}
                 >
@@ -118,7 +138,7 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
                     {item.children.map((child) => (
                       <Link
                         key={child.path}
-                        href={child.path}
+                        href={sanitizeNavigationPath(child.path)}
                         className={`docs-sidebar__sublink ${isChildActive(child) ? 'docs-sidebar__sublink--active' : ''}`}
                         onClick={closeMobileNavigation}
                       >

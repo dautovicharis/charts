@@ -14,9 +14,24 @@ buildscript {
             .findVersion("jdom-security")
             .get()
             .requiredVersion
-    val nettyHttp2SecurityVersion =
+    val nettySecurityVersion =
         versionCatalog
             .findVersion("netty-codec-http2-security")
+            .get()
+            .requiredVersion
+    val commonsLang3SecurityVersion =
+        versionCatalog
+            .findVersion("commons-lang3-security")
+            .get()
+            .requiredVersion
+    val httpClientSecurityVersion =
+        versionCatalog
+            .findVersion("httpclient-security")
+            .get()
+            .requiredVersion
+    val guavaSecurityVersion =
+        versionCatalog
+            .findVersion("guava-security")
             .get()
             .requiredVersion
     val jose4jSecurityVersion =
@@ -44,8 +59,38 @@ buildscript {
                 if (requested.group == SecurityOverrides.nettyGroup &&
                     requested.name == SecurityOverrides.nettyHttp2Artifact
                 ) {
-                    useVersion(nettyHttp2SecurityVersion)
+                    useVersion(nettySecurityVersion)
                     because(SecurityOverrides.nettyHttp2Reason)
+                }
+                if (requested.group == SecurityOverrides.nettyGroup &&
+                    requested.name == SecurityOverrides.nettyCodecArtifact
+                ) {
+                    useVersion(nettySecurityVersion)
+                    because(SecurityOverrides.nettyCodecReason)
+                }
+                if (requested.group == SecurityOverrides.nettyGroup &&
+                    requested.name == SecurityOverrides.nettyHttpArtifact
+                ) {
+                    useVersion(nettySecurityVersion)
+                    because(SecurityOverrides.nettyHttpReason)
+                }
+                if (requested.group == SecurityOverrides.commonsLangGroup &&
+                    requested.name == SecurityOverrides.commonsLang3Artifact
+                ) {
+                    useVersion(commonsLang3SecurityVersion)
+                    because(SecurityOverrides.commonsLang3Reason)
+                }
+                if (requested.group == SecurityOverrides.httpComponentsGroup &&
+                    requested.name == SecurityOverrides.httpClientArtifact
+                ) {
+                    useVersion(httpClientSecurityVersion)
+                    because(SecurityOverrides.httpClientReason)
+                }
+                if (requested.group == SecurityOverrides.guavaGroup &&
+                    requested.name == SecurityOverrides.guavaArtifact
+                ) {
+                    useVersion(guavaSecurityVersion)
+                    because(SecurityOverrides.guavaReason)
                 }
                 if (requested.group == SecurityOverrides.jose4jGroup &&
                     requested.name == SecurityOverrides.jose4jArtifact
@@ -71,12 +116,35 @@ plugins {
     alias(libs.plugins.ktlint) apply false
 }
 
+val logbackSecurityVersion = libs.versions.logback.core.security.get()
+val ajvSecurityVersion = libs.versions.ajv.security.get()
+val minimatchSecurityVersion = libs.versions.minimatch.security.get()
+
+// Keep Kotlin/JS transitive ajv patched in kotlin-js-store/yarn.lock.
+org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension[project]
+    .resolution("ajv", ajvSecurityVersion)
+org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension[project]
+    .resolution("minimatch", minimatchSecurityVersion)
+
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension>("ktlint") {
         android.set(true)
         ignoreFailures.set(false)
+    }
+
+    configurations.configureEach {
+        if (name == "ktlint") {
+            resolutionStrategy.eachDependency {
+                if (requested.group == SecurityOverrides.logbackGroup &&
+                    requested.name in SecurityOverrides.logbackArtifacts
+                ) {
+                    useVersion(logbackSecurityVersion)
+                    because(SecurityOverrides.logbackReason)
+                }
+            }
+        }
     }
 }
 
