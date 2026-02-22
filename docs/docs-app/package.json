@@ -22,7 +22,7 @@
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.0",
