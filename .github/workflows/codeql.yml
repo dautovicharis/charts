@@ -1,12 +1,6 @@
 name: CodeQL
 
 on:
-  push:
-    branches:
-      - main
-  schedule:
-    # Runs every Monday at 00:00 UTC.
-    - cron: "0 0 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -38,7 +32,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up JDK 17
         if: matrix.language == 'java-kotlin'
