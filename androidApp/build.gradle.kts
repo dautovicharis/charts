@@ -48,6 +48,9 @@ val gifDocsVersion = providers.gradleProperty("gifDocsVersion").orElse("snapshot
 val protobufSecurityVersion =
     libs.versions.protobuf.security
         .get()
+val nettyHttp2SecurityVersion =
+    libs.versions.netty.codec.http2.security
+        .get()
 
 configurations.configureEach {
     if (name.startsWith("_internal-unified-test-platform")) {
@@ -57,6 +60,12 @@ configurations.configureEach {
             ) {
                 useVersion(protobufSecurityVersion)
                 because(SecurityOverrides.protobufReason)
+            }
+            if (requested.group == SecurityOverrides.nettyGroup &&
+                requested.name == SecurityOverrides.nettyHttp2Artifact
+            ) {
+                useVersion(nettyHttp2SecurityVersion)
+                because(SecurityOverrides.nettyHttp2Reason)
             }
         }
     }

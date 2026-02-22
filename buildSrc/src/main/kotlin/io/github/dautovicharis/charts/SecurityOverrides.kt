@@ -13,4 +13,8 @@ object SecurityOverrides {
     const val jdomGroup = "org.jdom"
     const val jdomArtifact = "jdom2"
     const val jdomReason = "Mitigate XXE in org.jdom:jdom2 < 2.0.6.1"
+
+    const val nettyGroup = "io.netty"
+    const val nettyHttp2Artifact = "netty-codec-http2"
+    const val nettyHttp2Reason = "Mitigate MadeYouReset HTTP/2 DDoS in io.netty:netty-codec-http2 <= 4.1.123.Final"
 }
