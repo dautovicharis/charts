@@ -51,14 +51,8 @@ val protobufSecurityVersion =
 val nettySecurityVersion =
     libs.versions.netty.codec.http2.security
         .get()
-val commonsLang3SecurityVersion =
-    libs.versions.commons.lang3.security
-        .get()
 val httpClientSecurityVersion =
     libs.versions.httpclient.security
-        .get()
-val guavaSecurityVersion =
-    libs.versions.guava.security
         .get()
 val jose4jSecurityVersion =
     libs.versions.jose4j.security
@@ -91,23 +85,11 @@ configurations.configureEach {
                 useVersion(nettySecurityVersion)
                 because(SecurityOverrides.nettyHttpReason)
             }
-            if (requested.group == SecurityOverrides.commonsLangGroup &&
-                requested.name == SecurityOverrides.commonsLang3Artifact
-            ) {
-                useVersion(commonsLang3SecurityVersion)
-                because(SecurityOverrides.commonsLang3Reason)
-            }
             if (requested.group == SecurityOverrides.httpComponentsGroup &&
                 requested.name == SecurityOverrides.httpClientArtifact
             ) {
                 useVersion(httpClientSecurityVersion)
                 because(SecurityOverrides.httpClientReason)
-            }
-            if (requested.group == SecurityOverrides.guavaGroup &&
-                requested.name == SecurityOverrides.guavaArtifact
-            ) {
-                useVersion(guavaSecurityVersion)
-                because(SecurityOverrides.guavaReason)
             }
             if (requested.group == SecurityOverrides.jose4jGroup &&
                 requested.name == SecurityOverrides.jose4jArtifact
