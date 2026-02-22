@@ -33,19 +33,9 @@ jobs:
           java-version: 17
           distribution: 'zulu'
           cache: gradle
-      - name: Cache Gradle packages
-        if: steps.changes.outputs.should_run == 'true'
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Lint
         if: steps.changes.outputs.should_run == 'true'
-        run: ./gradlew ktlintCheck --info
+        run: ./gradlew ktlintCheck
       - name: Skip lint for docs-only changes
         if: steps.changes.outputs.should_run != 'true'
         run: echo "No code/build changes detected. Skipping lint."

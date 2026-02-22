@@ -1,0 +1,30 @@
+name: Nightly Workflows
+
+on:
+  schedule:
+    # Runs every day at 00:00 UTC.
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch-snapshot-release:
+    name: Dispatch Snapshot Release
+    if: ${{ github.repository_owner == 'dautovicharis' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch snapshot-release workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ref = context.payload.repository?.default_branch ?? "main";
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "snapshot-release.yml",
+              ref,
+            });
+            core.info(`Dispatched snapshot-release.yml on ${ref}`);

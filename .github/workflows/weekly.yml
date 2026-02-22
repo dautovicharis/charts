@@ -1,0 +1,30 @@
+name: Weekly Workflows
+
+on:
+  schedule:
+    # Runs every Monday at 00:00 UTC.
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch-codeql:
+    name: Dispatch CodeQL Scan
+    if: ${{ github.repository_owner == 'dautovicharis' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch codeql workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ref = context.payload.repository?.default_branch ?? "main";
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "codeql.yml",
+              ref,
+            });
+            core.info(`Dispatched codeql.yml on ${ref}`);
