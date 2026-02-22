@@ -1,9 +1,6 @@
 name: CodeQL
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     # Runs every Monday at 00:00 UTC.
     - cron: "0 0 * * 1"
