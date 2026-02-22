@@ -28,6 +28,8 @@ ksp = "2.3.4"
 compose-gif-recorder = "0.1.2"
 # https://www.cve.org/CVERecord?id=CVE-2024-7254
 protobuf-security = "3.25.5"
+# Security override for transitive Gradle plugin dependency
+jdom-security = "2.0.6.1"
 
 # https://kotlin.github.io/dokka/
 dokka = "2.1.0"

@@ -1,13 +1,21 @@
 buildscript {
-    val protobufSecurityVersion =
+    val versionCatalog =
         project.extensions
             .getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java)
             .named("libs")
+
+    val protobufSecurityVersion =
+        versionCatalog
             .findVersion("protobuf-security")
             .get()
             .requiredVersion
+    val jdomSecurityVersion =
+        versionCatalog
+            .findVersion("jdom-security")
+            .get()
+            .requiredVersion
 
-    // Force patched protobuf artifacts on the Gradle plugin classpath (AGP/UTP transitives).
+    // Force patched vulnerable transitives on the Gradle plugin classpath (AGP/UTP transitives).
     configurations.configureEach {
         if (name == "classpath") {
             resolutionStrategy.eachDependency {
@@ -16,6 +24,12 @@ buildscript {
                 ) {
                     useVersion(protobufSecurityVersion)
                     because(SecurityOverrides.protobufReason)
+                }
+                if (requested.group == SecurityOverrides.jdomGroup &&
+                    requested.name == SecurityOverrides.jdomArtifact
+                ) {
+                    useVersion(jdomSecurityVersion)
+                    because(SecurityOverrides.jdomReason)
                 }
             }
         }
