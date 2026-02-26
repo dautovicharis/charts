@@ -30,7 +30,7 @@ object Config {
     const val demoNamespace = "$groupId.$artifactId.app"
     const val demoLibraryNamespace = "$groupId.$artifactId.app.library"
     const val demoVersionName = "1.0.0"
-    const val demoVersionCode = 4
+    const val demoVersionCode = 8
 
     // Charts library
     const val chartsVersion = "2.3.0-SNAPSHOT"
