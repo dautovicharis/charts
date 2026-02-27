@@ -45,7 +45,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          config_file="buildSrc/src/main/kotlin/io/github/dautovicharis/charts/Config.kt"
+          config_file="buildSrc/src/main/kotlin/Config.kt"
           if [[ ! -f "$config_file" ]]; then
             echo "Config file not found: $config_file" >&2
             exit 1
