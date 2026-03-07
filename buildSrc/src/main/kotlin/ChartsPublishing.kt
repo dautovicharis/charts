@@ -8,29 +8,29 @@ object ChartsPublishing {
     ) {
         pom.name.set(moduleName)
         pom.description.set(moduleDescription)
-        pom.inceptionYear.set(Config.inceptionYear)
-        pom.url.set(Config.projectUrl)
+        pom.inceptionYear.set(Config.INCEPTION_YEAR)
+        pom.url.set(Config.PROJECT_URL)
 
         pom.licenses {
             license {
-                name.set(Config.licenseName)
-                url.set(Config.licenseUrl)
+                name.set(Config.LICENSE_NAME)
+                url.set(Config.LICENSE_URL)
             }
         }
         pom.developers {
             developer {
-                id.set(Config.developerId)
-                name.set(Config.developerName)
-                email.set(Config.developerEmail)
+                id.set(Config.DEVELOPER_ID)
+                name.set(Config.DEVELOPER_NAME)
+                email.set(Config.DEVELOPER_EMAIL)
             }
         }
         pom.issueManagement {
-            system.set(Config.issueSystem)
-            url.set(Config.issueUrl)
+            system.set(Config.ISSUE_SYSTEM)
+            url.set(Config.ISSUE_URL)
         }
         pom.scm {
-            connection.set(Config.scmConnection)
-            url.set(Config.projectUrl)
+            connection.set(Config.SCM_CONNECTION)
+            url.set(Config.PROJECT_URL)
         }
     }
 }

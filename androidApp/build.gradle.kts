@@ -61,56 +61,56 @@ val jose4jSecurityVersion =
 configurations.configureEach {
     if (name.startsWith("_internal-unified-test-platform")) {
         resolutionStrategy.eachDependency {
-            if (requested.group == SecurityOverrides.protobufGroup &&
-                requested.name in SecurityOverrides.protobufArtifacts
+            if (requested.group == SecurityOverrides.PROTOBUF_GROUP &&
+                requested.name in SecurityOverrides.PROTOBUF_ARTIFACTS
             ) {
                 useVersion(protobufSecurityVersion)
-                because(SecurityOverrides.protobufReason)
+                because(SecurityOverrides.PROTOBUF_REASON)
             }
-            if (requested.group == SecurityOverrides.nettyGroup &&
-                requested.name == SecurityOverrides.nettyHttp2Artifact
+            if (requested.group == SecurityOverrides.NETTY_GROUP &&
+                requested.name == SecurityOverrides.NETTY_HTTP2_ARTIFACT
             ) {
                 useVersion(nettySecurityVersion)
-                because(SecurityOverrides.nettyHttp2Reason)
+                because(SecurityOverrides.NETTY_HTTP2_REASON)
             }
-            if (requested.group == SecurityOverrides.nettyGroup &&
-                requested.name == SecurityOverrides.nettyCodecArtifact
+            if (requested.group == SecurityOverrides.NETTY_GROUP &&
+                requested.name == SecurityOverrides.NETTY_CODEC_ARTIFACT
             ) {
                 useVersion(nettySecurityVersion)
-                because(SecurityOverrides.nettyCodecReason)
+                because(SecurityOverrides.NETTY_CODEC_REASON)
             }
-            if (requested.group == SecurityOverrides.nettyGroup &&
-                requested.name == SecurityOverrides.nettyHttpArtifact
+            if (requested.group == SecurityOverrides.NETTY_GROUP &&
+                requested.name == SecurityOverrides.NETTY_HTTP_ARTIFACT
             ) {
                 useVersion(nettySecurityVersion)
-                because(SecurityOverrides.nettyHttpReason)
+                because(SecurityOverrides.NETTY_HTTP_REASON)
             }
-            if (requested.group == SecurityOverrides.httpComponentsGroup &&
-                requested.name == SecurityOverrides.httpClientArtifact
+            if (requested.group == SecurityOverrides.HTTP_COMPONENTS_GROUP &&
+                requested.name == SecurityOverrides.HTTP_CLIENT_ARTIFACT
             ) {
                 useVersion(httpClientSecurityVersion)
-                because(SecurityOverrides.httpClientReason)
+                because(SecurityOverrides.HTTP_CLIENT_REASON)
             }
-            if (requested.group == SecurityOverrides.jose4jGroup &&
-                requested.name == SecurityOverrides.jose4jArtifact
+            if (requested.group == SecurityOverrides.JOSE4J_GROUP &&
+                requested.name == SecurityOverrides.JOSE4J_ARTIFACT
             ) {
                 useVersion(jose4jSecurityVersion)
-                because(SecurityOverrides.jose4jReason)
+                because(SecurityOverrides.JOSE4J_REASON)
             }
         }
     }
 }
 
 android {
-    namespace = Config.demoNamespace
-    compileSdk = Config.compileSdk
+    namespace = Config.DEMO_NAMESPACE
+    compileSdk = Config.COMPILE_SDK
 
     defaultConfig {
-        applicationId = Config.demoNamespace
-        minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        versionCode = Config.demoVersionCode
-        versionName = Config.demoVersionName
+        applicationId = Config.DEMO_NAMESPACE
+        minSdk = Config.MIN_SDK
+        targetSdk = Config.TARGET_SDK
+        versionCode = Config.DEMO_VERSION_CODE
+        versionName = Config.DEMO_VERSION_NAME
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -170,7 +170,7 @@ android {
 }
 
 gifRecorder {
-    applicationId.set(Config.demoNamespace)
+    applicationId.set(Config.DEMO_NAMESPACE)
     outputDir.set(
         gifDocsVersion.map { docsVersion ->
             rootProject.layout.projectDirectory.dir("docs/content/$docsVersion/wiki/assets")
