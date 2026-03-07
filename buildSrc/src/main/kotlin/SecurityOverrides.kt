@@ -44,6 +44,12 @@ object SecurityOverrides {
 
     const val JACKSON_CORE_GROUP = "com.fasterxml.jackson.core"
     const val JACKSON_CORE_ARTIFACT = "jackson-core"
+    const val JACKSON_DATABIND_ARTIFACT = "jackson-databind"
+    const val JACKSON_ANNOTATIONS_ARTIFACT = "jackson-annotations"
+    const val JACKSON_MODULE_GROUP = "com.fasterxml.jackson.module"
+    const val JACKSON_MODULE_KOTLIN_ARTIFACT = "jackson-module-kotlin"
+    const val JACKSON_DATAFORMAT_GROUP = "com.fasterxml.jackson.dataformat"
+    const val JACKSON_DATAFORMAT_XML_ARTIFACT = "jackson-dataformat-xml"
     const val JACKSON_CORE_REASON =
         "Mitigate Number Length Constraint Bypass in com.fasterxml.jackson.core:jackson-core <= 2.18.5"
 }

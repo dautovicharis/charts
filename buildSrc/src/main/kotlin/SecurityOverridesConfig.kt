@@ -11,70 +11,85 @@ fun ConfigurationContainer.configureBuildscriptSecurityOverrides(versionCatalog:
     val guavaSecurityVersion = versionCatalog.requiredVersion("guava-security")
     val jose4jSecurityVersion = versionCatalog.requiredVersion("jose4j-security")
     val jacksonCoreSecurityVersion = versionCatalog.requiredVersion("jackson-core-security")
+    val protobufOverride = SecurityOverrideRule(protobufSecurityVersion, SecurityOverrides.PROTOBUF_REASON)
+    val jdomOverride = SecurityOverrideRule(jdomSecurityVersion, SecurityOverrides.JDOM_REASON)
+    val nettyHttp2Override = SecurityOverrideRule(nettySecurityVersion, SecurityOverrides.NETTY_HTTP2_REASON)
+    val nettyCodecOverride = SecurityOverrideRule(nettySecurityVersion, SecurityOverrides.NETTY_CODEC_REASON)
+    val nettyHttpOverride = SecurityOverrideRule(nettySecurityVersion, SecurityOverrides.NETTY_HTTP_REASON)
+    val commonsLangOverride = SecurityOverrideRule(commonsLang3SecurityVersion, SecurityOverrides.COMMONS_LANG3_REASON)
+    val httpClientOverride = SecurityOverrideRule(httpClientSecurityVersion, SecurityOverrides.HTTP_CLIENT_REASON)
+    val guavaOverride = SecurityOverrideRule(guavaSecurityVersion, SecurityOverrides.GUAVA_REASON)
+    val jose4jOverride = SecurityOverrideRule(jose4jSecurityVersion, SecurityOverrides.JOSE4J_REASON)
+    val jacksonOverride = SecurityOverrideRule(jacksonCoreSecurityVersion, SecurityOverrides.JACKSON_CORE_REASON)
+    val buildscriptOverrides =
+        buildMap<DependencyCoordinate, SecurityOverrideRule> {
+            putAll(
+                SecurityOverrides.PROTOBUF_ARTIFACTS.associate { artifact ->
+                    DependencyCoordinate(SecurityOverrides.PROTOBUF_GROUP, artifact) to protobufOverride
+                },
+            )
+            put(DependencyCoordinate(SecurityOverrides.JDOM_GROUP, SecurityOverrides.JDOM_ARTIFACT), jdomOverride)
+            put(
+                DependencyCoordinate(SecurityOverrides.NETTY_GROUP, SecurityOverrides.NETTY_HTTP2_ARTIFACT),
+                nettyHttp2Override,
+            )
+            put(
+                DependencyCoordinate(SecurityOverrides.NETTY_GROUP, SecurityOverrides.NETTY_CODEC_ARTIFACT),
+                nettyCodecOverride,
+            )
+            put(
+                DependencyCoordinate(SecurityOverrides.NETTY_GROUP, SecurityOverrides.NETTY_HTTP_ARTIFACT),
+                nettyHttpOverride,
+            )
+            put(
+                DependencyCoordinate(SecurityOverrides.COMMONS_LANG_GROUP, SecurityOverrides.COMMONS_LANG3_ARTIFACT),
+                commonsLangOverride,
+            )
+            put(
+                DependencyCoordinate(SecurityOverrides.HTTP_COMPONENTS_GROUP, SecurityOverrides.HTTP_CLIENT_ARTIFACT),
+                httpClientOverride,
+            )
+            put(DependencyCoordinate(SecurityOverrides.GUAVA_GROUP, SecurityOverrides.GUAVA_ARTIFACT), guavaOverride)
+            put(DependencyCoordinate(SecurityOverrides.JOSE4J_GROUP, SecurityOverrides.JOSE4J_ARTIFACT), jose4jOverride)
+            put(
+                DependencyCoordinate(SecurityOverrides.JACKSON_CORE_GROUP, SecurityOverrides.JACKSON_CORE_ARTIFACT),
+                jacksonOverride,
+            )
+            put(
+                DependencyCoordinate(SecurityOverrides.JACKSON_CORE_GROUP, SecurityOverrides.JACKSON_DATABIND_ARTIFACT),
+                jacksonOverride,
+            )
+            put(
+                DependencyCoordinate(
+                    SecurityOverrides.JACKSON_CORE_GROUP,
+                    SecurityOverrides.JACKSON_ANNOTATIONS_ARTIFACT,
+                ),
+                jacksonOverride,
+            )
+            put(
+                DependencyCoordinate(
+                    SecurityOverrides.JACKSON_MODULE_GROUP,
+                    SecurityOverrides.JACKSON_MODULE_KOTLIN_ARTIFACT,
+                ),
+                jacksonOverride,
+            )
+            put(
+                DependencyCoordinate(
+                    SecurityOverrides.JACKSON_DATAFORMAT_GROUP,
+                    SecurityOverrides.JACKSON_DATAFORMAT_XML_ARTIFACT,
+                ),
+                jacksonOverride,
+            )
+        }
 
     configureEach {
         if (name == "classpath") {
             resolutionStrategy.eachDependency {
-                if (requested.group == SecurityOverrides.PROTOBUF_GROUP &&
-                    requested.name in SecurityOverrides.PROTOBUF_ARTIFACTS
-                ) {
-                    useVersion(protobufSecurityVersion)
-                    because(SecurityOverrides.PROTOBUF_REASON)
-                }
-                if (requested.group == SecurityOverrides.JDOM_GROUP &&
-                    requested.name == SecurityOverrides.JDOM_ARTIFACT
-                ) {
-                    useVersion(jdomSecurityVersion)
-                    because(SecurityOverrides.JDOM_REASON)
-                }
-                if (requested.group == SecurityOverrides.NETTY_GROUP &&
-                    requested.name == SecurityOverrides.NETTY_HTTP2_ARTIFACT
-                ) {
-                    useVersion(nettySecurityVersion)
-                    because(SecurityOverrides.NETTY_HTTP2_REASON)
-                }
-                if (requested.group == SecurityOverrides.NETTY_GROUP &&
-                    requested.name == SecurityOverrides.NETTY_CODEC_ARTIFACT
-                ) {
-                    useVersion(nettySecurityVersion)
-                    because(SecurityOverrides.NETTY_CODEC_REASON)
-                }
-                if (requested.group == SecurityOverrides.NETTY_GROUP &&
-                    requested.name == SecurityOverrides.NETTY_HTTP_ARTIFACT
-                ) {
-                    useVersion(nettySecurityVersion)
-                    because(SecurityOverrides.NETTY_HTTP_REASON)
-                }
-                if (requested.group == SecurityOverrides.COMMONS_LANG_GROUP &&
-                    requested.name == SecurityOverrides.COMMONS_LANG3_ARTIFACT
-                ) {
-                    useVersion(commonsLang3SecurityVersion)
-                    because(SecurityOverrides.COMMONS_LANG3_REASON)
-                }
-                if (requested.group == SecurityOverrides.HTTP_COMPONENTS_GROUP &&
-                    requested.name == SecurityOverrides.HTTP_CLIENT_ARTIFACT
-                ) {
-                    useVersion(httpClientSecurityVersion)
-                    because(SecurityOverrides.HTTP_CLIENT_REASON)
-                }
-                if (requested.group == SecurityOverrides.GUAVA_GROUP &&
-                    requested.name == SecurityOverrides.GUAVA_ARTIFACT
-                ) {
-                    useVersion(guavaSecurityVersion)
-                    because(SecurityOverrides.GUAVA_REASON)
-                }
-                if (requested.group == SecurityOverrides.JOSE4J_GROUP &&
-                    requested.name == SecurityOverrides.JOSE4J_ARTIFACT
-                ) {
-                    useVersion(jose4jSecurityVersion)
-                    because(SecurityOverrides.JOSE4J_REASON)
-                }
-                if (requested.group == SecurityOverrides.JACKSON_CORE_GROUP &&
-                    requested.name == SecurityOverrides.JACKSON_CORE_ARTIFACT
-                ) {
-                    useVersion(jacksonCoreSecurityVersion)
-                    because(SecurityOverrides.JACKSON_CORE_REASON)
-                }
+                val requestedGroup = requested.group ?: return@eachDependency
+                val overrideRule =
+                    buildscriptOverrides[DependencyCoordinate(requestedGroup, requested.name)] ?: return@eachDependency
+                useVersion(overrideRule.version)
+                because(overrideRule.reason)
             }
         }
     }
@@ -123,6 +138,16 @@ private fun VersionCatalog.requiredVersion(alias: String): String =
     findVersion(alias)
         .get()
         .requiredVersion
+
+private data class DependencyCoordinate(
+    val group: String,
+    val artifact: String,
+)
+
+private data class SecurityOverrideRule(
+    val version: String,
+    val reason: String,
+)
 
 fun Project.configureJsSecurityOverrides(versionCatalog: VersionCatalog) {
     val ajvSecurityVersion = versionCatalog.requiredVersion("ajv-security")
