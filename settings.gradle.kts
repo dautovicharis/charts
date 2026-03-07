@@ -16,6 +16,23 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
+buildscript {
+    configurations.classpath {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
+                val versionCatalog =
+                    settings.extensions
+                        .getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java)
+                        .named("libs")
+                val jacksonCoreSecurityVersion =
+                    versionCatalog.findVersion("jackson-core-security").get().requiredVersion
+                useVersion(jacksonCoreSecurityVersion)
+                because("Mitigate GHSA-72hv-8253-57qq in settings classpath")
+            }
+        }
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
         google()

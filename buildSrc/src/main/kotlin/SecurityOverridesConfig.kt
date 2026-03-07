@@ -55,31 +55,6 @@ fun ConfigurationContainer.configureBuildscriptSecurityOverrides(versionCatalog:
                 DependencyCoordinate(SecurityOverrides.JACKSON_CORE_GROUP, SecurityOverrides.JACKSON_CORE_ARTIFACT),
                 jacksonOverride,
             )
-            put(
-                DependencyCoordinate(SecurityOverrides.JACKSON_CORE_GROUP, SecurityOverrides.JACKSON_DATABIND_ARTIFACT),
-                jacksonOverride,
-            )
-            put(
-                DependencyCoordinate(
-                    SecurityOverrides.JACKSON_CORE_GROUP,
-                    SecurityOverrides.JACKSON_ANNOTATIONS_ARTIFACT,
-                ),
-                jacksonOverride,
-            )
-            put(
-                DependencyCoordinate(
-                    SecurityOverrides.JACKSON_MODULE_GROUP,
-                    SecurityOverrides.JACKSON_MODULE_KOTLIN_ARTIFACT,
-                ),
-                jacksonOverride,
-            )
-            put(
-                DependencyCoordinate(
-                    SecurityOverrides.JACKSON_DATAFORMAT_GROUP,
-                    SecurityOverrides.JACKSON_DATAFORMAT_XML_ARTIFACT,
-                ),
-                jacksonOverride,
-            )
         }
 
     configureEach {
