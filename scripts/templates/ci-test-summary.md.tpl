@@ -2,7 +2,6 @@
 
 ### Modules
 {{charts_line}}
-{{app_line}}
 {{playground_line}}
 {{android_screenshot_line}}
 

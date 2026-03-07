@@ -1,19 +1,33 @@
 version: 2
+
 updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "weekly"
     groups:
-      all-dependencies:
+      gradle-wrapper:
         patterns:
-          - "*"
+          - "gradle-wrapper"
+      android-gradle-plugin:
+        patterns:
+          - "com.android.application"
+          - "com.android.library"
+          - "com.android.kotlin.multiplatform.library"
+      compose-and-jetbrains-androidx:
+        patterns:
+          - "org.jetbrains.compose*"
+          - "org.jetbrains.androidx*"
+      kotlin-tooling:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "com.google.devtools.ksp"
 
   - package-ecosystem: "npm"
     directory: "/docs/docs-app"
     schedule:
       interval: "weekly"
     groups:
-      all-dependencies:
+      docs-app-dependencies:
         patterns:
           - "*"

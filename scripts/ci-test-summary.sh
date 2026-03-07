@@ -24,7 +24,6 @@ CHARTS_RESULT_DIRS=(
   charts-stacked-area/build/test-results/jvmTest
   charts-radar/build/test-results/jvmTest
 )
-APP_RESULT_DIRS=(app/build/test-results/jvmTest)
 PLAYGROUND_RESULT_DIRS=(
   playground/build/test-results/jvmTest
   playground/build/test-results/jsBrowserTest
@@ -253,12 +252,10 @@ render_template() {
 
 main() {
   local charts_tests charts_failures charts_errors charts_skipped
-  local app_tests app_failures app_errors app_skipped
   local playground_tests playground_failures playground_errors playground_skipped
   local android_tests android_failures android_errors android_skipped
 
   read -r charts_tests charts_failures charts_errors charts_skipped < <(collect_suite_counts "${CHARTS_RESULT_DIRS[@]}")
-  read -r app_tests app_failures app_errors app_skipped < <(collect_suite_counts "${APP_RESULT_DIRS[@]}")
   read -r playground_tests playground_failures playground_errors playground_skipped < <(collect_suite_counts "${PLAYGROUND_RESULT_DIRS[@]}")
   read -r android_tests android_failures android_errors android_skipped < <(collect_suite_counts "${ANDROID_SCREENSHOT_RESULT_DIRS[@]}")
 
@@ -266,16 +263,15 @@ main() {
   read -r behavior_tests behavior_failures behavior_errors < <(collect_behavior_counts)
 
   local gradle_broken total_tests total_failures total_errors total_skipped total_line
-  total_tests=$((charts_tests + app_tests + playground_tests + android_tests + behavior_tests))
-  total_failures=$((charts_failures + app_failures + playground_failures + android_failures + behavior_failures))
-  total_errors=$((charts_errors + app_errors + playground_errors + android_errors + behavior_errors))
-  total_skipped=$((charts_skipped + app_skipped + playground_skipped + android_skipped))
+  total_tests=$((charts_tests + playground_tests + android_tests + behavior_tests))
+  total_failures=$((charts_failures + playground_failures + android_failures + behavior_failures))
+  total_errors=$((charts_errors + playground_errors + android_errors + behavior_errors))
+  total_skipped=$((charts_skipped + playground_skipped + android_skipped))
   gradle_broken="$(gradle_step_broken)"
   total_line="$(total_line_text "$total_tests" "$total_failures" "$total_errors" "$total_skipped" "$gradle_broken")"
 
-  local charts_line app_line playground_line android_line behavior_line
+  local charts_line playground_line android_line behavior_line
   charts_line="$(line_text "Charts" "$charts_tests" "$charts_failures" "$charts_errors" "$charts_skipped")"
-  app_line="$(line_text "App" "$app_tests" "$app_failures" "$app_errors" "$app_skipped")"
   playground_line="$(line_text "Playground" "$playground_tests" "$playground_failures" "$playground_errors" "$playground_skipped")"
   android_line="$(line_text "Android screenshot" "$android_tests" "$android_failures" "$android_errors" "$android_skipped")"
   behavior_line="$(line_text "CI behavior (total)" "$behavior_tests" "$behavior_failures" "$behavior_errors" 0)"
@@ -284,7 +280,6 @@ main() {
     "$SUMMARY_TEMPLATE_MD" \
     "$SUMMARY_FILE" \
     charts_line "$charts_line" \
-    app_line "$app_line" \
     playground_line "$playground_line" \
     android_screenshot_line "$android_line" \
     ci_behavior_total_line "$behavior_line" \
@@ -296,9 +291,6 @@ main() {
     charts_tests "$charts_tests" \
     charts_failures "$charts_failures" \
     charts_errors "$charts_errors" \
-    app_tests "$app_tests" \
-    app_failures "$app_failures" \
-    app_errors "$app_errors" \
     playground_tests "$playground_tests" \
     playground_failures "$playground_failures" \
     playground_errors "$playground_errors" \

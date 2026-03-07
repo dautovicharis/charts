@@ -4,11 +4,6 @@
     "failures": {{charts_failures}},
     "errors": {{charts_errors}}
   },
-  "app": {
-    "tests": {{app_tests}},
-    "failures": {{app_failures}},
-    "errors": {{app_errors}}
-  },
   "playground": {
     "tests": {{playground_tests}},
     "failures": {{playground_failures}},
