@@ -80,16 +80,16 @@ private val apiSourceRoots =
     )
 
 dokka {
-    val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
+    val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
     val snapshotOutputDir = file(project.rootDir.resolve("docs/static/api/snapshot"))
-    val versionOutputDir = file(project.rootDir.resolve("docs/static/api/${Config.chartsVersion}"))
+    val versionOutputDir = file(project.rootDir.resolve("docs/static/api/${project.version}"))
     val primaryOutputDir = if (isSnapshotVersion) snapshotOutputDir else versionOutputDir
 
     dokkaSourceSets.commonMain {
         sourceLink {
             sourceRoots.setFrom(emptyList<File>())
             apiSourceRoots.filter { it.exists() }.forEach { sourceRoots.from(it) }
-            remoteUrl("https://github.com/dautovicharis/charts/tree/${Config.chartsVersion}")
+            remoteUrl("https://github.com/dautovicharis/charts/tree/${project.version}")
             remoteLineSuffix.set("#L")
         }
 
@@ -108,7 +108,7 @@ dokka {
 
     pluginsConfiguration {
         versioning {
-            version.set(Config.chartsVersion)
+            version.set(project.version.toString())
         }
     }
 }
@@ -122,7 +122,7 @@ mavenPublishing {
     coordinates(
         groupId = Config.groupId,
         artifactId = Config.artifactId,
-        version = Config.chartsVersion,
+        version = project.version.toString(),
     )
 
     pom {

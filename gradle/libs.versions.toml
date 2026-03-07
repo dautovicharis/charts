@@ -57,6 +57,7 @@ mavenPublish = "0.36.0"
 buildConfig = "6.0.7"
 # https://github.com/JLLeitschuh/ktlint-gradle
 ktlint = "14.0.1"
+axion-release = "1.18.18"
 # https://insert-koin.io
 # https://mvnrepository.com/artifact/io.insert-koin/koin-bom
 koin-bom = "4.1.1"
@@ -102,5 +103,6 @@ build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-multiplatform" }
 composeScreenshot = { id = "com.android.compose.screenshot", version.ref = "compose-screenshot" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+axion-release = { id = "pl.allegro.tech.build.axion-release", version.ref = "axion-release" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 composeGifRecorder = { id = "io.github.hdcodedev.compose-gif-recorder", version.ref = "compose-gif-recorder" }

@@ -1,7 +1,33 @@
+plugins {
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
+    alias(libs.plugins.jetbrainsCompose) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.build.config) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.mavenPublish) apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.axion.release)
+}
+
+scmVersion {
+    tag {
+        prefix.set("")
+    }
+    versionIncrementer("incrementMinor")
+}
+
+version = scmVersion.version
+providers.gradleProperty("chartsReleaseVersion").orNull?.takeIf { it.isNotBlank() }?.let {
+    version = it
+}
+
 buildscript {
     val versionCatalog =
         project.extensions
-            .getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java)
+            .getByType(VersionCatalogsExtension::class.java)
             .named("libs")
 
     val protobufSecurityVersion =
@@ -103,18 +129,6 @@ buildscript {
     }
 }
 
-plugins {
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
-    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
-    alias(libs.plugins.jetbrainsCompose) apply false
-    alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.build.config) apply false
-    alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.dokka) apply false
-    alias(libs.plugins.mavenPublish) apply false
-    alias(libs.plugins.ktlint) apply false
-}
 
 val logbackSecurityVersion = libs.versions.logback.core.security.get()
 val commonsLang3SecurityVersion = libs.versions.commons.lang3.security.get()
@@ -128,7 +142,7 @@ org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension[project]
 org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension[project]
     .resolution("minimatch", minimatchSecurityVersion)
 
-fun org.gradle.api.Project.patchKarmaMinimatchCompatibility() {
+fun Project.patchKarmaMinimatchCompatibility() {
     val karmaLibDirectory = layout.buildDirectory.dir("js/node_modules/karma/lib").get().asFile
     if (!karmaLibDirectory.exists()) {
         logger.lifecycle(
@@ -182,6 +196,8 @@ fun org.gradle.api.Project.patchKarmaMinimatchCompatibility() {
 }
 
 subprojects {
+    version = rootProject.version
+
     tasks.matching { it.name == "jsBrowserTest" }.configureEach {
         doFirst {
             rootProject.patchKarmaMinimatchCompatibility()
@@ -298,7 +314,7 @@ tasks.register("generateJsDemo") {
     // in every module and can make generateDocs appear to hang.
     dependsOn(":app:jsBrowserDistribution")
     doLast {
-        val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
+        val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
         val buildDir = file("app/build/dist/js/productionExecutable")
 
         if (isSnapshotVersion) {
@@ -309,12 +325,12 @@ tasks.register("generateJsDemo") {
             }
             println("✅JS Demo generated successfully! Updated snapshot.")
         } else {
-            val versionDestinationDir = file("docs/static/demo/${Config.chartsVersion}")
+            val versionDestinationDir = file("docs/static/demo/${project.version.toString()}")
             sync {
                 from(buildDir)
                 into(versionDestinationDir)
             }
-            println("✅JS Demo generated successfully! Updated ${Config.chartsVersion}.")
+            println("✅JS Demo generated successfully! Updated ${project.version.toString()}.")
         }
     }
 }
@@ -323,7 +339,7 @@ tasks.register("playground") {
     group = "Charts"
     description = "Builds the JS playground app (development bundle) and copies files to docs/static/playground/snapshot (snapshot versions only)"
 
-    val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
+    val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
     onlyIf { isSnapshotVersion }
     if (isSnapshotVersion) {
         dependsOn(":playground:jsBrowserDevelopmentExecutableDistribution")
@@ -349,11 +365,11 @@ tasks.register("generateDocs") {
     dependsOn("charts:dokkaGenerate")
     dependsOn("generateJsDemo")
     doLast {
-        val isSnapshotVersion = Config.chartsVersion.endsWith("-SNAPSHOT")
+        val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
         if (isSnapshotVersion) {
             println("✅Documentation generated successfully to docs/static/ (updated snapshot)")
         } else {
-            println("✅Documentation generated successfully to docs/static/ (updated ${Config.chartsVersion})")
+            println("✅Documentation generated successfully to docs/static/ (updated ${project.version.toString()})")
         }
     }
 }
