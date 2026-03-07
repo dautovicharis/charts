@@ -4,7 +4,12 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    ignore:
+      - dependency-name: "gradle-wrapper"
+      - dependency-name: "com.android.application"
+      - dependency-name: "com.android.library"
+      - dependency-name: "com.android.kotlin.multiplatform.library"
     groups:
       gradle-wrapper:
         patterns:
@@ -26,7 +31,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/docs/docs-app"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       docs-app-dependencies:
         patterns:
