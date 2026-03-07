@@ -1,6 +1,6 @@
 object SecurityOverrides {
-    const val protobufGroup = "com.google.protobuf"
-    val protobufArtifacts =
+    const val PROTOBUF_GROUP = "com.google.protobuf"
+    val PROTOBUF_ARTIFACTS =
         setOf(
             "protobuf-java",
             "protobuf-java-util",
@@ -8,37 +8,37 @@ object SecurityOverrides {
             "protobuf-kotlin",
             "protobuf-kotlin-lite",
         )
-    const val protobufReason = "Mitigate CVE-2024-7254 / GHSA-735f-pc8j-v9w8"
+    const val PROTOBUF_REASON = "Mitigate CVE-2024-7254 / GHSA-735f-pc8j-v9w8"
 
-    const val jdomGroup = "org.jdom"
-    const val jdomArtifact = "jdom2"
-    const val jdomReason = "Mitigate XXE in org.jdom:jdom2 < 2.0.6.1"
+    const val JDOM_GROUP = "org.jdom"
+    const val JDOM_ARTIFACT = "jdom2"
+    const val JDOM_REASON = "Mitigate XXE in org.jdom:jdom2 < 2.0.6.1"
 
-    const val nettyGroup = "io.netty"
-    const val nettyHttp2Artifact = "netty-codec-http2"
-    const val nettyCodecArtifact = "netty-codec"
-    const val nettyHttpArtifact = "netty-codec-http"
-    const val nettyHttp2Reason = "Mitigate MadeYouReset HTTP/2 DDoS in io.netty:netty-codec-http2 <= 4.1.123.Final"
-    const val nettyCodecReason = "Mitigate zip bomb DoS in io.netty:netty-codec < 4.1.125.Final"
-    const val nettyHttpReason = "Mitigate CRLF injection in io.netty:netty-codec-http < 4.1.129.Final"
+    const val NETTY_GROUP = "io.netty"
+    const val NETTY_HTTP2_ARTIFACT = "netty-codec-http2"
+    const val NETTY_CODEC_ARTIFACT = "netty-codec"
+    const val NETTY_HTTP_ARTIFACT = "netty-codec-http"
+    const val NETTY_HTTP2_REASON = "Mitigate MadeYouReset HTTP/2 DDoS in io.netty:netty-codec-http2 <= 4.1.123.Final"
+    const val NETTY_CODEC_REASON = "Mitigate zip bomb DoS in io.netty:netty-codec < 4.1.125.Final"
+    const val NETTY_HTTP_REASON = "Mitigate CRLF injection in io.netty:netty-codec-http < 4.1.129.Final"
 
-    const val commonsLangGroup = "org.apache.commons"
-    const val commonsLang3Artifact = "commons-lang3"
-    const val commonsLang3Reason = "Mitigate uncontrolled recursion in org.apache.commons:commons-lang3 < 3.18.0"
+    const val COMMONS_LANG_GROUP = "org.apache.commons"
+    const val COMMONS_LANG3_ARTIFACT = "commons-lang3"
+    const val COMMONS_LANG3_REASON = "Mitigate uncontrolled recursion in org.apache.commons:commons-lang3 < 3.18.0"
 
-    const val logbackGroup = "ch.qos.logback"
-    val logbackArtifacts = setOf("logback-core", "logback-classic")
-    const val logbackReason = "Mitigate ACE in ch.qos.logback:logback-core < 1.3.16"
+    const val LOGBACK_GROUP = "ch.qos.logback"
+    val LOGBACK_ARTIFACTS = setOf("logback-core", "logback-classic")
+    const val LOGBACK_REASON = "Mitigate ACE in ch.qos.logback:logback-core < 1.3.16"
 
-    const val httpComponentsGroup = "org.apache.httpcomponents"
-    const val httpClientArtifact = "httpclient"
-    const val httpClientReason = "Mitigate host confusion in org.apache.httpcomponents:httpclient < 4.5.13"
+    const val HTTP_COMPONENTS_GROUP = "org.apache.httpcomponents"
+    const val HTTP_CLIENT_ARTIFACT = "httpclient"
+    const val HTTP_CLIENT_REASON = "Mitigate host confusion in org.apache.httpcomponents:httpclient < 4.5.13"
 
-    const val guavaGroup = "com.google.guava"
-    const val guavaArtifact = "guava"
-    const val guavaReason = "Mitigate insecure temp directory handling in com.google.guava:guava < 32.0.0-android"
+    const val GUAVA_GROUP = "com.google.guava"
+    const val GUAVA_ARTIFACT = "guava"
+    const val GUAVA_REASON = "Mitigate insecure temp directory handling in com.google.guava:guava < 32.0.0-android"
 
-    const val jose4jGroup = "org.bitbucket.b_c"
-    const val jose4jArtifact = "jose4j"
-    const val jose4jReason = "Mitigate DoS via compressed JWE content in org.bitbucket.b_c:jose4j < 0.9.6"
+    const val JOSE4J_GROUP = "org.bitbucket.b_c"
+    const val JOSE4J_ARTIFACT = "jose4j"
+    const val JOSE4J_REASON = "Mitigate DoS via compressed JWE content in org.bitbucket.b_c:jose4j < 0.9.6"
 }

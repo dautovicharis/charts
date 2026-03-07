@@ -16,9 +16,9 @@ kotlin {
             .toInt(),
     )
     android {
-        namespace = Config.demoLibraryNamespace
-        compileSdk = Config.compileSdk
-        minSdk = Config.minSdk
+        namespace = Config.DEMO_LIBRARY_NAMESPACE
+        compileSdk = Config.COMPILE_SDK
+        minSdk = Config.MIN_SDK
         androidResources {
             enable = true
         }
@@ -88,15 +88,15 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = Config.demoNamespace
-            packageVersion = Config.demoVersionName
+            packageName = Config.DEMO_NAMESPACE
+            packageVersion = Config.DEMO_VERSION_NAME
         }
     }
 }
 
 // Shared BuildConfig
 buildConfig {
-    packageName(Config.demoLibraryNamespace)
+    packageName(Config.DEMO_LIBRARY_NAMESPACE)
     buildConfigField("CHARTS_VERSION", project.version.toString())
     useKotlinOutput()
 }

@@ -11,21 +11,21 @@ javaPlatform {
 
 dependencies {
     constraints {
-        api("${Config.groupId}:${Config.artifactCoreId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactLineId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactPieId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactBarId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactStackedBarId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactStackedAreaId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactRadarId}:${project.version}")
-        api("${Config.groupId}:${Config.artifactId}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_CORE_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_LINE_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_PIE_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_BAR_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_STACKED_BAR_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_STACKED_AREA_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_RADAR_ID}:${project.version}")
+        api("${Config.GROUP_ID}:${Config.ARTIFACT_ID}:${project.version}")
     }
 }
 
 mavenPublishing {
     coordinates(
-        groupId = Config.groupId,
-        artifactId = Config.artifactBomId,
+        groupId = Config.GROUP_ID,
+        artifactId = Config.ARTIFACT_BOM_ID,
         version = project.version.toString(),
     )
 

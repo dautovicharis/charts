@@ -8,9 +8,14 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.mavenPublish) apply false
-    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.axion.release)
 }
+
+val versionCatalog =
+    extensions
+        .getByType(VersionCatalogsExtension::class.java)
+        .named("libs")
 
 scmVersion {
     tag {
@@ -25,175 +30,22 @@ providers.gradleProperty("chartsReleaseVersion").orNull?.takeIf { it.isNotBlank(
 }
 
 buildscript {
-    val versionCatalog =
+    val buildscriptVersionCatalog =
         project.extensions
             .getByType(VersionCatalogsExtension::class.java)
             .named("libs")
 
-    val protobufSecurityVersion =
-        versionCatalog
-            .findVersion("protobuf-security")
-            .get()
-            .requiredVersion
-    val jdomSecurityVersion =
-        versionCatalog
-            .findVersion("jdom-security")
-            .get()
-            .requiredVersion
-    val nettySecurityVersion =
-        versionCatalog
-            .findVersion("netty-codec-http2-security")
-            .get()
-            .requiredVersion
-    val commonsLang3SecurityVersion =
-        versionCatalog
-            .findVersion("commons-lang3-security")
-            .get()
-            .requiredVersion
-    val httpClientSecurityVersion =
-        versionCatalog
-            .findVersion("httpclient-security")
-            .get()
-            .requiredVersion
-    val guavaSecurityVersion =
-        versionCatalog
-            .findVersion("guava-security")
-            .get()
-            .requiredVersion
-    val jose4jSecurityVersion =
-        versionCatalog
-            .findVersion("jose4j-security")
-            .get()
-            .requiredVersion
-
     // Force patched vulnerable transitives on the Gradle plugin classpath (AGP/UTP transitives).
-    configurations.configureEach {
-        if (name == "classpath") {
-            resolutionStrategy.eachDependency {
-                if (requested.group == SecurityOverrides.protobufGroup &&
-                    requested.name in SecurityOverrides.protobufArtifacts
-                ) {
-                    useVersion(protobufSecurityVersion)
-                    because(SecurityOverrides.protobufReason)
-                }
-                if (requested.group == SecurityOverrides.jdomGroup &&
-                    requested.name == SecurityOverrides.jdomArtifact
-                ) {
-                    useVersion(jdomSecurityVersion)
-                    because(SecurityOverrides.jdomReason)
-                }
-                if (requested.group == SecurityOverrides.nettyGroup &&
-                    requested.name == SecurityOverrides.nettyHttp2Artifact
-                ) {
-                    useVersion(nettySecurityVersion)
-                    because(SecurityOverrides.nettyHttp2Reason)
-                }
-                if (requested.group == SecurityOverrides.nettyGroup &&
-                    requested.name == SecurityOverrides.nettyCodecArtifact
-                ) {
-                    useVersion(nettySecurityVersion)
-                    because(SecurityOverrides.nettyCodecReason)
-                }
-                if (requested.group == SecurityOverrides.nettyGroup &&
-                    requested.name == SecurityOverrides.nettyHttpArtifact
-                ) {
-                    useVersion(nettySecurityVersion)
-                    because(SecurityOverrides.nettyHttpReason)
-                }
-                if (requested.group == SecurityOverrides.commonsLangGroup &&
-                    requested.name == SecurityOverrides.commonsLang3Artifact
-                ) {
-                    useVersion(commonsLang3SecurityVersion)
-                    because(SecurityOverrides.commonsLang3Reason)
-                }
-                if (requested.group == SecurityOverrides.httpComponentsGroup &&
-                    requested.name == SecurityOverrides.httpClientArtifact
-                ) {
-                    useVersion(httpClientSecurityVersion)
-                    because(SecurityOverrides.httpClientReason)
-                }
-                if (requested.group == SecurityOverrides.guavaGroup &&
-                    requested.name == SecurityOverrides.guavaArtifact
-                ) {
-                    useVersion(guavaSecurityVersion)
-                    because(SecurityOverrides.guavaReason)
-                }
-                if (requested.group == SecurityOverrides.jose4jGroup &&
-                    requested.name == SecurityOverrides.jose4jArtifact
-                ) {
-                    useVersion(jose4jSecurityVersion)
-                    because(SecurityOverrides.jose4jReason)
-                }
-            }
-        }
-    }
+    configurations.configureBuildscriptSecurityOverrides(buildscriptVersionCatalog)
 }
 
+// Keep Kotlin/JS transitive dependencies patched in kotlin-js-store/yarn.lock.
+configureJsSecurityOverrides(versionCatalog)
 
-val logbackSecurityVersion = libs.versions.logback.core.security.get()
-val commonsLang3SecurityVersion = libs.versions.commons.lang3.security.get()
-val guavaSecurityVersion = libs.versions.guava.security.get()
-val ajvSecurityVersion = libs.versions.ajv.security.get()
-val minimatchSecurityVersion = libs.versions.minimatch.security.get()
-
-// Keep Kotlin/JS transitive ajv patched in kotlin-js-store/yarn.lock.
-org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension[project]
-    .resolution("ajv", ajvSecurityVersion)
-org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension[project]
-    .resolution("minimatch", minimatchSecurityVersion)
-
-fun Project.patchKarmaMinimatchCompatibility() {
-    val karmaLibDirectory = layout.buildDirectory.dir("js/node_modules/karma/lib").get().asFile
-    if (!karmaLibDirectory.exists()) {
-        logger.lifecycle(
-            "Karma lib directory not found at ${karmaLibDirectory.absolutePath}; " +
-                "skipping minimatch compatibility patch.",
-        )
-        return
-    }
-
-    val filesToPatch =
-        listOf(
-            "file-list.js",
-            "helper.js",
-            "init.js",
-            "preprocessor.js",
-            "watcher.js",
-        )
-    val originalImport = "const mm = require('minimatch')"
-    val patchedImport =
-        """
-        const minimatchPackage = require('minimatch')
-        const mm = typeof minimatchPackage === 'function' ? minimatchPackage : minimatchPackage.minimatch
-        if (typeof mm !== 'function') {
-          throw new Error('Unable to resolve minimatch matcher function from minimatch package')
-        }
-        """.trimIndent()
-
-    filesToPatch.forEach { fileName ->
-        val file = java.io.File(karmaLibDirectory, fileName)
-        if (!file.exists()) {
-            logger.lifecycle("Karma ${file.name} not found at ${file.absolutePath}; skipping.")
-            return@forEach
-        }
-
-        val source = file.readText()
-        when {
-            source.contains(originalImport) -> {
-                file.writeText(source.replace(originalImport, patchedImport))
-                logger.lifecycle("Applied Karma minimatch compatibility patch at ${file.absolutePath}.")
-            }
-
-            source.contains("const minimatchPackage = require('minimatch')") -> {
-                logger.lifecycle("Karma minimatch compatibility patch already applied at ${file.absolutePath}.")
-            }
-
-            else -> logger.lifecycle(
-                "No minimatch import pattern found in ${file.absolutePath}; skipping compatibility patch.",
-            )
-        }
-    }
-}
+// Root project only needs ktlint/logback override; commons-lang3/guava are enforced in subprojects.
+configurations.configureProjectSecurityOverrides(
+    versionCatalog = versionCatalog,
+)
 
 subprojects {
     version = rootProject.version
@@ -211,33 +63,10 @@ subprojects {
         ignoreFailures.set(false)
     }
 
-    configurations.configureEach {
-        resolutionStrategy.eachDependency {
-            if (requested.group == SecurityOverrides.commonsLangGroup &&
-                requested.name == SecurityOverrides.commonsLang3Artifact
-            ) {
-                useVersion(commonsLang3SecurityVersion)
-                because(SecurityOverrides.commonsLang3Reason)
-            }
-            if (requested.group == SecurityOverrides.guavaGroup &&
-                requested.name == SecurityOverrides.guavaArtifact
-            ) {
-                useVersion(guavaSecurityVersion)
-                because(SecurityOverrides.guavaReason)
-            }
-        }
-
-        if (name == "ktlint") {
-            resolutionStrategy.eachDependency {
-                if (requested.group == SecurityOverrides.logbackGroup &&
-                    requested.name in SecurityOverrides.logbackArtifacts
-                ) {
-                    useVersion(logbackSecurityVersion)
-                    because(SecurityOverrides.logbackReason)
-                }
-            }
-        }
-    }
+    configurations.configureProjectSecurityOverrides(
+        versionCatalog = versionCatalog,
+        includeCommonsAndGuava = true,
+    )
 }
 
 val chartsLibraryModules =
@@ -286,11 +115,18 @@ tasks.register("chartsCheck") {
     group = "Charts"
     description = "Build and tests for the charts project"
     dependsOn(getTasksByName("ktlintCheck", true))
+    dependsOn("buildSrcKtlintCheck")
     dependsOn("build")
     dependsOn("chartsTest")
 
     tasks.findByName("build")?.mustRunAfter(getTasksByName("ktlintCheck", true))
     tasks.findByName("chartsTest")?.mustRunAfter("build")
+}
+
+tasks.register<Exec>("buildSrcKtlintCheck") {
+    group = "verification"
+    description = "Runs ktlintCheck for buildSrc Kotlin code and scripts"
+    commandLine("./gradlew", "-p", "buildSrc", "ktlintCheck")
 }
 
 tasks.register("publishChartsModules") {
@@ -325,19 +161,20 @@ tasks.register("generateJsDemo") {
             }
             println("✅JS Demo generated successfully! Updated snapshot.")
         } else {
-            val versionDestinationDir = file("docs/static/demo/${project.version.toString()}")
+            val versionDestinationDir = file("docs/static/demo/${project.version}")
             sync {
                 from(buildDir)
                 into(versionDestinationDir)
             }
-            println("✅JS Demo generated successfully! Updated ${project.version.toString()}.")
+            println("✅JS Demo generated successfully! Updated ${project.version}.")
         }
     }
 }
 
 tasks.register("playground") {
     group = "Charts"
-    description = "Builds the JS playground app (development bundle) and copies files to docs/static/playground/snapshot (snapshot versions only)"
+    description =
+        "Builds the JS playground app (development bundle) and copies files to docs/static/playground/snapshot (snapshot versions only)"
 
     val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
     onlyIf { isSnapshotVersion }
@@ -369,7 +206,7 @@ tasks.register("generateDocs") {
         if (isSnapshotVersion) {
             println("✅Documentation generated successfully to docs/static/ (updated snapshot)")
         } else {
-            println("✅Documentation generated successfully to docs/static/ (updated ${project.version.toString()})")
+            println("✅Documentation generated successfully to docs/static/ (updated ${project.version})")
         }
     }
 }
@@ -389,6 +226,7 @@ tasks.register("recordDocsGif") {
 
 tasks.register("recordDocsGifs") {
     group = "Charts"
-    description = "Records all docs GIF scenarios to docs/content/<gifDocsVersion>/wiki/assets (default version: snapshot)"
+    description =
+        "Records all docs GIF scenarios to docs/content/<gifDocsVersion>/wiki/assets (default version: snapshot)"
     dependsOn(":androidApp:recordGifsDebug")
 }

@@ -16,9 +16,9 @@ kotlin {
     )
 
     android {
-        namespace = Config.chartsBarNamespace
-        compileSdk = Config.compileSdk
-        minSdk = Config.minSdk
+        namespace = Config.CHARTS_BAR_NAMESPACE
+        compileSdk = Config.COMPILE_SDK
+        minSdk = Config.MIN_SDK
         compilerOptions {
             jvmTarget.set(
                 org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -63,8 +63,8 @@ kotlin {
 
 mavenPublishing {
     coordinates(
-        groupId = Config.groupId,
-        artifactId = Config.artifactBarId,
+        groupId = Config.GROUP_ID,
+        artifactId = Config.ARTIFACT_BAR_ID,
         version = project.version.toString(),
     )
 
