@@ -10,6 +10,7 @@ fun ConfigurationContainer.configureBuildscriptSecurityOverrides(versionCatalog:
     val httpClientSecurityVersion = versionCatalog.requiredVersion("httpclient-security")
     val guavaSecurityVersion = versionCatalog.requiredVersion("guava-security")
     val jose4jSecurityVersion = versionCatalog.requiredVersion("jose4j-security")
+    val jacksonCoreSecurityVersion = versionCatalog.requiredVersion("jackson-core-security")
 
     configureEach {
         if (name == "classpath") {
@@ -68,6 +69,12 @@ fun ConfigurationContainer.configureBuildscriptSecurityOverrides(versionCatalog:
                     useVersion(jose4jSecurityVersion)
                     because(SecurityOverrides.JOSE4J_REASON)
                 }
+                if (requested.group == SecurityOverrides.JACKSON_CORE_GROUP &&
+                    requested.name == SecurityOverrides.JACKSON_CORE_ARTIFACT
+                ) {
+                    useVersion(jacksonCoreSecurityVersion)
+                    because(SecurityOverrides.JACKSON_CORE_REASON)
+                }
             }
         }
     }
@@ -120,11 +127,13 @@ private fun VersionCatalog.requiredVersion(alias: String): String =
 fun Project.configureJsSecurityOverrides(versionCatalog: VersionCatalog) {
     val ajvSecurityVersion = versionCatalog.requiredVersion("ajv-security")
     val minimatchSecurityVersion = versionCatalog.requiredVersion("minimatch-security")
+    val serializeJavascriptSecurityVersion = versionCatalog.requiredVersion("serialize-javascript-security")
     val yarnRootExtension = resolveYarnRootExtension()
 
     // Keep Kotlin/JS transitive dependencies patched in kotlin-js-store/yarn.lock.
     yarnRootExtension.applyResolution("ajv", ajvSecurityVersion)
     yarnRootExtension.applyResolution("minimatch", minimatchSecurityVersion)
+    yarnRootExtension.applyResolution("serialize-javascript", serializeJavascriptSecurityVersion)
 }
 
 private fun Project.resolveYarnRootExtension(): Any {
