@@ -81,6 +81,8 @@ val chartsLibraryModules =
         ":charts",
     )
 val chartsPublishableModules = chartsLibraryModules + ":charts-bom"
+val ciKmpCompileModules = chartsLibraryModules + listOf(":app", ":playground")
+val ciAndroidCompileModules = chartsLibraryModules + listOf(":app")
 
 tasks.register("chartsTest") {
     group = "Charts"
@@ -141,37 +143,28 @@ tasks.register("publishChartsModulesToMavenLocal") {
     dependsOn(chartsPublishableModules.map { "$it:publishToMavenLocal" })
 }
 
-tasks.register("generateJsDemo") {
+tasks.register<Sync>("generateJsDemo") {
     group = "Charts"
     description = "Builds the JS app and copies files to docs/static/demo/<target-version>"
+
+    val docsVersionDir =
+        providers.provider {
+            if (project.version.toString().endsWith("-SNAPSHOT")) "snapshot" else project.version.toString()
+        }
 
     // Only the demo app distribution is needed for docs/static/demo.
     // Depending on all jsBrowserDistribution tasks triggers unnecessary production JS builds
     // in every module and can make generateDocs appear to hang.
     dependsOn(":app:jsBrowserDistribution")
-    doLast {
-        val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
-        val buildDir = file("app/build/dist/js/productionExecutable")
+    from(layout.projectDirectory.dir("app/build/dist/js/productionExecutable"))
+    into(docsVersionDir.map { layout.projectDirectory.dir("docs/static/demo/$it") })
 
-        if (isSnapshotVersion) {
-            val snapshotDestinationDir = file("docs/static/demo/snapshot")
-            sync {
-                from(buildDir)
-                into(snapshotDestinationDir)
-            }
-            println("✅JS Demo generated successfully! Updated snapshot.")
-        } else {
-            val versionDestinationDir = file("docs/static/demo/${project.version}")
-            sync {
-                from(buildDir)
-                into(versionDestinationDir)
-            }
-            println("✅JS Demo generated successfully! Updated ${project.version}.")
-        }
+    doLast {
+        logger.lifecycle("✅ JS demo updated (${project.version})")
     }
 }
 
-tasks.register("playground") {
+tasks.register<Sync>("playground") {
     group = "Charts"
     description =
         "Builds the JS playground app (development bundle) and copies files to docs/static/playground/snapshot (snapshot versions only)"
@@ -182,17 +175,8 @@ tasks.register("playground") {
         dependsOn(":playground:jsBrowserDevelopmentExecutableDistribution")
     }
 
-    doLast {
-        val buildDir = file("playground/build/dist/js/developmentExecutable")
-        val snapshotDestinationDir = file("docs/static/playground/snapshot")
-
-        sync {
-            from(buildDir)
-            into(snapshotDestinationDir)
-        }
-
-        println("✅JS Playground (development bundle) generated successfully! Updated snapshot.")
-    }
+    from(layout.projectDirectory.dir("playground/build/dist/js/developmentExecutable"))
+    into(layout.projectDirectory.dir("docs/static/playground/snapshot"))
 }
 
 tasks.register("generateDocs") {
@@ -201,13 +185,9 @@ tasks.register("generateDocs") {
 
     dependsOn("charts:dokkaGenerate")
     dependsOn("generateJsDemo")
+
     doLast {
-        val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
-        if (isSnapshotVersion) {
-            println("✅Documentation generated successfully to docs/static/ (updated snapshot)")
-        } else {
-            println("✅Documentation generated successfully to docs/static/ (updated ${project.version})")
-        }
+        logger.lifecycle("✅ Docs updated (${project.version})")
     }
 }
 
@@ -229,4 +209,28 @@ tasks.register("recordDocsGifs") {
     description =
         "Records all docs GIF scenarios to docs/content/<gifDocsVersion>/wiki/assets (default version: snapshot)"
     dependsOn(":androidApp:recordGifsDebug")
+}
+
+// Fast PR/main signal: compile coverage across key targets without packaging outputs.
+tasks.register("ciCompile") {
+    group = "Charts"
+    description = "CI-focused compile task set without packaging"
+    dependsOn(ciKmpCompileModules.map { "$it:compileKotlinJvm" })
+    dependsOn(ciKmpCompileModules.map { "$it:compileKotlinJs" })
+    dependsOn(ciAndroidCompileModules.map { "$it:compileAndroidMain" })
+    dependsOn(":smoke-line:compileKotlinJvm")
+}
+
+// Output validation path used by CI, intentionally kept on dev/debug tasks where possible:
+// - avoids expensive production JS pipelines
+// - avoids duplicating compile-only checks already covered by ciCompile
+tasks.register("ciAssemble") {
+    group = "Charts"
+    description = "CI-focused assemble task set using dev/debug outputs"
+    dependsOn(chartsLibraryModules.map { "$it:jvmJar" })
+    dependsOn(":charts-bom:assemble")
+    dependsOn(ciAndroidCompileModules.map { "$it:assembleAndroidMain" })
+    dependsOn(":app:jsBrowserDevelopmentExecutableDistribution")
+    dependsOn(":playground:jsBrowserDevelopmentExecutableDistribution")
+    dependsOn(":smoke-line:assemble")
 }
