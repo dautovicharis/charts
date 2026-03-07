@@ -44,5 +44,6 @@ object SecurityOverrides {
 
     const val JACKSON_CORE_GROUP = "com.fasterxml.jackson.core"
     const val JACKSON_CORE_ARTIFACT = "jackson-core"
-    const val JACKSON_CORE_REASON = "Mitigate Number Length Constraint Bypass in com.fasterxml.jackson.core:jackson-core <= 2.18.5"
+    const val JACKSON_CORE_REASON =
+        "Mitigate Number Length Constraint Bypass in com.fasterxml.jackson.core:jackson-core <= 2.18.5"
 }
