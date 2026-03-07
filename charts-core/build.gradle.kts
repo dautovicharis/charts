@@ -44,7 +44,7 @@ kotlin {
             api(libs.compose.mpp.foundation)
             api(libs.compose.mpp.material3)
             api(libs.compose.mpp.ui)
-            implementation(libs.compose.mpp.preview)
+            api(libs.compose.mpp.preview)
             implementation(libs.compose.mpp.resources)
             api(libs.kotlinx.collections.immutable)
         }
