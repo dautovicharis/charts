@@ -160,11 +160,7 @@ tasks.register<Sync>("generateJsDemo") {
     into(docsVersionDir.map { layout.projectDirectory.dir("docs/static/demo/$it") })
 
     doLast {
-        if (project.version.toString().endsWith("-SNAPSHOT")) {
-            logger.lifecycle("✅JS Demo generated successfully! Updated snapshot.")
-        } else {
-            logger.lifecycle("✅JS Demo generated successfully! Updated ${project.version}.")
-        }
+        logger.lifecycle("✅ JS demo updated (${project.version})")
     }
 }
 
@@ -190,15 +186,8 @@ tasks.register("generateDocs") {
     dependsOn("charts:dokkaGenerate")
     dependsOn("generateJsDemo")
 
-    val docsSuccessMessage =
-        if (project.version.toString().endsWith("-SNAPSHOT")) {
-            "✅Documentation generated successfully to docs/static/ (updated snapshot)"
-        } else {
-            "✅Documentation generated successfully to docs/static/ (updated ${project.version})"
-        }
-
     doLast {
-        logger.lifecycle(docsSuccessMessage)
+        logger.lifecycle("✅ Docs updated (${project.version})")
     }
 }
 
