@@ -41,4 +41,8 @@ object SecurityOverrides {
     const val JOSE4J_GROUP = "org.bitbucket.b_c"
     const val JOSE4J_ARTIFACT = "jose4j"
     const val JOSE4J_REASON = "Mitigate DoS via compressed JWE content in org.bitbucket.b_c:jose4j < 0.9.6"
+
+    const val JACKSON_CORE_GROUP = "com.fasterxml.jackson.core"
+    const val JACKSON_CORE_ARTIFACT = "jackson-core"
+    const val JACKSON_CORE_REASON = "Mitigate Number Length Constraint Bypass in com.fasterxml.jackson.core:jackson-core <= 2.18.5"
 }

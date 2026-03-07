@@ -44,10 +44,14 @@ httpclient-security = "4.5.14"
 guava-security = "33.3.1-jre"
 # https://www.cve.org/CVERecord?id=CVE-2025-69873
 ajv-security = "8.18.0"
-# https://www.cve.org/CVERecord?id=CVE-2026-26996
-minimatch-security = "10.2.1"
+# https://www.cve.org/CVERecord?id=CVE-2026-27903
+minimatch-security = "10.2.3"
+# https://github.com/advisories/GHSA-5c6j-r48x-rmvq
+serialize-javascript-security = "7.0.3"
 # https://www.cve.org/CVERecord?id=CVE-2024-29371
 jose4j-security = "0.9.6"
+# https://github.com/advisories/GHSA-72hv-8253-57qq
+jackson-core-security = "2.18.6"
 
 # https://kotlin.github.io/dokka/
 dokka = "2.1.0"
