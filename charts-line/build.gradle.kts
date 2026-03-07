@@ -65,7 +65,7 @@ mavenPublishing {
     coordinates(
         groupId = Config.groupId,
         artifactId = Config.artifactLineId,
-        version = Config.chartsVersion,
+        version = project.version.toString(),
     )
 
     pom {

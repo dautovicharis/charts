@@ -62,6 +62,6 @@ kotlin {
 
 buildConfig {
     packageName("ui")
-    buildConfigField("CHARTS_VERSION", Config.chartsVersion)
+    buildConfigField("CHARTS_VERSION", project.version.toString())
     useKotlinOutput()
 }

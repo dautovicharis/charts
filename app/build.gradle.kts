@@ -97,7 +97,7 @@ compose.desktop {
 // Shared BuildConfig
 buildConfig {
     packageName(Config.demoLibraryNamespace)
-    buildConfigField("CHARTS_VERSION", Config.chartsVersion)
+    buildConfigField("CHARTS_VERSION", project.version.toString())
     useKotlinOutput()
 }
 

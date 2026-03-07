@@ -2,6 +2,17 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Release strategy"
+        required: true
+        default: finalize
+        type: choice
+        options:
+          - finalize
+          - patch
+          - minor
+          - major
 
 permissions:
   contents: write
@@ -21,7 +32,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -30,32 +41,67 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
-      - name: Get version from Config.kt
+      - name: Resolve release version from Axion
         id: version
+        shell: bash
         run: |
           set -euo pipefail
-          CONFIG_FILE="buildSrc/src/main/kotlin/Config.kt"
-          if [ ! -f "$CONFIG_FILE" ]; then
-            echo "Config file not found: $CONFIG_FILE" >&2
+          release_type="${{ github.event.inputs.release_type }}"
+          raw_version=$(./gradlew -q currentVersion \
+            | tail -n 1 \
+            | sed -E 's/^Project version: //' \
+            | tr -d '\r' \
+            | xargs)
+          if [[ -z "${raw_version:-}" ]]; then
+            echo "Failed to resolve version from Axion currentVersion task." >&2
             exit 1
           fi
-          VERSION=$(grep -E 'const val chartsVersion\s*=\s*"' "$CONFIG_FILE" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
-          if [ -z "${VERSION:-}" ]; then
-            echo "Failed to parse chartsVersion from $CONFIG_FILE" >&2
-            exit 1
-          fi
-          echo "release_version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "📦 Release version: ${VERSION}"
 
-      - name: Verify version is not a SNAPSHOT
-        run: |
-          VERSION="${{ steps.version.outputs.release_version }}"
-          if [[ "$VERSION" == *"-SNAPSHOT"* ]]; then
-            echo "❌ ERROR: Cannot release a SNAPSHOT version: $VERSION" >&2
-            echo "Please update Config.kt to a stable version (e.g., remove -SNAPSHOT suffix)" >&2
+          base_version="${raw_version%-SNAPSHOT}"
+          is_snapshot=false
+          if [[ "$raw_version" == *"-SNAPSHOT" ]]; then
+            is_snapshot=true
+          fi
+          if [[ ! "$base_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "Resolved version is not SemVer-compatible: ${base_version}" >&2
             exit 1
           fi
-          echo "✅ Version verified: $VERSION (not a SNAPSHOT)"
+
+          base_major="${BASH_REMATCH[1]}"
+          base_minor="${BASH_REMATCH[2]}"
+          base_patch="${BASH_REMATCH[3]}"
+
+          major="${base_major}"
+          minor="${base_minor}"
+          patch="${base_patch}"
+          case "$release_type" in
+            finalize)
+              if [[ "$is_snapshot" == "false" ]]; then
+                echo "release_type=finalize requires a -SNAPSHOT current version (current=${raw_version})." >&2
+                exit 1
+              fi
+              ;;
+            patch) patch=$((patch + 1)) ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            *)
+              echo "Unsupported release_type: $release_type" >&2
+              exit 1
+              ;;
+          esac
+
+          release_version="${major}.${minor}.${patch}"
+          echo "release_version=${release_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag does not already exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.release_version }}"
+          if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+            echo "❌ Tag already exists: ${VERSION}" >&2
+            exit 1
+          fi
 
       - name: Check required secrets
         id: secrets_check
@@ -90,10 +136,12 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
         run: |
-          echo "Publishing release version: ${{ steps.version.outputs.release_version }}"
-          ./gradlew publishChartsModules --no-daemon --no-build-cache --stacktrace
+          ./gradlew publishChartsModules \
+            -PchartsReleaseVersion="${{ steps.version.outputs.release_version }}" \
+            --no-daemon --no-build-cache --stacktrace
 
       - name: Create Git Tag
+        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
         run: |
           VERSION="${{ steps.version.outputs.release_version }}"
           git config user.name "github-actions[bot]"

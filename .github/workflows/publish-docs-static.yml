@@ -31,7 +31,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -40,19 +40,18 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
-      - name: Read charts version from Config.kt
+      - name: Resolve charts version from Axion
         id: version
         shell: bash
         run: |
           set -euo pipefail
-          config_file="buildSrc/src/main/kotlin/Config.kt"
-          if [[ ! -f "$config_file" ]]; then
-            echo "Config file not found: $config_file" >&2
-            exit 1
-          fi
-          charts_version=$(grep -E 'const val chartsVersion\s*=\s*"' "$config_file" | sed -E 's/.*"([^"]+)".*/\1/' | tr -d '\r' | xargs)
+          charts_version=$(./gradlew -q currentVersion \
+            | tail -n 1 \
+            | sed -E 's/^Project version: //' \
+            | tr -d '\r' \
+            | xargs)
           if [[ -z "${charts_version:-}" ]]; then
-            echo "Failed to parse chartsVersion from $config_file" >&2
+            echo "Failed to resolve version from Axion currentVersion task." >&2
             exit 1
           fi
           echo "charts_version=${charts_version}" >> "$GITHUB_OUTPUT"
