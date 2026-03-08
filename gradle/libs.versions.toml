@@ -65,6 +65,8 @@ axion-release = "1.21.1"
 # https://insert-koin.io
 # https://mvnrepository.com/artifact/io.insert-koin/koin-bom
 koin-bom = "4.1.1"
+# https://plugins.gradle.org/plugin/me.champeau.gradle.japicmp
+japicmp-gradle-plugin = "0.4.6"
 
 [libraries]
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
@@ -94,6 +96,7 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", ve
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+japicmp-gradle-plugin = { module = "me.champeau.gradle.japicmp:me.champeau.gradle.japicmp.gradle.plugin", version.ref = "japicmp-gradle-plugin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

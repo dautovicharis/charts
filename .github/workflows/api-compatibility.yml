@@ -1,0 +1,71 @@
+name: API Compatibility
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      baseline_version:
+        description: "Baseline release version (optional, defaults to latest SemVer tag)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-compatibility-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-compatibility:
+    name: Compare Public API Against Release
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'dautovicharis' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: "temurin"
+          cache: gradle
+
+      - name: Resolve baseline version
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          input_version="${{ github.event.inputs.baseline_version || '' }}"
+          if [[ -n "${input_version}" ]]; then
+            baseline_version="${input_version}"
+          else
+            baseline_version=$(
+              git tag --sort=-version:refname \
+                | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
+                | head -n 1 \
+                | tr -d '\r' \
+                | xargs \
+                || true
+            )
+          fi
+
+          if [[ -z "${baseline_version:-}" ]]; then
+            echo "Unable to resolve baseline release version from tags." >&2
+            exit 1
+          fi
+
+          echo "baseline_version=${baseline_version}" >> "$GITHUB_OUTPUT"
+          echo "Using baseline version: ${baseline_version}"
+
+      - name: Run API compatibility check
+        run: |
+          ./gradlew apiCompatibilityCheck \
+            -PapiCompatibilityBaselineVersion="${{ steps.baseline.outputs.baseline_version }}" \
+            --no-daemon

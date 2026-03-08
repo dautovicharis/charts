@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.mavenPublish) apply false
     alias(libs.plugins.ktlint)
     alias(libs.plugins.axion.release)
+    id("charts.api-compatibility")
 }
 
 val versionCatalog =
@@ -69,21 +70,6 @@ subprojects {
     )
 }
 
-val chartsLibraryModules =
-    listOf(
-        ":charts-core",
-        ":charts-line",
-        ":charts-pie",
-        ":charts-bar",
-        ":charts-stacked-bar",
-        ":charts-stacked-area",
-        ":charts-radar",
-        ":charts",
-    )
-val chartsPublishableModules = chartsLibraryModules + ":charts-bom"
-val ciKmpCompileModules = chartsLibraryModules + listOf(":app", ":playground")
-val ciAndroidCompileModules = chartsLibraryModules + listOf(":app")
-
 tasks.register("chartsTest") {
     group = "Charts"
     description = "Relevant tests for the charts project"
@@ -97,7 +83,7 @@ tasks.register("chartsTest") {
 tasks.register("chartsModulesTest") {
     group = "Charts"
     description = "Runs JVM tests for all modular chart artifacts and the umbrella module"
-    dependsOn(chartsLibraryModules.map { "$it:jvmTest" })
+    dependsOn(ChartsModules.library.map { "$it:jvmTest" })
     dependsOn("smokeLineCompile")
 }
 
@@ -134,13 +120,13 @@ tasks.register<Exec>("buildSrcKtlintCheck") {
 tasks.register("publishChartsModules") {
     group = "publishing"
     description = "Publishes all charts modules and BOM to the configured Maven repository"
-    dependsOn(chartsPublishableModules.map { "$it:publish" })
+    dependsOn(ChartsModules.publishable.map { "$it:publish" })
 }
 
 tasks.register("publishChartsModulesToMavenLocal") {
     group = "publishing"
     description = "Publishes all charts modules and BOM to Maven Local"
-    dependsOn(chartsPublishableModules.map { "$it:publishToMavenLocal" })
+    dependsOn(ChartsModules.publishable.map { "$it:publishToMavenLocal" })
 }
 
 tasks.register<Sync>("generateJsDemo") {
@@ -215,9 +201,9 @@ tasks.register("recordDocsGifs") {
 tasks.register("ciCompile") {
     group = "Charts"
     description = "CI-focused compile task set without packaging"
-    dependsOn(ciKmpCompileModules.map { "$it:compileKotlinJvm" })
-    dependsOn(ciKmpCompileModules.map { "$it:compileKotlinJs" })
-    dependsOn(ciAndroidCompileModules.map { "$it:compileAndroidMain" })
+    dependsOn(ChartsModules.ciKmpCompile.map { "$it:compileKotlinJvm" })
+    dependsOn(ChartsModules.ciKmpCompile.map { "$it:compileKotlinJs" })
+    dependsOn(ChartsModules.ciAndroidCompile.map { "$it:compileAndroidMain" })
     dependsOn(":smoke-line:compileKotlinJvm")
 }
 
@@ -227,9 +213,9 @@ tasks.register("ciCompile") {
 tasks.register("ciAssemble") {
     group = "Charts"
     description = "CI-focused assemble task set using dev/debug outputs"
-    dependsOn(chartsLibraryModules.map { "$it:jvmJar" })
+    dependsOn(ChartsModules.library.map { "$it:jvmJar" })
     dependsOn(":charts-bom:assemble")
-    dependsOn(ciAndroidCompileModules.map { "$it:assembleAndroidMain" })
+    dependsOn(ChartsModules.ciAndroidCompile.map { "$it:assembleAndroidMain" })
     dependsOn(":app:jsBrowserDevelopmentExecutableDistribution")
     dependsOn(":playground:jsBrowserDevelopmentExecutableDistribution")
     dependsOn(":smoke-line:assemble")
