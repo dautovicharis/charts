@@ -83,6 +83,7 @@ jobs:
         if: always()
         shell: bash
         env:
+          EVENT_NAME: ${{ github.event_name }}
           EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
         run: |
           set -euo pipefail
@@ -106,10 +107,12 @@ jobs:
             fi
           fi
 
-          {
-            echo "## API Compatibility"
-            echo "- Result: ${result}"
-          } >> "$GITHUB_STEP_SUMMARY"
+          if [[ "${EVENT_NAME}" != "pull_request" ]]; then
+            {
+              echo "## API Compatibility"
+              echo "- Result: ${result}"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           echo "result=${result}" >> "$GITHUB_OUTPUT"
           echo "binary_change_detected=${binary_change_detected}" >> "$GITHUB_OUTPUT"
@@ -118,35 +121,14 @@ jobs:
         if: ${{ always() && github.event_name == 'pull_request' }}
         shell: bash
         env:
-          BASELINE_VERSION: ${{ steps.baseline.outputs.baseline_version }}
-          EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
-          RESULT: ${{ steps.summary.outputs.result }}
-          BINARY_CHANGE_DETECTED: ${{ steps.summary.outputs.binary_change_detected }}
-          HAS_BREAKING_LABEL: ${{ env.HAS_BREAKING_LABEL }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          set -euo pipefail
-
-          label_state="missing"
-          if [[ "${HAS_BREAKING_LABEL}" == "true" ]]; then
-            label_state="present"
-          fi
-
-          binary_break_state="no"
-          if [[ "${BINARY_CHANGE_DETECTED}" == "true" ]]; then
-            binary_break_state="yes"
-          fi
-
-          mkdir -p api-summary
-          {
-            echo "## API Compatibility"
-            echo "- Result: **${RESULT}**"
-            echo "- Baseline: \`${BASELINE_VERSION}\`"
-            echo "- Exit code: \`${EXIT_CODE}\`"
-            echo "- breaking-change label: ${label_state}"
-            echo "- Binary break detected: ${binary_break_state}"
-            echo "- Run: ${RUN_URL}"
-          } > api-summary/api-compatibility-summary.md
+          API_COMPAT_SUMMARY_FILE: api-summary/api-compatibility-summary.md
+          API_COMPAT_BASELINE_VERSION: ${{ steps.baseline.outputs.baseline_version }}
+          API_COMPAT_EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
+          API_COMPAT_RESULT: ${{ steps.summary.outputs.result }}
+          API_COMPAT_BINARY_CHANGE_DETECTED: ${{ steps.summary.outputs.binary_change_detected }}
+          API_COMPAT_HAS_BREAKING_LABEL: ${{ env.HAS_BREAKING_LABEL }}
+          API_COMPAT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: bash scripts/ci-api-compatibility-summary.sh
 
       - name: Upload API summary artifact
         if: ${{ always() && github.event_name == 'pull_request' }}
