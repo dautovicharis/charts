@@ -2,8 +2,8 @@ name: API Compatibility
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
     inputs:
       baseline_version:
@@ -22,7 +22,8 @@ jobs:
   api-compatibility:
     name: Compare Public API Against Release
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'dautovicharis' }}
+    env:
+      HAS_BREAKING_LABEL: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'breaking-change') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -62,10 +63,122 @@ jobs:
           fi
 
           echo "baseline_version=${baseline_version}" >> "$GITHUB_OUTPUT"
-          echo "Using baseline version: ${baseline_version}"
 
       - name: Run API compatibility check
+        id: compatibility
+        continue-on-error: true
+        shell: bash
         run: |
+          set +e
+          set -o pipefail
           ./gradlew apiCompatibilityCheck \
             -PapiCompatibilityBaselineVersion="${{ steps.baseline.outputs.baseline_version }}" \
-            --no-daemon
+            --no-daemon 2>&1 | tee api-compatibility.log
+          exit_code=${PIPESTATUS[0]}
+          set -e
+          echo "exit_code=${exit_code}" >> "$GITHUB_OUTPUT"
+
+      - name: API compatibility summary
+        id: summary
+        if: always()
+        shell: bash
+        env:
+          EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+
+          result="compatible"
+          binary_change_detected="false"
+
+          if [[ -f api-compatibility.log ]] && grep -q "Detected binary changes\." api-compatibility.log; then
+            binary_change_detected="true"
+          fi
+
+          if [[ -z "${EXIT_CODE}" ]]; then
+            result="check did not run (missing exit code)"
+          elif [[ "${EXIT_CODE}" != "0" ]]; then
+            if [[ "${HAS_BREAKING_LABEL}" == "true" && "${binary_change_detected}" == "true" ]]; then
+              result="incompatible (breaking-change label present, allowed)"
+            elif [[ "${HAS_BREAKING_LABEL}" == "true" ]]; then
+              result="failed (breaking-change label present, but no API break detected)"
+            else
+              result="incompatible (breaking-change label missing)"
+            fi
+          fi
+
+          {
+            echo "## API Compatibility"
+            echo "- Result: ${result}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "result=${result}" >> "$GITHUB_OUTPUT"
+          echo "binary_change_detected=${binary_change_detected}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare API summary artifact
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        shell: bash
+        env:
+          BASELINE_VERSION: ${{ steps.baseline.outputs.baseline_version }}
+          EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
+          RESULT: ${{ steps.summary.outputs.result }}
+          BINARY_CHANGE_DETECTED: ${{ steps.summary.outputs.binary_change_detected }}
+          HAS_BREAKING_LABEL: ${{ env.HAS_BREAKING_LABEL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          label_state="missing"
+          if [[ "${HAS_BREAKING_LABEL}" == "true" ]]; then
+            label_state="present"
+          fi
+
+          binary_break_state="no"
+          if [[ "${BINARY_CHANGE_DETECTED}" == "true" ]]; then
+            binary_break_state="yes"
+          fi
+
+          mkdir -p api-summary
+          {
+            echo "## API Compatibility"
+            echo "- Result: **${RESULT}**"
+            echo "- Baseline: \`${BASELINE_VERSION}\`"
+            echo "- Exit code: \`${EXIT_CODE}\`"
+            echo "- breaking-change label: ${label_state}"
+            echo "- Binary break detected: ${binary_break_state}"
+            echo "- Run: ${RUN_URL}"
+          } > api-summary/api-compatibility-summary.md
+
+      - name: Upload API summary artifact
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-compatibility-summary
+          path: api-summary/api-compatibility-summary.md
+          if-no-files-found: error
+
+      - name: Enforce API compatibility policy
+        if: always()
+        shell: bash
+        env:
+          EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${EXIT_CODE}" ]]; then
+            echo "API compatibility check did not run or did not report an exit code."
+            exit 1
+          fi
+
+          if [[ "${EXIT_CODE}" == "0" ]]; then
+            exit 0
+          fi
+
+          if [[ "${HAS_BREAKING_LABEL}" == "true" ]]; then
+            if [[ -f api-compatibility.log ]] && grep -q "Detected binary changes\." api-compatibility.log; then
+              exit 0
+            fi
+            echo "API compatibility task failed for a non-compatibility reason even though breaking-change label is present."
+            exit 1
+          fi
+
+          echo "API compatibility check failed without breaking-change label."
+          exit 1
