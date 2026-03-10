@@ -62,8 +62,9 @@ function parseChangesetFile(filePath: string): SnapshotChangeset | null {
     }
 
     const fileName = path.basename(filePath);
-    const summary = record.summary;
-    if (!summary) {
+    const summary = record.summary || '';
+    const releaseNote = record.release_note || '';
+    if (!summary && !releaseNote) {
       return null;
     }
 
@@ -73,7 +74,7 @@ function parseChangesetFile(filePath: string): SnapshotChangeset | null {
       module: record.module || 'unknown',
       pr: record.pr || '',
       summary,
-      releaseNote: record.release_note || '',
+      releaseNote,
       notes: record.notes || '',
     };
   } catch {

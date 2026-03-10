@@ -61,8 +61,8 @@ Use this file as the **single source of truth** for an agent to ship the current
       - `type`
       - `module`
       - `pr` (full URL, e.g. `https://github.com/dautovicharis/charts/pull/<pr-number>`)
-      - `summary`
-      - `release_note`
+      - `summary` (optional)
+      - `release_note` (recommended; user-facing line shown in docs)
       - `notes` (optional)
 13. Commit and push the changeset file to the same PR branch:
     - Commit message: `docs(changeset): add pr #<pr-number> changeset`
