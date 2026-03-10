@@ -14,6 +14,7 @@ Use this file as the **single source of truth** for an agent to ship the current
 - Do **not** run docs static publish scripts manually; CI handles docs-static updates after merge to `main`.
 - Always run `./gradlew ktlintFormat` before staging/commit.
 - If `ktlintFormat` fails, fix the reported issues and re-run `./gradlew ktlintFormat` until it passes.
+- As a final post-PR step, create a PR changeset file and push it to the same branch.
 
 ## Conventions (short)
 
@@ -27,6 +28,9 @@ Use this file as the **single source of truth** for an agent to ship the current
 - **PR head format**:
   - If base is `upstream` and your branch is on `origin` (a fork), use `--head <forkOwner>:<branch>`.
   - Otherwise use `--head <branch>`.
+- **PR changeset template**: `.agent/templates/pr-changeset.md.tpl`
+- **PR changeset destination**: `docs/content/snapshot/changes/`
+- **PR changeset filename**: `<pr-number>-<short-kebab>.md`
 
 ## Workflow (simple)
 
@@ -49,7 +53,20 @@ Use this file as the **single source of truth** for an agent to ship the current
    - If head is on upstream, use:
      - `gh pr create --repo dautovicharis/charts --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - `rm -f "$PR_BODY_FILE"`
-11. Output the PR URL.
+11. Capture PR URL and PR number from the `gh pr create` result.
+12. Create PR changeset file (final step):
+    - Create `docs/content/snapshot/changes/` if missing.
+    - Copy `.agent/templates/pr-changeset.md.tpl` to `docs/content/snapshot/changes/<pr-number>-<short-kebab>.md`.
+    - Fill placeholders using PR context:
+      - `type`
+      - `module`
+      - `pr`
+      - `summary`
+      - `release_note`
+      - `notes` (optional)
+13. Commit and push the changeset file to the same PR branch:
+    - Commit message: `docs(changeset): add pr #<pr-number> changeset`
+14. Output the PR URL and created changeset path.
 
 ## PR body template (short)
 

@@ -12,18 +12,9 @@
 
 ## What's New in 2.3.0-SNAPSHOT
 
-### Release highlights
-
 
 ## Breaking Changes / Migration
 
+Breaking changes and call-site migration details now live on a dedicated page:
 
-## Getting Started
-
-New to Charts? Check out our [Getting Started Guide](/snapshot/wiki/getting-started) to learn how to integrate the library into your project and create your first charts in minutes.
-
-## Resources
-
-- [Demo Gallery](/demo/snapshot/)
-- [Playground](/playground/)
-- [API Documentation](/snapshot/api)
+- [Migration Guide](/snapshot/wiki/migration)

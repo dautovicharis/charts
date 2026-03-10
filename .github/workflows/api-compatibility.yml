@@ -90,15 +90,25 @@ jobs:
 
           result="compatible"
           binary_change_detected="false"
+          source_change_detected="false"
+          any_change_detected="false"
 
           if [[ -f api-compatibility.log ]] && grep -q "Detected binary changes\." api-compatibility.log; then
             binary_change_detected="true"
           fi
 
+          if [[ -f api-compatibility.log ]] && grep -q "Detected source incompatible changes\." api-compatibility.log; then
+            source_change_detected="true"
+          fi
+
+          if [[ "${binary_change_detected}" == "true" || "${source_change_detected}" == "true" ]]; then
+            any_change_detected="true"
+          fi
+
           if [[ -z "${EXIT_CODE}" ]]; then
             result="check did not run (missing exit code)"
           elif [[ "${EXIT_CODE}" != "0" ]]; then
-            if [[ "${HAS_BREAKING_LABEL}" == "true" && "${binary_change_detected}" == "true" ]]; then
+            if [[ "${HAS_BREAKING_LABEL}" == "true" && "${any_change_detected}" == "true" ]]; then
               result="incompatible (breaking-change label present, allowed)"
             elif [[ "${HAS_BREAKING_LABEL}" == "true" ]]; then
               result="failed (breaking-change label present, but no API break detected)"
@@ -116,27 +126,7 @@ jobs:
 
           echo "result=${result}" >> "$GITHUB_OUTPUT"
           echo "binary_change_detected=${binary_change_detected}" >> "$GITHUB_OUTPUT"
-
-      - name: Prepare API summary artifact
-        if: ${{ always() && github.event_name == 'pull_request' }}
-        shell: bash
-        env:
-          API_COMPAT_SUMMARY_FILE: api-summary/api-compatibility-summary.md
-          API_COMPAT_BASELINE_VERSION: ${{ steps.baseline.outputs.baseline_version }}
-          API_COMPAT_EXIT_CODE: ${{ steps.compatibility.outputs.exit_code }}
-          API_COMPAT_RESULT: ${{ steps.summary.outputs.result }}
-          API_COMPAT_BINARY_CHANGE_DETECTED: ${{ steps.summary.outputs.binary_change_detected }}
-          API_COMPAT_HAS_BREAKING_LABEL: ${{ env.HAS_BREAKING_LABEL }}
-          API_COMPAT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: bash scripts/ci-api-compatibility-summary.sh
-
-      - name: Upload API summary artifact
-        if: ${{ always() && github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-compatibility-summary
-          path: api-summary/api-compatibility-summary.md
-          if-no-files-found: error
+          echo "source_change_detected=${source_change_detected}" >> "$GITHUB_OUTPUT"
 
       - name: Enforce API compatibility policy
         if: always()
@@ -155,7 +145,7 @@ jobs:
           fi
 
           if [[ "${HAS_BREAKING_LABEL}" == "true" ]]; then
-            if [[ -f api-compatibility.log ]] && grep -q "Detected binary changes\." api-compatibility.log; then
+            if [[ -f api-compatibility.log ]] && grep -Eq "Detected binary changes\.|Detected source incompatible changes\." api-compatibility.log; then
               exit 0
             fi
             echo "API compatibility task failed for a non-compatibility reason even though breaking-change label is present."

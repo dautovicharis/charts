@@ -10,6 +10,7 @@ import {
   ExternalLinkIcon,
   ExamplesIcon,
   GettingStartedIcon,
+  MigrationIcon,
   OverviewIcon,
   PlaygroundIcon,
 } from '@/components/icons/SidebarIcons';
@@ -47,6 +48,8 @@ function getDocumentationIcon(slug: string) {
       return <GettingStartedIcon />;
     case 'examples':
       return <ExamplesIcon />;
+    case 'migration':
+      return <MigrationIcon />;
     default:
       return null;
   }
@@ -131,7 +134,17 @@ export function Sidebar({ navigation, versionId }: SidebarProps) {
                   onClick={closeMobileNavigation}
                 >
                   {getDocumentationIcon(item.slug)}
-                  {item.title}
+                  <span className="docs-sidebar__link-label">
+                    {item.title}
+                    {typeof item.badgeCount === 'number' && item.badgeCount > 0 ? (
+                      <span
+                        className="docs-sidebar__count-badge"
+                        aria-label={`${item.badgeCount} migration guides`}
+                      >
+                        {item.badgeCount}
+                      </span>
+                    ) : null}
+                  </span>
                 </Link>
                 {item.children && item.children.length > 0 && isActive(item) && (
                   <div className="docs-sidebar__subnav">

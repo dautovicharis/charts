@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.bundling.Jar
+
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
@@ -50,6 +52,15 @@ configurations.configureProjectSecurityOverrides(
 
 subprojects {
     version = rootProject.version
+
+    tasks.withType<Jar>().matching { it.name == "jvmJar" }.configureEach {
+        manifest {
+            attributes(
+                "Implementation-Title" to project.name,
+                "Implementation-Version" to project.version.toString(),
+            )
+        }
+    }
 
     tasks.matching { it.name == "jsBrowserTest" }.configureEach {
         doFirst {
