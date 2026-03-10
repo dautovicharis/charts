@@ -165,6 +165,7 @@ object LineChartDefaults {
         pointVisible: Boolean = false,
         lineColor: Color = MaterialTheme.colorScheme.primary,
         lineAlpha: Float = defaultChartAlpha(),
+        lineAlias: String = "",
         lineColors: List<Color> = emptyList(),
         bezier: Boolean = true,
         dragPointSize: Float = 7f,
