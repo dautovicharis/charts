@@ -29,6 +29,7 @@ export interface NavItem {
   title: string;
   slug: string;
   path: string;
+  badgeCount?: number;
   children?: NavItem[];
 }
 

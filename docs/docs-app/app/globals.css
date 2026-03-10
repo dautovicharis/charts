@@ -323,6 +323,20 @@ body {
   gap: var(--space-1);
 }
 
+.docs-sidebar__count-badge {
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.34rem;
+  border-radius: 999px;
+  background: #7c2d12;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.25rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 .docs-sidebar__external-icon {
   width: 0.72rem;
   height: 0.72rem;
@@ -494,6 +508,21 @@ body {
 .docs-content h5[id],
 .docs-content h6[id] {
   scroll-margin-top: calc(var(--header-height) + var(--space-6));
+}
+
+/* Number top-level migration sections in page content. */
+.docs-page--migration .docs-content {
+  counter-reset: migration-section;
+}
+
+.docs-page--migration .docs-content h2 {
+  counter-increment: migration-section;
+}
+
+.docs-page--migration .docs-content h2::before {
+  content: counter(migration-section) ". ";
+  color: var(--text-muted);
+  font-weight: 700;
 }
 
 .docs-content p {

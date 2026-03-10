@@ -80,6 +80,27 @@ export function ExamplesIcon(props: IconProps) {
   );
 }
 
+export function MigrationIcon(props: IconProps) {
+  return (
+    <svg {...withDefaults(props)}>
+      <path
+        d="M5.2 18.2h13.6a1.2 1.2 0 0 0 1-1.9L13 5.8a1.2 1.2 0 0 0-2 0L4.2 16.3a1.2 1.2 0 0 0 1 1.9z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 9.6v4.1"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <circle cx="12" cy="15.9" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function ApiReferenceIcon(props: IconProps) {
   return (
     <svg {...withDefaults(props)}>

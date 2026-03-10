@@ -35,9 +35,15 @@ export default async function WikiPage({ params }: WikiPageProps) {
   }
 
   const usesSplitExamplesLayout = pageSlug === 'examples';
-  const articleClassName = usesSplitExamplesLayout
-    ? 'docs-content animate-fadeIn docs-page--snapshot-examples'
-    : 'docs-content animate-fadeIn';
+  const usesMigrationLayout = pageSlug === 'migration';
+  const articleClassName = [
+    'docs-content',
+    'animate-fadeIn',
+    usesSplitExamplesLayout ? 'docs-page--snapshot-examples' : '',
+    usesMigrationLayout ? 'docs-page--migration' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <article className={articleClassName}>

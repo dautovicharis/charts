@@ -42,6 +42,7 @@ val apiCompatibilityTasks =
             onlyBinaryIncompatibleModified = true
             failOnSourceIncompatibility = true
             packageExcludes = listOf(apiCompatibilityInternalExcludePattern)
+            mdOutputFile.set(layout.buildDirectory.file("reports/api-compatibility/$artifactId.md"))
 
             val baselineVersionProvider =
                 providers.provider {
