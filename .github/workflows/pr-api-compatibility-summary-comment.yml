@@ -1,8 +1,8 @@
-name: PR Test Summary Comment
+name: PR API Compatibility Summary Comment
 
 on:
   workflow_run:
-    workflows: ["Test"]
+    workflows: ["API Compatibility"]
     types: [completed]
 
 jobs:
@@ -11,8 +11,8 @@ jobs:
     uses: ./.github/workflows/pr-summary-comment.yml
     with:
       run_id: ${{ github.event.workflow_run.id }}
-      artifact_name: ci-test-summary
-      artifact_dir: ci-summary
-      summary_file: ci-test-summary.md
-      marker: <!-- ci-test-summary -->
+      artifact_name: api-compatibility-summary
+      artifact_dir: api-summary
+      summary_file: api-compatibility-summary.md
+      marker: <!-- api-compatibility-summary -->
     secrets: inherit

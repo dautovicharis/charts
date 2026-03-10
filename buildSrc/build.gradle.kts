@@ -5,4 +5,9 @@ plugins {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation(libs.japicmp.gradle.plugin)
 }

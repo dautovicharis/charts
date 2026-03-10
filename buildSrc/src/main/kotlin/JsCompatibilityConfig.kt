@@ -1,4 +1,5 @@
 import org.gradle.api.Project
+import java.io.File
 
 fun Project.patchKarmaMinimatchCompatibility() {
     val karmaLibDirectory =
@@ -33,7 +34,7 @@ fun Project.patchKarmaMinimatchCompatibility() {
         """.trimIndent()
 
     filesToPatch.forEach { fileName ->
-        val file = java.io.File(karmaLibDirectory, fileName)
+        val file = File(karmaLibDirectory, fileName)
         if (!file.exists()) {
             logger.lifecycle("Karma ${file.name} not found at ${file.absolutePath}; skipping.")
             return@forEach
