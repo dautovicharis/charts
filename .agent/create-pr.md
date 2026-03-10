@@ -54,13 +54,12 @@ Use this file as the **single source of truth** for an agent to ship the current
      - `gh pr create --repo dautovicharis/charts --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - `rm -f "$PR_BODY_FILE"`
 11. Capture PR URL and PR number from the `gh pr create` result.
-12. If changesets are enabled for this run, execute `.agent/create-changeset.md`; otherwise skip this step.
+12. Execute `.agent/create-changeset.md`.
 13. If a changeset is created, commit and push it to the same PR branch:
     - Commit message: `docs(changeset): add pr #<pr-number> changeset`
 14. Output the PR URL and one of:
     - created changeset path
     - explicit skip reason from `.agent/create-changeset.md`
-    - `Changeset step skipped by request.`
 
 ## PR body template (short)
 
