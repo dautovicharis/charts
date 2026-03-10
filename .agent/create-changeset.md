@@ -6,13 +6,17 @@ Create a PR changeset file when the PR is user-impacting.
 
 - `pr_number` (only when run standalone)
 
+## Release note rule
+
+- `release_note` must be one short human-friendly sentence in plain language (no internal/technical jargon), maximum 20 words.
+
 ## Inference
 
 - When called from `.agent/create-pr.md`, use current PR context.
 - Infer `short_kebab` from PR title or branch name.
 - Infer `type` from PR/commit semantics.
 - Infer `module` from touched files and project modules.
-- Draft `release_note` from user-visible impact.
+- Draft `release_note` from user-visible impact and follow the release note rule.
 - Explicit user-provided values are optional overrides.
 
 ## User-impact gate
@@ -27,5 +31,5 @@ Create a PR changeset file when the PR is user-impacting.
 3. Ensure `docs/content/snapshot/changes/` exists.
 4. Create `docs/content/snapshot/changes/<pr-number>-<short-kebab>.md` from `.agent/templates/pr-changeset.md.tpl`.
 5. Fill inferred values: `type`, `module`, `pr` (`https://github.com/dautovicharis/charts/pull/<number>`), `release_note`.
-6. Validate: no placeholders remain and `release_note` is non-empty.
+6. Validate: no placeholders remain and `release_note` is non-empty and follows the release note rule.
 7. Output the created file path.
