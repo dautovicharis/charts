@@ -60,7 +60,7 @@ Use this file as the **single source of truth** for an agent to ship the current
     - Fill placeholders using PR context:
       - `type`
       - `module`
-      - `pr` (full URL, e.g. `https://github.com/dautovicharis/charts/pull/<pr-number>`)
+      - `pr`
       - `release_note` (required)
 13. Commit and push the changeset file to the same PR branch:
     - Commit message: `docs(changeset): add pr #<pr-number> changeset`
