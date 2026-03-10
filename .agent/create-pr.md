@@ -15,6 +15,10 @@ Use this file as the **single source of truth** for an agent to ship the current
 - Always run `./gradlew ktlintFormat` before staging/commit.
 - If `ktlintFormat` fails, fix the reported issues and re-run `./gradlew ktlintFormat` until it passes.
 - As a final post-PR step, create a PR changeset file and push it to the same branch.
+- `release_note` must be human-friendly and brief:
+  - One sentence, plain language, user-facing.
+  - Avoid implementation details, internal tooling names, and CI/workflow jargon.
+  - Prefer ~8-16 words.
 
 ## Conventions (short)
 
@@ -61,9 +65,7 @@ Use this file as the **single source of truth** for an agent to ship the current
       - `type`
       - `module`
       - `pr` (full URL, e.g. `https://github.com/dautovicharis/charts/pull/<pr-number>`)
-      - `summary` (optional)
-      - `release_note` (recommended; user-facing line shown in docs)
-      - `notes` (optional)
+      - `release_note` (required)
 13. Commit and push the changeset file to the same PR branch:
     - Commit message: `docs(changeset): add pr #<pr-number> changeset`
 14. Output the PR URL and created changeset path.

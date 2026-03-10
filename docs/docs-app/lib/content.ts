@@ -9,7 +9,6 @@ import { createHeadingSlugger } from './anchors';
  */
 const CONTENT_BASE = path.join(process.cwd(), '..', 'content');
 const SNAPSHOT_CHANGESETS_PATH = path.join(CONTENT_BASE, 'snapshot', 'changes');
-const GITHUB_PULL_BASE = 'https://github.com/dautovicharis/charts/pull';
 
 /**
  * Get the wiki content directory for a version
@@ -27,9 +26,7 @@ interface SnapshotChangeset {
   type: string;
   module: string;
   pr: string;
-  summary: string;
   releaseNote: string;
-  notes: string;
 }
 
 function normalizeChangesetValue(value: string): string {
@@ -62,9 +59,8 @@ function parseChangesetFile(filePath: string): SnapshotChangeset | null {
     }
 
     const fileName = path.basename(filePath);
-    const summary = record.summary || '';
     const releaseNote = record.release_note || '';
-    if (!summary && !releaseNote) {
+    if (!releaseNote) {
       return null;
     }
 
@@ -73,9 +69,7 @@ function parseChangesetFile(filePath: string): SnapshotChangeset | null {
       type: (record.type || 'other').toLowerCase(),
       module: record.module || 'unknown',
       pr: record.pr || '',
-      summary,
       releaseNote,
-      notes: record.notes || '',
     };
   } catch {
     return null;
@@ -112,27 +106,6 @@ function typeHeading(type: string): string {
   }
 }
 
-function parsePrLink(pr: string): string {
-  const value = pr.trim();
-  if (!value) {
-    return '';
-  }
-
-  const fullUrlMatch = value.match(/^https?:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)\/?$/i);
-  if (fullUrlMatch) {
-    const number = fullUrlMatch[1];
-    return `[#${number}](${value})`;
-  }
-
-  const numberMatch = value.match(/#?(\d+)/);
-  if (numberMatch) {
-    const number = numberMatch[1];
-    return `[#${number}](${GITHUB_PULL_BASE}/${number})`;
-  }
-
-  return '';
-}
-
 function renderSnapshotChangesetsMarkdown(changesets: SnapshotChangeset[]): string {
   if (changesets.length === 0) {
     return '';
@@ -164,13 +137,8 @@ function renderSnapshotChangesetsMarkdown(changesets: SnapshotChangeset[]): stri
       if (entry.module && entry.module !== 'unknown') {
         details.push(entry.module);
       }
-      const prLink = parsePrLink(entry.pr);
-      if (prLink) {
-        details.push(prLink);
-      }
       const detailSuffix = details.length > 0 ? ` (${details.join(' · ')})` : '';
-      const primaryText = entry.releaseNote || entry.summary;
-      lines.push(`- ${primaryText}${detailSuffix}`);
+      lines.push(`- ${entry.releaseNote}${detailSuffix}`);
     }
 
     lines.push('');
