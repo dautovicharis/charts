@@ -60,7 +60,7 @@ Use this file as the **single source of truth** for an agent to ship the current
     - Fill placeholders using PR context:
       - `type`
       - `module`
-      - `pr`
+      - `pr` (full URL, e.g. `https://github.com/dautovicharis/charts/pull/<pr-number>`)
       - `summary`
       - `release_note`
       - `notes` (optional)

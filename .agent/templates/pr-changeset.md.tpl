@@ -2,7 +2,7 @@
 
 - type: `feature|fix|refactor|docs|chore`
 - module: `<charts-line|charts-bar|charts-core|charts|...>`
-- pr: `#<number>`
+- pr: `https://github.com/dautovicharis/charts/pull/<number>`
 - summary: `<one sentence user-facing summary>`
 - release_note: `<text that can be copied into release notes>`
 - notes: `<optional internal context>`
