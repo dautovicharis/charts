@@ -16,7 +16,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: docs-static-${{ github.ref }}
@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   publish-docs-static:
-    name: Build and Publish docs/static
+    name: Build and Publish docs/static to charts-docs
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'HDCharts' }}
     steps:
@@ -57,25 +57,6 @@ jobs:
           echo "charts_version=${charts_version}" >> "$GITHUB_OUTPUT"
           echo "Config chartsVersion: ${charts_version}"
 
-      - name: Fetch existing docs/static from docs-static branch
-        run: bash scripts/fetch-docs-static.sh
-
-      - name: Snapshot existing non-snapshot version folders
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/docs-static-state"
-          for base in docs/static/api docs/static/demo docs/static/playground; do
-            if [[ -d "$base" ]]; then
-              find "$base" -mindepth 1 -maxdepth 1 -type d \
-                -exec basename {} \; \
-                | grep -Ev '^snapshot$' \
-                | sort -u > "$RUNNER_TEMP/docs-static-state/$(basename "$base").before" || true
-            else
-              : > "$RUNNER_TEMP/docs-static-state/$(basename "$base").before"
-            fi
-          done
-
       - name: Build docs static assets
         shell: bash
         run: |
@@ -104,65 +85,48 @@ jobs:
             fi
           done
 
-      - name: Validate docs release links against built static assets
-        shell: bash
-        run: bash scripts/test-docs-release-assets.sh
+      - name: Checkout charts-docs repository
+        uses: actions/checkout@v4
+        with:
+          repository: HDCharts/charts-docs
+          token: ${{ secrets.CHARTS_DOCS_PUSH_TOKEN }}
+          fetch-depth: 0
+          path: charts-docs-repo
 
-      - name: Guard against accidental deletion of historical docs versions
+      - name: Sync generated static assets into charts-docs workspace
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/docs-static-state"
-          removed=()
+          rm -rf charts-docs-repo/static
+          mkdir -p charts-docs-repo/static
+          rsync -a docs/static/ charts-docs-repo/static/
 
-          for base in docs/static/api docs/static/demo docs/static/playground; do
-            before_file="$RUNNER_TEMP/docs-static-state/$(basename "$base").before"
-            current_file="$RUNNER_TEMP/docs-static-state/$(basename "$base").after"
-
-            if [[ -d "$base" ]]; then
-              find "$base" -mindepth 1 -maxdepth 1 -type d \
-                -exec basename {} \; \
-                | grep -Ev '^snapshot$' \
-                | sort -u > "$current_file" || true
-            else
-              : > "$current_file"
-            fi
-
-            while IFS= read -r version; do
-              [[ -z "$version" ]] && continue
-              if ! grep -Fxq "$version" "$current_file"; then
-                removed+=("${base#docs/static/}/$version")
-              fi
-            done < "$before_file"
-          done
-
-          if (( ${#removed[@]} > 0 )); then
-            echo "Refusing to publish: historical docs directories would be deleted:"
-            for item in "${removed[@]}"; do
-              echo " - docs/static/$item"
-            done
-            echo "Historical docs versions must never be removed by this workflow."
-            exit 1
-          fi
-
-      - name: Publish docs/static to docs-static branch
-        env:
-          REMOTE: origin
-          BRANCH: docs-static
-          CURRENT_VERSION: ${{ steps.version.outputs.charts_version }}
+      - name: Validate docs release links against built static assets
+        shell: bash
         run: |
+          set -euo pipefail
+          cd charts-docs-repo
+          DOCS_RELEASE_LINKS_ASSET_ROOT="${PWD}/static" bash scripts/test-docs-release-assets.sh
+
+      - name: Publish static assets to charts-docs/docs-static
+        env:
+          CURRENT_VERSION: ${{ steps.version.outputs.charts_version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd charts-docs-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          bash scripts/publish-docs-static.sh
+          CI=true CURRENT_VERSION="${CURRENT_VERSION}" bash scripts/publish-docs-static.sh
 
       - name: Trigger Vercel deploy hook
         env:
-          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.CHARTS_DOCS_VERCEL_DEPLOY_HOOK_URL }}
         shell: bash
         run: |
           set -euo pipefail
           if [[ -z "${VERCEL_DEPLOY_HOOK_URL:-}" ]]; then
-            echo "Missing required secret: VERCEL_DEPLOY_HOOK_URL" >&2
+            echo "Missing required secret: CHARTS_DOCS_VERCEL_DEPLOY_HOOK_URL" >&2
             echo "Disable Vercel automatic Git deploys and configure a deploy hook secret in GitHub Actions." >&2
             exit 1
           fi
