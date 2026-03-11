@@ -97,8 +97,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf charts-docs-repo/static
-          mkdir -p charts-docs-repo/static
+          git -C charts-docs-repo fetch origin docs-static
+          git -C charts-docs-repo checkout origin/docs-static -- static
           rsync -a docs/static/ charts-docs-repo/static/
 
       - name: Validate docs release links against built static assets
