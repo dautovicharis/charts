@@ -26,7 +26,7 @@ jobs:
   publish-docs-static:
     name: Build and Publish docs/static
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'dautovicharis' }}
+    if: ${{ github.repository_owner == 'HDCharts' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

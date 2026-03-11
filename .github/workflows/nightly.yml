@@ -13,7 +13,7 @@ permissions:
 jobs:
   dispatch-snapshot-release:
     name: Dispatch Snapshot Release
-    if: ${{ github.repository_owner == 'dautovicharis' }}
+    if: ${{ github.repository_owner == 'HDCharts' }}
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch snapshot-release workflow

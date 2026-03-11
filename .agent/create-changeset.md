@@ -30,6 +30,6 @@ Create a PR changeset file when the PR is user-impacting.
 2. If skipped, stop.
 3. Ensure `docs/content/snapshot/changes/` exists.
 4. Create `docs/content/snapshot/changes/<pr-number>-<short-kebab>.md` from `.agent/templates/pr-changeset.md.tpl`.
-5. Fill inferred values: `type`, `module`, `pr` (`https://github.com/dautovicharis/charts/pull/<number>`), `release_note`.
+5. Fill inferred values: `type`, `module`, `pr` (`https://github.com/HDCharts/charts/pull/<number>`), `release_note`.
 6. Validate: no placeholders remain and `release_note` is non-empty and follows the release note rule.
 7. Output the created file path.
