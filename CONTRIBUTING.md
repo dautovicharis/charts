@@ -2,7 +2,7 @@
 
 Contributions are welcome.
 
-This repository contains many subprojects, including chart libraries, demo apps, docs and playground. There are many ways to contribute, such as feature work, bug fixes, documentation updates, and test improvements.
+This repository contains chart libraries and sample apps. Documentation content and the docs website now live in `HDCharts/charts-docs`. There are many ways to contribute, such as feature work, bug fixes, and test improvements.
 
 ## Project hierarchy
 ```text
@@ -24,9 +24,11 @@ ChartsProject
     ├── :app (common)
     ├── :androidApp
     ├── :iosApp
-    ├── :playground
-    └── :docs/docs-app
+    └── :playground
 ```
+
+## Docs repository
+- Docs source, version registry, static assets, and Next.js docs site are maintained in `https://github.com/HDCharts/charts-docs`.
 
 ## Report issues
 Open an issue: https://github.com/dautovicharis/charts/issues
@@ -40,8 +42,6 @@ Open an issue: https://github.com/dautovicharis/charts/issues
 | `:androidApp` | Kotlin, Android, Jetpack Compose |
 | `:iosApp` | Swift, SwiftUI, Xcode |
 | `:playground` | Kotlin Multiplatform (JVM/JS), Compose Multiplatform |
-| `:docs` | Dokka-generated API docs, Markdown content |
-| `:docs/docs-app` | TypeScript, Next.js, React, MDX |
 
 ## Test types in this project
 - Kotlin/JVM unit tests (core and chart modules).
@@ -50,10 +50,10 @@ Open an issue: https://github.com/dautovicharis/charts/issues
 - Android instrumented GIF recording via `compose-gif-recorder` Gradle plugin (`:androidApp`, runs on device/emulator).
 - Android screenshot tests (baseline image validation).
 - Smoke compile checks (module-level compile validation).
-- Behavior/contract tests for docs release links and assets.
 
 ## GIF Recording
 - List available docs GIF scenarios: `./gradlew listDocsGifScenarios`
-- Record one scenario to `docs/content/snapshot/wiki/assets`: `./gradlew recordDocsGif -PgifScenario=line_default`
-- Record all scenarios to `docs/content/snapshot/wiki/assets`: `./gradlew recordDocsGifs`
+- Record one scenario to local `docs/content/snapshot/wiki/assets`: `./gradlew recordDocsGif -PgifScenario=line_default`
+- Record all scenarios to local `docs/content/snapshot/wiki/assets`: `./gradlew recordDocsGifs`
 - Target a different docs version folder with `-PgifDocsVersion=<version>` (for example `2.2.0`).
+- After recording, copy assets to `charts-docs/content/<version>/wiki/assets`.

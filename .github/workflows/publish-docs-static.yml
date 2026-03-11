@@ -105,8 +105,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd charts-docs-repo
-          DOCS_RELEASE_LINKS_ASSET_ROOT="${PWD}/static" bash scripts/test-docs-release-assets.sh
+          DOCS_RELEASE_LINKS_ASSET_ROOT="${PWD}/charts-docs-repo/static" \
+            bash charts-docs-repo/scripts/test-docs-release-assets.sh
 
       - name: Publish static assets to charts-docs/docs-static
         env:
@@ -114,10 +114,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd charts-docs-repo
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          CI=true CURRENT_VERSION="${CURRENT_VERSION}" bash scripts/publish-docs-static.sh
+          git -C charts-docs-repo config user.name "github-actions[bot]"
+          git -C charts-docs-repo config user.email "github-actions[bot]@users.noreply.github.com"
+          CI=true CURRENT_VERSION="${CURRENT_VERSION}" bash charts-docs-repo/scripts/publish-docs-static.sh
 
       - name: Trigger Vercel deploy hook
         env:
