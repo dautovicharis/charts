@@ -29,15 +29,3 @@ jobs:
           cache: gradle
       - name: Assemble
         run: ./gradlew ciAssemble
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: docs/docs-app/package-lock.json
-      - name: Install docs app dependencies
-        working-directory: docs/docs-app
-        run: npm ci
-      - name: Build docs app
-        working-directory: docs/docs-app
-        run: npm run build
