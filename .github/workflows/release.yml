@@ -27,7 +27,7 @@ jobs:
   release:
     name: Publish Release
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'dautovicharis' }}
+    if: ${{ github.repository_owner == 'HDCharts' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -192,7 +192,7 @@ jobs:
               'implementation("io.github.dautovicharis:charts-radar")',
               '```',
               '',
-              '📚 [Documentation](https://dautovicharis.github.io/charts/)',
+              '📚 [Documentation](https://charts.harisdautovic.com/)',
               `📦 [Maven Central](https://central.sonatype.com/artifact/io.github.dautovicharis/charts/${version})`,
             ].join('\n');
 

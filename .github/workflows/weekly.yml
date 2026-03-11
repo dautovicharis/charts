@@ -13,7 +13,7 @@ permissions:
 jobs:
   dispatch-codeql:
     name: Dispatch CodeQL Scan
-    if: ${{ github.repository_owner == 'dautovicharis' }}
+    if: ${{ github.repository_owner == 'HDCharts' }}
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch codeql workflow
