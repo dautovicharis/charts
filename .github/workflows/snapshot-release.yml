@@ -18,7 +18,7 @@ jobs:
     outputs:
       has_changes: ${{ steps.changes.outputs.has_changes }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Detect recent changes
@@ -57,7 +57,7 @@ jobs:
     if: ${{ github.repository_owner == 'HDCharts' && needs.changes.outputs.has_changes == 'true' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
