@@ -22,7 +22,6 @@ Use this file as the **single source of truth** for an agent to ship the current
 - **PR title**: same as commit header
 - **Base remote (PR target)**: use `upstream` if it exists; otherwise `origin`
 - **Head remote (push)**: use `origin` if it exists; otherwise `upstream`
-- **Upstream repo**: `HDCharts/charts`
 - **Base branch**: `main`
 - **PR head format**:
   - If base is `upstream` and your branch is on `origin` (a fork), use `--head <forkOwner>:<branch>`.
@@ -47,11 +46,10 @@ Use this file as the **single source of truth** for an agent to ship the current
    - `PR_BODY_FILE="$(mktemp -t pr-body.XXXXXX.md)"`
 9. Write PR body to `$PR_BODY_FILE` (use the template below).
 10. Create PR (GitHub CLI), then delete the temp file:
-   - Use the upstream repo as the PR target.
    - If head is on the fork (`origin`), include the fork owner:
-     - `gh pr create --repo HDCharts/charts --base main --head <forkOwner>:<branch> --title "<title>" --body-file "$PR_BODY_FILE"`
+     - `gh pr create --repo <base-owner>/<base-repo> --base main --head <forkOwner>:<branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - If head is on upstream, use:
-     - `gh pr create --repo HDCharts/charts --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
+     - `gh pr create --repo <base-owner>/<base-repo> --base main --head <branch> --title "<title>" --body-file "$PR_BODY_FILE"`
    - `rm -f "$PR_BODY_FILE"`
 11. Capture PR URL and PR number from the `gh pr create` result.
 12. Execute `.agent/create-changeset.md`.
