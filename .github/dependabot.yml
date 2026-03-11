@@ -27,12 +27,3 @@ updates:
         patterns:
           - "org.jetbrains.kotlin*"
           - "com.google.devtools.ksp"
-
-  - package-ecosystem: "npm"
-    directory: "/docs/docs-app"
-    schedule:
-      interval: "monthly"
-    groups:
-      docs-app-dependencies:
-        patterns:
-          - "*"
