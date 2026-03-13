@@ -2,17 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      release_type:
-        description: "Release strategy"
-        required: true
-        default: finalize
-        type: choice
-        options:
-          - finalize
-          - patch
-          - minor
-          - major
 
 permissions:
   contents: write
@@ -46,52 +35,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_type="${{ github.event.inputs.release_type }}"
-          raw_version=$(./gradlew -q currentVersion \
-            | tail -n 1 \
-            | sed -E 's/^Project version: //' \
-            | tr -d '\r' \
-            | xargs)
-          if [[ -z "${raw_version:-}" ]]; then
-            echo "Failed to resolve version from Axion currentVersion task." >&2
-            exit 1
-          fi
-
-          base_version="${raw_version%-SNAPSHOT}"
-          is_snapshot=false
-          if [[ "$raw_version" == *"-SNAPSHOT" ]]; then
-            is_snapshot=true
-          fi
-          if [[ ! "$base_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-            echo "Resolved version is not SemVer-compatible: ${base_version}" >&2
-            exit 1
-          fi
-
-          base_major="${BASH_REMATCH[1]}"
-          base_minor="${BASH_REMATCH[2]}"
-          base_patch="${BASH_REMATCH[3]}"
-
-          major="${base_major}"
-          minor="${base_minor}"
-          patch="${base_patch}"
-          case "$release_type" in
-            finalize)
-              if [[ "$is_snapshot" == "false" ]]; then
-                echo "release_type=finalize requires a -SNAPSHOT current version (current=${raw_version})." >&2
-                exit 1
-              fi
-              ;;
-            patch) patch=$((patch + 1)) ;;
-            minor) minor=$((minor + 1)); patch=0 ;;
-            major) major=$((major + 1)); minor=0; patch=0 ;;
-            *)
-              echo "Unsupported release_type: $release_type" >&2
-              exit 1
-              ;;
-          esac
-
-          release_version="${major}.${minor}.${patch}"
+          release_version="$(bash .github/scripts/resolve-release-version.sh)"
           echo "release_version=${release_version}" >> "$GITHUB_OUTPUT"
+          echo "Resolved release version: ${release_version}"
+
+      - name: Verify release readiness with Axion
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew verifyRelease --no-daemon --stacktrace
 
       - name: Verify tag does not already exist
         shell: bash
@@ -100,6 +52,33 @@ jobs:
           VERSION="${{ steps.version.outputs.release_version }}"
           if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
             echo "❌ Tag already exists: ${VERSION}" >&2
+            exit 1
+          fi
+
+      - name: Checkout charts-docs repository
+        uses: actions/checkout@v6
+        with:
+          repository: HDCharts/charts-docs
+          fetch-depth: 1
+          path: charts-docs-repo
+
+      - name: Validate release version exists in charts-docs registry
+        shell: bash
+        env:
+          EXPECTED_VERSION: ${{ steps.version.outputs.release_version }}
+        run: |
+          set -euo pipefail
+          registry_path="charts-docs-repo/registry/versions.json"
+          if [[ ! -f "${registry_path}" ]]; then
+            echo "Missing charts-docs registry: ${registry_path}" >&2
+            exit 1
+          fi
+
+          if ! jq -e --arg expected "${EXPECTED_VERSION}" \
+            'any((.versions // [])[]?; .id == $expected)' "${registry_path}" >/dev/null; then
+            available_versions="$(jq -r '[(.versions // [])[]? | .id | select(type == "string" and . != "")] | join(", ")' "${registry_path}")"
+            echo "Release version ${EXPECTED_VERSION} is not present in charts-docs registry." >&2
+            echo "Available registry versions: ${available_versions:-"(none)"}" >&2
             exit 1
           fi
 
@@ -125,7 +104,16 @@ jobs:
             echo "can_publish=true" >> "$GITHUB_OUTPUT"
           else
             echo "can_publish=false" >> "$GITHUB_OUTPUT"
+            echo "Release publish cannot proceed because required secrets are missing." >&2
+            exit 1
           fi
+
+      - name: Create release tag locally with Axion
+        if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew createRelease --no-daemon --stacktrace
 
       - name: Publish to Maven Central
         if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
@@ -140,15 +128,12 @@ jobs:
             -PchartsReleaseVersion="${{ steps.version.outputs.release_version }}" \
             --no-daemon --no-build-cache --stacktrace
 
-      - name: Create Git Tag
+      - name: Push release tag with Axion
         if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
+        shell: bash
         run: |
-          VERSION="${{ steps.version.outputs.release_version }}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "${VERSION}" -m "Release version ${VERSION}"
-          git push origin "${VERSION}"
-          echo "✅ Git tag ${VERSION} created and pushed"
+          set -euo pipefail
+          ./gradlew pushRelease --no-daemon --stacktrace
 
       - name: Comment on success
         if: ${{ steps.secrets_check.outputs.can_publish == 'true' }}
