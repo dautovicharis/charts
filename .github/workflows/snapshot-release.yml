@@ -40,7 +40,7 @@ jobs:
             exit 0
           fi
 
-          filtered=$(echo "$files" | grep -vE '(^docs/|\.md$|^\.github/workflows/deploy-gh-pages\.yml$)' || true)
+          filtered=$(echo "$files" | grep -vE '(^docs/|\.md$)' || true)
           if [ -z "${filtered:-}" ]; then
             echo "Only ignored paths changed in the last 24 hours."
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
@@ -74,10 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           SNAPSHOT_VERSION=$(./gradlew -q currentVersion \
-            | tail -n 1 \
-            | sed -E 's/^Project version: //' \
-            | tr -d '\r' \
-            | xargs)
+            | awk 'NF {v=$NF} END {gsub(/\r/, "", v); print v}')
           if [ -z "${SNAPSHOT_VERSION:-}" ]; then
             echo "Failed to resolve version from Axion currentVersion task." >&2
             exit 1
@@ -117,6 +114,8 @@ jobs:
             echo "can_publish=true" >> "$GITHUB_OUTPUT"
           else
             echo "can_publish=false" >> "$GITHUB_OUTPUT"
+            echo "Snapshot publish cannot proceed because required secrets are missing." >&2
+            exit 1
           fi
 
       - name: Publish snapshot to Maven Central
@@ -132,7 +131,7 @@ jobs:
           ./gradlew publishChartsModules --no-daemon --stacktrace
 
       - name: Comment on commit
-        if: ${{ steps.version.outputs.is_snapshot == 'true' }}
+        if: ${{ steps.version.outputs.is_snapshot == 'true' && steps.secrets_check.outputs.can_publish == 'true' }}
         uses: actions/github-script@v7
         with:
           script: |
