@@ -3,6 +3,16 @@ name: Publish Docs Release
 on:
   workflow_dispatch:
     inputs:
+      # Auto-generated from .version by sync-version-file.yml
+      # VERSION_INPUT_BEGIN
+      version_preview:
+        description: "Version from .version (read-only preview)"
+        required: true
+        type: choice
+        options:
+          - ""
+        default: ""
+      # VERSION_INPUT_END
       allow_overwrite_release:
         description: "Allow overwrite of existing release assets"
         required: false

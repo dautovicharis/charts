@@ -1,0 +1,121 @@
+name: Sync Version File
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-version-file-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync-version:
+    name: Sync .version from Axion currentVersion
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'HDCharts' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: gradle
+
+      - name: Resolve version and update .version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          charts_version="$(./gradlew -q currentVersion | awk 'NF {v=$NF} END {gsub(/\r/, "", v); print v}')"
+          if [[ -z "${charts_version:-}" ]]; then
+            echo "Failed to resolve version from Axion currentVersion task." >&2
+            exit 1
+          fi
+          printf '%s\n' "${charts_version}" > .version
+          preview_version="$(awk 'NF {gsub(/\r/, "", $0); print $0; exit}' .version)"
+          if [[ -z "${preview_version:-}" ]]; then
+            echo "The .version file is empty." >&2
+            exit 1
+          fi
+
+          workflow_files=(
+            ".github/workflows/publish-docs-release.yml"
+            ".github/workflows/release.yml"
+            ".github/workflows/snapshot-release.yml"
+            ".github/workflows/publish-docs-snapshot.yml"
+            ".github/workflows/promote-docs.yml"
+          )
+
+          for workflow_file in "${workflow_files[@]}"; do
+            begin_count="$(grep -c "# VERSION_INPUT_BEGIN" "${workflow_file}" || true)"
+            end_count="$(grep -c "# VERSION_INPUT_END" "${workflow_file}" || true)"
+            if [[ "${begin_count}" -ne 1 || "${end_count}" -ne 1 ]]; then
+              echo "Expected exactly one VERSION_INPUT marker pair in ${workflow_file}." >&2
+              exit 1
+            fi
+
+            tmp_file="$(mktemp)"
+            awk -v v="${preview_version}" '
+              /# VERSION_INPUT_BEGIN/ {
+                print
+                print "      version_preview:"
+                print "        description: \"Version from .version (read-only preview)\""
+                print "        required: true"
+                print "        type: choice"
+                print "        options:"
+                print "          - \"" v "\""
+                print "        default: \"" v "\""
+                skip=1
+                next
+              }
+              /# VERSION_INPUT_END/ {
+                skip=0
+                print
+                next
+              }
+              !skip { print }
+            ' "${workflow_file}" > "${tmp_file}"
+            mv "${tmp_file}" "${workflow_file}"
+          done
+
+          echo "charts_version=${charts_version}" >> "$GITHUB_OUTPUT"
+          {
+            echo "sync_paths<<EOF"
+            echo ".version"
+            printf '%s\n' "${workflow_files[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publish resolved version in run summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "### Synced Version" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Version: \`${{ steps.version.outputs.charts_version }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- File: \`.version\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create PR when .version changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: ${{ steps.version.outputs.sync_paths }}
+          branch: chore/sync-version-file
+          delete-branch: true
+          commit-message: "chore: sync .version"
+          title: "chore: sync .version"
+          body: |
+            Automated update of `.version` from `./gradlew -q currentVersion`.
+
+            Resolved version: `${{ steps.version.outputs.charts_version }}`
+          labels: |
+            automation
+            chore
