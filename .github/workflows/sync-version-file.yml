@@ -104,10 +104,22 @@ jobs:
           echo "- Version: \`${{ steps.version.outputs.charts_version }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- File: \`.version\`" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Validate workflow update token
+        shell: bash
+        env:
+          CHARTS_WORFLOW_TOKEN: ${{ secrets.CHARTS_WORFLOW_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CHARTS_WORFLOW_TOKEN:-}" ]]; then
+            echo "Missing required secret: CHARTS_WORFLOW_TOKEN." >&2
+            echo "Syncing workflow files requires a token with workflow write scope." >&2
+            exit 1
+          fi
+
       - name: Create PR when .version changed
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.CHARTS_WORFLOW_TOKEN }}
           add-paths: ${{ steps.version.outputs.sync_paths }}
           branch: chore/sync-version-file
           delete-branch: true
