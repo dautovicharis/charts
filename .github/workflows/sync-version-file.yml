@@ -107,7 +107,7 @@ jobs:
       - name: Create PR when .version changed
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.CHARTS_DOCS_WORKFLOW_TOKEN }}
+          token: ${{ github.token }}
           add-paths: ${{ steps.version.outputs.sync_paths }}
           branch: chore/sync-version-file
           delete-branch: true
