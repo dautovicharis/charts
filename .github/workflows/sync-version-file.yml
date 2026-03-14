@@ -47,6 +47,11 @@ jobs:
             echo "The .version file is empty." >&2
             exit 1
           fi
+          release_preview_version="${preview_version%-SNAPSHOT}"
+          if [[ -z "${release_preview_version:-}" ]]; then
+            echo "Failed to derive release preview version from ${preview_version}." >&2
+            exit 1
+          fi
 
           workflow_files=(
             ".github/workflows/publish-docs-release.yml"
@@ -57,6 +62,15 @@ jobs:
           )
 
           for workflow_file in "${workflow_files[@]}"; do
+            case "${workflow_file}" in
+              ".github/workflows/release.yml"|".github/workflows/publish-docs-release.yml"|".github/workflows/promote-docs.yml")
+                workflow_preview_version="${release_preview_version}"
+                ;;
+              *)
+                workflow_preview_version="${preview_version}"
+                ;;
+            esac
+
             begin_count="$(grep -c "# VERSION_INPUT_BEGIN" "${workflow_file}" || true)"
             end_count="$(grep -c "# VERSION_INPUT_END" "${workflow_file}" || true)"
             if [[ "${begin_count}" -ne 1 || "${end_count}" -ne 1 ]]; then
@@ -65,7 +79,7 @@ jobs:
             fi
 
             tmp_file="$(mktemp)"
-            awk -v v="${preview_version}" '
+            awk -v v="${workflow_preview_version}" '
               /# VERSION_INPUT_BEGIN/ {
                 print
                 print "      version_preview:"
