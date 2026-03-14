@@ -10,8 +10,8 @@ on:
         required: true
         type: choice
         options:
-          - ""
-        default: ""
+          - "2.3.0-SNAPSHOT"
+        default: "2.3.0-SNAPSHOT"
       # VERSION_INPUT_END
 
 permissions:
