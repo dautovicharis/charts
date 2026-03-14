@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  workflows: write
 
 concurrency:
   group: sync-version-file-${{ github.ref }}
@@ -108,6 +107,7 @@ jobs:
       - name: Create PR when .version changed
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.CHARTS_DOCS_WORKFLOW_TOKEN }}
           add-paths: ${{ steps.version.outputs.sync_paths }}
           branch: chore/sync-version-file
           delete-branch: true
