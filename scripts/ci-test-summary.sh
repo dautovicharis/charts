@@ -24,10 +24,6 @@ CHARTS_RESULT_DIRS=(
   charts-stacked-area/build/test-results/jvmTest
   charts-radar/build/test-results/jvmTest
 )
-PLAYGROUND_RESULT_DIRS=(
-  playground/build/test-results/jvmTest
-  playground/build/test-results/jsBrowserTest
-)
 ANDROID_SCREENSHOT_RESULT_DIRS=(androidApp/build/test-results/validateDebugScreenshotTest)
 
 test_word() {
@@ -120,6 +116,11 @@ line_text() {
   local icon="✅"
   local word text
 
+  if [[ "$SHOULD_RUN_TESTS" != "true" ]]; then
+    printf -- '- ⚪ %s: Tests skipped' "$label"
+    return
+  fi
+
   word="$(test_word "$tests")"
   text="${tests} ${word} completed"
 
@@ -194,6 +195,11 @@ total_line_text() {
   local word
   word="$(test_word "$total_tests")"
 
+  if [[ "$SHOULD_RUN_TESTS" != "true" ]]; then
+    printf -- '- ⚪ Total: Tests skipped'
+    return
+  fi
+
   if ((effective_broken == 0)); then
     if ((total_skipped > 0)); then
       printf -- '- ✅ Total: %s %s completed successfully (%s skipped)' "$total_tests" "$word" "$total_skipped"
@@ -252,27 +258,24 @@ render_template() {
 
 main() {
   local charts_tests charts_failures charts_errors charts_skipped
-  local playground_tests playground_failures playground_errors playground_skipped
   local android_tests android_failures android_errors android_skipped
 
   read -r charts_tests charts_failures charts_errors charts_skipped < <(collect_suite_counts "${CHARTS_RESULT_DIRS[@]}")
-  read -r playground_tests playground_failures playground_errors playground_skipped < <(collect_suite_counts "${PLAYGROUND_RESULT_DIRS[@]}")
   read -r android_tests android_failures android_errors android_skipped < <(collect_suite_counts "${ANDROID_SCREENSHOT_RESULT_DIRS[@]}")
 
   local behavior_tests behavior_failures behavior_errors
   read -r behavior_tests behavior_failures behavior_errors < <(collect_behavior_counts)
 
   local gradle_broken total_tests total_failures total_errors total_skipped total_line
-  total_tests=$((charts_tests + playground_tests + android_tests + behavior_tests))
-  total_failures=$((charts_failures + playground_failures + android_failures + behavior_failures))
-  total_errors=$((charts_errors + playground_errors + android_errors + behavior_errors))
-  total_skipped=$((charts_skipped + playground_skipped + android_skipped))
+  total_tests=$((charts_tests + android_tests + behavior_tests))
+  total_failures=$((charts_failures + android_failures + behavior_failures))
+  total_errors=$((charts_errors + android_errors + behavior_errors))
+  total_skipped=$((charts_skipped + android_skipped))
   gradle_broken="$(gradle_step_broken)"
   total_line="$(total_line_text "$total_tests" "$total_failures" "$total_errors" "$total_skipped" "$gradle_broken")"
 
-  local charts_line playground_line android_line behavior_line
+  local charts_line android_line behavior_line
   charts_line="$(line_text "Charts" "$charts_tests" "$charts_failures" "$charts_errors" "$charts_skipped")"
-  playground_line="$(line_text "Playground" "$playground_tests" "$playground_failures" "$playground_errors" "$playground_skipped")"
   android_line="$(line_text "Android screenshot" "$android_tests" "$android_failures" "$android_errors" "$android_skipped")"
   behavior_line="$(line_text "CI behavior (total)" "$behavior_tests" "$behavior_failures" "$behavior_errors" 0)"
 
@@ -280,7 +283,6 @@ main() {
     "$SUMMARY_TEMPLATE_MD" \
     "$SUMMARY_FILE" \
     charts_line "$charts_line" \
-    playground_line "$playground_line" \
     android_screenshot_line "$android_line" \
     ci_behavior_total_line "$behavior_line" \
     total_line "$total_line"
@@ -291,9 +293,6 @@ main() {
     charts_tests "$charts_tests" \
     charts_failures "$charts_failures" \
     charts_errors "$charts_errors" \
-    playground_tests "$playground_tests" \
-    playground_failures "$playground_failures" \
-    playground_errors "$playground_errors" \
     android_screenshot_tests "$android_tests" \
     android_screenshot_failures "$android_failures" \
     android_screenshot_errors "$android_errors" \

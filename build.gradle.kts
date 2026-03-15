@@ -25,10 +25,14 @@ scmVersion {
     versionIncrementer("incrementMinor")
 }
 
-version = scmVersion.version
-providers.gradleProperty("chartsReleaseVersion").orNull?.takeIf { it.isNotBlank() }?.let {
-    version = it
-}
+val chartsReleaseVersion = providers.gradleProperty("chartsReleaseVersion").orNull?.takeIf { it.isNotBlank() }
+val isCompositeIncludedBuild = gradle.parent != null
+version =
+    when {
+        chartsReleaseVersion != null -> chartsReleaseVersion
+        isCompositeIncludedBuild -> "dev-local"
+        else -> scmVersion.version
+    }
 
 buildscript {
     val buildscriptVersionCatalog =
@@ -74,8 +78,6 @@ tasks.register("chartsTest") {
     group = "Charts"
     description = "Relevant tests for the charts project"
     dependsOn("charts:jvmTest")
-    dependsOn(":playground:jvmTest")
-    dependsOn(":playground:jsTest")
     dependsOn(project(":androidApp").tasks.named("validateDebugScreenshotTest"))
     dependsOn("chartsModulesTest")
 }
@@ -150,21 +152,6 @@ tasks.register<Sync>("generateJsDemo") {
     }
 }
 
-tasks.register<Sync>("playground") {
-    group = "Charts"
-    description =
-        "Builds the JS playground app (development bundle) and copies files to docs/static/playground/snapshot (snapshot versions only)"
-
-    val isSnapshotVersion = project.version.toString().endsWith("-SNAPSHOT")
-    onlyIf { isSnapshotVersion }
-    if (isSnapshotVersion) {
-        dependsOn(":playground:jsBrowserDevelopmentExecutableDistribution")
-    }
-
-    from(layout.projectDirectory.dir("playground/build/dist/js/developmentExecutable"))
-    into(layout.projectDirectory.dir("docs/static/playground/snapshot"))
-}
-
 tasks.register("generateDocs") {
     group = "Charts"
     description = "Generate Dokka API docs and JS demo to docs/static/"
@@ -217,6 +204,5 @@ tasks.register("ciAssemble") {
     dependsOn(":charts-bom:assemble")
     dependsOn(ChartsModules.ciAndroidCompile.map { "$it:assembleAndroidMain" })
     dependsOn(":app:jsBrowserDevelopmentExecutableDistribution")
-    dependsOn(":playground:jsBrowserDevelopmentExecutableDistribution")
     dependsOn(":smoke-line:assemble")
 }

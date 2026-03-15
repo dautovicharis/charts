@@ -39,6 +39,7 @@ https://charts.harisdautovic.com/demo/snapshot/
 
 ## 🏀 Playground
 https://charts.harisdautovic.com/playground
+Source repository: https://github.com/HDCharts/charts-playground
 
 ## Get Started
 
