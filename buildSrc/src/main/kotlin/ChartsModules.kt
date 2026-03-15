@@ -13,7 +13,7 @@ object ChartsModules {
             ":charts",
         )
 
-    val publishable = library + listOf(DEMO_SHARED, ":charts-bom")
-    val ciKmpCompile = library + listOf(DEMO_SHARED, ":app", ":playground")
+    val publishable = library + listOf(":charts-bom")
+    val ciKmpCompile = library + listOf(DEMO_SHARED, ":app")
     val ciAndroidCompile = library + listOf(DEMO_SHARED, ":app")
 }

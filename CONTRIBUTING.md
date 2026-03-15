@@ -25,8 +25,10 @@ ChartsProject
 └── Apps
     ├── :app (common)
     ├── :androidApp
-    ├── :iosApp
-    └── :playground
+    └── :iosApp
+
+Playground
+└── moved to https://github.com/HDCharts/charts-playground
 ```
 
 ## Docs repository
@@ -43,7 +45,6 @@ Open an issue: https://github.com/dautovicharis/charts/issues
 | `:app` | Kotlin Multiplatform, Compose Multiplatform (Android/iOS/JVM/JS) |
 | `:androidApp` | Kotlin, Android, Jetpack Compose |
 | `:iosApp` | Swift, SwiftUI, Xcode |
-| `:playground` | Kotlin Multiplatform (JVM/JS), Compose Multiplatform |
 
 ## Test types in this project
 - Kotlin/JVM unit tests (core and chart modules).

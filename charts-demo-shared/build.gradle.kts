@@ -2,9 +2,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.jetbrainsCompose)
-    `maven-publish`
-    signing
-    alias(libs.plugins.mavenPublish)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -58,22 +55,6 @@ kotlin {
             implementation(kotlin("test-common"))
             implementation(kotlin("test-annotations-common"))
         }
-    }
-}
-
-mavenPublishing {
-    coordinates(
-        groupId = Config.GROUP_ID,
-        artifactId = Config.ARTIFACT_DEMO_SHARED_ID,
-        version = project.version.toString(),
-    )
-
-    pom {
-        ChartsPublishing.configurePom(
-            pom = this,
-            moduleName = "Charts Shared Demo Resources",
-            moduleDescription = "Shared demo resources, theme, and sample data for Charts app and playground.",
-        )
     }
 }
 

@@ -40,7 +40,6 @@ dependencyResolutionManagement {
 }
 
 include(":app")
-include(":playground")
 include(":androidApp")
 include(":charts")
 include(":charts-demo-shared")

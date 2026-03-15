@@ -136,7 +136,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ./gradlew generateDocs playground --no-daemon --stacktrace --build-cache
+          ./gradlew generateDocs --no-daemon --stacktrace --build-cache
 
       - name: Validate required docs static files
         if: ${{ steps.changes.outputs.has_changes == 'true' }}
@@ -146,7 +146,6 @@ jobs:
           required_files=(
             "docs/static/api/snapshot/index.html"
             "docs/static/demo/snapshot/index.html"
-            "docs/static/playground/snapshot/index.html"
           )
 
           for file in "${required_files[@]}"; do

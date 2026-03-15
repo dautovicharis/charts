@@ -11,7 +11,7 @@ flowchart TD
   D -- Yes --> E["JDK + Gradle (Axion): currentVersion"]
   E --> F{"Version is -SNAPSHOT?"}
   F -- No --> FX["Fail"]
-  F -- Yes --> G["Gradle (Charts): generateDocs + playground"]
+  F -- Yes --> G["Gradle (Charts): generateDocs"]
   G --> H{"Required snapshot files exist?"}
   H -- No --> HX["Fail"]
   H -- Yes --> I["Checkout charts-docs"]
@@ -23,4 +23,3 @@ flowchart TD
 Required snapshot files:
 - `docs/static/api/snapshot/index.html`
 - `docs/static/demo/snapshot/index.html`
-- `docs/static/playground/snapshot/index.html`
