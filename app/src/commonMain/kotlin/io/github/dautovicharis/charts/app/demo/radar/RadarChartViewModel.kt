@@ -2,8 +2,8 @@ package io.github.dautovicharis.charts.app.demo.radar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.dautovicharis.charts.app.data.RadarSampleUseCase
 import io.github.dautovicharis.charts.app.ui.composable.ChartPreset
+import io.github.dautovicharis.charts.demoshared.data.RadarSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import kotlinx.coroutines.Job

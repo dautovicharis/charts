@@ -39,20 +39,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import chartsproject.app.generated.resources.charts_logo
-import chartsproject.app.generated.resources.ic_github
+import chartsproject.charts_demo_shared.generated.resources.charts_logo
+import chartsproject.charts_demo_shared.generated.resources.ic_github
 import chartsproject.playground.generated.resources.Res
 import chartsproject.playground.generated.resources.playground_logo_content_description
 import chartsproject.playground.generated.resources.playground_open_github_content_description
 import chartsproject.playground.generated.resources.playground_title
-import io.github.dautovicharis.charts.app.ui.theme.AppTheme
-import io.github.dautovicharis.charts.app.ui.theme.docsSlate
+import io.github.dautovicharis.charts.demoshared.theme.AppTheme
+import io.github.dautovicharis.charts.demoshared.theme.docsSlate
 import model.PlaygroundAction
 import model.PlaygroundRightPanelTab
 import model.PlaygroundViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import chartsproject.app.generated.resources.Res as AppRes
+import chartsproject.charts_demo_shared.generated.resources.Res as SharedRes
 
 private val WideLayoutBreakpoint = 1000.dp
 private val CompactHeaderBreakpoint = 760.dp
@@ -100,7 +100,7 @@ fun PlaygroundScreen() {
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Image(
-                                    painter = painterResource(AppRes.drawable.charts_logo),
+                                    painter = painterResource(SharedRes.drawable.charts_logo),
                                     contentDescription = stringResource(Res.string.playground_logo_content_description),
                                     modifier = Modifier.size(32.dp),
                                 )
@@ -172,7 +172,7 @@ fun PlaygroundScreen() {
                                 modifier = Modifier.size(34.dp),
                             ) {
                                 Icon(
-                                    painter = painterResource(AppRes.drawable.ic_github),
+                                    painter = painterResource(SharedRes.drawable.ic_github),
                                     contentDescription =
                                         stringResource(Res.string.playground_open_github_content_description),
                                     tint = MaterialTheme.colorScheme.onSurface,

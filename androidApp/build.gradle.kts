@@ -181,6 +181,7 @@ gifRecorder {
 dependencies {
     implementation(project(":app"))
     implementation(project(":charts"))
+    implementation(project(":charts-demo-shared"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.koin.android)
@@ -200,6 +201,7 @@ dependencies {
     screenshotTestImplementation(libs.compose.ui.tooling)
     screenshotTestImplementation(project(":charts"))
     screenshotTestImplementation(project(":app"))
+    screenshotTestImplementation(project(":charts-demo-shared"))
 }
 
 tasks.withType<Test>().configureEach {

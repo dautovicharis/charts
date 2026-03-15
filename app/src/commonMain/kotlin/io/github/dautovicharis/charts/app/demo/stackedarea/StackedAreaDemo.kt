@@ -34,8 +34,8 @@ import io.github.dautovicharis.charts.app.ui.composable.ChartPreset
 import io.github.dautovicharis.charts.app.ui.composable.ChartPresetToggle
 import io.github.dautovicharis.charts.app.ui.composable.ChartStyleItems
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
-import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
-import io.github.dautovicharis.charts.app.ui.theme.seriesColors
+import io.github.dautovicharis.charts.demoshared.theme.LocalChartColors
+import io.github.dautovicharis.charts.demoshared.theme.seriesColors
 import io.github.dautovicharis.charts.style.StackedAreaChartDefaults
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

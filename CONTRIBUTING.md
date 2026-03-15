@@ -20,6 +20,8 @@ ChartsProject
 │   └── :charts-stacked-area
 ├── BOM
 │   └── :charts-bom
+├── Shared Demo Resources
+│   └── :charts-demo-shared
 └── Apps
     ├── :app (common)
     ├── :androidApp

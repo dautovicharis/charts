@@ -1,4 +1,6 @@
 object ChartsModules {
+    const val DEMO_SHARED = ":charts-demo-shared"
+
     val library =
         listOf(
             ":charts-core",
@@ -11,7 +13,7 @@ object ChartsModules {
             ":charts",
         )
 
-    val publishable = library + ":charts-bom"
-    val ciKmpCompile = library + listOf(":app", ":playground")
-    val ciAndroidCompile = library + listOf(":app")
+    val publishable = library + listOf(DEMO_SHARED, ":charts-bom")
+    val ciKmpCompile = library + listOf(DEMO_SHARED, ":app", ":playground")
+    val ciAndroidCompile = library + listOf(DEMO_SHARED, ":app")
 }

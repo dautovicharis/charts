@@ -61,6 +61,7 @@ kotlin {
             implementation(libs.compose.mpp.material.icons.extended)
 
             implementation(project(":charts"))
+            implementation(project(":charts-demo-shared"))
             // Snapshot test
             // implementation("io.github.dautovicharis:charts:2.0.0-SNAPSHOT")
             implementation(libs.androidx.lifecycle.runtime.compose)

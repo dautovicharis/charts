@@ -40,6 +40,10 @@ kotlin {
     jvm()
 
     sourceSets {
+        all {
+            languageSettings.optIn("io.github.dautovicharis.charts.internal.InternalChartsApi")
+        }
+
         commonMain.dependencies {
             api(projects.chartsCore)
             api(projects.chartsLine)

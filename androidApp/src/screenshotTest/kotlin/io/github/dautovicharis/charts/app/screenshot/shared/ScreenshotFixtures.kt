@@ -8,15 +8,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
-import io.github.dautovicharis.charts.app.ui.theme.AppTheme
-import io.github.dautovicharis.charts.app.ui.theme.docsSlate
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultMultiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultPieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultRadarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.theme.AppTheme
+import io.github.dautovicharis.charts.demoshared.theme.docsSlate
 
 internal val ScreenshotTheme = docsSlate
 internal const val SCREENSHOT_ANIMATE_ON_START = false

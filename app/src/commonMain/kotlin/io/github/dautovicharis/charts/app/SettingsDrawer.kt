@@ -60,11 +60,12 @@ import chartsproject.app.generated.resources.drawer_title_dynamic_colors
 import chartsproject.app.generated.resources.drawer_title_github
 import chartsproject.app.generated.resources.github_url
 import chartsproject.app.generated.resources.github_url_content_description
-import chartsproject.app.generated.resources.ic_github
-import io.github.dautovicharis.charts.app.ui.theme.LocalHasDynamicColorFeature
-import io.github.dautovicharis.charts.app.ui.theme.Theme
+import chartsproject.charts_demo_shared.generated.resources.ic_github
+import io.github.dautovicharis.charts.demoshared.theme.LocalHasDynamicColorFeature
+import io.github.dautovicharis.charts.demoshared.theme.Theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import chartsproject.charts_demo_shared.generated.resources.Res as SharedRes
 
 @Composable
 fun SettingsDrawerContent(
@@ -144,7 +145,7 @@ fun SettingsDrawerContent(
             subtitle = stringResource(Res.string.drawer_github_subtitle),
             leading = {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_github),
+                    painter = painterResource(SharedRes.drawable.ic_github),
                     contentDescription = stringResource(Res.string.github_url_content_description),
                     tint = MaterialTheme.colorScheme.primary,
                 )

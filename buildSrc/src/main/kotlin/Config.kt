@@ -13,6 +13,7 @@ object Config {
     const val ARTIFACT_STACKED_BAR_ID = "charts-stacked-bar"
     const val ARTIFACT_STACKED_AREA_ID = "charts-stacked-area"
     const val ARTIFACT_RADAR_ID = "charts-radar"
+    const val ARTIFACT_DEMO_SHARED_ID = "charts-demo-shared"
     const val ARTIFACT_BOM_ID = "charts-bom"
     const val INCEPTION_YEAR = "2024"
     const val PROJECT_URL = "https://github.com/dautovicharis/charts"
@@ -40,4 +41,5 @@ object Config {
     const val CHARTS_STACKED_BAR_NAMESPACE = "$GROUP_ID.charts.stackedbar"
     const val CHARTS_STACKED_AREA_NAMESPACE = "$GROUP_ID.charts.stackedarea"
     const val CHARTS_RADAR_NAMESPACE = "$GROUP_ID.charts.radar"
+    const val CHARTS_DEMO_SHARED_NAMESPACE = "$GROUP_ID.charts.demoshared"
 }

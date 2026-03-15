@@ -33,8 +33,8 @@ kotlin {
 
             dependencies {
                 implementation(kotlin("test"))
-                implementation(project(":app"))
                 implementation(project(":charts"))
+                implementation(project(":charts-demo-shared"))
                 implementation(libs.compose.mpp.runtime)
                 implementation(libs.compose.mpp.ui)
                 implementation(
@@ -50,8 +50,8 @@ kotlin {
             implementation(libs.compose.mpp.material.icons.extended)
             implementation(libs.compose.mpp.ui)
             implementation(libs.compose.mpp.resources)
-            implementation(project(":app"))
             implementation(project(":charts"))
+            implementation(project(":charts-demo-shared"))
         }
 
         jsTest.dependencies {

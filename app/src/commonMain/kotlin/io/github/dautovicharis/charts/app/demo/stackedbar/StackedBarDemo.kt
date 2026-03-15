@@ -33,8 +33,8 @@ import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
 import io.github.dautovicharis.charts.app.ui.composable.ChartPreset
 import io.github.dautovicharis.charts.app.ui.composable.ChartPresetToggle
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
-import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
-import io.github.dautovicharis.charts.app.ui.theme.seriesColors
+import io.github.dautovicharis.charts.demoshared.theme.LocalChartColors
+import io.github.dautovicharis.charts.demoshared.theme.seriesColors
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt

@@ -1,12 +1,12 @@
 package model
 
-import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultMultiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultPieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultRadarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedBarSampleUseCase
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -107,7 +107,7 @@ class PlaygroundApplyFlowTest {
     }
 
     @Test
-    fun default_sessions_use_app_sample_use_cases() {
+    fun default_sessions_use_charts_sample_use_cases() {
         val state = defaultPlaygroundState(registry)
 
         val pieData = state.sessions.getValue(ChartType.PIE).appliedData as PlaygroundDataModel.SimpleSeries
