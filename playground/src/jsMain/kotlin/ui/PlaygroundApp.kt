@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
-import chartsproject.app.generated.resources.charts_logo
-import chartsproject.app.generated.resources.ic_github
+import chartsproject.charts_demo_shared.generated.resources.charts_logo
+import chartsproject.charts_demo_shared.generated.resources.ic_github
 import chartsproject.playground.generated.resources.Res
 import chartsproject.playground.generated.resources.playground_editor_add_row
 import chartsproject.playground.generated.resources.playground_editor_delete_row_content_description
@@ -15,14 +15,14 @@ import chartsproject.playground.generated.resources.playground_editor_row_number
 import chartsproject.playground.generated.resources.playground_logo_content_description
 import chartsproject.playground.generated.resources.playground_open_github_content_description
 import chartsproject.playground.generated.resources.playground_title
-import io.github.dautovicharis.charts.app.ui.composable.ChartsStartupGate
-import io.github.dautovicharis.charts.app.ui.composable.StartupResources
-import io.github.dautovicharis.charts.app.ui.composable.rememberStartupResourcesReady
-import io.github.dautovicharis.charts.app.ui.theme.AppTheme
-import io.github.dautovicharis.charts.app.ui.theme.docsSlate
+import io.github.dautovicharis.charts.demoshared.startup.ChartsStartupGate
+import io.github.dautovicharis.charts.demoshared.startup.StartupResources
+import io.github.dautovicharis.charts.demoshared.startup.rememberStartupResourcesReady
+import io.github.dautovicharis.charts.demoshared.theme.AppTheme
+import io.github.dautovicharis.charts.demoshared.theme.docsSlate
 import model.ChartType
 import org.jetbrains.skiko.wasm.onWasmReady
-import chartsproject.app.generated.resources.Res as AppRes
+import chartsproject.charts_demo_shared.generated.resources.Res as SharedRes
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -60,8 +60,8 @@ private fun rememberPlaygroundStartupResourcesReady(): Boolean {
     val resources =
         remember(iconResources) {
             StartupResources(
-                bitmapDrawables = listOf(AppRes.drawable.charts_logo),
-                vectorDrawables = listOf(AppRes.drawable.ic_github) + iconResources,
+                bitmapDrawables = listOf(SharedRes.drawable.charts_logo),
+                vectorDrawables = listOf(SharedRes.drawable.ic_github) + iconResources,
                 strings =
                     listOf(
                         Res.string.playground_title,

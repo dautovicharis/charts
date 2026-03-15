@@ -18,17 +18,18 @@ import chartsproject.app.generated.resources.drawer_title_dark_mode
 import chartsproject.app.generated.resources.drawer_title_dynamic_colors
 import chartsproject.app.generated.resources.drawer_title_github
 import chartsproject.app.generated.resources.github_url
-import chartsproject.app.generated.resources.ic_github
+import chartsproject.charts_demo_shared.generated.resources.ic_github
 import io.github.dautovicharis.charts.app.ChartDestination
 import io.github.dautovicharis.charts.app.LocalChartGalleryColumns
 import io.github.dautovicharis.charts.app.MainScreen
-import io.github.dautovicharis.charts.app.ui.composable.ChartsStartupGate
 import io.github.dautovicharis.charts.app.ui.composable.LocalChartDemoMaxWidth
-import io.github.dautovicharis.charts.app.ui.composable.StartupResources
-import io.github.dautovicharis.charts.app.ui.composable.rememberStartupResourcesReady
-import io.github.dautovicharis.charts.app.ui.theme.AppTheme
-import io.github.dautovicharis.charts.app.ui.theme.docsSlate
+import io.github.dautovicharis.charts.demoshared.startup.ChartsStartupGate
+import io.github.dautovicharis.charts.demoshared.startup.StartupResources
+import io.github.dautovicharis.charts.demoshared.startup.rememberStartupResourcesReady
+import io.github.dautovicharis.charts.demoshared.theme.AppTheme
+import io.github.dautovicharis.charts.demoshared.theme.docsSlate
 import chartsproject.app.generated.resources.Res as AppRes
+import chartsproject.charts_demo_shared.generated.resources.Res as SharedRes
 
 @Composable
 internal fun JsMainScreen() {
@@ -90,7 +91,7 @@ private fun rememberJsDemoStartupResourcesReady(): Boolean {
     val resources =
         remember(galleryDestinations, drawerStrings) {
             StartupResources(
-                vectorDrawables = (galleryDestinations.map { it.icon } + AppRes.drawable.ic_github).distinct(),
+                vectorDrawables = (galleryDestinations.map { it.icon } + SharedRes.drawable.ic_github).distinct(),
                 strings = (galleryDestinations.map { it.title } + drawerStrings).distinct(),
             )
         }

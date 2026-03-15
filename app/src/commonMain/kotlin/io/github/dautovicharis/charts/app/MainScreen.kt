@@ -53,7 +53,7 @@ import io.github.dautovicharis.charts.app.ui.composable.InteractiveSurfaceCallba
 import io.github.dautovicharis.charts.app.ui.composable.LocalInteractiveSurfaceCallbacks
 import io.github.dautovicharis.charts.app.ui.composable.StyleInfoDialog
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
-import io.github.dautovicharis.charts.app.ui.theme.AppTheme
+import io.github.dautovicharis.charts.demoshared.theme.AppTheme
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource

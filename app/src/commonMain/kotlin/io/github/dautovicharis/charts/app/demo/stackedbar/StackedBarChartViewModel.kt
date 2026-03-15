@@ -2,7 +2,7 @@ package io.github.dautovicharis.charts.app.demo.stackedbar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.dautovicharis.charts.app.data.StackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.StackedBarSampleUseCase
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

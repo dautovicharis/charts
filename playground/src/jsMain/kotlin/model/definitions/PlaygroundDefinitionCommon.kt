@@ -1,20 +1,20 @@
 package model.definitions
 
 import androidx.compose.ui.graphics.Color
-import io.github.dautovicharis.charts.app.data.BarSampleUseCase
-import io.github.dautovicharis.charts.app.data.LineSampleUseCase
-import io.github.dautovicharis.charts.app.data.MultiLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.PieSampleUseCase
-import io.github.dautovicharis.charts.app.data.RadarSampleUseCase
-import io.github.dautovicharis.charts.app.data.StackedAreaSampleUseCase
-import io.github.dautovicharis.charts.app.data.StackedBarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.BarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.LineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.MultiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.PieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.RadarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.StackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.StackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.barSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.lineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.multiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.pieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.radarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedBarSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import model.DataEditorColumn
@@ -28,13 +28,13 @@ import kotlin.math.max
 internal const val LABEL_COLUMN_ID = "label"
 
 internal object PlaygroundSampleUseCases {
-    val pie: PieSampleUseCase = DefaultPieSampleUseCase()
-    val line: LineSampleUseCase = DefaultLineSampleUseCase()
-    val bar: BarSampleUseCase = DefaultBarSampleUseCase()
-    val multiLine: MultiLineSampleUseCase = DefaultMultiLineSampleUseCase()
-    val stackedBar: StackedBarSampleUseCase = DefaultStackedBarSampleUseCase()
-    val stackedArea: StackedAreaSampleUseCase = DefaultStackedAreaSampleUseCase()
-    val radar: RadarSampleUseCase = DefaultRadarSampleUseCase()
+    val pie: PieSampleUseCase = pieSampleUseCase()
+    val line: LineSampleUseCase = lineSampleUseCase()
+    val bar: BarSampleUseCase = barSampleUseCase()
+    val multiLine: MultiLineSampleUseCase = multiLineSampleUseCase()
+    val stackedBar: StackedBarSampleUseCase = stackedBarSampleUseCase()
+    val stackedArea: StackedAreaSampleUseCase = stackedAreaSampleUseCase()
+    val radar: RadarSampleUseCase = radarSampleUseCase()
 }
 
 internal fun ChartDataSet.toSimpleSeries(labelsOverride: List<String>? = null): PlaygroundDataModel.SimpleSeries {

@@ -8,17 +8,17 @@ import androidx.navigation.compose.composable
 import chartsproject.app.generated.resources.Res
 import chartsproject.app.generated.resources.bar_chart
 import chartsproject.app.generated.resources.bar_stacked_chart
-import chartsproject.app.generated.resources.ic_bar_chart
-import chartsproject.app.generated.resources.ic_line_chart
-import chartsproject.app.generated.resources.ic_multi_line_chart
-import chartsproject.app.generated.resources.ic_pie_chart
-import chartsproject.app.generated.resources.ic_radar_chart
-import chartsproject.app.generated.resources.ic_stacked_bar_chart
 import chartsproject.app.generated.resources.line_chart
 import chartsproject.app.generated.resources.multi_line_chart
 import chartsproject.app.generated.resources.pie_chart
 import chartsproject.app.generated.resources.radar_chart
 import chartsproject.app.generated.resources.stacked_area_chart
+import chartsproject.charts_demo_shared.generated.resources.ic_bar_chart
+import chartsproject.charts_demo_shared.generated.resources.ic_line_chart
+import chartsproject.charts_demo_shared.generated.resources.ic_multi_line_chart
+import chartsproject.charts_demo_shared.generated.resources.ic_pie_chart
+import chartsproject.charts_demo_shared.generated.resources.ic_radar_chart
+import chartsproject.charts_demo_shared.generated.resources.ic_stacked_bar_chart
 import io.github.dautovicharis.charts.app.demo.bar.BarChartDemo
 import io.github.dautovicharis.charts.app.demo.line.LineChartDemo
 import io.github.dautovicharis.charts.app.demo.multiline.MultiLineChartDemo
@@ -29,6 +29,7 @@ import io.github.dautovicharis.charts.app.demo.stackedbar.StackedBarChartDemo
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
+import chartsproject.charts_demo_shared.generated.resources.Res as SharedRes
 
 sealed class ChartDestination(
     val route: String,
@@ -42,49 +43,49 @@ sealed class ChartDestination(
     data object PieChartScreen :
         ChartDestination(
             route = "pieChart",
-            icon = Res.drawable.ic_pie_chart,
+            icon = SharedRes.drawable.ic_pie_chart,
             title = Res.string.pie_chart,
         )
 
     data object LineChartScreen :
         ChartDestination(
             route = "lineChart",
-            icon = Res.drawable.ic_line_chart,
+            icon = SharedRes.drawable.ic_line_chart,
             title = Res.string.line_chart,
         )
 
     data object MultiLineChartScreen :
         ChartDestination(
             route = "multiLineChart",
-            icon = Res.drawable.ic_multi_line_chart,
+            icon = SharedRes.drawable.ic_multi_line_chart,
             title = Res.string.multi_line_chart,
         )
 
     data object StackedAreaChartScreen :
         ChartDestination(
             route = "stackedAreaChart",
-            icon = Res.drawable.ic_stacked_bar_chart,
+            icon = SharedRes.drawable.ic_stacked_bar_chart,
             title = Res.string.stacked_area_chart,
         )
 
     data object BarChartScreen :
         ChartDestination(
             route = "barChart",
-            icon = Res.drawable.ic_bar_chart,
+            icon = SharedRes.drawable.ic_bar_chart,
             title = Res.string.bar_chart,
         )
 
     data object StackedBarChartScreen :
         ChartDestination(
             route = "stackedBarChart",
-            icon = Res.drawable.ic_stacked_bar_chart,
+            icon = SharedRes.drawable.ic_stacked_bar_chart,
             title = Res.string.bar_stacked_chart,
         )
 
     data object RadarChartScreen :
         ChartDestination(
             route = "radarChart",
-            icon = Res.drawable.ic_radar_chart,
+            icon = SharedRes.drawable.ic_radar_chart,
             title = Res.string.radar_chart,
         )
 }

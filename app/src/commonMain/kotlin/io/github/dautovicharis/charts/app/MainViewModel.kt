@@ -1,12 +1,12 @@
 package io.github.dautovicharis.charts.app
 
 import androidx.lifecycle.ViewModel
-import io.github.dautovicharis.charts.app.ui.theme.Theme
-import io.github.dautovicharis.charts.app.ui.theme.blueViolet
-import io.github.dautovicharis.charts.app.ui.theme.citrusGrove
-import io.github.dautovicharis.charts.app.ui.theme.deepOceanBlue
-import io.github.dautovicharis.charts.app.ui.theme.deepRed
-import io.github.dautovicharis.charts.app.ui.theme.docsSlate
+import io.github.dautovicharis.charts.demoshared.theme.Theme
+import io.github.dautovicharis.charts.demoshared.theme.blueViolet
+import io.github.dautovicharis.charts.demoshared.theme.citrusGrove
+import io.github.dautovicharis.charts.demoshared.theme.deepOceanBlue
+import io.github.dautovicharis.charts.demoshared.theme.deepRed
+import io.github.dautovicharis.charts.demoshared.theme.docsSlate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

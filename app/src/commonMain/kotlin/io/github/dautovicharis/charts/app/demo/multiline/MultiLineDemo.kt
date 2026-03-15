@@ -46,8 +46,8 @@ import io.github.dautovicharis.charts.app.demo.timeline.LiveTimelineControls
 import io.github.dautovicharis.charts.app.demo.timeline.timelineAnimationDurationMillis
 import io.github.dautovicharis.charts.app.ui.composable.ChartDemo
 import io.github.dautovicharis.charts.app.ui.composable.StyleItems
-import io.github.dautovicharis.charts.app.ui.theme.LocalChartColors
-import io.github.dautovicharis.charts.app.ui.theme.seriesColors
+import io.github.dautovicharis.charts.demoshared.theme.LocalChartColors
+import io.github.dautovicharis.charts.demoshared.theme.seriesColors
 import io.github.dautovicharis.charts.style.LineChartDefaults
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

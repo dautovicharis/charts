@@ -2,7 +2,7 @@ package io.github.dautovicharis.charts.app.demo.bar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.dautovicharis.charts.app.data.BarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.BarSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

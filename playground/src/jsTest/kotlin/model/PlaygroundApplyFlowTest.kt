@@ -1,12 +1,12 @@
 package model
 
-import io.github.dautovicharis.charts.app.data.impl.DefaultBarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultMultiLineSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultPieSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultRadarSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedAreaSampleUseCase
-import io.github.dautovicharis.charts.app.data.impl.DefaultStackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.barSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.lineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.multiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.pieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.radarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedBarSampleUseCase
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -107,11 +107,11 @@ class PlaygroundApplyFlowTest {
     }
 
     @Test
-    fun default_sessions_use_app_sample_use_cases() {
+    fun default_sessions_use_charts_sample_use_cases() {
         val state = defaultPlaygroundState(registry)
 
         val pieData = state.sessions.getValue(ChartType.PIE).appliedData as PlaygroundDataModel.SimpleSeries
-        val pieSample = DefaultPieSampleUseCase().initialPieSample()
+        val pieSample = pieSampleUseCase().initialPieSample()
         assertEquals(
             pieSample.dataSet.data.item.points
                 .map(Double::toFloat),
@@ -120,7 +120,7 @@ class PlaygroundApplyFlowTest {
         assertEquals(pieSample.segmentKeys, pieData.labels)
 
         val lineData = state.sessions.getValue(ChartType.LINE).appliedData as PlaygroundDataModel.SimpleSeries
-        val lineDataSet = DefaultLineSampleUseCase().initialLineDataSet()
+        val lineDataSet = lineSampleUseCase().initialLineDataSet()
         assertEquals(
             lineDataSet.data.item.points
                 .map(Double::toFloat),
@@ -133,7 +133,7 @@ class PlaygroundApplyFlowTest {
         )
 
         val barData = state.sessions.getValue(ChartType.BAR).appliedData as PlaygroundDataModel.SimpleSeries
-        val barDataSet = DefaultBarSampleUseCase().initialBarDataSet()
+        val barDataSet = barSampleUseCase().initialBarDataSet()
         assertEquals(
             barDataSet.data.item.points
                 .map(Double::toFloat),
@@ -146,7 +146,7 @@ class PlaygroundApplyFlowTest {
         )
 
         val multiLineData = state.sessions.getValue(ChartType.MULTI_LINE).appliedData as PlaygroundDataModel.MultiSeries
-        val multiLineDataSet = DefaultMultiLineSampleUseCase().initialMultiLineSample().dataSet
+        val multiLineDataSet = multiLineSampleUseCase().initialMultiLineSample().dataSet
         assertEquals(multiLineDataSet.data.categories.toList(), multiLineData.xLabels)
         assertEquals(
             multiLineDataSet.data.items.map { item ->
@@ -160,7 +160,7 @@ class PlaygroundApplyFlowTest {
         )
 
         val areaData = state.sessions.getValue(ChartType.AREA).appliedData as PlaygroundDataModel.MultiSeries
-        val areaDataSet = DefaultStackedAreaSampleUseCase().initialStackedAreaSample().dataSet
+        val areaDataSet = stackedAreaSampleUseCase().initialStackedAreaSample().dataSet
         assertEquals(areaDataSet.data.categories.toList(), areaData.xLabels)
         assertEquals(areaDataSet.data.items.map { item -> item.label }, areaData.series.map { series -> series.name })
         assertEquals(
@@ -173,7 +173,7 @@ class PlaygroundApplyFlowTest {
                 .getValue(
                     ChartType.STACKED_BAR,
                 ).appliedData as PlaygroundDataModel.StackedSeries
-        val stackedBarDataSet = DefaultStackedBarSampleUseCase().initialStackedBarSample().dataSet
+        val stackedBarDataSet = stackedBarSampleUseCase().initialStackedBarSample().dataSet
         assertEquals(stackedBarDataSet.data.items.map { item -> item.label }, stackedBarData.segmentNames)
         assertEquals(stackedBarDataSet.data.categories.toList(), stackedBarData.bars.map { bar -> bar.label })
         assertEquals(
@@ -186,7 +186,7 @@ class PlaygroundApplyFlowTest {
         )
 
         val radarData = state.sessions.getValue(ChartType.RADAR).appliedData as PlaygroundDataModel.RadarSeries
-        val radarDataSet = DefaultRadarSampleUseCase().initialRadarSample().customDataSet
+        val radarDataSet = radarSampleUseCase().initialRadarSample().customDataSet
         assertEquals(radarDataSet.data.categories.toList(), radarData.axes)
         assertEquals(radarDataSet.data.items.map { item -> item.label }, radarData.entries.map { entry -> entry.name })
         assertEquals(

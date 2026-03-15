@@ -7,7 +7,7 @@ package io.github.dautovicharis.charts.internal
  */
 @RequiresOptIn(
     message = "Internal Charts API. This may change without notice.",
-    level = RequiresOptIn.Level.WARNING,
+    level = RequiresOptIn.Level.ERROR,
 )
 @Target(
     AnnotationTarget.CLASS,

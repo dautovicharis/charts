@@ -48,3 +48,6 @@ ci-test-summary.json
 .ci-test-summary.json
 .vscode/settings.json
 *.aab
+
+# Generated docs artifacts
+/docs/static/
