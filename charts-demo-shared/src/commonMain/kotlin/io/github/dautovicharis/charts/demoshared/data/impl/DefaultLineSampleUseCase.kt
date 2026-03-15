@@ -4,7 +4,7 @@ import io.github.dautovicharis.charts.demoshared.data.LineSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.toChartDataSet
 
-class DefaultLineSampleUseCase : LineSampleUseCase {
+internal class DefaultLineSampleUseCase : LineSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Daily Support Tickets"
         private val REFRESH_RANGE = 10..100

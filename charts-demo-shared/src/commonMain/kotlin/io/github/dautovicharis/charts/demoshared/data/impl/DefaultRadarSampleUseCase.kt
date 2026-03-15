@@ -8,7 +8,7 @@ import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.model.toChartDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 
-class DefaultRadarSampleUseCase : RadarSampleUseCase {
+internal class DefaultRadarSampleUseCase : RadarSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Platform Readiness Score"
         private val REFRESH_RANGE = 30..100

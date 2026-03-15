@@ -4,7 +4,7 @@ import io.github.dautovicharis.charts.demoshared.data.MultiLineSampleData
 import io.github.dautovicharis.charts.demoshared.data.MultiLineSampleUseCase
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 
-class DefaultMultiLineSampleUseCase : MultiLineSampleUseCase {
+internal class DefaultMultiLineSampleUseCase : MultiLineSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Weekly Revenue by Channel"
         private const val DEFAULT_PREFIX = "$"

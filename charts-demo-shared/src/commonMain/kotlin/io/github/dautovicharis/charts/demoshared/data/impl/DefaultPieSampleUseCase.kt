@@ -4,7 +4,7 @@ import io.github.dautovicharis.charts.demoshared.data.PieSampleData
 import io.github.dautovicharis.charts.demoshared.data.PieSampleUseCase
 import io.github.dautovicharis.charts.model.toChartDataSet
 
-class DefaultPieSampleUseCase : PieSampleUseCase {
+internal class DefaultPieSampleUseCase : PieSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Household Energy"
         private const val CUSTOM_TITLE = "Monthly Budget Allocation"

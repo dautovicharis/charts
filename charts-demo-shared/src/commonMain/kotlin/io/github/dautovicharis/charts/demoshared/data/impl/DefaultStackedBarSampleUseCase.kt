@@ -5,7 +5,7 @@ import io.github.dautovicharis.charts.demoshared.data.StackedBarSampleUseCase
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 
-class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
+internal class DefaultStackedBarSampleUseCase : StackedBarSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Quarterly Revenue by Region"
         private const val DEFAULT_PREFIX = "$"

@@ -5,7 +5,7 @@ import io.github.dautovicharis.charts.demoshared.data.StackedAreaSampleUseCase
 import io.github.dautovicharis.charts.model.MultiChartDataSet
 import io.github.dautovicharis.charts.model.toMultiChartDataSet
 
-class DefaultStackedAreaSampleUseCase : StackedAreaSampleUseCase {
+internal class DefaultStackedAreaSampleUseCase : StackedAreaSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Monthly Active Subscribers by Plan"
         private const val DEFAULT_PREFIX = ""

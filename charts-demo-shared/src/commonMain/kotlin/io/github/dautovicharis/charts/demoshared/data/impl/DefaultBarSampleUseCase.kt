@@ -4,7 +4,7 @@ import io.github.dautovicharis.charts.demoshared.data.BarSampleUseCase
 import io.github.dautovicharis.charts.model.ChartDataSet
 import io.github.dautovicharis.charts.model.toChartDataSet
 
-class DefaultBarSampleUseCase : BarSampleUseCase {
+internal class DefaultBarSampleUseCase : BarSampleUseCase {
     companion object {
         private const val DEFAULT_TITLE = "Daily Net Cash Flow"
         private const val DEFAULT_POINTS = 120

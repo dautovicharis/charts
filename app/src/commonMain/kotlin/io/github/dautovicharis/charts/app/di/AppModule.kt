@@ -20,13 +20,13 @@ import io.github.dautovicharis.charts.demoshared.data.PieSampleUseCase
 import io.github.dautovicharis.charts.demoshared.data.RadarSampleUseCase
 import io.github.dautovicharis.charts.demoshared.data.StackedAreaSampleUseCase
 import io.github.dautovicharis.charts.demoshared.data.StackedBarSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultBarSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultLineSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultMultiLineSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultPieSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultRadarSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedAreaSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.barSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.lineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.multiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.pieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.radarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedBarSampleUseCase
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -34,13 +34,13 @@ val appModule =
     module {
         single<ChartPreviewUseCase> { DefaultChartPreviewUseCase() }
         single<LiveLatencyTimelineUseCase> { DefaultLiveLatencyTimelineUseCase() }
-        single<PieSampleUseCase> { DefaultPieSampleUseCase() }
-        single<LineSampleUseCase> { DefaultLineSampleUseCase() }
-        single<MultiLineSampleUseCase> { DefaultMultiLineSampleUseCase() }
-        single<BarSampleUseCase> { DefaultBarSampleUseCase() }
-        single<StackedBarSampleUseCase> { DefaultStackedBarSampleUseCase() }
-        single<StackedAreaSampleUseCase> { DefaultStackedAreaSampleUseCase() }
-        single<RadarSampleUseCase> { DefaultRadarSampleUseCase() }
+        single<PieSampleUseCase> { pieSampleUseCase() }
+        single<LineSampleUseCase> { lineSampleUseCase() }
+        single<MultiLineSampleUseCase> { multiLineSampleUseCase() }
+        single<BarSampleUseCase> { barSampleUseCase() }
+        single<StackedBarSampleUseCase> { stackedBarSampleUseCase() }
+        single<StackedAreaSampleUseCase> { stackedAreaSampleUseCase() }
+        single<RadarSampleUseCase> { radarSampleUseCase() }
         viewModel { PieChartViewModel(get()) }
         viewModel { ChartGalleryViewModel(get()) }
         viewModel { MainViewModel() }
