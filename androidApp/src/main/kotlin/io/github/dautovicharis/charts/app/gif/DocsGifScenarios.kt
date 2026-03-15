@@ -14,13 +14,13 @@ import io.github.dautovicharis.charts.PieChart
 import io.github.dautovicharis.charts.RadarChart
 import io.github.dautovicharis.charts.StackedAreaChart
 import io.github.dautovicharis.charts.StackedBarChart
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultBarSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultLineSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultMultiLineSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultPieSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultRadarSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedAreaSampleUseCase
-import io.github.dautovicharis.charts.demoshared.data.impl.DefaultStackedBarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.barSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.lineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.multiLineSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.pieSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.radarSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedAreaSampleUseCase
+import io.github.dautovicharis.charts.demoshared.data.stackedBarSampleUseCase
 import io.github.dautovicharis.charts.demoshared.theme.AppTheme
 import io.github.dautovicharis.charts.demoshared.theme.docsSlate
 import io.github.hdcodedev.composegif.annotations.GifFractionPoint
@@ -46,7 +46,7 @@ import io.github.hdcodedev.composegif.annotations.RecordGif
 @Composable
 fun PieDefaultGifScenario() {
     DocsGifScene {
-        PieChart(DefaultPieSampleUseCase().initialPieSample().dataSet)
+        PieChart(pieSampleUseCase().initialPieSample().dataSet)
     }
 }
 
@@ -65,7 +65,7 @@ fun PieDefaultGifScenario() {
 @Composable
 fun LineDefaultGifScenario() {
     DocsGifScene {
-        LineChart(DefaultLineSampleUseCase().initialLineDataSet())
+        LineChart(lineSampleUseCase().initialLineDataSet())
     }
 }
 
@@ -87,7 +87,7 @@ fun LineDefaultGifScenario() {
 @Composable
 fun MultiLineDefaultGifScenario() {
     DocsGifScene {
-        LineChart(DefaultMultiLineSampleUseCase().initialMultiLineSample().dataSet)
+        LineChart(multiLineSampleUseCase().initialMultiLineSample().dataSet)
     }
 }
 
@@ -103,7 +103,7 @@ fun MultiLineDefaultGifScenario() {
 @Composable
 fun BarDefaultGifScenario() {
     DocsGifScene {
-        BarChart(DefaultBarSampleUseCase().initialBarDataSet())
+        BarChart(barSampleUseCase().initialBarDataSet())
     }
 }
 
@@ -122,7 +122,7 @@ fun BarDefaultGifScenario() {
 @Composable
 fun StackedBarDefaultGifScenario() {
     DocsGifScene {
-        StackedBarChart(DefaultStackedBarSampleUseCase().initialStackedBarSample().dataSet)
+        StackedBarChart(stackedBarSampleUseCase().initialStackedBarSample().dataSet)
     }
 }
 
@@ -144,7 +144,7 @@ fun StackedBarDefaultGifScenario() {
 @Composable
 fun StackedAreaDefaultGifScenario() {
     DocsGifScene {
-        StackedAreaChart(DefaultStackedAreaSampleUseCase().initialStackedAreaSample().dataSet)
+        StackedAreaChart(stackedAreaSampleUseCase().initialStackedAreaSample().dataSet)
     }
 }
 
@@ -170,7 +170,7 @@ fun StackedAreaDefaultGifScenario() {
 @Composable
 fun RadarDefaultGifScenario() {
     DocsGifScene {
-        RadarChart(DefaultRadarSampleUseCase().initialRadarDefaultDataSet())
+        RadarChart(radarSampleUseCase().initialRadarDefaultDataSet())
     }
 }
 
